@@ -78,6 +78,17 @@ Promotion status: memory
 4. confidence를 표시합니다.
 5. 바로 다음 답변부터 수정된 규칙을 적용합니다.
 
+## 장기 규칙 갱신 절차
+
+장기 규칙으로 승격할 때는 현재 작업 브랜치에서 직접 수정하지 않습니다.
+
+1. `main` 기준 worktree를 만든다.
+2. 새 브랜치를 만든다.
+3. 0계층 `system/` 문서 또는 관련 skill draft만 수정한다.
+4. 프로젝트별 실제 Task, Issue, report, page 목록은 복사하지 않는다.
+5. 커밋 후 PR을 만든다.
+6. PR 본문에 사용자 피드백 원문, 승격한 규칙, 승격하지 않은 항목을 분리해 적는다.
+
 ## 예시
 
 ### 선택지 누락
@@ -120,4 +131,18 @@ Promotion status: memory
 
 ```text
 승인 경계, ownership, production behavior, generated output에 영향을 주는 결정은 추천은 하되 명시 승인을 기다립니다.
+```
+
+### 근거 지칭이 느슨함
+
+사용자 피드백:
+
+```text
+v1 버튼 인벤토리라기보다는 evidence/v1-button-inventory 라고 보다 자세하게 써주는게 나을 것 같음
+```
+
+수정 규칙:
+
+```text
+프로젝트 evidence나 artifact를 설명할 때는 느슨한 별칭만 쓰지 않고, 저장 계층과 역할이 드러나는 이름 또는 실제 경로를 함께 제시합니다.
 ```
