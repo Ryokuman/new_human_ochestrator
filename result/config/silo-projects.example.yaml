@@ -1,0 +1,99 @@
+# 사일로 프로젝트 설정 템플릿
+# 실제 값 파일은 `silo-projects.yaml`로 만들고 git에 올리지 않습니다.
+
+version: 1
+
+defaults:
+  work_root: /tmp/agent-silos
+  branch_prefix: silo
+  execution_mode: yolo
+  protected_branches:
+    - main
+    - master
+    - dev
+    - develop
+    - release
+    - production
+  clone:
+    depth: 1
+    partial: true
+  pr:
+    require_description: true
+    require_promotion_sections: true
+    require_branch_safety_report: true
+  yolo:
+    allow_free_source_edits: true
+    allow_generated_output_edits: true
+    allow_test_and_tooling_edits: true
+    require_protected_branch_guard: true
+    require_secret_guard: true
+    require_production_guard: true
+
+projects:
+  - id: example-generator
+    name: 예시 생성기
+    repo_url: git@github.com:ORG/example-generator.git
+    default_branch: dev
+    protected_branches:
+      - dev
+      - qa
+      - main
+    allowed_for_silo: true
+    role: generator
+    notes:
+      - 생성기 수정과 generated output 수정은 YOLO 모드에서 허용됩니다.
+
+  - id: example-runtime
+    name: 예시 런타임
+    repo_url: git@github.com:ORG/example-runtime.git
+    default_branch: dev
+    protected_branches:
+      - dev
+      - qa
+      - main
+    allowed_for_silo: true
+    role: runtime-test-harness
+    notes:
+      - UI/runtime 작업은 agent-browser 검증을 우선합니다.
+
+  - id: example-backend
+    name: 예시 공용 백엔드
+    repo_url: git@github.com:ORG/example-backend.git
+    default_branch: dev
+    protected_branches:
+      - dev
+      - qa
+      - main
+    allowed_for_silo: false
+    role: shared-backend
+    service_policy:
+      owner: main-orchestrator
+      startup: once-per-session
+      shared_by_silos: true
+      silo_should_not_clone_by_default: true
+    notes:
+      - 메인 오케스트레이터가 하나 띄워두고 사일로들이 공유합니다.
+
+branch_name_template: "{prefix}/{task_id}-{short_slug}"
+
+rules:
+  execution_mode: yolo
+  never_commit_or_push_to_protected_branches: true
+  always_create_work_branch: true
+  allow_free_edits_inside_silo_clone: true
+  allow_generated_output_edits_inside_silo_clone: true
+  allow_test_and_tooling_edits_inside_silo_clone: true
+  discard_failed_clone_or_branch: true
+  submit_result_by_pr: true
+  main_orchestrator_shared_services:
+    - example-backend
+  default_silo_projects:
+    - example-generator
+    - example-runtime
+  fallback_data_import_policy: report_and_get_approval_before_import
+  still_forbidden_in_yolo:
+    - protected_branch_direct_commit
+    - protected_branch_direct_push
+    - production_data_write_without_explicit_policy
+    - secret_value_logging
+    - force_push_to_shared_branch

@@ -1,0 +1,29 @@
+# 최종 정의는 result/에 둡니다.
+# 프로젝트 조사 결과와 원본 프롬프트는 재사용 코어가 아니라서 git에 올리지 않습니다.
+projects/
+sources/
+
+# 일반 로컬/시크릿 파일
+.env
+.env.*
+!.env.example
+secrets/
+secret/
+credentials/
+credential/
+vault/
+private/
+*.pem
+*.key
+*.p12
+*.pfx
+*.log
+*.sqlite
+*.sqlite3
+*.db
+*.dump
+*.har
+*.trace
+*.webm
+*.mp4
+*.mov
