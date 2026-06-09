@@ -34,7 +34,7 @@ description: 0계층 Root/Global 에이전트 운영 규칙을 적용해 요청�
 ## 저장 위치
 
 ```text
-0계층 -> result/
+0계층 -> system/
 1계층 -> project registry/config, fork/submodule reference
 2계층 -> 해당 project SSoT
 3계층 -> silo local workspace, PR description
@@ -42,7 +42,7 @@ description: 0계층 Root/Global 에이전트 운영 규칙을 적용해 요청�
 
 ## 금지
 
-- 0계층 `result/`에 프로젝트 issue/task를 직접 저장하지 않습니다.
+- 0계층 `system/`에 프로젝트 issue/task를 직접 저장하지 않습니다.
 - 프로젝트 내부 자료를 main에 기본 커밋하지 않습니다.
 - 사일로 local finding을 PR 전 project SSoT에 바로 승격하지 않습니다.
 - project SSoT를 root 문서로 덮어쓰지 않습니다.

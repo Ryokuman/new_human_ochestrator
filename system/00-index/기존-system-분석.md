@@ -1,13 +1,13 @@
-# 기존 result 분석
+# 기존 system 분석
 
 작성 기준: 2026-06-09
 
 ## 기존 구조
 
-처음 확인한 `result`에는 아래 구조만 있었습니다.
+처음 확인한 `system`에는 아래 구조만 있었습니다.
 
 ```text
-result/
+system/
 └── user-personality-adaptive-response/
     ├── SKILL.md
     ├── agents/openai.yaml

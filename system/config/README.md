@@ -18,8 +18,8 @@ git에 포함하지 않는 파일:
 
 프로젝트별 실제 값은 아래 둘 중 하나로 주입합니다.
 
-1. `result/config/silo-runtime.env`
-2. `result/config/silo-projects.yaml`
+1. `system/config/silo-runtime.env`
+2. `system/config/silo-projects.yaml`
 
 시크릿 저장소를 따로 쓰는 환경이면 같은 내용을 secret manager, vault, 1Password, Doppler, AWS Secrets Manager, GitHub Actions secrets 등에 넣어도 됩니다.
 
