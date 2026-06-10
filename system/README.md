@@ -44,6 +44,7 @@
 | `20-main-orchestrator/` | 메인 오케스트레이터 역할과 루프 |
 | `config/` | 사일로 런타임 env와 프로젝트 설정 템플릿 |
 | `profile/` | 개인 프로필 템플릿과 gitignore된 실제 프로필 |
+| `scripts/` | 프로젝트 SSoT 같은 반복 구조를 생성하는 공통 스크립트 |
 | `30-silo-system/` | 동적 사일로 생성과 작업 방식 |
 | `40-pr-review-loop/` | PR 리뷰, 머지, SSoT 승격 판단 |
 | `50-feedback-personality-loop/` | 사용자 피드백 기반 규칙 갱신 |
@@ -61,6 +62,7 @@ git에 남길 것은 프로젝트에 독립적인 코어 문서입니다.
 - 여러 프로젝트에 적용 가능한 최종 프롬프트 초안
 - 한국어 skill/rule 초안
 - env/config 템플릿
+- 프로젝트별 SSoT 기본 구조를 생성하는 공통 스크립트와 템플릿
 - 개인 프로필 템플릿
 
 git에서 제외할 것은 프로젝트 의존 자료와 시크릿성 자료입니다.
@@ -97,6 +99,7 @@ git에서 제외할 것은 프로젝트 의존 자료와 시크릿성 자료입�
 
 - `system/`에는 정의와 템플릿만 둡니다.
 - 프로젝트 조사 결과는 기본적으로 fork/submodule/external clone/project SSoT에 둡니다. 로컬 참고 자료는 `../projects/`에 둘 수 있지만 main 커밋 대상은 아닙니다.
+- project SSoT의 dashboard, task format, issue format, L 기준, Obsidian plugin 설정이 필요하면 실제 산출물을 main에 커밋하지 않고 `system/scripts/create-project-ssot.mjs` 같은 공통 생성 도구로 만듭니다.
 - 원본 프롬프트와 과거 초안은 `../sources/`에 둡니다.
 - 이 프롬프트 모음집은 여러 프로젝트에서 쓰는 것이 목표이므로, 프로젝트 의존 자료는 gitignore 대상으로 둡니다.
 - 현재 목표 기준 다음 행동은 코드 수정이 아니라, 분석 초안 검토와 규칙 승격입니다.
