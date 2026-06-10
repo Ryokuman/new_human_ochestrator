@@ -15,7 +15,8 @@
 3. `system/00-system-overview/전체-시스템-개요.md`
 4. `system/10-ssot/SSoT-스키마-초안.md`
 5. `system/20-agent-rules/skill-drafts/root-layer-manager/SKILL.md`
-6. `system/60-final-prompts/메인-오케스트레이터-프롬프트-초안.md`
+6. `system/20-agent-rules/references/agent-md-reinforcement-guide.md`
+7. `system/60-final-prompts/메인-오케스트레이터-프롬프트-초안.md`
 
 ## Layer Policy
 
@@ -36,6 +37,21 @@
 2계층 -> 해당 project SSoT
 3계층 -> silo local workspace, PR description
 ```
+
+## Reference Policy
+
+에이전트 md, AGENTS.md, CLAUDE.md, 프롬프트, skill 초안이 빈약하다는 피드백을 받으면 바로 새 규칙을 상상해서 추가하지 않습니다.
+
+먼저 `system/20-agent-rules/references/`를 사용합니다.
+
+- 프로젝트 맥락이 부족하면 `project-context-reference-template.md` 기준으로 기존 프로젝트 운영 패턴을 정리합니다.
+- PR 리뷰 기준이 부족하면 `pr-review-reference-template.md` 기준으로 반복 피드백을 정리합니다.
+- 보고 방식이나 퍼스널리티 판단이 부족하면 `reporting-and-personality-reference-template.md` 기준으로 관찰, 해석, 승인 상태를 분리합니다.
+- 보강 절차 전체가 필요하면 `agent-md-reinforcement-guide.md`를 따릅니다.
+
+에이전트 md에는 reference 원문을 모두 넣지 않습니다. 언제 어떤 reference를 읽을지, 어떤 기준으로 장기 규칙에 반영할지만 넣습니다.
+
+프로젝트 내부 실제 issue/task/QA 결과는 0계층에 복사하지 않고, project SSoT 위치와 반복 가능한 운영 패턴만 기록합니다.
 
 ## Edit Policy
 
