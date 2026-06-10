@@ -26,7 +26,7 @@
 0계층: 공통 규칙, skill, config template, profile template, 계층 운영 방식
 1계층: project 등록, fork/submodule/external clone 연결, project SSoT 위치
 2계층: project 내부 issue/task/QA/decision/coverage/runbook
-3계층: silo local finding, local task, 실험 로그, PR 전 임시 상태
+3계층: silo 로컬 발견, local task, 실험 로그, PR 전 임시 상태
 ```
 
 저장 위치:
@@ -35,7 +35,7 @@
 0계층 -> system/
 1계층 -> project registry/config, fork/submodule reference
 2계층 -> 해당 project SSoT
-3계층 -> silo local workspace, PR description
+3계층 -> silo local workspace, PR 본문
 ```
 
 ## Reference Policy
@@ -55,7 +55,9 @@
 
 ## Edit Policy
 
-- 모든 문서는 무조건 한국어로 작성합니다.
+- 모든 문서와 작성 산출물은 무조건 한국어로 작성합니다.
+- 작성 산출물에는 PR 제목, PR 본문, 커밋 메시지, 보고 문구, 인수인계, task/issue 본문, 에이전트 프롬프트, 리뷰 코멘트, 사용자 대상 요약이 포함됩니다.
+- 코드 식별자, 명령어, 파일명, API 이름, 외부 원문 인용처럼 원문 유지가 필요한 경우만 영어를 허용합니다.
 - `system/`에는 프로젝트 비의존 정의와 템플릿만 둡니다.
 - 프로젝트 issue/task는 `system/`에 만들지 않습니다.
 - 프로젝트 내부 자료는 main에 기본 커밋하지 않습니다.
