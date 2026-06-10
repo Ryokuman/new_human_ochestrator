@@ -7,6 +7,7 @@ defaults:
   work_root: /tmp/agent-silos
   branch_prefix: silo
   execution_mode: yolo
+  unit_dir_template: "{unit_type}-{unit_id}"
   protected_branches:
     - main
     - master
@@ -28,6 +29,16 @@ defaults:
     require_protected_branch_guard: true
     require_secret_guard: true
     require_production_guard: true
+  agents:
+    developer:
+      required: true
+      responsibility: implementation
+    qa:
+      required: true
+      responsibility: acceptance-and-runtime-verification
+    reviewer:
+      required: true
+      responsibility: scope-branch-secret-and-promotion-review
 
 projects:
   - id: example-generator
@@ -78,6 +89,10 @@ branch_name_template: "{prefix}/{task_id}-{short_slug}"
 
 rules:
   execution_mode: yolo
+  create_silo_before_implementation_task: true
+  clone_only_required_repositories: true
+  create_branch_in_each_cloned_repository: true
+  run_developer_qa_reviewer_roles_before_close: true
   never_commit_or_push_to_protected_branches: true
   always_create_work_branch: true
   allow_free_edits_inside_silo_clone: true
@@ -90,6 +105,7 @@ rules:
   default_silo_projects:
     - example-generator
     - example-runtime
+  create_pr_only_for_repositories_with_diff: true
   fallback_data_import_policy: report_and_get_approval_before_import
   still_forbidden_in_yolo:
     - protected_branch_direct_commit
