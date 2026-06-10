@@ -5,6 +5,7 @@ sources/
 
 # 일반 로컬/시크릿 파일
 .DS_Store
+/.obsidian/
 .env
 .env.*
 !.env.example
