@@ -13,6 +13,7 @@ description: 0계층 Root/Global 에이전트 운영 규칙을 적용해 요청�
 
 - 계층 구조
 - 사일로 생성 방법
+- project SSoT 기본 구조 생성 방법
 - 공통 YOLO 정책
 - 보호 브랜치 정책
 - secret/config 주입 방식
@@ -60,6 +61,8 @@ description: 0계층 Root/Global 에이전트 운영 규칙을 적용해 요청�
 root 저장소 main에는 공통 운영 규칙만 둡니다.
 
 프로젝트 자료를 root 저장소에 추가해야 한다면 별도 브랜치에서만 하고, PR description에 이유를 적습니다.
+
+project SSoT의 dashboard, task format, issue format, L 기준, Obsidian Dataview 설정이 필요하면 실제 project 산출물을 root main에 커밋하지 않습니다. 대신 `system/scripts/`의 생성 스크립트나 `system/20-agent-rules/skill-drafts/`의 skill draft를 추가하고, 생성 결과는 project SSoT에 둡니다.
 
 ## 승격 판단
 

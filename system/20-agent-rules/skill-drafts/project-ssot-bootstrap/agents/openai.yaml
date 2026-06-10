@@ -1,0 +1,3 @@
+display_name: Project SSoT Bootstrap
+short_description: 프로젝트별 태스크, 이슈, L 기준, 대시보드, Dataview 설정을 공통 스크립트로 생성합니다.
+default_prompt: Project SSoT Bootstrap 절차를 사용해 프로젝트 내부 SSoT 기본 구조를 생성하고, 실제 project 산출물은 root main에 커밋하지 않도록 분리하세요.
