@@ -15,6 +15,8 @@ SSoT는 다음을 저장해야 합니다.
 
 ## 권장 구조
 
+0계층 SSoT는 프로젝트별 운영 구조를 직접 담지 않고, 여러 프로젝트에 공통으로 적용할 규칙과 템플릿을 둡니다.
+
 ```text
 ssot/
 ├── context.md
@@ -38,6 +40,24 @@ ssot/
 │   └── 피드백.md
 └── decisions/
 ```
+
+프로젝트별 SSoT는 2계층 Project Internal에 속하며, 최소한 아래 구성을 가져야 합니다.
+
+```text
+project-ssot/
+├── tasks/
+│   └── 태스크 생성/관리
+├── l-criteria/
+│   └── L 기준 생성/관리
+├── issues/
+│   └── 이슈 관리
+└── dashboard/
+    └── 대시보드
+```
+
+이 구조는 최소 필수 구성입니다. 프로젝트 특성에 따라 QA, decision/ADR, coverage, runbook, report, handoff 영역을 더 둘 수 있습니다.
+
+0계층 `system/`은 위 구조가 필요하다는 규칙과 템플릿만 관리합니다. 특정 프로젝트의 실제 태스크, 이슈, L runner 결과, page 목록, coverage report, 대시보드/보고서 내용은 프로젝트 SSoT에 두고 0계층으로 복사하지 않습니다.
 
 ## 주요 엔티티
 
