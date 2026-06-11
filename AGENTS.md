@@ -114,12 +114,20 @@
 - coverage 개선형 PR은 기준 run/report, 변경 후 run/report, `초기 n -> 변경 후 n -> 목표 0` 또는 이에 준하는 수치를 적습니다.
 - source/data 확인 필요, 정책 후속 필요, 예외 승인 후보는 page/item 단위로 분리합니다.
 
+## PR Merge Approval Policy
+
+- PR 생성 승인과 PR 머지 승인은 별개입니다.
+- 사용자가 `approve`, `LGTM`, `머지하세요`, `머지해도 됩니다`, `1. 머지`처럼 PR 머지를 명시한 경우에만 에이전트가 PR을 머지할 수 있습니다.
+- `진행해`, `작업 이어가`, `PR 만들어`, `main 업데이트`, `1. 승인`처럼 작업 또는 PR 생성 승인은 머지 승인으로 해석하지 않습니다.
+- PR을 머지했다면 즉시 `state`, `mergedAt`, `mergeCommit`을 재조회해 머지 여부를 보고합니다.
+- 명시 머지 승인이 없으면 PR URL, 상태, mergeable 여부, 필요한 다음 승인 문구를 보고하고 머지하지 않습니다.
+
 ## Main Update Flow Policy
 
 - 공통 규칙, 스킬 초안, 프롬프트, AGENTS.md, system 문서처럼 main SSoT를 바꾸는 요청은 `main-branch-update-flow` 스킬 초안을 우선 적용합니다.
 - main 업데이트는 현재 작업 브랜치에서 직접 하지 않습니다.
 - 항상 main 기준 별도 worktree 또는 clean checkout을 만들고, 새 브랜치를 만든 뒤 수정합니다.
-- 수정 후 PR을 생성하고, 머지 확인 후 현재 작업 브랜치를 최신 main 위로 rebase합니다.
+- 수정 후 PR을 생성합니다. PR 머지는 `PR Merge Approval Policy`의 명시 승인 후에만 수행하고, 머지 확인 후 현재 작업 브랜치를 최신 main 위로 rebase합니다.
 - remote 접근 계정이 맞지 않아 fetch/push가 실패하면 먼저 계정과 remote를 복구한 뒤 같은 절차를 계속합니다.
 
 ## Reporting
