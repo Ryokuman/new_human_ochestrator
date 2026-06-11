@@ -21,6 +21,8 @@ PR은 사일로가 발견한 로컬 issue/task 중 무엇을 SSoT의 메인 이�
 
 ## 그래서 무엇이 되었는가
 
+## Criteria 검증 결과
+
 ## 검증
 
 ## 사일로에서 새로 발견한 항목
@@ -65,6 +67,7 @@ PR 본문은 결과만 나열하지 않고, 처음 보는 리뷰어가 변경 �
 
 검증:
 - 실행한 테스트, generation, runner, agent-browser 여부를 적는다
+- 각 acceptance criteria를 어떤 검증 방법으로 덮었는지 적는다
 - 실행하지 않은 검증이 있으면 이유를 적는다
 
 남은 위험:
@@ -167,6 +170,9 @@ PR 리뷰 루프는 여러 번 돌 수 있습니다.
 - 보호 브랜치에 직접 손대지 않았는지
 - 새 작업 브랜치에서 작업했는지
 - 검증 결과가 acceptance criteria를 덮는지
+- criteria별 검증 방법이 unit, runner, E2E, agent-browser, manual 중 무엇인지 명시됐는지
+- 화면 동작 변경에 E2E 또는 agent-browser 증거가 있는지
+- 신규/변경 로직에 unit test 또는 테스트 생략 사유가 있는지
 - 사용자 취향 규칙을 위반하지 않았는지
 - 사일로 발견 항목 중 승격해야 할 것이 빠지지 않았는지
 - 승격하지 않을 항목의 이유가 충분한지
@@ -221,9 +227,19 @@ PR 리뷰 루프는 여러 번 돌 수 있습니다.
 - 변경 후:
 - 목표:
 
+## Criteria 검증 결과
+
+| Criteria | 검증 방법 | 결과 | 증거 |
+|---|---|---|---|
+|  | unit / runner / E2E / agent-browser / manual | pass / fail / skipped |  |
+
 ## 검증
 
-- 
+- Unit:
+- Runner/static coverage:
+- E2E/agent-browser:
+- Coverage:
+- 실행하지 않은 검증과 이유:
 
 ## 사일로에서 새로 발견한 항목
 

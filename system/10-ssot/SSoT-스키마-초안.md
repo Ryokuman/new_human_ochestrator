@@ -108,7 +108,10 @@ Task는 0계층 SSoT가 아니라 project SSoT에 저장합니다.
 - status
 - owner_silo
 - branch
+- output
 - acceptance_criteria
+- test_plan
+- coverage_target
 - verification_plan
 - approval_required
 - pr

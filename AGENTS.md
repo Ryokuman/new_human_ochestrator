@@ -103,6 +103,17 @@
 - diff 있는 repo만 PR을 만들고, PR 제목과 본문은 한국어로 작성합니다.
 - 이 자동 진행 규칙은 source/data/secret/production 금지선을 넘지 않습니다. 금지선에 닿으면 진행하지 않고 승격 후보 또는 사용자 판단 필요로 보고합니다.
 
+## Task Test Contract Policy
+
+- Task는 구현 요청이 아니라 검증 가능한 계약으로 작성합니다.
+- 각 task는 `Output`, `Acceptance Criteria`, `Test Plan`, `Coverage Target`을 포함해야 합니다.
+- `Output`은 완료 후 사용자, 시스템, 운영자가 확인할 수 있는 결과입니다.
+- `Acceptance Criteria`는 완료로 인정할 검수 기준이며, 각 기준은 `unit`, `runner`, `E2E`, `agent-browser`, `manual` 중 하나 이상의 검증 방법과 연결합니다.
+- 화면 동작이 바뀌는 task는 E2E 또는 `agent-browser` 증거를 우선합니다.
+- 신규/변경 로직은 가능한 범위에서 unit test를 추가합니다.
+- 전체 coverage 90%는 프로젝트가 측정 범위와 적용 시점을 정한 뒤 단계적으로 강제합니다. 그 전에는 신규/변경 코드 coverage와 실행한 테스트 증거를 우선합니다.
+- coverage를 측정하지 못했거나 테스트를 생략했다면 PR 본문과 완료 보고에 이유를 남깁니다.
+
 ## Coverage Task Goal Tree Policy
 
 - coverage 개선형 task는 단순히 "줄인다"를 완료 기준으로 삼지 않습니다. 부모 task의 최종 목표는 기본적으로 해당 diff count `0` 또는 전건의 명시적 종결입니다.
@@ -120,6 +131,7 @@
 - 기본 흐름은 `무엇을 했는가 -> 변경 상세 -> 그래서 무엇이 되었는가 -> 검증 -> SSoT 승격 후보 -> 승격하지 않을 항목 -> 남은 위험`입니다.
 - `변경 상세`에는 문제 정의, 기존 동작, 문제가 된 이유, 변경한 파일과 함수/정책 역할을 적습니다.
 - `suffix 없는 버튼`, `시스템 버튼으로 버림`, `runner 보정`처럼 내부자 표현은 실제 예시와 함께 정의합니다.
+- PR 본문에는 criteria별 검증 결과를 적습니다. 각 criteria에 대해 검증 방법, 결과, 증거를 분리합니다.
 - coverage 개선형 PR은 기준 run/report, 변경 후 run/report, `초기 n -> 변경 후 n -> 목표 0` 또는 이에 준하는 수치를 적습니다.
 - source/data 확인 필요, 정책 후속 필요, 예외 승인 후보는 page/item 단위로 분리합니다.
 

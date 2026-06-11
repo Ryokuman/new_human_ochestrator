@@ -292,7 +292,8 @@ updated: ${date}
 5. \`## 사용자 처리 명령\`
 6. \`# 예상 위험 및 대응책\`
 7. \`# Output & Acceptance Criteria\`
-8. \`# 자가검수\`
+8. \`# Test Plan\`
+9. \`# 자가검수\`
 
 ## 필수 본문 양식
 
@@ -321,7 +322,33 @@ Meetings
 
 # Output & Acceptance Criteria
 
-- [ ]
+Output은 task가 완료되었을 때 사용자, 시스템, 운영자가 확인할 수 있는 결과입니다.
+Acceptance Criteria는 완료로 인정할 검수 기준입니다. 각 기준은 검증 방법과 연결해야 합니다.
+
+## Output
+
+-
+
+## Acceptance Criteria
+
+| 기준 | 검증 방법 | 필수 여부 | 결과 |
+|---|---|---|---|
+|  | unit / runner / E2E / agent-browser / manual | 필수 | 미검증 |
+
+# Test Plan
+
+| 테스트 종류 | 대상 | 명령 또는 증거 | 필수 여부 |
+|---|---|---|---|
+| Unit | 함수, 변환기, 렌더러, 정책 로직 |  | 조건부 |
+| Static/Runner | coverage runner, generated output, parity check |  | 조건부 |
+| E2E | 실제 사용자 흐름, 화면 동작, 버튼/모달/그리드 조작 |  | 화면 동작 변경 시 필수 |
+| Coverage | 신규/변경 코드 |  | 조건부 |
+
+## Coverage Target
+
+- 신규/변경 코드에 테스트를 우선 추가한다.
+- 전체 coverage 90%는 프로젝트가 적용 가능한 repo와 측정 방식을 정한 뒤 단계적으로 적용한다.
+- coverage를 측정하지 못한 경우 이유를 \`# Verification\` 또는 PR 본문에 남긴다.
 
 # 자가검수
 
