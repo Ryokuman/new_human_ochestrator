@@ -14,7 +14,7 @@ Options:
   --project-name <name>        사람이 읽는 프로젝트명. 기본값은 project-id.
   --force                      기존 파일을 덮어쓴다.
   --dry-run                    생성할 파일만 출력한다.
-  --install-dataview           Obsidian Dataview plugin release 파일을 target vault에 내려받는다.
+  --skip-dataview              Obsidian Dataview plugin release 파일 다운로드를 건너뛴다.
   --dataview-version <tag>     Dataview release tag. 기본값: ${DEFAULT_DATAVIEW_VERSION}
   --help                       도움말을 출력한다.
 `;
@@ -27,7 +27,7 @@ function parseArgs(argv) {
     target: "",
     force: false,
     dryRun: false,
-    installDataview: false,
+    installDataview: true,
     dataviewVersion: DEFAULT_DATAVIEW_VERSION,
   };
 
@@ -39,6 +39,7 @@ function parseArgs(argv) {
     else if (arg === "--force") args.force = true;
     else if (arg === "--dry-run") args.dryRun = true;
     else if (arg === "--install-dataview") args.installDataview = true;
+    else if (arg === "--skip-dataview") args.installDataview = false;
     else if (arg === "--dataview-version") args.dataviewVersion = argv[++i] || DEFAULT_DATAVIEW_VERSION;
     else if (arg === "--help" || arg === "-h") {
       console.log(usage());
@@ -643,7 +644,7 @@ function writeFile(file, content, args, written) {
 
 async function download(url, file) {
   const response = await fetch(url, {
-    headers: { "user-agent": "project-ssot-bootstrap" },
+    headers: { "user-agent": "projects-setup" },
   });
   if (!response.ok) throw new Error(`Download failed ${response.status}: ${url}`);
   fs.mkdirSync(path.dirname(file), { recursive: true });

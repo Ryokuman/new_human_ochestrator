@@ -18,7 +18,7 @@
 |---|---|---|
 | `main-branch-update-flow` | main SSoT, 공통 규칙, 프롬프트, `AGENTS.md`, skill 초안을 바꿀 때 | main 업데이트 스킬을 활용한다고 보고한 뒤, 별도 main 작업 브랜치에서 수정하고 PR로 반영합니다. |
 | `root-layer-manager` | 정보가 0~3계층 중 어디에 속하는지 판단해야 할 때 | 프로젝트 내부 자료를 root main에 올릴지 말지 판단하기 전에 계층을 판정합니다. |
-| `project-ssot-bootstrap` | 프로젝트별 SSoT 기본 구조를 생성해야 할 때 | 공통 생성 스크립트로 project SSoT 위치에 산출물을 만들고, 실제 프로젝트 자료는 root main에 커밋하지 않습니다. |
+| `projects-setup` | 새 프로젝트를 `projects/` 구조에 등록하거나 project SSoT와 사일로 config를 함께 셋업해야 할 때 | `projects/<project-id>/` 기본 구조, Dataview 포함 project SSoT, `system/config/silo-projects.yaml` 등록을 함께 처리합니다. |
 | `user-personality-adaptive-response` | 사용자가 선택지, 보고 방식, 승인 경계, 톤이 맞지 않는다고 지적할 때 | 피드백을 관찰/해석/후보 규칙으로 분리하고, 승인 전에는 장기 규칙으로 확정하지 않습니다. |
 
 ## SSoT manager 역할
@@ -26,7 +26,7 @@
 현재 별도 `ssot-manager` skill 이름은 없지만, 역할은 아래처럼 나뉩니다.
 
 - root 계층 판단: `root-layer-manager`
-- project SSoT 생성: `project-ssot-bootstrap`
+- project 등록과 SSoT 생성: `projects-setup`
 - 세션 종료, handoff, task/issue/QA 갱신: 프로젝트별 설치 skill 또는 project SSoT의 운영 문서를 따릅니다.
 
 새로운 `ssot-manager` skill이 필요해지면 기존 세 역할과 겹치지 않게, “세션 종료와 SSoT 갱신을 언제 어떻게 수행하는가”를 전담하도록 추가합니다.
