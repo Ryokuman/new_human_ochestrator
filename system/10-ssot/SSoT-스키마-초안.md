@@ -59,6 +59,12 @@ project-ssot/
 
 0계층 `system/`은 위 구조가 필요하다는 규칙과 템플릿만 관리합니다. 특정 프로젝트의 실제 태스크, 이슈, L runner 결과, page 목록, coverage report, 대시보드/보고서 내용은 프로젝트 SSoT에 두고 0계층으로 복사하지 않습니다.
 
+`projects/`는 제품 소스코드 저장소가 아닙니다. `projects/`에는 프로젝트 SSoT, registry, repo 연결 정보, 보호 브랜치, service policy, evidence 위치처럼 프로젝트 운영 상태를 찾기 위한 자료만 둡니다.
+
+실제 제품 소스코드는 `.gitignore`된 `sources/` 같은 외부/로컬 소스 위치, 별도 repo/worktree, fork, submodule, external clone에 둡니다.
+
+프로젝트별 evidence는 coverage 판단 근거이므로 project SSoT 내부에 보존할 수 있습니다. 단, evidence 원본이 대용량 영상, trace, runner output, 제품 소스코드인 경우에는 project SSoT에 위치와 요약을 남기고 원본은 프로젝트 정책에 맞는 외부/로컬 저장 위치에 둡니다.
+
 ## 주요 엔티티
 
 ## Project SSoT 최소 필수 구성
@@ -122,6 +128,10 @@ Task는 0계층 SSoT가 아니라 project SSoT에 저장합니다.
 특정 이슈나 태스크를 맡은 동적 작업 단위입니다.
 
 Silo 상태는 project SSoT 또는 silo local workspace에 저장합니다. 0계층에는 생성 정책만 둡니다.
+
+Silo는 제품 소스코드 자체가 아니라 task 실행 단위입니다.
+
+Silo는 `goal.md`, scope, 실행 상태, local finding, 임시 검증 결과, PR 전 작업 상태를 담습니다. 제품 repo/source workspace는 사일로가 필요할 때 clone하거나 연결하는 별도 대상이며, 사일로와 개념적으로 분리합니다.
 
 필드:
 
