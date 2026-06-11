@@ -62,6 +62,7 @@ node system/scripts/create-project-ssot.mjs --project-id sample --target /tmp/sa
 생성 후에는 target에 아래가 있는지 확인한다.
 
 - `README.md`
+- `00-dashboard/project-overview.md`
 - `00-dashboard/snapshot-status.md`
 - `00-dashboard/work-filter.md`
 - `00-dashboard/work-items.base`
