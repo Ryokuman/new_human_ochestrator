@@ -47,6 +47,18 @@
 - `project/*` 브랜치 작업에는 `main-branch-update-flow`의 PR 생성/머지 절차를 기본 적용하지 않습니다.
 - `project/*` 브랜치에서 발견한 반복 가능한 운영 규칙만 별도 사용자 요청이 있을 때 main 업데이트 후보로 분리합니다.
 
+## Branch Lifecycle Policy
+
+- `main`은 0계층 공통 SSoT 기준 브랜치이며 삭제하지 않고 `origin/main`을 추적합니다.
+- `project/*`는 프로젝트별 정보 보관용 장기 브랜치이며 main 병합 대상이 아닙니다.
+- `silo/*`는 task PR 제출용 단기 브랜치입니다. PR 머지 후 `state`, `mergedAt`, `mergeCommit`을 재조회하고 clean 상태, ahead 없음, PR/패치 대응 관계가 확인되면 로컬 브랜치를 삭제합니다.
+- `docs/*`, `chore/*` 같은 main 업데이트용 단기 브랜치는 PR 머지 확인 후 로컬 브랜치와 연결 worktree를 정리합니다.
+- `repair/*`는 conflict 해결이나 이력 복구용 임시 브랜치입니다. 원 PR 또는 대체 PR 머지와 패치 동등성을 확인한 뒤 `삭제 후보`로 보고하고, 자동 삭제하지 않습니다.
+- 브랜치 정리 전에는 작업트리가 clean인지 확인하고 `git fetch --all --prune` 이후 상태를 기준으로 판단합니다.
+- 열린 PR의 head 브랜치는 보존합니다. upstream이 살아 있어도 PR 머지와 로컬 안전 조건이 확인된 브랜치는 로컬 삭제 대상이 될 수 있으며, 원격 head는 별도 확인 대상으로 보고합니다.
+- ahead 커밋이 있거나 PR/패치 대응 관계가 불명확한 브랜치는 삭제하지 않고 `위험`으로 보고합니다.
+- 브랜치 정리 보고는 `삭제됨`, `보존`, `삭제 후보`, `위험`을 분리합니다.
+
 ## Reference Policy
 
 에이전트 md, AGENTS.md, CLAUDE.md, 프롬프트, skill 초안이 빈약하다는 피드백을 받으면 바로 새 규칙을 상상해서 추가하지 않습니다.
