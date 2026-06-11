@@ -42,6 +42,7 @@
 | `10-user-analysis/` | 사용자 입력 템플릿 |
 | `20-agent-rules/` | 실제 에이전트 규칙으로 승격할 초안 |
 | `20-agent-rules/references/` | 에이전트 md 보강에 사용할 프로젝트/PR/보고/퍼스널리티 reference 구조 |
+| `20-agent-rules/skill-drafts/` | main 업데이트, SSoT 계층 판단, project SSoT 생성 같은 공통 skill 초안과 사용법 README |
 | `20-main-orchestrator/` | 메인 오케스트레이터 역할과 루프 |
 | `config/` | 사일로 런타임 env와 프로젝트 설정 템플릿 |
 | `profile/` | 개인 프로필 템플릿과 gitignore된 실제 프로필 |
