@@ -94,7 +94,9 @@ updated: ${date}
 
 ## 태스크 확인/읽는 법
 
-1. frontmatter의 \`status\`, \`priority\`, \`level_target\`, \`issue\`, \`source\`를 먼저 확인한다.
+대시보드는 \`00-dashboard/project-overview.md\`를 먼저 연다.
+
+1. frontmatter의 \`id\`, \`title\`, \`status\`, \`priority\`, \`level_target\`, \`issue\`, \`source\`를 먼저 확인한다.
 2. \`# 개요\`에서 목적과 기준 evidence를 확인한다.
 3. \`# 수행 계획\`에서 실행 순서를 확인한다.
 4. \`# 대상 Page\`나 page-aware table이 있으면 영향 범위를 확인한다.
@@ -130,6 +132,77 @@ Issue/Task 공통 status:
   "bases": true
 }
 `,
+    "00-dashboard/project-overview.md": `---
+type: dashboard
+id: ${projectId.toUpperCase()}-DASH-PROJECT-OVERVIEW
+status: active
+created: ${date}
+updated: ${date}
+---
+
+# Project Overview
+
+Dataview가 꺼져 있으면 아래 정적 링크를 먼저 본다.
+
+- 작업 멀티필터: [[work-filter|작업 멀티필터]]
+- 태스크 목록: [[../30-tasks/TASK-NOTION-FORMAT|Task Format]]
+- L 기준: [[../90-coverage/scoring-criteria|Scoring Criteria]]
+
+## 다음 행동
+
+\`\`\`dataview
+TABLE WITHOUT ID
+  link(file.path, id) AS 항목,
+  title AS 제목,
+  type AS 타입,
+  status AS 상태,
+  priority AS 우선순위,
+  dateformat(updated, "yyyy-MM-dd") AS 수정일
+FROM "20-issues" OR "30-tasks"
+WHERE contains(["todo", "in_progress", "blocked", "review"], status)
+SORT priority ASC, updated DESC
+LIMIT 10
+\`\`\`
+
+## 승인 필요
+
+\`\`\`dataview
+TABLE WITHOUT ID
+  link(file.path, id) AS 항목,
+  title AS 제목,
+  type AS 타입,
+  status AS 상태,
+  source AS 출처,
+  dateformat(updated, "yyyy-MM-dd") AS 수정일
+FROM "20-issues" OR "30-tasks" OR "50-decisions"
+WHERE status = "review" OR contains(file.name, "approval")
+SORT updated DESC
+\`\`\`
+
+## 막힌 항목
+
+\`\`\`dataview
+TABLE WITHOUT ID
+  link(file.path, id) AS 항목,
+  title AS 제목,
+  type AS 타입,
+  status AS 상태,
+  blocked_reason AS 사유,
+  dateformat(updated, "yyyy-MM-dd") AS 수정일
+FROM "20-issues" OR "30-tasks"
+WHERE status = "blocked"
+SORT updated DESC
+\`\`\`
+
+## 최근 인수인계
+
+\`\`\`dataview
+LIST
+FROM "70-handoff"
+SORT updated DESC
+LIMIT 5
+\`\`\`
+`,
     "00-dashboard/snapshot-status.md": `---
 type: dashboard
 id: ${projectId.toUpperCase()}-DASH-SNAPSHOT
@@ -140,11 +213,7 @@ updated: ${date}
 
 # Snapshot Status
 
-Dataview가 꺼져 있으면 아래 정적 링크를 먼저 본다.
-
-- 태스크 목록: [[../30-tasks/TASK-NOTION-FORMAT|Task Format]]
-- L 기준: [[../90-coverage/scoring-criteria|Scoring Criteria]]
-- 작업 멀티필터: [[work-filter|작업 멀티필터]]
+프로젝트의 coverage, runner, L 기준 상태를 추적하는 보조 대시보드입니다. 전체 작업 큐는 [[project-overview|Project Overview]]를 먼저 봅니다.
 
 ## 활성 태스크
 
@@ -186,15 +255,30 @@ updated: ${date}
 
 # 작업 멀티필터
 
+## 필터 섹션
+
+섹션별 선택에는 항상 \`전체\`를 둔다.
+
+| 섹션 | 선택지 | 섹션 내부 관계 |
+|---|---|---|
+| 유형 | 전체, issue, task | OR |
+| 상태 | 전체, todo, in_progress, blocked, review, done, closed | OR |
+
+유형 섹션과 상태 섹션 사이 관계는 사용자가 작업 목적에 따라 AND 또는 OR로 본다.
+제목 검색은 전체 파일 검색이 아니라, 유형/상태 필터 결과 안에서 \`title\`을 추가로 좁히는 조건이다.
+
 ## 플러그인 없이 보는 작업 큐
 
 Dataview가 꺼져 있거나 Obsidian vault 설정이 맞지 않으면 \`30-tasks/\`, \`20-issues/\`, \`90-coverage/scoring-criteria.md\`를 직접 연다.
 
-## Dataview 작업 큐
+## AND 보기
+
+유형 조건과 상태 조건을 함께 만족하는 항목을 본다. 아래 쿼리는 기본값으로 전체 유형 중 활성 상태만 보여준다.
 
 \`\`\`dataview
 TABLE WITHOUT ID
   link(file.path, id) AS 항목,
+  title AS 제목,
   type AS 타입,
   status AS 상태,
   priority AS 우선순위,
@@ -203,6 +287,45 @@ TABLE WITHOUT ID
   dateformat(updated, "yyyy-MM-dd") AS 수정일
 FROM "20-issues" OR "30-tasks"
 WHERE contains(["todo", "in_progress", "blocked", "review"], status)
+SORT priority ASC, severity ASC, updated DESC
+\`\`\`
+
+## 필터 결과 내 제목 검색
+
+아래 쿼리에서 \`검색어\`만 바꾼다. 유형/상태 필터를 먼저 적용하고, 그 결과 안에서 제목을 검색한다.
+
+\`\`\`dataview
+TABLE WITHOUT ID
+  link(file.path, id) AS 항목,
+  title AS 제목,
+  type AS 타입,
+  status AS 상태,
+  priority AS 우선순위,
+  severity AS 중요도,
+  level_target AS 레벨,
+  dateformat(updated, "yyyy-MM-dd") AS 수정일
+FROM "20-issues" OR "30-tasks"
+WHERE contains(["todo", "in_progress", "blocked", "review"], status)
+  AND contains(lower(string(title)), lower("검색어"))
+SORT priority ASC, severity ASC, updated DESC
+\`\`\`
+
+## OR 보기
+
+유형 조건 또는 상태 조건 중 하나라도 맞는 항목을 본다. 아래 쿼리는 예시로 issue 전체와 blocked 상태 항목을 함께 보여준다.
+
+\`\`\`dataview
+TABLE WITHOUT ID
+  link(file.path, id) AS 항목,
+  title AS 제목,
+  type AS 타입,
+  status AS 상태,
+  priority AS 우선순위,
+  severity AS 중요도,
+  level_target AS 레벨,
+  dateformat(updated, "yyyy-MM-dd") AS 수정일
+FROM "20-issues" OR "30-tasks"
+WHERE type = "issue" OR status = "blocked"
 SORT priority ASC, severity ASC, updated DESC
 \`\`\`
 `,
@@ -215,6 +338,8 @@ SORT priority ASC, severity ASC, updated DESC
 properties:
   id:
     displayName: ID
+  title:
+    displayName: 제목
   type:
     displayName: 타입
   status:
@@ -229,9 +354,10 @@ properties:
     displayName: 수정일
 views:
   - type: table
-    name: 전체 - 즉석 필터
+    name: 전체
     order:
       - id
+      - title
       - type
       - status
       - priority
@@ -239,12 +365,107 @@ views:
       - level_target
       - updated
   - type: table
-    name: 상태 - 진행 중
+    name: 유형 - 전체
+    order:
+      - id
+      - title
+      - type
+      - status
+      - priority
+      - severity
+      - level_target
+      - updated
+  - type: table
+    name: 유형 - issue
+    filters:
+      and:
+        - 'type == "issue"'
+    order:
+      - id
+      - title
+      - type
+      - status
+      - priority
+      - severity
+      - level_target
+      - updated
+  - type: table
+    name: 유형 - task
+    filters:
+      and:
+        - 'type == "task"'
+    order:
+      - id
+      - title
+      - type
+      - status
+      - priority
+      - severity
+      - level_target
+      - updated
+  - type: table
+    name: 상태 - 전체
+    order:
+      - id
+      - title
+      - type
+      - status
+      - priority
+      - severity
+      - level_target
+      - updated
+  - type: table
+    name: 상태 - 활성
     filters:
       and:
         - '["todo", "in_progress", "blocked", "review"].contains(status)'
     order:
       - id
+      - title
+      - type
+      - status
+      - priority
+      - severity
+      - level_target
+      - updated
+  - type: table
+    name: 상태 - blocked
+    filters:
+      and:
+        - 'status == "blocked"'
+    order:
+      - id
+      - title
+      - type
+      - status
+      - priority
+      - severity
+      - level_target
+      - updated
+  - type: table
+    name: 관계 - AND 기본
+    filters:
+      and:
+        - '["issue", "task"].contains(type)'
+        - '["todo", "in_progress", "blocked", "review"].contains(status)'
+    order:
+      - id
+      - title
+      - type
+      - status
+      - priority
+      - severity
+      - level_target
+      - updated
+  - type: table
+    name: 관계 - OR 예시
+    filters:
+      or:
+        - 'type == "issue"'
+        - 'status == "blocked"'
+    order:
+      - id
+      - title
       - type
       - status
       - priority
@@ -255,6 +476,7 @@ views:
     "20-issues/ISSUE-FORMAT.md": `---
 type: issue-format
 id: ISSUE-FORMAT
+title: Issue Format
 status: active
 created: ${date}
 updated: ${date}
@@ -266,6 +488,7 @@ Issue는 문제, 원인 가설, 영향, 필요한 수정 방향을 설명한다.
 
 ## 필수 섹션
 
+- Frontmatter: \`id\`, \`title\`, \`status\`, \`severity\`, \`source\`, \`updated\`
 - Symptom
 - Evidence
 - Cause Hypotheses
@@ -276,6 +499,7 @@ Issue는 문제, 원인 가설, 영향, 필요한 수정 방향을 설명한다.
     "30-tasks/TASK-NOTION-FORMAT.md": `---
 type: task-format
 id: TASK-NOTION-FORMAT
+title: Task Notion Format
 status: active
 created: ${date}
 updated: ${date}
@@ -285,7 +509,7 @@ updated: ${date}
 
 ## 태스크 읽기 순서
 
-1. frontmatter
+1. frontmatter의 \`id\`, \`title\`, \`status\`, \`priority\`, \`source\`, \`updated\`
 2. \`# 개요\`
 3. \`# 수행 계획\`
 4. \`# 대상 Page\` 또는 page-aware table
@@ -298,6 +522,19 @@ updated: ${date}
 ## 필수 본문 양식
 
 \`\`\`markdown
+---
+type: task
+id: TASK-0000
+title: 태스크 제목
+status: todo
+priority: P2
+source:
+issue:
+level_target:
+created: YYYY-MM-DD
+updated: YYYY-MM-DD
+---
+
 # 개요
 
 -

@@ -45,14 +45,14 @@ ssot/
 
 ```text
 project-ssot/
-├── tasks/
-│   └── 태스크 생성/관리
-├── l-criteria/
-│   └── L 기준 생성/관리
-├── issues/
+├── 00-dashboard/
+│   └── 대시보드
+├── 20-issues/
 │   └── 이슈 관리
-└── dashboard/
-    └── 대시보드
+├── 30-tasks/
+│   └── 태스크 생성/관리
+└── 90-coverage/
+    └── L 기준 생성/관리
 ```
 
 이 구조는 최소 필수 구성입니다. 프로젝트 특성에 따라 QA, decision/ADR, coverage, runbook, report, handoff 영역을 더 둘 수 있습니다.
