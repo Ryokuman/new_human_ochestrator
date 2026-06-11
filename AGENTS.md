@@ -38,6 +38,15 @@
 3계층 -> silo local workspace, PR 본문
 ```
 
+## Project Branch Policy
+
+- `project/<project-id>` 브랜치는 main에 머지하기 위한 기능 브랜치가 아닙니다.
+- `project/*` 브랜치는 별도 fork를 만들지 않고 프로젝트별 정보, 코드 분석, SSoT 색인, repo 연결 상태를 보관하는 장기 브랜치입니다.
+- `project/*` 브랜치의 목적은 해당 프로젝트에 대한 정보 저장이며, root `main`의 공통 규칙을 바꾸는 것이 아닙니다.
+- `project/*` 브랜치에는 특정 프로젝트의 실제 제품 코드, issue/task 원문, QA 결과 원문을 무분별하게 복사하지 않습니다. 필요한 경우 프로젝트별 SSoT 위치와 요약 색인만 둡니다.
+- `project/*` 브랜치 작업에는 `main-branch-update-flow`의 PR 생성/머지 절차를 기본 적용하지 않습니다.
+- `project/*` 브랜치에서 발견한 반복 가능한 운영 규칙만 별도 사용자 요청이 있을 때 main 업데이트 후보로 분리합니다.
+
 ## Reference Policy
 
 에이전트 md, AGENTS.md, CLAUDE.md, 프롬프트, skill 초안이 빈약하다는 피드백을 받으면 바로 새 규칙을 상상해서 추가하지 않습니다.
