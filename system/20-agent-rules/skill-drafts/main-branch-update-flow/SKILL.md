@@ -30,6 +30,7 @@ description: 공통 규칙, AGENTS.md, system 문서, 프롬프트, skill 초안
 - `진행해`, `작업 이어가`, `PR 만들어`, `main 업데이트`, `1. 승인`처럼 작업 또는 PR 생성 승인은 머지 승인으로 해석하지 않습니다.
 - PR이 머지된 뒤에만 원래 작업 브랜치를 최신 main 위로 rebase합니다.
 - 프로젝트 내부 실제 issue/task/coverage 결과는 main에 복사하지 않고, 반복 가능한 운영 규칙만 `system/`에 둡니다.
+- `project/*` 브랜치는 프로젝트별 정보 보관용 장기 브랜치이며 main 병합 대상이 아닙니다. `project/*` 브랜치 작업에는 이 main 업데이트/PR 생성 흐름을 기본 적용하지 않습니다.
 
 ## 절차
 
