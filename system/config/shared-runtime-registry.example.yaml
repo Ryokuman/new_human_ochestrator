@@ -1,0 +1,52 @@
+# Shared runtime registry 예시
+#
+# 이 파일은 여러 task silo가 함께 참조하는 프로젝트별 runtime checkout을
+# 기록하기 위한 템플릿입니다. 실제 프로젝트 값은 project SSoT, project
+# registry/config, 또는 gitignore된 local config에 둡니다.
+# secret, token, password, credential 값은 기록하지 않습니다.
+
+shared_runtimes:
+  - project_id: sample-project
+    runtime_set: default-dev
+    runtime_name: api-server
+    role: backend
+    workspace_path: shared-runtime/sample-project/api-server
+    repo_remote: git@github.com:ORG/sample-api.git
+    branch: main
+    commit: "<commit-sha>"
+    purpose: 여러 task silo가 공통 API runtime으로 참조합니다.
+    ports:
+      - name: http
+        value: 3000
+        purpose: local API endpoint
+    env_file_policy:
+      path: system/config/sample-project-api.local.env
+      rule: env 파일 경로와 주입 방식만 기록하고 실제 secret 값은 기록하지 않습니다.
+    health_check_command: "curl -fsS http://localhost:3000/health"
+    owner: main-orchestrator
+    last_checked: "<YYYY-MM-DD or needs-check>"
+    linked_tasks:
+      - task-0000
+    status: active
+
+  - project_id: sample-project
+    runtime_set: default-dev
+    runtime_name: web-client
+    role: frontend
+    workspace_path: shared-runtime/sample-project/web-client
+    repo_remote: git@github.com:ORG/sample-web.git
+    branch: main
+    commit: "<commit-sha>"
+    purpose: 여러 task silo가 공통 frontend runtime으로 참조합니다.
+    ports:
+      - name: dev-server
+        value: 5173
+        purpose: local web UI
+    env_file_policy:
+      path: system/config/sample-project-web.local.env
+      rule: env 파일 경로와 주입 방식만 기록하고 실제 secret 값은 기록하지 않습니다.
+    health_check_command: "curl -fsS http://localhost:5173/"
+    owner: main-orchestrator
+    last_checked: needs-check
+    linked_tasks: []
+    status: needs-check

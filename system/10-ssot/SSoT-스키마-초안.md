@@ -8,6 +8,7 @@ SSoT는 다음을 저장해야 합니다.
 
 - 사용자 취향과 판단 기준
 - 프로젝트 등록과 SSoT 위치
+- 프로젝트별 shared runtime registry/status 위치
 - 계층별 저장 위치
 - 사일로 생성 정책
 - PR 리뷰와 승격 판단 정책
@@ -31,6 +32,7 @@ ssot/
 │       ├── ssot-location.md
 │       ├── repo-links.md
 │       ├── protected-branches.md
+│       ├── shared-runtime-registry.md
 │       └── service-policy.md
 ├── templates/
 │   ├── 이슈.md
@@ -62,6 +64,8 @@ project-ssot/
 `projects/`는 제품 소스코드 저장소가 아닙니다. `projects/`에는 프로젝트 SSoT, registry, repo 연결 정보, 보호 브랜치, service policy, evidence 위치처럼 프로젝트 운영 상태를 찾기 위한 자료만 둡니다.
 
 실제 제품 소스코드는 `.gitignore`된 `sources/` 같은 외부/로컬 소스 위치, 별도 repo/worktree, fork, submodule, external clone에 둡니다.
+
+여러 task silo가 함께 참조하는 runtime checkout은 shared runtime으로 분리할 수 있습니다. shared runtime은 workspace root 아래 공용 실행 repo 묶음이며, task silo가 직접 소유하지 않고 참조합니다. 기본 경로 후보는 `shared-runtime/<project-id>/<runtime-name>/`입니다. 프로젝트별 실제 runtime 구성과 registry/status는 project SSoT, project registry/config, 또는 gitignore된 local config에 둡니다.
 
 프로젝트별 evidence는 coverage 판단 근거이므로 project SSoT 내부에 보존할 수 있습니다. 단, evidence 원본이 대용량 영상, trace, runner output, 제품 소스코드인 경우에는 project SSoT에 위치와 요약을 남기고 원본은 프로젝트 정책에 맞는 외부/로컬 저장 위치에 둡니다.
 
@@ -147,6 +151,31 @@ Silo는 `goal.md`, scope, 실행 상태, local finding, 임시 검증 결과, PR
 - promoted_items
 - discarded_items
 - feedback_updates
+
+### Shared Runtime
+
+여러 task silo가 함께 참조하는 장기 runtime checkout입니다.
+
+Shared Runtime은 0계층 SSoT가 아니라 프로젝트별 registry/status에서 관리합니다. 0계층 `system/`은 생성/삭제 규칙과 템플릿만 둡니다.
+
+필드:
+
+- project_id
+- runtime_set
+- runtime_name
+- role
+- workspace_path
+- repo_remote
+- branch
+- commit
+- purpose
+- ports
+- env_file_policy
+- health_check_command
+- owner
+- last_checked
+- linked_tasks
+- status
 
 ### PR Record
 
