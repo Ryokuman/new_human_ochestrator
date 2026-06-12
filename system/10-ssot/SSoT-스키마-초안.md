@@ -137,17 +137,30 @@ Silo는 제품 소스코드 자체가 아니라 task 실행 단위입니다.
 
 Silo는 `goal.md`, scope, 실행 상태, local finding, 임시 검증 결과, PR 전 작업 상태를 담습니다. 제품 repo/source workspace는 사일로가 필요할 때 clone하거나 연결하는 별도 대상이며, 사일로와 개념적으로 분리합니다.
 
+Silo는 산출물 성격에 따라 테스트 사일로와 일반 사일로로 구분합니다.
+
+- 테스트 사일로: lifecycle/e2e/runtime/탐색 검증처럼 보고서가 주 산출물인 임시 실행 환경입니다. 종료 시 개별 보고서와 evidence를 SSoT 또는 지정 위치에 승격한 뒤 삭제할 수 있으며, batch 종료 시 전체 사일로 보고서와 Issue/Task 승격 후보를 만듭니다.
+- 일반 사일로: 구현/수정/문서/repair/conflict/PR 작업처럼 변경/PR/patch/evidence가 주 산출물인 작업 환경입니다. 자동 삭제를 기본값으로 삼지 않고 PR/patch 대응 관계, merge 상태, 미커밋 변경, 원격 상태, worktree 상태를 확인한 뒤 정리합니다.
+
 필드:
 
 - id
+- type: `test-silo` 또는 `general-silo`
 - source_issue_or_task
 - scope
 - branch
 - status
+- report_location
+- evidence_location
+- batch_report
+- cleanup_gate
+- cleanup_status
 - known_context
 - local_findings
 - local_tasks
 - pr
+- patch_mapping
+- merge_state
 - promoted_items
 - discarded_items
 - feedback_updates
@@ -209,6 +222,21 @@ Shared Runtime은 0계층 SSoT가 아니라 프로젝트별 registry/status에�
 | `promoted` | 메인 이슈/태스크로 승격됨 |
 | `rejected` | 승격하지 않기로 결정 |
 | `merged-as-fix` | 별도 메인 태스크 없이 PR 수정으로 해결 |
+
+## 사일로 정리 상태
+
+테스트 사일로와 일반 사일로는 정리 기준이 다릅니다.
+
+| 상태 | 적용 유형 | 의미 |
+|---|---|---|
+| `report-promoted` | 테스트 사일로 | 개별 보고서와 evidence가 SSoT 또는 지정 위치에 승격됨 |
+| `batch-reported` | 테스트 사일로 | 여러 개별 보고서를 묶은 전체 사일로 보고서와 Issue/Task 승격 후보가 작성됨 |
+| `deleted` | 테스트 사일로 | 보고서/evidence 승격 gate와 dirty status 확인 뒤 사일로 디렉터리 삭제 완료 |
+| `preserved` | 일반 사일로 | PR/patch, 검증, merge/cleanup 상태 확인 결과 보존 필요 |
+| `cleanup-candidate` | 일반 사일로 | PR/patch 대응 관계와 clean 상태가 확인되어 삭제 후보로 보고됨 |
+| `cleanup-blocked` | 일반 사일로 | 미커밋 변경, ahead commit, 원격 상태 불명확, repair/conflict 동등성 미확인 등으로 삭제 금지 |
+
+테스트 사일로 삭제 전에는 보고서/evidence 승격 gate와 dirty status 확인이 필수입니다. 일반 사일로에는 테스트 사일로 삭제 규칙을 적용하지 않습니다. destructive action, upload/import, production mutation은 사일로 유형과 관계없이 별도 승인이 필요합니다.
 
 ## SSoT 갱신 시점
 
