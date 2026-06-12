@@ -6,12 +6,14 @@ git에 포함하는 파일:
 
 - `silo-runtime.env.example`
 - `silo-projects.example.yaml`
+- `shared-runtime-registry.example.yaml`
 
 git에 포함하지 않는 파일:
 
 - `silo-runtime.env`
 - `silo-projects.yaml`
 - `silo-secrets.yaml`
+- `shared-runtime-registry.yaml`
 - `*.local.yaml`
 
 ## 사용 방식
@@ -28,6 +30,24 @@ git에 포함하지 않는 파일:
 - 공통 프롬프트에는 프로젝트명, 레포 URL, 보호 브랜치 이름, 계정, 토큰을 박지 않습니다.
 - 사일로 생성 시 메인 오케스트레이터가 이 설정을 읽어 clone 대상과 보호 브랜치를 결정합니다.
 - 보호 브랜치 정보는 시크릿은 아니어도 프로젝트 의존 값이므로 gitignore된 로컬 설정으로 둡니다.
+
+## Shared runtime registry
+
+여러 task silo가 함께 참조하는 장기 runtime checkout은 shared runtime으로 분리합니다.
+
+shared runtime은 workspace root 아래 공용 실행 repo 묶음이며, task silo가 직접 소유하지 않고 참조합니다. 프로젝트별 구성은 다릅니다. 예를 들어 어떤 프로젝트는 backend와 frontend를 함께 쓰고, 다른 프로젝트는 worker, DB emulator, external service mock만 사용할 수 있습니다.
+
+기본 경로 후보:
+
+```text
+shared-runtime/<project-id>/<runtime-name>/
+```
+
+실제 registry/status는 프로젝트별 SSoT, project registry/config, 또는 gitignore된 `system/config/shared-runtime-registry.yaml`에 둡니다. root main에는 `shared-runtime-registry.example.yaml` 같은 템플릿만 둡니다.
+
+registry/status에는 project id, runtime name, repo/remote, branch/commit, purpose, port, env file policy, health check command, owner, last checked, linked tasks를 기록할 수 있습니다. secret 값은 기록하지 않고 env 파일 path나 secret provider 정책만 기록합니다.
+
+task silo `goal.md` 또는 handoff는 어떤 shared runtime set의 branch, commit, port, health check 결과를 참조했는지 기록합니다. shared runtime 자체 변경이 필요하면 현재 task PR에 섞지 않고 별도 task, branch, PR로 분리합니다.
 
 ## 공용 백엔드와 사일로 대상
 
