@@ -94,6 +94,14 @@ node system/scripts/create-project-ssot.mjs \
 
 PR 본문 `명사 설명`에 반복해서 등장한 용어는 project dictionary 승격 후보로 남깁니다. 여러 프로젝트에서 반복되거나 에이전트 공통 행동 규칙에 영향을 주는 용어만 root main 공통 dictionary 또는 관련 system 문서 승격 후보로 분리합니다.
 
+Project dictionary 파일을 새로 만들거나 기존 dictionary에 용어를 추가/수정/삭제하는 PR은 PR 본문에 `새로 추가된 단어` 섹션을 둡니다.
+
+- `명사 설명`은 해당 PR을 이해하기 위한 즉시 설명입니다.
+- `새로 추가된 단어`는 project dictionary SSoT에 실제 추가/수정/삭제된 용어 목록입니다.
+- 최소 컬럼은 `변경 유형`, `용어`, `뜻`, `사용 맥락`, `프로젝트 전용/공통 후보`, `dictionary 위치`입니다.
+- 신규 추가만 있으면 `변경 유형`을 `추가`로 적고, 수정/삭제가 있으면 같은 컬럼에 `수정` 또는 `삭제`로 표시합니다.
+- PR에서 설명한 용어가 장기 재사용될 용어라면 dictionary 승격 후보 또는 실제 dictionary 변경으로 이어져야 합니다.
+
 ## config 등록 규칙
 
 `system/config/silo-projects.yaml` 프로젝트 항목은 최소 아래 필드를 포함합니다.
