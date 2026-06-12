@@ -89,6 +89,13 @@
 - 실제 secret, token, password, credential 값은 읽거나 기록하지 않습니다.
 - `profile/*.local.md`, `config/silo-projects.yaml`, `config/*.env`는 로컬 설정으로 취급합니다.
 
+## Skill README Policy
+
+- skill 초안을 추가하거나 기존 skill의 사용 시점, 절차, 금지선, 산출물이 바뀌면 관련 README 또는 인덱스를 함께 갱신합니다.
+- 기본 확인 대상은 `system/20-agent-rules/skill-drafts/README.md`와 `system/README.md`입니다.
+- README 또는 인덱스에 skill 이름, 사용할 때, 사용법이 연결되지 않으면 skill 변경을 완료로 보고하지 않습니다.
+- skill 초안 본문만 바꾸고 사용자가 찾을 수 있는 README를 갱신하지 않는 것은 누락으로 보고합니다.
+
 ## Personality Option Policy
 
 - 옵션 정책은 퍼스널리티 전용 정책이 아니라 모든 대화의 기본 선택지 제시 정책입니다.

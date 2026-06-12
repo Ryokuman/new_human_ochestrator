@@ -9,6 +9,8 @@
 - 사용자가 특정 skill을 말하거나, 요청이 skill 설명과 맞으면 해당 `SKILL.md`를 먼저 읽습니다.
 - skill에 절차가 이미 정의되어 있으면 보고나 선택지에서 절차 전체를 반복하지 않고 skill 이름으로 압축합니다.
 - 공통 규칙, 프롬프트, `AGENTS.md`, skill 초안 변경은 `main-branch-update-flow`를 사용합니다.
+- skill 초안을 추가하거나 사용법을 바꾸면 이 README의 주요 skill 표와 관련 상위 README 또는 인덱스를 함께 갱신합니다.
+- README 또는 인덱스 갱신이 빠졌다면 skill 초안 변경은 완료로 보고하지 않습니다.
 - 프로젝트별 실제 issue, task, QA, coverage 결과는 이 디렉토리에 복사하지 않습니다.
 - 모든 사용자 대상 작성물, PR 제목, PR 본문, 커밋 메시지는 한국어로 작성합니다.
 
@@ -23,8 +25,31 @@
 | `shared-runtime-health-check` | page-lifecycle, run, E2E 실행 전 `runtime_set` 유무나 서버형 shared runtime 상태를 확인해야 할 때 | `runtime_set`이 없거나 health가 실패하면 실행을 중단하고, 통과 또는 생략 사유를 `goal.md`와 보고서에 남깁니다. |
 | `delete-shared-runtime` | shared runtime registry/status 정리, archived 표시, 명시 승인된 runtime checkout 제거가 필요할 때 | 참조 중인 task/agent/server와 dirty state를 먼저 확인하고, 안전할 때만 registry 정리 또는 디렉터리 제거를 수행합니다. |
 | `command-intent-preflight` | lifecycle, run, E2E, 다건 테스트 사일로 실행 전에 실행 전제가 완성됐는지 확인해야 할 때 | Run Set, `runtime_set`, 사일로 단위, 사일로 root, evidence 기준, report 위치가 없으면 정식 실행을 시작하지 않고 누락 정의를 보고합니다. |
+| `page-lifecycle-runtime-flow` | page-lifecycle L 채점을 위해 단일 page를 생성하고 dynavite와 agent-browser로 확인해야 할 때 | `Run Set`과 `runtime_set` 확인 뒤, page별 테스트 사일로에서 `silo setup -> single page generate -> dynavite -> agent-browser -> L score -> done` 흐름을 따릅니다. |
 | `add-dict` | 용어 추가, dict 정리, PR 본문 용어 점검, dictionary 변경이 필요할 때 | 후보 단어를 기존 dictionary와 대조하고, 기존 용어로 대체 가능한지 확인한 뒤 필요한 단어만 project dictionary와 PR 본문 `새로 추가된 단어`에 반영합니다. |
 | `user-personality-adaptive-response` | 사용자가 선택지, 보고 방식, 승인 경계, 톤이 맞지 않는다고 지적할 때 | 피드백을 관찰/해석/후보 규칙으로 분리하고, 승인 전에는 장기 규칙으로 확정하지 않습니다. |
+
+## Run Set과 runtime_set
+
+`Run Set`은 이번 실행에서 무엇을 돌릴지 정합니다.
+
+- 대상 목록
+- 제외 기준
+- 순서
+- execution window 크기
+- 사일로 단위
+- target level 또는 target goal
+
+`runtime_set`은 그 실행을 위해 무엇이 떠 있거나 준비되어야 하는지 정합니다.
+
+- 공용 runtime
+- 사일로별 runtime
+- owner
+- health check
+- auth/session 참조
+- source workspace 정책
+
+`Run Set.required_runtime_set`은 사용할 `runtime_set.id`를 참조합니다.
 
 ## SSoT manager 역할
 
