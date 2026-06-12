@@ -45,9 +45,9 @@ shared-runtime/<project-id>/<runtime-name>/
 
 실제 registry/status는 프로젝트별 SSoT, project registry/config, 또는 gitignore된 `system/config/shared-runtime-registry.yaml`에 둡니다. root main에는 `shared-runtime-registry.example.yaml` 같은 템플릿만 둡니다.
 
-registry/status에는 project id, runtime name, repo/remote, branch/commit, purpose, port, env file policy, health check command, owner, last checked, linked tasks를 기록할 수 있습니다. secret 값은 기록하지 않고 env 파일 path나 secret provider 정책만 기록합니다.
+registry/status에는 project id, runtime set, runtime name, runtime kind, repo/remote, branch/commit, purpose, port, env file policy, health check command 또는 URL, owner, last checked, linked tasks를 기록할 수 있습니다. secret 값은 기록하지 않고 env 파일 path나 secret provider 정책만 기록합니다.
 
-task silo `goal.md` 또는 handoff는 어떤 shared runtime set의 branch, commit, port, health check 결과를 참조했는지 기록합니다. shared runtime 자체 변경이 필요하면 현재 task PR에 섞지 않고 별도 task, branch, PR로 분리합니다.
+page-lifecycle, run, E2E 실행 전에는 대상 `runtime_set`을 확인하고, 서버형 runtime이 있으면 health gate를 통과해야 합니다. task silo `goal.md` 또는 handoff는 어떤 shared runtime set의 branch, commit, port, health check 결과 또는 생략 이유를 참조했는지 기록합니다. shared runtime 자체 변경이 필요하면 현재 task PR에 섞지 않고 별도 task, branch, PR로 분리합니다.
 
 ## 공용 백엔드와 사일로 대상
 

@@ -9,6 +9,7 @@ shared_runtimes:
   - project_id: sample-project
     runtime_set: default-dev
     runtime_name: api-server
+    runtime_kind: server
     role: backend
     workspace_path: shared-runtime/sample-project/api-server
     repo_remote: git@github.com:ORG/sample-api.git
@@ -22,7 +23,13 @@ shared_runtimes:
     env_file_policy:
       path: system/config/sample-project-api.local.env
       rule: env 파일 경로와 주입 방식만 기록하고 실제 secret 값은 기록하지 않습니다.
-    health_check_command: "curl -fsS http://localhost:3000/health"
+    requires_health_check: true
+    health_check:
+      command: "curl -fsS http://localhost:3000/health"
+      url: "http://localhost:3000/health"
+      expected: "2xx"
+      timeout_seconds: 10
+      on_fail: lifecycle 실행을 시작하지 않고 runtime 상태와 다음 조치를 보고합니다.
     owner: main-orchestrator
     last_checked: "<YYYY-MM-DD or needs-check>"
     linked_tasks:
@@ -32,6 +39,7 @@ shared_runtimes:
   - project_id: sample-project
     runtime_set: default-dev
     runtime_name: web-client
+    runtime_kind: server
     role: frontend
     workspace_path: shared-runtime/sample-project/web-client
     repo_remote: git@github.com:ORG/sample-web.git
@@ -45,8 +53,36 @@ shared_runtimes:
     env_file_policy:
       path: system/config/sample-project-web.local.env
       rule: env 파일 경로와 주입 방식만 기록하고 실제 secret 값은 기록하지 않습니다.
-    health_check_command: "curl -fsS http://localhost:5173/"
+    requires_health_check: true
+    health_check:
+      command: "curl -fsS http://localhost:5173/"
+      url: "http://localhost:5173/"
+      expected: "2xx"
+      timeout_seconds: 10
+      on_fail: lifecycle 실행을 시작하지 않고 runtime 상태와 다음 조치를 보고합니다.
     owner: main-orchestrator
     last_checked: needs-check
     linked_tasks: []
     status: needs-check
+
+  - project_id: sample-project
+    runtime_set: static-analysis
+    runtime_name: generator-source
+    runtime_kind: source-checkout
+    role: generator
+    workspace_path: shared-runtime/sample-project/generator-source
+    repo_remote: git@github.com:ORG/sample-generator.git
+    branch: main
+    commit: "<commit-sha>"
+    purpose: 실행 서버 없이 여러 task silo가 참조하는 source checkout입니다.
+    ports: []
+    env_file_policy:
+      path: none
+      rule: 서버형 runtime이 아니므로 env secret 값을 요구하지 않습니다.
+    requires_health_check: false
+    health_check:
+      skipped_reason: 실행 중인 server, URL, port가 없는 source checkout입니다.
+    owner: main-orchestrator
+    last_checked: skipped
+    linked_tasks: []
+    status: active
