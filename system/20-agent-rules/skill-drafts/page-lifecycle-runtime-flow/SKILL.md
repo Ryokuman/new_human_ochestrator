@@ -87,6 +87,11 @@ Dynamos page-lifecycle의 기본 해석은 아래와 같습니다.
 - page report, evidence index, agent-browser evidence를 지정 위치에 승격합니다.
 - report/evidence 승격 전에는 테스트 사일로를 삭제하지 않습니다.
 - 반복 원인이 보이면 Issue/Task 승격 후보로 분리합니다.
+- page가 한 번이라도 실패 report를 만든 뒤 retry 또는 보정으로 최종 pass가 되면, 최종 pass report만 남기지 않습니다.
+- 해당 page의 task 또는 run report에는 `had_failed_run: true`, `resolved_by_hypothesis: true`, `failed_run_count`, `resolved_attempt_no`, `latest_failed_report`, `latest_retry_report`, `latest_resolution_summary`를 기록합니다.
+- 실패를 해결하기 위해 세운 가설은 task 내부 `Hypothesis Chain` 또는 run report의 failure chain section에 attempt 단위로 남깁니다.
+- attempt에는 실패 run, 관찰, 원인 가설, 확인한 evidence, 실행한 조치, retry run, 결과, 다음 판단을 적습니다.
+- 가설 시도는 task당 최대 3회입니다. 3회 이후에는 자동 retry를 멈추고 사용자 판단 필요로 보고합니다.
 
 ## Execution Window
 
@@ -104,6 +109,15 @@ execution window는 사일로가 아닙니다. 여러 page 테스트 사일로�
 ```
 
 사용자가 10개 병렬 처리를 지시한 경우, 한 execution window 안의 10개 page 테스트 사일로는 병렬 실행할 수 있습니다. 다만 다음 window로 넘어가기 전에는 10개 모두의 report/evidence 승격 여부를 확인합니다.
+
+window report는 최신 결과 요약과 실패 이력 요약을 분리합니다.
+
+- 최신 결과: `pass`, `failed`, `pending`
+- 실패 이력: `had_failed_run=true`
+- 가설 해결: `resolved_by_hypothesis=true`
+- 미해결 실패: `status=failed`
+
+예를 들어 100개 page 중 3개가 중간 실패 후 가설로 해결되어 최종 100 pass가 되면, window report는 `pass 100`만 쓰지 않고 `had_failed_run 3`, `resolved_by_hypothesis 3`을 별도 표와 필터 가능한 컬럼으로 남깁니다.
 
 ## 금지
 

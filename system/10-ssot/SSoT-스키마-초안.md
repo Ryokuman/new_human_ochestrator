@@ -130,8 +130,31 @@ Task는 0계층 SSoT가 아니라 project SSoT에 저장합니다.
 - hypothesis_attempt_limit: 기본값 `3`
 - hypothesis_attempt_count
 - hypothesis_limit_status: `within-limit`, `limit-reached`, `user-judgment-needed`
+- had_failed_run: `true` 또는 `false`
+- resolved_by_hypothesis: `true` 또는 `false`
+- failed_run_count
+- resolved_attempt_no
+- latest_resolution_summary
+- dashboard_flags: 예: `had_failed_run`, `resolved_by_hypothesis`, `needs-user-judgment`
 
 `hypothesis_chain`은 task 내부 summary 역할을 하며, 사일로 실행으로 검증한 가설을 시간순으로 누적합니다. 실패한 가설은 새 task를 자동 생성하지 않고 먼저 이 체인에 남깁니다. 하나의 task에서 가설 시도는 최대 3회이며, 3회 이후에는 자동 재시도 대신 사용자 판단이 필요합니다.
+
+실행 중 실패 report가 생성된 뒤 가설을 세워 해결한 경우, 최종 상태가 `pass`가 되더라도 실패 이력을 숨기지 않습니다. task에는 `had_failed_run: true`, `resolved_by_hypothesis: true`, `failed_run_count`, `resolved_attempt_no`를 남기고, `hypothesis_chain`에 아래 항목을 시도별로 기록합니다.
+
+- attempt_no
+- failed_run_id 또는 failed_report
+- failed_level 또는 failed_stage
+- failure_observation
+- root_cause_hypothesis
+- evidence_checked
+- action_taken
+- retry_run_id 또는 retry_report
+- result: `success`, `partial`, `failed`
+- next_decision
+
+사용자가 실행 결과를 볼 때는 “최종 pass”와 “중간 실패를 가설로 해결한 pass”를 구분할 수 있어야 합니다. 따라서 project dashboard나 run report dashboard는 최소한 `had_failed_run`, `resolved_by_hypothesis`, `failed_run_count`, `resolved_attempt_no`, `latest_resolution_summary`를 필터 또는 표시 컬럼으로 제공해야 합니다.
+
+`is_failed`는 최신 상태만 의미하는 필드로 쓰지 않습니다. 최신 상태는 기존 `status`를 사용하고, 실패 이력은 `had_failed_run`으로 표현합니다. 이렇게 해야 `status: pass`이면서도 과거 실패가 있었던 대상을 필터링할 수 있습니다.
 
 ### Silo
 
@@ -167,6 +190,9 @@ Silo는 산출물 성격에 따라 테스트 사일로와 일반 사일로로 �
 - hypothesis_result: `success`, `partial`, `failed`
 - hypothesis_evidence
 - next_hypothesis_candidate
+- had_failed_run
+- resolved_by_hypothesis
+- failure_chain_report
 - known_context
 - local_findings
 - local_tasks
@@ -203,6 +229,38 @@ Run Set은 사일로가 아닙니다. Run Set은 어떤 사일로들을 어떤 �
 - status
 
 Run Set이 없으면 lifecycle, run, E2E, 다건 테스트 사일로 실행을 시작하지 않습니다. 실행 전제가 빠진 상태에서 runner나 browser smoke를 직접 돌린 결과는 정식 사일로 실행 결과가 아니라 preflight 또는 폐기 후보 산출물로 분리합니다.
+
+### Run Report Dashboard
+
+Run Report Dashboard는 실행 대상의 최신 결과와 실패 이력 해결 흐름을 사람이 필터링해서 볼 수 있는 프로젝트별 대시보드입니다.
+
+최소 컬럼:
+
+- run_id
+- target_id 또는 page_id
+- target_name 또는 page_name
+- status
+- passed_level 또는 completed_stage
+- had_failed_run
+- resolved_by_hypothesis
+- failed_run_count
+- resolved_attempt_no
+- latest_failed_report
+- latest_retry_report
+- linked_task
+- latest_resolution_summary
+
+필수 필터:
+
+- `status`
+- `passed_level` 또는 `completed_stage`
+- `had_failed_run`
+- `resolved_by_hypothesis`
+- `linked_task`
+- `target_id/page_id`
+- `target_name/page_name`
+
+execution window가 끝났을 때 `100개 중 3개 실패 후 가설 해결, 최종 100 pass` 같은 결과가 나오면, 대시보드는 최종 pass 100개와 별도로 `had_failed_run=true`, `resolved_by_hypothesis=true`인 3개를 바로 볼 수 있어야 합니다. 이 3개는 각 task의 `hypothesis_chain` 또는 run report의 failure chain section으로 연결되어야 합니다.
 
 ### Command Intent Preflight
 
