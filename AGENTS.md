@@ -120,12 +120,21 @@
 - 사용자가 task 실행, 태스크 진행, task 수행을 요청하면 별도 확인 없이 사일로 준비까지 진행합니다.
 - 기본 준비 범위는 `task-xxxx/` 생성, `goal.md` 작성, 필요한 repo clone, repo별 작업 브랜치 생성입니다.
 - 사일로 디렉토리는 현재 workspace 루트에 만듭니다. 사용자가 직접 지정하지 않는 한 `/tmp`, 홈 디렉토리, 숨김 디렉토리, 에이전트 전용 임시 경로에 만들지 않습니다.
-- `goal.md`에는 task 목표, 필요한 repo, 보호 브랜치, 금지선, 검증 기준, PR 본문 필수 항목을 적습니다.
+- `goal.md`에는 task 목표, 필요한 repo, 보호 브랜치, 금지선, 검증 기준, CodeRabbit 자동 리뷰 gate 적용 여부, PR 본문 필수 항목을 적습니다.
 - Dynamos 사일로에서 브라우저로 화면이나 동작을 확인해야 하면 `agent-browser`로만 확인합니다.
 - 개발 세션에는 상세 지시를 다시 풀어 쓰지 않고, 해당 사일로에서 `/goal`로 `goal.md 달성 부탁해` 수준의 짧은 요청만 전달합니다.
 - 사일로 내부 repo는 보호 브랜치에서 직접 작업하지 않고 task id가 들어간 새 브랜치를 만듭니다.
 - diff 있는 repo만 PR을 만들고, PR 제목과 본문은 한국어로 작성합니다.
 - 이 자동 진행 규칙은 source/data/secret/production 금지선을 넘지 않습니다. 금지선에 닿으면 진행하지 않고 승격 후보 또는 사용자 판단 필요로 보고합니다.
+
+## CodeRabbit Review Gate Policy
+
+- 일반 사일로가 source code, generated output, test, tooling 변경으로 PR을 만들 때는 PR 생성 전 `coderabbit review --agent --base <base-branch>` 실행을 기본 gate로 둡니다.
+- 변경이 문서만 있거나 CodeRabbit CLI가 설치 또는 인증되어 있지 않거나 네트워크가 불가능하면 gate를 생략할 수 있습니다. 이때 PR 본문과 완료 보고에 생략 사유를 남깁니다.
+- CodeRabbit 결과는 PR 본문에 `CodeRabbit 자동 리뷰` 항목으로 기록합니다. 0 issues이면 0건으로 적고, issue가 있으면 severity, 파일, 영향, 처리 여부를 요약합니다.
+- critical 또는 major issue가 있으면 사일로 내부에서 먼저 수정하고 CodeRabbit을 재실행합니다. 재실행 후에도 남는 항목은 사용자 판단 필요 또는 의도된 남은 위험으로 분리합니다.
+- CodeRabbit CLI gate는 PR 전 자체 검토입니다. GitHub 앱이 PR 생성 후 자동으로 다는 리뷰는 프로젝트별 repo 설정에 의존하므로 공통 규칙만으로 보장하지 않습니다.
+- CodeRabbit이 실패했을 때 수동 리뷰를 CodeRabbit 결과처럼 보고하지 않습니다. 실패 원인과 재시도 방법을 남기고, 메인 오케스트레이터 리뷰와 일반 검증은 별도로 진행합니다.
 
 ## Command Intent Preflight Policy
 
@@ -189,7 +198,7 @@
 ## PR Description Quality Policy
 
 - PR 본문은 결과 요약만 쓰지 않고, 처음 보는 리뷰어가 변경 이유와 안전성을 판단할 수 있게 작성합니다.
-- 기본 흐름은 `무엇을 했는가 -> 변경 상세 -> 그래서 무엇이 되었는가 -> 검증 -> SSoT 승격 후보 -> 승격하지 않을 항목 -> 남은 위험`입니다.
+- 기본 흐름은 `무엇을 했는가 -> 변경 상세 -> 그래서 무엇이 되었는가 -> 검증 -> CodeRabbit 자동 리뷰 -> SSoT 승격 후보 -> 승격하지 않을 항목 -> 남은 위험`입니다.
 - `변경 상세`에는 문제 정의, 기존 동작, 문제가 된 이유, 변경한 파일과 함수/정책 역할을 적습니다.
 - `suffix 없는 버튼`, `시스템 버튼으로 버림`, `runner 보정`처럼 내부자 표현은 실제 예시와 함께 정의합니다.
 - PR 본문에는 criteria별 검증 결과를 적습니다. 각 criteria에 대해 검증 방법, 결과, 증거를 분리합니다.

@@ -29,6 +29,8 @@ PR은 사일로가 발견한 로컬 issue/task 중 무엇을 SSoT의 메인 이�
 
 ## 검증
 
+## CodeRabbit 자동 리뷰
+
 ## 사일로에서 새로 발견한 항목
 
 ## SSoT 승격 후보
@@ -93,6 +95,13 @@ PR 본문을 작성하거나 수정할 때는 PR 내부 용어를 기준으로 `
 - 각 acceptance criteria를 어떤 검증 방법으로 덮었는지 적는다
 - 실행하지 않은 검증이 있으면 이유를 적는다
 
+CodeRabbit 자동 리뷰:
+- 일반 사일로가 source code, generated output, test, tooling 변경으로 PR을 만들 때는 PR 생성 전 `coderabbit review --agent --base <base-branch>` 실행 결과를 적는다
+- 0 issues이면 0건으로 적고, issue가 있으면 severity, 파일, 영향, 처리 여부를 요약한다
+- CodeRabbit CLI 설치, 인증, 네트워크 문제 또는 문서 전용 변경으로 생략했다면 생략 사유를 적는다
+- critical 또는 major issue가 남아 있으면 사용자 판단 필요 또는 남은 위험으로 분리한다
+- GitHub 앱이 PR 생성 후 남기는 리뷰는 프로젝트별 repo 설정에 의존하므로 PR 전 gate 결과와 구분한다
+
 남은 위험:
 - 아직 해결하지 않은 항목과 이유를 page/item 단위로 적는다
 - SSoT 승격 후보와 승격하지 않을 항목을 분리한다
@@ -133,6 +142,7 @@ PR 본문을 작성하거나 수정할 때는 PR 내부 용어를 기준으로 `
 - `main`, `dev`, `develop`, `master` 같은 보호 브랜치에서 직접 작업하지 않았음
 - 새 작업 브랜치에서 수정했음
 - 보호 브랜치에 직접 commit 또는 push하지 않았음
+- PR 전 CodeRabbit 자동 리뷰를 실행했거나, 생략 또는 실패 사유를 PR 본문에 남겼음
 - 결과를 PR로 제출했음
 
 이 조건을 만족하지 않으면 메인 오케스트레이터는 머지 리뷰보다 브랜치 안전 문제를 먼저 처리합니다.
@@ -215,7 +225,9 @@ PR이 머지될 때 메인 오케스트레이터는 아래를 보고합니다.
 PR 리뷰 루프는 여러 번 돌 수 있습니다.
 
 ```text
-사일로 PR 생성
+사일로 내부 검증
+-> PR 전 CodeRabbit 자동 리뷰
+-> 사일로 PR 생성
 -> 메인 리뷰
 -> 재작업 요청
 -> 사일로 수정

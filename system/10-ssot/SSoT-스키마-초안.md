@@ -265,11 +265,14 @@ Shared Runtime은 0계층 SSoT가 아니라 프로젝트별 registry/status에�
 - linked_task
 - summary
 - verification
+- coderabbit_review
 - review_rounds
 - promoted_to_ssot
 - not_promoted
 - user_feedback
 - merge_decision
+
+`coderabbit_review`에는 PR 전 CodeRabbit CLI 리뷰의 실행 여부, base branch, issue 수, 남은 critical/major 여부, 실패 또는 생략 사유를 기록합니다. GitHub 앱이 PR 생성 후 남긴 리뷰는 프로젝트별 repo 설정에 따른 외부 리뷰로 구분하고, 공통 SSoT에서는 보장된 gate로 간주하지 않습니다.
 
 ## 승격 상태
 
