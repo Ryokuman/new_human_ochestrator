@@ -126,6 +126,12 @@ Task는 0계층 SSoT가 아니라 project SSoT에 저장합니다.
 - approval_required
 - pr
 - promotion_status
+- hypothesis_chain
+- hypothesis_attempt_limit: 기본값 `3`
+- hypothesis_attempt_count
+- hypothesis_limit_status: `within-limit`, `limit-reached`, `user-judgment-needed`
+
+`hypothesis_chain`은 task 내부 summary 역할을 하며, 사일로 실행으로 검증한 가설을 시간순으로 누적합니다. 실패한 가설은 새 task를 자동 생성하지 않고 먼저 이 체인에 남깁니다. 하나의 task에서 가설 시도는 최대 3회이며, 3회 이후에는 자동 재시도 대신 사용자 판단이 필요합니다.
 
 ### Silo
 
@@ -155,6 +161,10 @@ Silo는 산출물 성격에 따라 테스트 사일로와 일반 사일로로 �
 - batch_report
 - cleanup_gate
 - cleanup_status
+- hypothesis_try
+- hypothesis_result: `success`, `partial`, `failed`
+- hypothesis_evidence
+- next_hypothesis_candidate
 - known_context
 - local_findings
 - local_tasks
