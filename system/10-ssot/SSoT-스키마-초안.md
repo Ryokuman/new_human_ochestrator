@@ -163,6 +163,7 @@ Shared Runtime은 0계층 SSoT가 아니라 프로젝트별 registry/status에�
 - project_id
 - runtime_set
 - runtime_name
+- runtime_kind
 - role
 - workspace_path
 - repo_remote
@@ -171,7 +172,8 @@ Shared Runtime은 0계층 SSoT가 아니라 프로젝트별 registry/status에�
 - purpose
 - ports
 - env_file_policy
-- health_check_command
+- requires_health_check
+- health_check_command 또는 health_check.url
 - owner
 - last_checked
 - linked_tasks
