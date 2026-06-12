@@ -87,6 +87,7 @@ updated: ${date}
 ## 폴더
 
 - \`00-dashboard/\`: 현재 상태, 활성 Issue/Task, 다음 행동
+- \`10-dictionary/\`: 프로젝트 용어, 고유명사, 내부 약어, 공통 승격 후보
 - \`20-issues/\`: 문제, 원인 가설, 영향, 연결 Task
 - \`30-tasks/\`: 실제 수행 가능한 작업 단위
 - \`50-decisions/\`: 프로젝트 결정과 ADR
@@ -146,8 +147,48 @@ updated: ${date}
 Dataview가 꺼져 있으면 아래 정적 링크를 먼저 본다.
 
 - 작업 멀티필터: [[work-filter|작업 멀티필터]]
+- 프로젝트 dictionary: [[../10-dictionary/project-dictionary|Project Dictionary]]
 - 태스크 목록: [[../30-tasks/TASK-NOTION-FORMAT|Task Format]]
 - L 기준: [[../90-coverage/scoring-criteria|Scoring Criteria]]
+
+## 프로젝트 전반 설명
+
+### 프로젝트 목적
+
+-
+
+### 주요 사용자/운영자
+
+| 구분 | 대상 | 역할 |
+|---|---|---|
+| 사용자 |  |  |
+| 운영자 |  |  |
+
+### repo/SSoT 위치
+
+| 항목 | 위치 | 비고 |
+|---|---|---|
+| 제품 repo |  |  |
+| Project SSoT | 현재 \`02-project-internal/\` | 필요하면 외부 SSoT 위치를 함께 적는다 |
+| Silo local |  |  |
+
+### 주요 workflow
+
+| workflow | 시작 조건 | 주요 산출물 | 검증 방법 |
+|---|---|---|---|
+|  |  |  |  |
+
+### 검증/배포/운영 경계
+
+- 검증:
+- 배포:
+- 운영:
+
+### 금지선/주의사항
+
+- secret, token, password, credential 값을 기록하지 않는다.
+- production 데이터 쓰기나 보호 브랜치 직접 수정이 필요하면 사용자 승인을 먼저 받는다.
+- 프로젝트 전용 자료는 project SSoT에 두고, root main에는 반복 가능한 공통 규칙만 승격한다.
 
 ## 다음 행동
 
@@ -203,6 +244,30 @@ FROM "70-handoff"
 SORT updated DESC
 LIMIT 5
 \`\`\`
+`,
+    "10-dictionary/project-dictionary.md": `---
+type: dictionary
+id: ${projectId.toUpperCase()}-PROJECT-DICTIONARY
+status: active
+created: ${date}
+updated: ${date}
+---
+
+# Project Dictionary
+
+프로젝트에서 쓰는 용어, 고유명사, 내부 약어, runner 용어, coverage 용어를 기록합니다.
+
+PR 본문 \`명사 설명\`에 반복해서 등장한 용어는 이 문서의 승격 후보로 남깁니다. 여러 프로젝트에서 반복되거나 에이전트 공통 행동 규칙에 영향을 주는 용어만 root main 공통 규칙 승격 후보로 분리합니다.
+
+| 용어/고유명사/내부 약어 | 뜻 | 사용 맥락 | 예시 | 출처 또는 확인 상태 | 프로젝트 전용인지 공통 승격 후보인지 |
+|---|---|---|---|---|---|
+|  |  |  |  | 사용자 확인 필요 | 프로젝트 전용 |
+
+## 작성 기준
+
+- 추정한 뜻은 확정처럼 쓰지 않고 \`사용자 확인 필요\` 또는 \`source 확인 필요\`로 표시한다.
+- \`제외\`, \`보정\`, \`surface\`, \`inventory\`, \`extra\`, \`runner\`처럼 내부 판단을 함축하는 표현은 실제 예시와 함께 적는다.
+- 공통 승격 후보는 바로 root main에 쓰지 않고, 반복 근거와 사용자 승인을 분리한다.
 `,
     "00-dashboard/snapshot-status.md": `---
 type: dashboard

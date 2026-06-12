@@ -29,6 +29,9 @@ projects/<project-id>/
 │   │   ├── core-plugins.json
 │   │   └── plugins/dataview/
 │   ├── 00-dashboard/
+│   │   └── project-overview.md
+│   ├── 10-dictionary/
+│   │   └── project-dictionary.md
 │   ├── 20-issues/
 │   ├── 30-tasks/
 │   ├── 50-decisions/
@@ -65,6 +68,32 @@ node system/scripts/create-project-ssot.mjs \
 6. `system/config/silo-projects.yaml`이 없으면 `system/config/silo-projects.example.yaml`을 기준으로 만듭니다. 있으면 기존 구조를 보존하고 `projects:` 항목에 새 프로젝트만 추가합니다.
 7. 변경 후 `git diff --stat`, 생성 파일 목록, config 등록 항목, Dataview 설치 여부를 보고합니다.
 
+## 필수 프로젝트 설명 산출물
+
+모든 project SSoT에는 프로젝트 전반 설명과 dictionary가 있어야 합니다.
+
+`00-dashboard/project-overview.md`에는 최소 아래 항목을 둡니다.
+
+- 프로젝트 목적
+- 주요 사용자/운영자
+- repo/SSoT 위치
+- 주요 workflow
+- 검증/배포/운영 경계
+- 금지선/주의사항
+
+`10-dictionary/project-dictionary.md`에는 프로젝트에서 쓰는 용어, 고유명사, 내부 약어, runner 용어, coverage 용어를 기록합니다. 최소 필드는 아래와 같습니다.
+
+| 필드 | 설명 |
+|---|---|
+| 용어/고유명사/내부 약어 | 프로젝트에서 실제 쓰는 이름 |
+| 뜻 | 처음 보는 사람이 이해할 수 있는 정의 |
+| 사용 맥락 | 어느 workflow, repo, runner, 화면, 문서에서 쓰는지 |
+| 예시 | 실제 표현이나 page/item 예시 |
+| 출처 또는 확인 상태 | source 문서, PR, 사용자 확인, 추정 여부 |
+| 프로젝트 전용인지 공통 승격 후보인지 | project-local 용어인지, root main 공통 규칙 후보인지 |
+
+PR 본문 `명사 설명`에 반복해서 등장한 용어는 project dictionary 승격 후보로 남깁니다. 여러 프로젝트에서 반복되거나 에이전트 공통 행동 규칙에 영향을 주는 용어만 root main 공통 dictionary 또는 관련 system 문서 승격 후보로 분리합니다.
+
 ## config 등록 규칙
 
 `system/config/silo-projects.yaml` 프로젝트 항목은 최소 아래 필드를 포함합니다.
@@ -99,6 +128,7 @@ node system/scripts/create-project-ssot.mjs --project-id sample --target /tmp/sa
 - `projects/<project-id>/README.md`
 - `projects/<project-id>/00-secrets/README.md`
 - `projects/<project-id>/02-project-internal/00-dashboard/project-overview.md`
+- `projects/<project-id>/02-project-internal/10-dictionary/project-dictionary.md`
 - `projects/<project-id>/02-project-internal/.obsidian/community-plugins.json`
 - `projects/<project-id>/02-project-internal/.obsidian/plugins/dataview/manifest.json`
 - `projects/<project-id>/03-silo-local/pr-description-template.md`
