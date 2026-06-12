@@ -145,8 +145,10 @@ Silo는 `goal.md`, scope, 실행 상태, local finding, 임시 검증 결과, PR
 
 Silo는 산출물 성격에 따라 테스트 사일로와 일반 사일로로 구분합니다.
 
-- 테스트 사일로: lifecycle/e2e/runtime/탐색 검증처럼 보고서가 주 산출물인 임시 실행 환경입니다. 종료 시 개별 보고서와 evidence를 SSoT 또는 지정 위치에 승격한 뒤 삭제할 수 있으며, batch 종료 시 전체 사일로 보고서와 Issue/Task 승격 후보를 만듭니다.
+- 테스트 사일로: lifecycle/e2e/runtime/탐색 검증처럼 보고서가 주 산출물인 임시 실행 환경입니다. 종료 시 개별 보고서와 evidence를 SSoT 또는 지정 위치에 승격한 뒤 삭제할 수 있습니다. 여러 테스트 사일로를 묶어 실행하는 execution window가 끝나면 개별 보고서를 묶어 전체 사일로 보고서와 Issue/Task 승격 후보를 만듭니다.
 - 일반 사일로: 구현/수정/문서/repair/conflict/PR 작업처럼 변경/PR/patch/evidence가 주 산출물인 작업 환경입니다. 자동 삭제를 기본값으로 삼지 않고 PR/patch 대응 관계, merge 상태, 미커밋 변경, 원격 상태, worktree 상태를 확인한 뒤 정리합니다.
+
+여러 page나 task를 한 번에 다루는 묶음은 사일로가 아니라 실행 순서를 관리하는 scheduler 또는 execution window입니다. `1 page = 1 test silo`가 정해진 실행에서는 10개씩 순차 실행하더라도 실행 단위는 page별 test silo이며, 10개 묶음 자체를 하나의 사일로로 취급하지 않습니다.
 
 필드:
 
@@ -158,7 +160,7 @@ Silo는 산출물 성격에 따라 테스트 사일로와 일반 사일로로 �
 - status
 - report_location
 - evidence_location
-- batch_report
+- execution_window_report
 - cleanup_gate
 - cleanup_status
 - hypothesis_try
@@ -174,6 +176,54 @@ Silo는 산출물 성격에 따라 테스트 사일로와 일반 사일로로 �
 - promoted_items
 - discarded_items
 - feedback_updates
+
+### Run Set
+
+Run Set은 특정 실행에서 다룰 대상 목록, 제외 기준, 순서, 실행 창 크기, L 기준을 묶은 실행 입력입니다.
+
+Run Set은 사일로가 아닙니다. Run Set은 어떤 사일로들을 어떤 순서로 만들고 실행할지 정하는 입력이며, 정식 사일로 실행 전에 확정되어야 합니다.
+
+필드:
+
+- id
+- project_id
+- target_type: `page`, `task`, `issue`, `workflow` 중 하나
+- target_level 또는 target_goal
+- target_items
+- excluded_items
+- exclusion_reason
+- order_policy
+- execution_window_size
+- silo_granularity: 예: `1-page-1-silo`
+- required_runtime_set
+- evidence_contract
+- stop_gate
+- created_by
+- approved_by 또는 user_confirmed
+- status
+
+Run Set이 없으면 lifecycle, run, E2E, 다건 테스트 사일로 실행을 시작하지 않습니다. 실행 전제가 빠진 상태에서 runner나 browser smoke를 직접 돌린 결과는 정식 사일로 실행 결과가 아니라 preflight 또는 폐기 후보 산출물로 분리합니다.
+
+### Command Intent Preflight
+
+Command Intent Preflight는 사용자 명령이 시스템 안에서 실행 가능한 형태로 변환되었는지 확인하는 gate입니다.
+
+사용자가 실행 문제를 지적할 때 핵심 질문은 "왜 사용자 명령이 시스템 안에서 실행 가능한 형태로 전달되지 않았는가"입니다. 이는 단순한 잘못 인정이 아니라 진짜 원인을 찾아 제거하기 위한 분석 단위입니다.
+
+필수 확인 항목:
+
+- 요청 계층
+- 실행 대상
+- Run Set 존재 여부
+- Runtime Set 존재 여부와 health gate
+- 사일로 유형
+- 사일로 root와 `goal.md` 생성 기준
+- L별 evidence 기준
+- 제외 기준
+- destructive boundary
+- 실행 후 report/evidence 승격 위치
+
+하나라도 누락되면 정식 실행을 시작하지 않고, `누락된 정의`, `실행하면 위험한 이유`, `사용자에게 물어볼 항목`을 보고합니다.
 
 ### Shared Runtime
 
@@ -240,7 +290,7 @@ Shared Runtime은 0계층 SSoT가 아니라 프로젝트별 registry/status에�
 | 상태 | 적용 유형 | 의미 |
 |---|---|---|
 | `report-promoted` | 테스트 사일로 | 개별 보고서와 evidence가 SSoT 또는 지정 위치에 승격됨 |
-| `batch-reported` | 테스트 사일로 | 여러 개별 보고서를 묶은 전체 사일로 보고서와 Issue/Task 승격 후보가 작성됨 |
+| `execution-window-reported` | 테스트 사일로 | 여러 개별 보고서를 묶은 전체 사일로 보고서와 Issue/Task 승격 후보가 작성됨 |
 | `deleted` | 테스트 사일로 | 보고서/evidence 승격 gate와 dirty status 확인 뒤 사일로 디렉터리 삭제 완료 |
 | `preserved` | 일반 사일로 | PR/patch, 검증, merge/cleanup 상태 확인 결과 보존 필요 |
 | `cleanup-candidate` | 일반 사일로 | PR/patch 대응 관계와 clean 상태가 확인되어 삭제 후보로 보고됨 |

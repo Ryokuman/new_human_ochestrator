@@ -22,6 +22,7 @@
 | `add-shared-runtime` | 여러 task silo가 함께 참조하는 프로젝트별 shared runtime set을 등록하거나 준비할 때 | project별 runtime 구성을 확인하고, registry/status, workspace path, env policy, health check, task silo 참조 방법을 기록합니다. |
 | `shared-runtime-health-check` | page-lifecycle, run, E2E 실행 전 `runtime_set` 유무나 서버형 shared runtime 상태를 확인해야 할 때 | `runtime_set`이 없거나 health가 실패하면 실행을 중단하고, 통과 또는 생략 사유를 `goal.md`와 보고서에 남깁니다. |
 | `delete-shared-runtime` | shared runtime registry/status 정리, archived 표시, 명시 승인된 runtime checkout 제거가 필요할 때 | 참조 중인 task/agent/server와 dirty state를 먼저 확인하고, 안전할 때만 registry 정리 또는 디렉터리 제거를 수행합니다. |
+| `command-intent-preflight` | lifecycle, run, E2E, 다건 테스트 사일로 실행 전에 실행 전제가 완성됐는지 확인해야 할 때 | Run Set, `runtime_set`, 사일로 단위, 사일로 root, evidence 기준, report 위치가 없으면 정식 실행을 시작하지 않고 누락 정의를 보고합니다. |
 | `add-dict` | 용어 추가, dict 정리, PR 본문 용어 점검, dictionary 변경이 필요할 때 | 후보 단어를 기존 dictionary와 대조하고, 기존 용어로 대체 가능한지 확인한 뒤 필요한 단어만 project dictionary와 PR 본문 `새로 추가된 단어`에 반영합니다. |
 | `user-personality-adaptive-response` | 사용자가 선택지, 보고 방식, 승인 경계, 톤이 맞지 않는다고 지적할 때 | 피드백을 관찰/해석/후보 규칙으로 분리하고, 승인 전에는 장기 규칙으로 확정하지 않습니다. |
 
