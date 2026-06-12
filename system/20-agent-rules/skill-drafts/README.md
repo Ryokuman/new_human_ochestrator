@@ -19,6 +19,7 @@
 | `main-branch-update-flow` | main SSoT, 공통 규칙, 프롬프트, `AGENTS.md`, skill 초안을 바꿀 때 | main 업데이트 스킬을 활용한다고 보고한 뒤, 별도 main 작업 브랜치에서 수정하고 PR로 반영합니다. |
 | `root-layer-manager` | 정보가 0~3계층 중 어디에 속하는지 판단해야 할 때 | 프로젝트 내부 자료를 root main에 올릴지 말지 판단하기 전에 계층을 판정합니다. |
 | `projects-setup` | 새 프로젝트를 `projects/` 구조에 등록하거나 project SSoT와 사일로 config를 함께 셋업해야 할 때 | `projects/<project-id>/` 기본 구조, Dataview 포함 project SSoT, `system/config/silo-projects.yaml` 등록을 함께 처리합니다. |
+| `add-dict` | 용어 추가, dict 정리, PR 본문 용어 점검, dictionary 변경이 필요할 때 | 후보 단어를 기존 dictionary와 대조하고, 기존 용어로 대체 가능한지 확인한 뒤 필요한 단어만 project dictionary와 PR 본문 `새로 추가된 단어`에 반영합니다. |
 | `user-personality-adaptive-response` | 사용자가 선택지, 보고 방식, 승인 경계, 톤이 맞지 않는다고 지적할 때 | 피드백을 관찰/해석/후보 규칙으로 분리하고, 승인 전에는 장기 규칙으로 확정하지 않습니다. |
 
 ## SSoT manager 역할
