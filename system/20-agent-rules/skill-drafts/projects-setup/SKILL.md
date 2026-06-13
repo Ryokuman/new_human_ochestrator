@@ -90,9 +90,9 @@ node system/scripts/create-project-ssot.mjs \
 | 사용 맥락 | 어느 workflow, repo, runner, 화면, 문서에서 쓰는지 |
 | 예시 | 실제 표현이나 page/item 예시 |
 | 출처 또는 확인 상태 | source 문서, PR, 사용자 확인, 추정 여부 |
-| 프로젝트 전용인지 공통 승격 후보인지 | project-local 용어인지, root main 공통 규칙 후보인지 |
+| 프로젝트 전용인지 공통 승격 후보인지 | project-local 용어인지, root `main-v2` 공통 규칙 후보인지 |
 
-PR 본문 `명사 설명`에 반복해서 등장한 용어는 project dictionary 승격 후보로 남깁니다. 여러 프로젝트에서 반복되거나 에이전트 공통 행동 규칙에 영향을 주는 용어만 root main 공통 dictionary 또는 관련 system 문서 승격 후보로 분리합니다.
+PR 본문 `명사 설명`에 반복해서 등장한 용어는 project dictionary 승격 후보로 남깁니다. 여러 프로젝트에서 반복되거나 에이전트 공통 행동 규칙에 영향을 주는 용어만 root `main-v2` 공통 dictionary 또는 관련 system 문서 승격 후보로 분리합니다.
 
 Project dictionary 파일을 새로 만들거나 기존 dictionary에 용어를 추가/수정/삭제하는 PR은 PR 본문에 `새로 추가된 단어` 섹션을 둡니다.
 

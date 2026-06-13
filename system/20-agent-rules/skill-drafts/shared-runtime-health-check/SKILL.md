@@ -85,5 +85,5 @@ Shared runtime health failed:
 - `runtime_set`이 없는데 lifecycle, run, E2E를 먼저 시작하지 않습니다.
 - health 실패를 무시하고 page-lifecycle을 진행하지 않습니다.
 - secret 파일 내용을 확인하거나 출력하지 않습니다.
-- 프로젝트별 실제 issue/task/QA 원문을 root main `system/`에 복사하지 않습니다.
+- 프로젝트별 실제 issue/task/QA 원문을 root `main-v2` `system/`에 복사하지 않습니다.
 - shared runtime 자체 수정이 필요할 때 현재 task PR에 섞지 않습니다. 별도 task, branch, PR 후보로 분리합니다.

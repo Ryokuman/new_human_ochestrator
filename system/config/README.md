@@ -43,7 +43,7 @@ shared runtime은 workspace root 아래 공용 실행 repo 묶음이며, task si
 shared-runtime/<project-id>/<runtime-name>/
 ```
 
-실제 registry/status는 프로젝트별 SSoT, project registry/config, 또는 gitignore된 `system/config/shared-runtime-registry.yaml`에 둡니다. root main에는 `shared-runtime-registry.example.yaml` 같은 템플릿만 둡니다.
+실제 registry/status는 프로젝트별 SSoT, project registry/config, 또는 gitignore된 `system/config/shared-runtime-registry.yaml`에 둡니다. root `main-v2`에는 `shared-runtime-registry.example.yaml` 같은 템플릿만 둡니다.
 
 registry/status에는 project id, runtime set, runtime name, runtime kind, repo/remote, branch/commit, purpose, port, env file policy, health check command 또는 URL, owner, last checked, linked tasks를 기록할 수 있습니다. secret 값은 기록하지 않고 env 파일 path나 secret provider 정책만 기록합니다.
 

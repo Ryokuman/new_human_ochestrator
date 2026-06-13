@@ -34,7 +34,7 @@ description: 프로젝트별 shared runtime set, 공용 backend/frontend/worker/
 shared-runtime/<project-id>/<runtime-name>/
 ```
 
-다른 로컬 정책이 있으면 project SSoT 또는 gitignore된 local config에 명시합니다. root main에는 특정 프로젝트의 실제 경로, 내부 repo URL, secret 값을 복사하지 않습니다.
+다른 로컬 정책이 있으면 project SSoT 또는 gitignore된 local config에 명시합니다. root `main-v2`에는 특정 프로젝트의 실제 경로, 내부 repo URL, secret 값을 복사하지 않습니다.
 
 ## registry 필드
 
@@ -65,7 +65,7 @@ shared runtime registry/status에는 최소 아래 후보 필드를 둡니다.
 
 1. 계층을 판정합니다. 공통 규칙 변경이면 `main-branch-update-flow`, 특정 프로젝트 runtime 등록이면 project registry/config 또는 project SSoT에서 처리합니다.
 2. `project_id`, runtime set 이름, 필요한 repo 역할, clone/worktree 방식, 기준 branch, 보호 브랜치, owner를 확인합니다.
-3. 프로젝트별 실제 repo URL과 runtime 조합은 project SSoT 또는 gitignore된 local config에서 읽습니다. root main에 실제 프로젝트 자료를 복사하지 않습니다.
+3. 프로젝트별 실제 repo URL과 runtime 조합은 project SSoT 또는 gitignore된 local config에서 읽습니다. root `main-v2`에 실제 프로젝트 자료를 복사하지 않습니다.
 4. registry/status 항목을 작성합니다. secret, token, password, credential 값은 기록하지 않고 env 파일 path 또는 secret provider 정책만 기록합니다.
 5. workspace root 아래 `shared-runtime/<project-id>/<runtime-name>/` 또는 프로젝트가 정한 local path를 준비합니다.
 6. clone 또는 worktree 준비 전 기존 checkout, dirty state, 실행 중인 server/process, port 충돌을 확인합니다.

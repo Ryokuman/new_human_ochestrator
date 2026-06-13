@@ -59,15 +59,15 @@ description: 0계층 Root/Global 에이전트 운영 규칙을 적용해 요청�
 - project registry
 - secret/config reference
 
-root 저장소 main에는 공통 운영 규칙만 둡니다.
+root 저장소 `main-v2`에는 공통 운영 규칙만 둡니다.
 
-`project/*` 브랜치는 별도 fork를 만들지 않을 때 쓰는 프로젝트별 정보 보관 브랜치입니다. 이 브랜치는 root main으로 머지할 기능 브랜치가 아니며, 프로젝트별 코드 분석, repo 연결 상태, SSoT 색인, 운영 메모를 보관합니다.
+`project/*` 브랜치는 별도 fork를 만들지 않을 때 쓰는 프로젝트별 정보 보관 브랜치입니다. 이 브랜치는 root `main-v2`로 머지할 기능 브랜치가 아니며, 프로젝트별 코드 분석, repo 연결 상태, SSoT 색인, 운영 메모를 보관합니다.
 
-`project/*` 브랜치가 최신 `main` 위로 rebase되어 있지 않아 rebase할 때는, rebase 전후로 최신 `main`에서 변경된 공통 규칙, AGENTS.md, system 문서, 프롬프트, skill 초안을 확인합니다. rebase 후에는 현재 project SSoT, task, issue, 실행 방식이 새 main 규칙과 맞지 않는 부분을 `규칙 불일치`와 `조치 후보`로 분리해 보고합니다.
+`project/*` 브랜치가 최신 `main-v2` 위로 rebase되어 있지 않아 rebase할 때는, rebase 전후로 최신 `main-v2`에서 변경된 공통 규칙, AGENTS.md, system 문서, 프롬프트, skill 초안을 확인합니다. rebase 후에는 현재 project SSoT, task, issue, 실행 방식이 새 `main-v2` 규칙과 맞지 않는 부분을 `규칙 불일치`와 `조치 후보`로 분리해 보고합니다.
 
-프로젝트 자료를 root 저장소 main에 추가해야 한다면 `project/*` 브랜치 내용을 그대로 합치지 않습니다. 공통 운영 규칙으로 승격할 항목만 별도 main 업데이트 후보로 분리하고, PR description에 이유를 적습니다.
+프로젝트 자료를 root 저장소 `main-v2`에 추가해야 한다면 `project/*` 브랜치 내용을 그대로 합치지 않습니다. 공통 운영 규칙으로 승격할 항목만 별도 `main-v2` 업데이트 후보로 분리하고, PR description에 이유를 적습니다.
 
-project SSoT의 dashboard, task format, issue format, L 기준, Obsidian Dataview 설정이 필요하면 실제 project 산출물을 root main에 커밋하지 않습니다. 대신 `system/scripts/`의 생성 스크립트나 `system/20-agent-rules/skill-drafts/`의 skill draft를 추가하고, 생성 결과는 project SSoT에 둡니다.
+project SSoT의 dashboard, task format, issue format, L 기준, Obsidian Dataview 설정이 필요하면 실제 project 산출물을 root `main-v2`에 커밋하지 않습니다. 대신 `system/scripts/`의 생성 스크립트나 `system/20-agent-rules/skill-drafts/`의 skill draft를 추가하고, 생성 결과는 project SSoT에 둡니다.
 
 ## 승격 판단
 

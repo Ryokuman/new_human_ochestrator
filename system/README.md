@@ -21,7 +21,7 @@
 
 ## main-v2 운영 방향
 
-`main`은 기존 운영 방식 기준 브랜치입니다. 신중한 SSoT, 검증 가능한 계약, CodeRabbit 리뷰 gate 중심으로 유지합니다.
+`main`은 레거시 보존 브랜치입니다. 이 프로젝트에서는 작업, PR, merge, rebase, worktree 기준으로 사용하지 않습니다.
 
 `main-v2`는 탐색형 제품 엔지니어 운영 방식 기준 브랜치입니다.
 
@@ -54,7 +54,7 @@ Build -> Learn -> Spec
 | `10-user-analysis/` | 사용자 입력 템플릿 |
 | `20-agent-rules/` | 실제 에이전트 규칙으로 승격할 초안 |
 | `20-agent-rules/references/` | 에이전트 md 보강에 사용할 프로젝트/PR/보고/퍼스널리티 reference 구조 |
-| `20-agent-rules/skill-drafts/` | main 업데이트, SSoT 계층 판단, project SSoT 생성 같은 공통 skill 초안과 사용법 README |
+| `20-agent-rules/skill-drafts/` | main-v2 업데이트, SSoT 계층 판단, project SSoT 생성 같은 공통 skill 초안과 사용법 README |
 | `20-main-orchestrator/` | 메인 오케스트레이터 역할과 루프 |
 | `config/` | 사일로 런타임 env와 프로젝트 설정 템플릿 |
 | `profile/` | 개인 프로필 템플릿과 gitignore된 실제 프로필 |
@@ -127,8 +127,8 @@ git에서 제외할 것은 프로젝트 의존 자료와 시크릿성 자료입�
 ## 현재 주의점
 
 - `system/`에는 정의와 템플릿만 둡니다.
-- 프로젝트 조사 결과는 기본적으로 fork/submodule/external clone/project SSoT에 둡니다. 로컬 참고 자료는 `../projects/`에 둘 수 있지만 main 커밋 대상은 아닙니다.
-- project SSoT의 dashboard, task format, issue format, L 기준, Obsidian plugin 설정이 필요하면 실제 산출물을 main에 커밋하지 않고 `system/scripts/create-project-ssot.mjs` 같은 공통 생성 도구로 만듭니다.
+- 프로젝트 조사 결과는 기본적으로 fork/submodule/external clone/project SSoT에 둡니다. 로컬 참고 자료는 `../projects/`에 둘 수 있지만 `main-v2` 커밋 대상은 아닙니다.
+- project SSoT의 dashboard, task format, issue format, L 기준, Obsidian plugin 설정이 필요하면 실제 산출물을 `main-v2`에 커밋하지 않고 `system/scripts/create-project-ssot.mjs` 같은 공통 생성 도구로 만듭니다.
 - 원본 프롬프트와 과거 초안은 `../sources/`에 둡니다.
 - 이 프롬프트 모음집은 여러 프로젝트에서 쓰는 것이 목표이므로, 프로젝트 의존 자료는 gitignore 대상으로 둡니다.
 - 현재 목표 기준 다음 행동은 코드 수정이 아니라, 분석 초안 검토와 규칙 승격입니다.

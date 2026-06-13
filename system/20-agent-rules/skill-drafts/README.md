@@ -8,8 +8,8 @@
 
 - 사용자가 특정 skill을 말하거나, 요청이 skill 설명과 맞으면 해당 `SKILL.md`를 먼저 읽습니다.
 - skill에 절차가 이미 정의되어 있으면 보고나 선택지에서 절차 전체를 반복하지 않고 skill 이름으로 압축합니다.
-- 공통 규칙, 프롬프트, `AGENTS.md`, skill 초안 변경은 `main-branch-update-flow`를 사용합니다.
-- `main-v2`에서는 기존 `main` 업데이트가 아니라 branch-local 탐색형 운영 변경으로 처리할 수 있습니다. 이때 `main`에는 자동 반영하지 않고, `Build -> Learn -> Spec` 원칙을 먼저 적용합니다.
+- 공통 규칙, 프롬프트, `AGENTS.md`, skill 초안 변경은 `main-v2` 기준으로만 처리합니다.
+- 이 프로젝트에서는 기존 `main` 업데이트 절차를 실행하지 않습니다. `main-v2`에서 branch-local 탐색형 운영 변경으로 처리하고, `main`에는 반영하지 않습니다.
 - skill 초안을 추가하거나 사용법을 바꾸면 이 README의 주요 skill 표와 관련 상위 README 또는 인덱스를 함께 갱신합니다.
 - README 또는 인덱스 갱신이 빠졌다면 skill 초안 변경은 완료로 보고하지 않습니다.
 - 프로젝트별 실제 issue, task, QA, coverage 결과는 이 디렉토리에 복사하지 않습니다.
@@ -19,7 +19,7 @@
 
 아래 목록은 이 디렉토리의 `*/SKILL.md` 기준 사용 가능한 skill 초안 전체입니다.
 
-- [`main-branch-update-flow`](main-branch-update-flow/SKILL.md): main SSoT, 공통 규칙, 프롬프트, `AGENTS.md`, skill 초안을 바꿀 때 사용합니다.
+- [`main-branch-update-flow`](main-branch-update-flow/SKILL.md): 레거시 main 업데이트 절차 문서입니다. 이 프로젝트에서는 실행하지 않고 `main-v2` 기준 업데이트만 사용합니다.
 - [`root-layer-manager`](root-layer-manager/SKILL.md): 정보가 0~3계층 중 어디에 속하는지 판단해야 할 때 사용합니다.
 - [`projects-setup`](projects-setup/SKILL.md): 새 프로젝트를 `projects/` 구조에 등록하거나 project SSoT와 사일로 config를 함께 셋업해야 할 때 사용합니다.
 - [`add-shared-runtime`](add-shared-runtime/SKILL.md): 여러 task silo가 함께 참조하는 프로젝트별 shared runtime set을 등록하거나 준비할 때 사용합니다.
@@ -92,8 +92,8 @@ Build -> Learn -> Spec
 좋은 예:
 
 ```text
-1. main 업데이트 스킬 활용: 선택지 작성 방식을 공통 SSoT에 반영합니다.
-2. 현재 답변에만 임시 적용: 이번 대화에서는 적용하지만 main에는 반영하지 않습니다.
+1. main-v2 업데이트: 선택지 작성 방식을 main-v2 SSoT에 반영합니다.
+2. 현재 답변에만 임시 적용: 이번 대화에서는 적용하지만 main-v2 SSoT에는 반영하지 않습니다.
 3. 기타: 선택지 이름, 범위, 적용 위치를 사용자가 직접 지정합니다.
 ```
 
@@ -107,4 +107,4 @@ Build -> Learn -> Spec
 
 나쁜 예는 사용자가 무엇이 바뀌는지, 어떤 절차가 실행되는지 바로 알기 어렵습니다.
 
-이미 스킬로 고정된 절차는 `main 기준 별도 worktree/브랜치 생성 -> PR -> 머지 확인 -> rebase`처럼 매번 길게 쓰지 않습니다. 대신 `main 업데이트 스킬 활용`처럼 압축하고, 바뀌는 대상과 결과를 분명히 적습니다.
+이미 스킬로 고정된 절차는 매번 길게 쓰지 않습니다. 이 프로젝트에서는 `main-v2 업데이트`처럼 압축하고, `main` 기준 worktree, PR, 머지, rebase 절차를 제시하지 않습니다.
