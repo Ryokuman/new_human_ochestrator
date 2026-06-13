@@ -14,20 +14,20 @@
 - 프로젝트별 실제 issue, task, QA, coverage 결과는 이 디렉토리에 복사하지 않습니다.
 - 모든 사용자 대상 작성물, PR 제목, PR 본문, 커밋 메시지는 한국어로 작성합니다.
 
-## 주요 skill
+## 사용 가능한 모든 skill
 
-| skill | 사용할 때 | 사용법 |
-|---|---|---|
-| `main-branch-update-flow` | main SSoT, 공통 규칙, 프롬프트, `AGENTS.md`, skill 초안을 바꿀 때 | main 업데이트 스킬을 활용한다고 보고한 뒤, 별도 main 작업 브랜치에서 수정하고 PR로 반영합니다. |
-| `root-layer-manager` | 정보가 0~3계층 중 어디에 속하는지 판단해야 할 때 | 프로젝트 내부 자료를 root main에 올릴지 말지 판단하기 전에 계층을 판정합니다. |
-| `projects-setup` | 새 프로젝트를 `projects/` 구조에 등록하거나 project SSoT와 사일로 config를 함께 셋업해야 할 때 | `projects/<project-id>/` 기본 구조, Dataview 포함 project SSoT, `system/config/silo-projects.yaml` 등록을 함께 처리합니다. |
-| `add-shared-runtime` | 여러 task silo가 함께 참조하는 프로젝트별 shared runtime set을 등록하거나 준비할 때 | project별 runtime 구성을 확인하고, registry/status, workspace path, env policy, health check, task silo 참조 방법을 기록합니다. |
-| `shared-runtime-health-check` | page-lifecycle, run, E2E 실행 전 `runtime_set` 유무나 서버형 shared runtime 상태를 확인해야 할 때 | `runtime_set`이 없거나 health가 실패하면 실행을 중단하고, 통과 또는 생략 사유를 `goal.md`와 보고서에 남깁니다. |
-| `delete-shared-runtime` | shared runtime registry/status 정리, archived 표시, 명시 승인된 runtime checkout 제거가 필요할 때 | 참조 중인 task/agent/server와 dirty state를 먼저 확인하고, 안전할 때만 registry 정리 또는 디렉터리 제거를 수행합니다. |
-| `command-intent-preflight` | lifecycle, run, E2E, 다건 테스트 사일로 실행 전에 실행 전제가 완성됐는지 확인해야 할 때 | Run Set, `runtime_set`, 사일로 단위, 사일로 root, evidence 기준, report 위치가 없으면 정식 실행을 시작하지 않고 누락 정의를 보고합니다. |
-| `page-lifecycle-runtime-flow` | page-lifecycle L 채점을 위해 단일 page를 생성하고 dynavite와 agent-browser로 확인해야 할 때 | `Run Set`과 `runtime_set` 확인 뒤, page별 테스트 사일로에서 `silo setup -> single page generate -> dynavite -> agent-browser -> L score -> done` 흐름을 따릅니다. 중간 실패를 가설로 해결한 pass는 `had_failed_run`과 `resolved_by_hypothesis`로 task/report/dashboard에 남깁니다. |
-| `add-dict` | 용어 추가, dict 정리, PR 본문 용어 점검, dictionary 변경이 필요할 때 | 후보 단어를 기존 dictionary와 대조하고, 기존 용어로 대체 가능한지 확인한 뒤 필요한 단어만 project dictionary와 PR 본문 `새로 추가된 단어`에 반영합니다. |
-| `user-personality-adaptive-response` | 사용자가 선택지, 보고 방식, 승인 경계, 톤이 맞지 않는다고 지적할 때 | 피드백을 관찰/해석/후보 규칙으로 분리하고, 승인 전에는 장기 규칙으로 확정하지 않습니다. |
+아래 목록은 이 디렉토리의 `*/SKILL.md` 기준 사용 가능한 skill 초안 전체입니다.
+
+- [`main-branch-update-flow`](main-branch-update-flow/SKILL.md): main SSoT, 공통 규칙, 프롬프트, `AGENTS.md`, skill 초안을 바꿀 때 사용합니다.
+- [`root-layer-manager`](root-layer-manager/SKILL.md): 정보가 0~3계층 중 어디에 속하는지 판단해야 할 때 사용합니다.
+- [`projects-setup`](projects-setup/SKILL.md): 새 프로젝트를 `projects/` 구조에 등록하거나 project SSoT와 사일로 config를 함께 셋업해야 할 때 사용합니다.
+- [`add-shared-runtime`](add-shared-runtime/SKILL.md): 여러 task silo가 함께 참조하는 프로젝트별 shared runtime set을 등록하거나 준비할 때 사용합니다.
+- [`shared-runtime-health-check`](shared-runtime-health-check/SKILL.md): page-lifecycle, run, E2E 실행 전 `runtime_set` 유무나 서버형 shared runtime 상태를 확인해야 할 때 사용합니다.
+- [`delete-shared-runtime`](delete-shared-runtime/SKILL.md): shared runtime registry/status 정리, archived 표시, 명시 승인된 runtime checkout 제거가 필요할 때 사용합니다.
+- [`command-intent-preflight`](command-intent-preflight/SKILL.md): lifecycle, run, E2E, 다건 테스트 사일로 실행 전에 실행 전제가 완성됐는지 확인해야 할 때 사용합니다.
+- [`page-lifecycle-runtime-flow`](page-lifecycle-runtime-flow/SKILL.md): page-lifecycle L 채점을 위해 단일 page를 생성하고 dynavite와 agent-browser로 확인해야 할 때 사용합니다.
+- [`add-dict`](add-dict/SKILL.md): 용어 추가, dict 정리, PR 본문 용어 점검, dictionary 변경이 필요할 때 사용합니다.
+- [`user-personality-adaptive-response`](user-personality-adaptive-response/SKILL.md): 사용자가 선택지, 보고 방식, 승인 경계, 톤이 맞지 않는다고 지적할 때 사용합니다.
 
 ## Run Set과 runtime_set
 

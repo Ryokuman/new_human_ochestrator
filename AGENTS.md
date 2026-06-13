@@ -135,6 +135,10 @@
 - critical 또는 major issue가 있으면 사일로 내부에서 먼저 수정하고 CodeRabbit을 재실행합니다. 재실행 후에도 남는 항목은 사용자 판단 필요 또는 의도된 남은 위험으로 분리합니다.
 - CodeRabbit CLI gate는 PR 전 자체 검토입니다. GitHub 앱이 PR 생성 후 자동으로 다는 리뷰는 프로젝트별 repo 설정에 의존하므로 공통 규칙만으로 보장하지 않습니다.
 - CodeRabbit이 실패했을 때 수동 리뷰를 CodeRabbit 결과처럼 보고하지 않습니다. 실패 원인과 재시도 방법을 남기고, 메인 오케스트레이터 리뷰와 일반 검증은 별도로 진행합니다.
+- task, 사일로, PR 작업은 CodeRabbit 리뷰가 종결될 때까지 완료로 보고하지 않습니다.
+- CodeRabbit 리뷰 종결은 최신 CodeRabbit check가 success이고, unresolved actionable comment가 없으며, 남은 지적이 모두 수정, 의도된 잔여 위험, 또는 사용자 판단 필요로 분리된 상태를 뜻합니다.
+- CodeRabbit이 새 커밋마다 재리뷰를 실행하면 그 결과를 다시 확인하고, actionable comment가 있으면 수정과 재리뷰 확인을 반복합니다.
+- CodeRabbit 리뷰 종결 이후에만 사용자 재리뷰 단계로 넘깁니다. 사용자의 재리뷰 전에는 머지 가능 상태라도 task를 최종 종료한 것으로 보고하지 않습니다.
 
 ## Command Intent Preflight Policy
 
@@ -176,6 +180,8 @@
 ## Task Test Contract Policy
 
 - Task는 구현 요청이 아니라 검증 가능한 계약으로 작성합니다.
+- 모든 task 명세서는 읽고 실행 범위를 파악하는 시간이 기본 5분을 넘지 않도록 작성합니다.
+- task 명세서 읽기 시간의 최대 허용치는 7분입니다. 7분을 넘길 분량이면 task를 분할하거나, 상단에 5분 이내로 읽을 수 있는 실행 요약, 금지선, acceptance criteria, test plan을 먼저 둡니다.
 - 각 task는 `Output`, `Acceptance Criteria`, `Test Plan`, `Coverage Target`을 포함해야 합니다.
 - `Output`은 완료 후 사용자, 시스템, 운영자가 확인할 수 있는 결과입니다.
 - `Acceptance Criteria`는 완료로 인정할 검수 기준이며, 각 기준은 `unit`, `runner`, `E2E`, `agent-browser`, `manual` 중 하나 이상의 검증 방법과 연결합니다.

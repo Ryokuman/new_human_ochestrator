@@ -143,6 +143,9 @@ CodeRabbit 자동 리뷰:
 - 새 작업 브랜치에서 수정했음
 - 보호 브랜치에 직접 commit 또는 push하지 않았음
 - PR 전 CodeRabbit 자동 리뷰를 실행했거나, 생략 또는 실패 사유를 PR 본문에 남겼음
+- GitHub CodeRabbit 재리뷰가 있으면 latest check success와 unresolved actionable comment 없음까지 확인했음
+- CodeRabbit 리뷰 종결 전에는 task, 사일로, PR 작업을 완료로 보고하지 않았음
+- CodeRabbit 리뷰 종결 후 사용자 재리뷰 대기 상태로 넘겼음
 - 결과를 PR로 제출했음
 
 이 조건을 만족하지 않으면 메인 오케스트레이터는 머지 리뷰보다 브랜치 안전 문제를 먼저 처리합니다.
@@ -228,6 +231,10 @@ PR 리뷰 루프는 여러 번 돌 수 있습니다.
 사일로 내부 검증
 -> PR 전 CodeRabbit 자동 리뷰
 -> 사일로 PR 생성
+-> CodeRabbit GitHub 재리뷰 확인
+-> actionable comment가 있으면 수정 후 재리뷰 반복
+-> CodeRabbit 리뷰 종결
+-> 사용자 재리뷰 대기
 -> 메인 리뷰
 -> 재작업 요청
 -> 사일로 수정
