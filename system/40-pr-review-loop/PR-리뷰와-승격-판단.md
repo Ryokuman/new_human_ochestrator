@@ -109,8 +109,8 @@ Codex PR 리뷰:
 - `main-v2`에서는 자동 리뷰가 아니라 PR 댓글의 수동 `@codex review` 호출을 기본으로 한다
 - `@codex review`는 base branch가 `main-v2`인 PR에서만 호출한다
 - Codex PR 리뷰는 변경 diff, task 목표, 검증 결과, 남은 위험, SSoT 승격 후보를 기준으로 한다
-- major/critical 수준의 correctness, security, data-loss 위험이 있으면 수정 후 최대 3회까지 수동 재호출한다
-- 3회 호출 후에도 남은 major/critical 항목은 `사용자 판단 필요` 또는 `의도된 남은 위험`으로 분리한다
+- major/critical 수준의 correctness, security, data-loss 위험 또는 보호 절차를 깨는 P1/P2 지적이 있으면 수정 후 최대 5회까지 수동 재호출한다
+- 5회 호출 후에도 남은 major/critical 또는 보호 절차 P1/P2 항목은 `사용자 판단 필요` 또는 `의도된 남은 위험`으로 분리한다
 - 도구 실행 실패 또는 생략 시 실패 원인과 대체 검토 범위를 분리한다
 
 남은 위험:
