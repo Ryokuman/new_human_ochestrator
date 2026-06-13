@@ -49,7 +49,7 @@ Build -> Learn -> Spec
 리뷰 gate:
 
 - `main`: CodeRabbit 리뷰 gate
-- `main-v2`: Codex PR 리뷰 gate
+- `main-v2`: 수동 `@codex review` gate
 
 `main-v2`의 PR 본문에는 `CodeRabbit 자동 리뷰` 대신 `Codex PR 리뷰` 항목을 둡니다.
 

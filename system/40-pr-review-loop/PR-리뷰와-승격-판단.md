@@ -106,8 +106,11 @@ CodeRabbit 자동 리뷰:
 
 Codex PR 리뷰:
 - `main-v2`에서는 CodeRabbit 자동 리뷰 대신 Codex PR 리뷰 결과를 적는다
+- `main-v2`에서는 자동 리뷰가 아니라 PR 댓글의 수동 `@codex review` 호출을 기본으로 한다
+- `@codex review`는 base branch가 `main-v2`인 PR에서만 호출한다
 - Codex PR 리뷰는 변경 diff, task 목표, 검증 결과, 남은 위험, SSoT 승격 후보를 기준으로 한다
-- major/critical 수준의 correctness, security, data-loss 위험이 있으면 수정 후 재리뷰한다
+- major/critical 수준의 correctness, security, data-loss 위험이 있으면 수정 후 최대 3회까지 수동 재호출한다
+- 3회 호출 후에도 남은 major/critical 항목은 `사용자 판단 필요` 또는 `의도된 남은 위험`으로 분리한다
 - 도구 실행 실패 또는 생략 시 실패 원인과 대체 검토 범위를 분리한다
 
 남은 위험:
@@ -151,7 +154,7 @@ Codex PR 리뷰:
 - 새 작업 브랜치에서 수정했음
 - 보호 브랜치에 직접 commit 또는 push하지 않았음
 - `main`에서는 PR 전 CodeRabbit 자동 리뷰를 실행했거나, 생략 또는 실패 사유를 PR 본문에 남겼음
-- `main-v2`에서는 PR 전 Codex PR 리뷰를 실행했거나, 생략 또는 실패 사유를 PR 본문에 남겼음
+- `main-v2`에서는 PR 생성 직후 수동 `@codex review`를 호출했거나, 생략 또는 실패 사유를 PR 본문에 남겼음
 - `main`에서 GitHub CodeRabbit 재리뷰가 있으면 latest check success와 unresolved actionable comment 없음까지 확인했음
 - `main`은 CodeRabbit 리뷰, `main-v2`는 Codex PR 리뷰 종결 전에는 task, 사일로, PR 작업을 완료로 보고하지 않았음
 - 브랜치별 리뷰 gate 종결 후 사용자 재리뷰 대기 상태로 넘겼음
@@ -256,7 +259,7 @@ PR 리뷰 루프는 여러 번 돌 수 있습니다.
 브랜치별 리뷰 gate는 아래처럼 적용합니다.
 
 - `main`: CodeRabbit 자동 리뷰를 기본 gate로 둡니다.
-- `main-v2`: CodeRabbit 대신 Codex PR 리뷰를 기본 gate로 둡니다.
+- `main-v2`: CodeRabbit 대신 수동 `@codex review`를 기본 gate로 둡니다.
 
 각 라운드는 PR 기록에 남깁니다.
 

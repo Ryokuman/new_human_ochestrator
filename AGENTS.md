@@ -14,7 +14,7 @@
 - `main`은 레거시 보존 브랜치이며 절대로 checkout, commit, push, PR, merge, rebase, cherry-pick, worktree 기준으로 사용하지 않습니다.
 - `main-v2`는 탐색형 제품 엔지니어 운영 방식 기준 브랜치입니다. `main-v2`는 `Build -> Learn -> Spec`을 우선하고, 빠른 사용 가능 결과물을 만든 뒤 학습 내용을 SSoT/task/spec으로 승격합니다.
 - `main-v2` 변경은 `main`에 반영하지 않습니다. 사용자 요청이 있더라도 이 프로젝트에서는 `main` 반영 대신 `main-v2` 안에서만 후속 브랜치, PR, 문서 승격을 다룹니다.
-- `main-v2`에서 PR 리뷰 gate는 CodeRabbit이 아니라 Codex PR 리뷰를 기본으로 둡니다.
+- `main-v2`에서 PR 리뷰 gate는 CodeRabbit이 아니라 PR 댓글의 수동 `@codex review`를 기본으로 둡니다.
 - `main-v2`에서 CodeRabbit 관련 문구는 레거시 설명이 필요한 경우에만 남기고, 실행 gate로 사용하지 않습니다.
 
 ## Exploratory Product Engineering Policy
@@ -142,7 +142,7 @@
 - 사용자가 task 실행, 태스크 진행, task 수행을 요청하면 별도 확인 없이 사일로 준비까지 진행합니다.
 - 기본 준비 범위는 `task-xxxx/` 생성, `goal.md` 작성, 필요한 repo clone, repo별 작업 브랜치 생성입니다.
 - 사일로 디렉토리는 현재 workspace 루트에 만듭니다. 사용자가 직접 지정하지 않는 한 `/tmp`, 홈 디렉토리, 숨김 디렉토리, 에이전트 전용 임시 경로에 만들지 않습니다.
-- `goal.md`에는 task 목표, 필요한 repo, 보호 브랜치, 금지선, 검증 기준, 리뷰 gate 적용 여부, PR 본문 필수 항목을 적습니다. `main`은 CodeRabbit, `main-v2`는 Codex PR 리뷰를 기본 gate로 둡니다.
+- `goal.md`에는 task 목표, 필요한 repo, 보호 브랜치, 금지선, 검증 기준, 리뷰 gate 적용 여부, PR 본문 필수 항목을 적습니다. `main-v2`는 수동 `@codex review`를 기본 gate로 둡니다.
 - Dynamos 사일로에서 브라우저로 화면이나 동작을 확인해야 하면 `agent-browser`로만 확인합니다.
 - 개발 세션에는 상세 지시를 다시 풀어 쓰지 않고, 해당 사일로에서 `/goal`로 `goal.md 달성 부탁해` 수준의 짧은 요청만 전달합니다.
 - 사일로 내부 repo는 보호 브랜치에서 직접 작업하지 않고 task id가 들어간 새 브랜치를 만듭니다.
@@ -152,7 +152,7 @@
 ## CodeRabbit Review Gate Policy
 
 - 이 정책은 레거시 `main` 운영 설명입니다. 이 프로젝트의 실행 기준으로 사용하지 않습니다.
-- `main-v2`에서는 CodeRabbit 대신 Codex PR 리뷰를 기본 gate로 사용합니다.
+- `main-v2`에서는 CodeRabbit 대신 수동 `@codex review`를 기본 gate로 사용합니다.
 - 일반 사일로가 source code, generated output, test, tooling 변경으로 PR을 만들 때는 PR 생성 전 `coderabbit review --agent --base <base-branch>` 실행을 기본 gate로 둡니다.
 - 변경이 문서만 있거나 CodeRabbit CLI가 설치 또는 인증되어 있지 않거나 네트워크가 불가능하면 gate를 생략할 수 있습니다. 이때 PR 본문과 완료 보고에 생략 사유를 남깁니다.
 - CodeRabbit 결과는 PR 본문에 `CodeRabbit 자동 리뷰` 항목으로 기록합니다. 0 issues이면 0건으로 적고, issue가 있으면 severity, 파일, 영향, 처리 여부를 요약합니다.
@@ -167,10 +167,14 @@
 ## Codex PR Review Gate Policy
 
 - 이 정책은 `main-v2` 기준 기본값입니다.
-- 일반 사일로가 source code, generated output, test, tooling 변경으로 PR을 만들 때는 PR 생성 전 Codex 기반 PR 리뷰를 실행합니다.
+- 일반 사일로가 source code, generated output, test, tooling 변경으로 PR을 만들 때는 PR 생성 직후 PR 댓글로 수동 `@codex review`를 호출합니다.
+- Codex 자동 리뷰는 기본 gate로 사용하지 않습니다. 리뷰가 필요한 PR에서만 수동 호출합니다.
+- `@codex review`는 base branch가 `main-v2`인 PR에서만 호출합니다. base branch가 `main`이면 먼저 PR 대상을 `main-v2`로 바꾸도록 보고하고 리뷰를 호출하지 않습니다.
 - Codex PR 리뷰는 변경 diff, task 목표, 실행한 검증, 남은 위험, SSoT 승격 후보를 대상으로 합니다.
 - 리뷰 결과는 PR 본문에 `Codex PR 리뷰` 항목으로 기록합니다.
-- critical 또는 major 수준 correctness/security/data-loss 위험이 있으면 먼저 수정하고 Codex PR 리뷰를 재실행합니다.
+- critical 또는 major 수준 correctness/security/data-loss 위험이 있으면 먼저 수정하고 Codex PR 리뷰를 재호출합니다.
+- 변경 이후에도 Codex PR 리뷰가 `승인` 또는 actionable major/critical 없음 상태가 될 때까지 최대 3회까지 수동 재호출합니다.
+- 3회 수동 호출 후에도 남은 major/critical 항목은 더 반복하지 않고 `사용자 판단 필요` 또는 `의도된 남은 위험`으로 분리합니다.
 - Codex 리뷰가 실패했거나 도구 실행이 불가능하면 실패 원인과 대체 수동 검토 범위를 분리해서 기록합니다.
 - `main-v2`에서 CodeRabbit 결과를 Codex 리뷰처럼 보고하지 않습니다.
 
@@ -242,7 +246,7 @@
 ## PR Description Quality Policy
 
 - PR 본문은 결과 요약만 쓰지 않고, 처음 보는 리뷰어가 변경 이유와 안전성을 판단할 수 있게 작성합니다.
-- 기본 흐름은 `무엇을 했는가 -> 변경 상세 -> 그래서 무엇이 되었는가 -> 검증 -> 리뷰 gate 결과 -> SSoT 승격 후보 -> 승격하지 않을 항목 -> 남은 위험`입니다. `main`은 `CodeRabbit 자동 리뷰`, `main-v2`는 `Codex PR 리뷰`를 사용합니다.
+- 기본 흐름은 `무엇을 했는가 -> 변경 상세 -> 그래서 무엇이 되었는가 -> 검증 -> 리뷰 gate 결과 -> SSoT 승격 후보 -> 승격하지 않을 항목 -> 남은 위험`입니다. `main-v2`는 수동 `@codex review` 결과를 사용합니다.
 - `변경 상세`에는 문제 정의, 기존 동작, 문제가 된 이유, 변경한 파일과 함수/정책 역할을 적습니다.
 - `suffix 없는 버튼`, `시스템 버튼으로 버림`, `runner 보정`처럼 내부자 표현은 실제 예시와 함께 정의합니다.
 - PR 본문에는 criteria별 검증 결과를 적습니다. 각 criteria에 대해 검증 방법, 결과, 증거를 분리합니다.
