@@ -7,7 +7,7 @@ description: 레거시 main 업데이트 절차 문서입니다. 이 프로젝�
 
 이 문서는 레거시 `main` 업데이트 절차를 설명합니다.
 
-현재 프로젝트에서는 이 절차를 실행하지 않습니다. 작업 기준은 항상 `main-v2`이며, `main` checkout, `origin/main` 기준 worktree 생성, `main` 대상 PR, `main` merge, `main` rebase는 금지합니다.
+현재 프로젝트에서는 이 절차를 실행하지 않습니다. `main-v2`는 new main 보호 브랜치이며, `main` checkout, `origin/main` 기준 worktree 생성, `main` 대상 PR, `main` merge, `main` rebase는 금지합니다. `main-v2` 직접 commit/push도 금지하고, 항상 파생 작업 브랜치와 PR로 반영합니다.
 
 ## 적용 시점
 
@@ -25,7 +25,7 @@ description: 레거시 main 업데이트 절차 문서입니다. 이 프로젝�
 
 ## 원칙
 
-- 공통 SSoT 수정은 `main-v2` 기준으로만 처리합니다.
+- 공통 SSoT 수정은 `main-v2`에서 파생한 작업 브랜치에서만 처리합니다.
 - `main` 기준 별도 worktree 또는 clean checkout을 만들지 않습니다.
 - 모든 작성 산출물은 한국어로 작성합니다.
 - PR 제목, PR 본문, 커밋 메시지도 한국어로 작성합니다.
@@ -42,13 +42,13 @@ description: 레거시 main 업데이트 절차 문서입니다. 이 프로젝�
 1. 현재 브랜치와 dirty state를 확인합니다.
 2. remote 접근 가능 여부를 확인합니다.
 3. remote 계정이 맞지 않으면 `gh auth status`와 `gh auth switch -u <account>`로 복구합니다.
-4. 현재 브랜치가 `main-v2`인지 확인합니다.
-5. 필요한 경우 `main-v2`에서 단기 브랜치를 만듭니다.
+4. 현재 브랜치가 `main-v2`에서 파생한 작업 브랜치인지 확인합니다.
+5. 필요한 경우 `main-v2`에서 단기 브랜치를 만들고 이동합니다.
 6. 공통 SSoT 파일만 수정합니다.
 7. 문서 변경이면 논리 비약 자가검수를 수행합니다.
 8. 필요한 검증을 실행합니다.
 9. 한국어 커밋을 만듭니다.
-10. 브랜치를 push합니다.
+10. 작업 브랜치를 push합니다.
 11. 한국어 제목/본문으로 PR을 만듭니다.
 12. PR URL, 상태, mergeable 여부를 확인해 보고합니다.
 13. 사용자의 명시 머지 승인이 있으면 PR을 머지합니다.
