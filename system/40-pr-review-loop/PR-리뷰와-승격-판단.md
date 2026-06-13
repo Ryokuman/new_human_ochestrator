@@ -31,6 +31,8 @@ PR은 사일로가 발견한 로컬 issue/task 중 무엇을 SSoT의 메인 이�
 
 ## CodeRabbit 자동 리뷰
 
+## Codex PR 리뷰
+
 ## 사일로에서 새로 발견한 항목
 
 ## SSoT 승격 후보
@@ -102,6 +104,12 @@ CodeRabbit 자동 리뷰:
 - critical 또는 major issue가 남아 있으면 사용자 판단 필요 또는 남은 위험으로 분리한다
 - GitHub 앱이 PR 생성 후 남기는 리뷰는 프로젝트별 repo 설정에 의존하므로 PR 전 gate 결과와 구분한다
 
+Codex PR 리뷰:
+- `main-v2`에서는 CodeRabbit 자동 리뷰 대신 Codex PR 리뷰 결과를 적는다
+- Codex PR 리뷰는 변경 diff, task 목표, 검증 결과, 남은 위험, SSoT 승격 후보를 기준으로 한다
+- major/critical 수준의 correctness, security, data-loss 위험이 있으면 수정 후 재리뷰한다
+- 도구 실행 실패 또는 생략 시 실패 원인과 대체 검토 범위를 분리한다
+
 남은 위험:
 - 아직 해결하지 않은 항목과 이유를 page/item 단위로 적는다
 - SSoT 승격 후보와 승격하지 않을 항목을 분리한다
@@ -142,10 +150,11 @@ CodeRabbit 자동 리뷰:
 - `main`, `dev`, `develop`, `master` 같은 보호 브랜치에서 직접 작업하지 않았음
 - 새 작업 브랜치에서 수정했음
 - 보호 브랜치에 직접 commit 또는 push하지 않았음
-- PR 전 CodeRabbit 자동 리뷰를 실행했거나, 생략 또는 실패 사유를 PR 본문에 남겼음
-- GitHub CodeRabbit 재리뷰가 있으면 latest check success와 unresolved actionable comment 없음까지 확인했음
-- CodeRabbit 리뷰 종결 전에는 task, 사일로, PR 작업을 완료로 보고하지 않았음
-- CodeRabbit 리뷰 종결 후 사용자 재리뷰 대기 상태로 넘겼음
+- `main`에서는 PR 전 CodeRabbit 자동 리뷰를 실행했거나, 생략 또는 실패 사유를 PR 본문에 남겼음
+- `main-v2`에서는 PR 전 Codex PR 리뷰를 실행했거나, 생략 또는 실패 사유를 PR 본문에 남겼음
+- `main`에서 GitHub CodeRabbit 재리뷰가 있으면 latest check success와 unresolved actionable comment 없음까지 확인했음
+- `main`은 CodeRabbit 리뷰, `main-v2`는 Codex PR 리뷰 종결 전에는 task, 사일로, PR 작업을 완료로 보고하지 않았음
+- 브랜치별 리뷰 gate 종결 후 사용자 재리뷰 대기 상태로 넘겼음
 - 결과를 PR로 제출했음
 
 이 조건을 만족하지 않으면 메인 오케스트레이터는 머지 리뷰보다 브랜치 안전 문제를 먼저 처리합니다.
@@ -157,6 +166,7 @@ CodeRabbit 자동 리뷰:
 | 브랜치 종류 | 목적 | 종료 기준 | 종료 처리 |
 |---|---|---|---|
 | `main` | 0계층 공통 SSoT 기준 | 없음 | 삭제하지 않고 `origin/main`을 추적한다. |
+| `main-v2` | 탐색형 제품 엔지니어 운영 기준 | 없음 | 삭제하지 않는다. `main`으로 자동 머지하지 않고, 필요한 항목만 별도 승인으로 선별 반영한다. |
 | `project/<project-id>` | 프로젝트별 정보, SSoT 색인, repo 연결 상태를 보관하는 장기 브랜치 | 프로젝트 연결 자체를 폐기할 때 | main 병합 대상으로 보지 않고 별도 판단한다. |
 | `silo/<task-id>-*` | task 실행 결과를 PR로 제출하는 단기 작업 브랜치 | PR이 머지됐고 `state`, `mergedAt`, `mergeCommit` 재조회와 로컬 안전 조건 확인이 끝났을 때 | clean 상태, ahead 없음, PR/패치 대응 관계가 확인되면 로컬 브랜치를 삭제한다. 원격 브랜치는 GitHub 자동 삭제 또는 명시 삭제 상태를 확인한다. |
 | `repair/<pr-id>-*` | conflict 해결, 잘못된 PR 이력 복구 같은 임시 보정 브랜치 | 원 PR 또는 대체 PR이 머지되고 패치 동등성이 확인됐을 때 | 자동 삭제하지 않고 `삭제 후보`로 보고한다. |
@@ -229,11 +239,11 @@ PR 리뷰 루프는 여러 번 돌 수 있습니다.
 
 ```text
 사일로 내부 검증
--> PR 전 CodeRabbit 자동 리뷰
+-> PR 전 브랜치별 리뷰 gate
 -> 사일로 PR 생성
--> CodeRabbit GitHub 재리뷰 확인
+-> 리뷰 결과 확인
 -> actionable comment가 있으면 수정 후 재리뷰 반복
--> CodeRabbit 리뷰 종결
+-> 리뷰 gate 종결
 -> 사용자 재리뷰 대기
 -> 메인 리뷰
 -> 재작업 요청
@@ -242,6 +252,11 @@ PR 리뷰 루프는 여러 번 돌 수 있습니다.
 -> 메인 재리뷰
 -> 머지 또는 추가 재작업
 ```
+
+브랜치별 리뷰 gate는 아래처럼 적용합니다.
+
+- `main`: CodeRabbit 자동 리뷰를 기본 gate로 둡니다.
+- `main-v2`: CodeRabbit 대신 Codex PR 리뷰를 기본 gate로 둡니다.
 
 각 라운드는 PR 기록에 남깁니다.
 

@@ -8,6 +8,26 @@
 
 프로젝트 내부 자료는 기본적으로 이 저장소 main에 커밋하지 않습니다. 프로젝트별 SSoT, fork, submodule, external clone, 또는 gitignore된 로컬 자료로 둡니다.
 
+## Branch Mode Policy
+
+- `main`은 기존 운영 방식 기준 브랜치입니다. `main`은 신중한 SSoT, 계약, CodeRabbit 리뷰 gate 중심으로 유지합니다.
+- `main-v2`는 탐색형 제품 엔지니어 운영 방식 기준 브랜치입니다. `main-v2`는 `Build -> Learn -> Spec`을 우선하고, 빠른 사용 가능 결과물을 만든 뒤 학습 내용을 SSoT/task/spec으로 승격합니다.
+- `main-v2` 변경은 `main`에 자동 반영하지 않습니다. `main`으로 가져갈 항목은 별도 사용자 요청이 있을 때만 선별합니다.
+- `main-v2`에서 PR 리뷰 gate는 CodeRabbit이 아니라 Codex PR 리뷰를 기본으로 둡니다.
+- `main-v2`에서 CodeRabbit 관련 문구는 기존 `main` 정책 보존 또는 호환 설명이 필요한 경우에만 남깁니다.
+
+## Exploratory Product Engineering Policy
+
+`main-v2`의 에이전트는 탐색형 제품 엔지니어로 동작합니다.
+
+- 완벽한 설계보다 가장 빠르게 사용 가능한 결과물을 우선합니다.
+- 불확실성이 있어도 합리적으로 추정 가능한 부분은 진행합니다.
+- 질문이 필요해도 구현을 멈추지 않고, 현재 가장 가능성이 높은 해석으로 먼저 만듭니다.
+- 구현 후 스스로 문제점을 찾고, 발견한 문제를 새로운 spec, task, issue, SSoT 승격 후보로 올립니다.
+- 기본 사고 순서는 `Spec -> Build`가 아니라 `Build -> Learn -> Spec`입니다.
+- 정답을 찾으려 하기보다 빠르게 틀리고, 틀린 증거를 다음 작업 계약으로 바꿉니다.
+- 단, secret, credential, production 데이터, destructive action, 보호 브랜치 직접 수정, 법적/IP 위험, 대량 데이터 변경은 여전히 승인 gate입니다.
+
 ## Read Order
 
 1. `system/README.md`
@@ -53,6 +73,7 @@
 ## Branch Lifecycle Policy
 
 - `main`은 0계층 공통 SSoT 기준 브랜치이며 삭제하지 않고 `origin/main`을 추적합니다.
+- `main-v2`는 탐색형 제품 엔지니어 운영 기준 브랜치이며 삭제하지 않습니다. `main`으로 자동 머지하지 않고, 별도 사용자의 명시 요청이 있을 때만 선별 반영 후보를 분리합니다.
 - `project/*`는 프로젝트별 정보 보관용 장기 브랜치이며 main 병합 대상이 아닙니다.
 - `silo/*`는 task PR 제출용 단기 브랜치입니다. PR 머지 후 `state`, `mergedAt`, `mergeCommit`을 재조회하고 clean 상태, ahead 없음, PR/패치 대응 관계가 확인되면 로컬 브랜치를 삭제합니다.
 - `docs/*`, `chore/*` 같은 main 업데이트용 단기 브랜치는 PR 머지 확인 후 로컬 브랜치와 연결 worktree를 정리합니다.
@@ -120,7 +141,7 @@
 - 사용자가 task 실행, 태스크 진행, task 수행을 요청하면 별도 확인 없이 사일로 준비까지 진행합니다.
 - 기본 준비 범위는 `task-xxxx/` 생성, `goal.md` 작성, 필요한 repo clone, repo별 작업 브랜치 생성입니다.
 - 사일로 디렉토리는 현재 workspace 루트에 만듭니다. 사용자가 직접 지정하지 않는 한 `/tmp`, 홈 디렉토리, 숨김 디렉토리, 에이전트 전용 임시 경로에 만들지 않습니다.
-- `goal.md`에는 task 목표, 필요한 repo, 보호 브랜치, 금지선, 검증 기준, CodeRabbit 자동 리뷰 gate 적용 여부, PR 본문 필수 항목을 적습니다.
+- `goal.md`에는 task 목표, 필요한 repo, 보호 브랜치, 금지선, 검증 기준, 리뷰 gate 적용 여부, PR 본문 필수 항목을 적습니다. `main`은 CodeRabbit, `main-v2`는 Codex PR 리뷰를 기본 gate로 둡니다.
 - Dynamos 사일로에서 브라우저로 화면이나 동작을 확인해야 하면 `agent-browser`로만 확인합니다.
 - 개발 세션에는 상세 지시를 다시 풀어 쓰지 않고, 해당 사일로에서 `/goal`로 `goal.md 달성 부탁해` 수준의 짧은 요청만 전달합니다.
 - 사일로 내부 repo는 보호 브랜치에서 직접 작업하지 않고 task id가 들어간 새 브랜치를 만듭니다.
@@ -129,6 +150,8 @@
 
 ## CodeRabbit Review Gate Policy
 
+- 이 정책은 `main` 기준 기본값입니다.
+- `main-v2`에서는 CodeRabbit 대신 Codex PR 리뷰를 기본 gate로 사용합니다.
 - 일반 사일로가 source code, generated output, test, tooling 변경으로 PR을 만들 때는 PR 생성 전 `coderabbit review --agent --base <base-branch>` 실행을 기본 gate로 둡니다.
 - 변경이 문서만 있거나 CodeRabbit CLI가 설치 또는 인증되어 있지 않거나 네트워크가 불가능하면 gate를 생략할 수 있습니다. 이때 PR 본문과 완료 보고에 생략 사유를 남깁니다.
 - CodeRabbit 결과는 PR 본문에 `CodeRabbit 자동 리뷰` 항목으로 기록합니다. 0 issues이면 0건으로 적고, issue가 있으면 severity, 파일, 영향, 처리 여부를 요약합니다.
@@ -140,14 +163,27 @@
 - CodeRabbit이 새 커밋마다 재리뷰를 실행하면 그 결과를 다시 확인하고, actionable comment가 있으면 수정과 재리뷰 확인을 반복합니다.
 - CodeRabbit 리뷰 종결 이후에만 사용자 재리뷰 단계로 넘깁니다. 사용자의 재리뷰 전에는 머지 가능 상태라도 task를 최종 종료한 것으로 보고하지 않습니다.
 
+## Codex PR Review Gate Policy
+
+- 이 정책은 `main-v2` 기준 기본값입니다.
+- 일반 사일로가 source code, generated output, test, tooling 변경으로 PR을 만들 때는 PR 생성 전 Codex 기반 PR 리뷰를 실행합니다.
+- Codex PR 리뷰는 변경 diff, task 목표, 실행한 검증, 남은 위험, SSoT 승격 후보를 대상으로 합니다.
+- 리뷰 결과는 PR 본문에 `Codex PR 리뷰` 항목으로 기록합니다.
+- critical 또는 major 수준 correctness/security/data-loss 위험이 있으면 먼저 수정하고 Codex PR 리뷰를 재실행합니다.
+- Codex 리뷰가 실패했거나 도구 실행이 불가능하면 실패 원인과 대체 수동 검토 범위를 분리해서 기록합니다.
+- `main-v2`에서 CodeRabbit 결과를 Codex 리뷰처럼 보고하지 않습니다.
+
 ## Command Intent Preflight Policy
 
+- `main-v2`에서는 이 정책을 모든 실행의 선행 gate로 쓰지 않습니다. lifecycle, run, E2E, 다건 테스트, destructive/data/production 위험이 있는 실행에만 강제합니다.
+- `main-v2`의 저위험 prototype, 문서 보강, 로컬 코드 변경, fixture 작성은 누락 정의가 있어도 합리적으로 가정하고 먼저 실행할 수 있습니다.
+- 실행 후 발견한 누락 정의는 `Learn` 결과로 기록하고 새 spec/task/issue 후보로 승격합니다.
 - 사용자가 실행 결과가 이상하다고 지적하면, 이를 단순한 잘못이나 태도 문제로 처리하지 않습니다.
 - 핵심 질문은 "왜 사용자 명령이 시스템 안에서 실행 가능한 형태로 전달되지 않았는가"입니다.
 - 재발방지는 진짜 원인을 찾아 제거하는 방향으로 다룹니다.
-- 실행 전제가 빠진 상태에서 합리적으로 추정해 진행하지 않습니다.
-- 실행 전제가 빠진 경우에는 먼저 멈추고 어떤 정의가 없는지 보고한 뒤, 사용자에게 필요한 정의를 물어봅니다.
-- 특히 `run set`, `runtime_set`, 실행 대상 목록, 제외 기준, 실행 창 크기, 사일로 유형, 사일로 root, L별 evidence 기준, destructive boundary가 없으면 정식 실행을 시작하지 않습니다.
+- `main`에서는 실행 전제가 빠진 상태에서 합리적으로 추정해 진행하지 않습니다.
+- `main`에서는 실행 전제가 빠진 경우 먼저 멈추고 어떤 정의가 없는지 보고한 뒤, 사용자에게 필요한 정의를 물어봅니다.
+- `main`에서는 특히 `run set`, `runtime_set`, 실행 대상 목록, 제외 기준, 실행 창 크기, 사일로 유형, 사일로 root, L별 evidence 기준, destructive boundary가 없으면 정식 실행을 시작하지 않습니다.
 - runner, shell command, browser smoke를 직접 실행한 것은 정식 사일로 실행으로 간주하지 않습니다.
 - 정식 사일로 실행은 사일로 root, `goal.md`, runtime 참조, evidence 위치, report 위치, 종료 gate가 준비된 뒤에만 시작합니다.
 - 여러 page나 task를 묶어 실행할 때의 묶음은 scheduler 또는 execution window일 뿐이며, 별도 정의 없이 하나의 사일로로 취급하지 않습니다.
@@ -179,7 +215,8 @@
 
 ## Task Test Contract Policy
 
-- Task는 구현 요청이 아니라 검증 가능한 계약으로 작성합니다.
+- `main`에서 Task는 구현 요청이 아니라 검증 가능한 계약으로 작성합니다.
+- `main-v2`에서 Task는 실행 가능한 실험 단위로 시작할 수 있습니다. 먼저 build하고, learn 결과를 acceptance criteria, Test Plan, Coverage Target으로 승격합니다.
 - 모든 task 명세서는 읽고 실행 범위를 파악하는 시간이 기본 5분을 넘지 않도록 작성합니다.
 - task 명세서 읽기 시간의 최대 허용치는 7분입니다. 7분을 넘길 분량이면 task를 분할하거나, 상단에 5분 이내로 읽을 수 있는 실행 요약, 금지선, acceptance criteria, test plan을 먼저 둡니다.
 - 각 task는 `Output`, `Acceptance Criteria`, `Test Plan`, `Coverage Target`을 포함해야 합니다.
@@ -204,7 +241,7 @@
 ## PR Description Quality Policy
 
 - PR 본문은 결과 요약만 쓰지 않고, 처음 보는 리뷰어가 변경 이유와 안전성을 판단할 수 있게 작성합니다.
-- 기본 흐름은 `무엇을 했는가 -> 변경 상세 -> 그래서 무엇이 되었는가 -> 검증 -> CodeRabbit 자동 리뷰 -> SSoT 승격 후보 -> 승격하지 않을 항목 -> 남은 위험`입니다.
+- 기본 흐름은 `무엇을 했는가 -> 변경 상세 -> 그래서 무엇이 되었는가 -> 검증 -> 리뷰 gate 결과 -> SSoT 승격 후보 -> 승격하지 않을 항목 -> 남은 위험`입니다. `main`은 `CodeRabbit 자동 리뷰`, `main-v2`는 `Codex PR 리뷰`를 사용합니다.
 - `변경 상세`에는 문제 정의, 기존 동작, 문제가 된 이유, 변경한 파일과 함수/정책 역할을 적습니다.
 - `suffix 없는 버튼`, `시스템 버튼으로 버림`, `runner 보정`처럼 내부자 표현은 실제 예시와 함께 정의합니다.
 - PR 본문에는 criteria별 검증 결과를 적습니다. 각 criteria에 대해 검증 방법, 결과, 증거를 분리합니다.

@@ -1,11 +1,13 @@
 ---
 name: command-intent-preflight
-description: lifecycle, run, E2E, 다건 테스트 사일로 실행 전에 사용자 명령이 시스템 안에서 실행 가능한 형태로 변환되었는지 확인합니다. Run Set, runtime_set, 사일로 root, evidence 기준 등이 없으면 정식 실행을 시작하지 않고 누락 정의를 보고합니다.
+description: lifecycle, run, E2E, 다건 테스트 사일로, destructive/data/production 위험 실행 전에 사용자 명령이 시스템 안에서 실행 가능한 형태로 변환되었는지 확인합니다. main-v2의 저위험 prototype에는 강제하지 않습니다.
 ---
 
 # Command Intent Preflight
 
 사용자 명령을 실제 실행으로 넘기기 전에 실행 가능한 계약으로 변환되었는지 확인합니다.
+
+`main-v2`에서는 이 skill을 모든 작업의 선행 gate로 쓰지 않습니다. 저위험 prototype, fixture 작성, 문서 보강, 로컬 코드 변경은 합리적 가정으로 먼저 실행하고, 누락 정의를 learn 결과로 기록할 수 있습니다.
 
 ## 적용 시점
 
@@ -17,6 +19,7 @@ description: lifecycle, run, E2E, 다건 테스트 사일로 실행 전에 사�
 - page 단위 테스트 사일로 실행
 - 여러 page나 task를 묶은 테스트 실행
 - agent-browser 기반 L 확인
+- destructive action, production 데이터, data SSoT 변경, 대량 import/export, 보호 브랜치 직접 변경 가능성이 있는 실행
 - 사용자가 실행 결과가 이상하다고 지적하며 원인과 재발방지를 요구하는 경우
 
 ## 핵심 질문
@@ -55,6 +58,8 @@ description: lifecycle, run, E2E, 다건 테스트 사일로 실행 전에 사�
 ## 누락 처리
 
 필수 항목이 하나라도 없으면 정식 실행을 시작하지 않습니다.
+
+단, `main-v2`의 저위험 build 작업은 정식 lifecycle/run/E2E 실행으로 보고하지 않고 prototype 또는 preflight-free build로 진행할 수 있습니다. 이때 누락된 정의는 `Learn`에 남기고 후속 spec/task 후보로 승격합니다.
 
 보고는 아래처럼 분리합니다.
 

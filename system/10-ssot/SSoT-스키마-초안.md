@@ -110,6 +110,8 @@ Issue는 0계층 SSoT가 아니라 project SSoT에 저장합니다.
 
 Task는 0계층 SSoT가 아니라 project SSoT에 저장합니다.
 
+`main`에서는 Task를 검증 가능한 계약으로 작성합니다. `main-v2`에서는 Task가 처음부터 완전한 계약일 필요가 없습니다. 작은 build 실험으로 시작하고, 실행 후 관찰한 learn 결과를 acceptance criteria, test plan, follow-up spec으로 승격할 수 있습니다.
+
 모든 task 명세서는 읽고 실행 범위를 파악하는 시간이 기본 5분을 넘지 않도록 작성합니다. 최대 허용치는 7분입니다. 7분을 넘길 분량이면 task를 분할하거나, 상단에 5분 이내로 읽을 수 있는 실행 요약, 금지선, acceptance criteria, test plan을 먼저 둡니다.
 
 필드:
@@ -138,8 +140,15 @@ Task는 0계층 SSoT가 아니라 project SSoT에 저장합니다.
 - resolved_attempt_no
 - latest_resolution_summary
 - dashboard_flags: 예: `had_failed_run`, `resolved_by_hypothesis`, `needs-user-judgment`
+- mode: `contract` 또는 `exploratory`
+- build_assumption
+- learn_summary
+- promoted_spec_candidate
+- follow_up_task_candidates
 
 `hypothesis_chain`은 task 내부 summary 역할을 하며, 사일로 실행으로 검증한 가설을 시간순으로 누적합니다. 실패한 가설은 새 task를 자동 생성하지 않고 먼저 이 체인에 남깁니다. 하나의 task에서 가설 시도는 최대 3회이며, 3회 이후에는 자동 재시도 대신 사용자 판단이 필요합니다.
+
+`mode: exploratory`인 task는 `hypothesis_chain`을 `Build -> Learn -> Spec` 기록으로 사용합니다. 이 경우 실패는 즉시 중단 사유가 아니라 학습 결과이며, 반복 가능하거나 소유권이 분리되는 문제만 새 task/spec 후보로 승격합니다.
 
 실행 중 실패 report가 생성된 뒤 가설을 세워 해결한 경우, 최종 상태가 `pass`가 되더라도 실패 이력을 숨기지 않습니다. task에는 `had_failed_run: true`, `resolved_by_hypothesis: true`, `failed_run_count`, `resolved_attempt_no`를 남기고, `hypothesis_chain`에 아래 항목을 시도별로 기록합니다.
 
@@ -268,6 +277,8 @@ execution window가 끝났을 때 `100개 중 3개 실패 후 가설 해결, 최
 
 Command Intent Preflight는 사용자 명령이 시스템 안에서 실행 가능한 형태로 변환되었는지 확인하는 gate입니다.
 
+`main-v2`에서는 Command Intent Preflight를 모든 작업에 강제하지 않습니다. lifecycle, run, E2E, 다건 테스트, production/data/destructive 위험이 있는 실행에만 정식 gate로 적용합니다. 저위험 prototype이나 로컬 fixture 작성은 누락 정의가 있어도 합리적 가정으로 먼저 실행하고, 누락 정의는 learn 결과로 기록합니다.
+
 사용자가 실행 문제를 지적할 때 핵심 질문은 "왜 사용자 명령이 시스템 안에서 실행 가능한 형태로 전달되지 않았는가"입니다. 이는 단순한 잘못 인정이 아니라 진짜 원인을 찾아 제거하기 위한 분석 단위입니다.
 
 필수 확인 항목:
@@ -283,7 +294,7 @@ Command Intent Preflight는 사용자 명령이 시스템 안에서 실행 가�
 - destructive boundary
 - 실행 후 report/evidence 승격 위치
 
-하나라도 누락되면 정식 실행을 시작하지 않고, `누락된 정의`, `실행하면 위험한 이유`, `사용자에게 물어볼 항목`을 보고합니다.
+`main`에서는 하나라도 누락되면 정식 실행을 시작하지 않고, `누락된 정의`, `실행하면 위험한 이유`, `사용자에게 물어볼 항목`을 보고합니다. `main-v2`에서는 이 중단 규칙을 lifecycle, run, E2E, 다건 테스트, production/data/destructive 위험 실행에만 강제합니다.
 
 ### Shared Runtime
 
@@ -326,6 +337,7 @@ Shared Runtime은 0계층 SSoT가 아니라 프로젝트별 registry/status에�
 - summary
 - verification
 - coderabbit_review
+- codex_review
 - review_rounds
 - promoted_to_ssot
 - not_promoted
@@ -333,6 +345,8 @@ Shared Runtime은 0계층 SSoT가 아니라 프로젝트별 registry/status에�
 - merge_decision
 
 `coderabbit_review`에는 PR 전 CodeRabbit CLI 리뷰의 실행 여부, base branch, issue 수, 남은 critical/major 여부, 실패 또는 생략 사유를 기록합니다. GitHub 앱이 PR 생성 후 남긴 리뷰는 프로젝트별 repo 설정에 따른 외부 리뷰로 구분하고, 공통 SSoT에서는 보장된 gate로 간주하지 않습니다.
+
+`codex_review`에는 `main-v2`의 PR 전 Codex 리뷰 실행 여부, 리뷰 대상 diff, 발견한 major/critical 위험, 수정 여부, 재리뷰 결과, 실패 또는 생략 사유를 기록합니다. `main-v2`에서는 CodeRabbit을 기본 gate로 보지 않습니다.
 
 ## 승격 상태
 

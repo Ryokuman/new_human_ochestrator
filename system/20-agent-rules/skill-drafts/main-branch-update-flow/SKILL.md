@@ -19,6 +19,8 @@ description: 공통 규칙, AGENTS.md, system 문서, 프롬프트, skill 초안
 - skill 초안 추가/수정
 - 사용자 피드백을 장기 규칙으로 승격
 
+단, 사용자가 `main-v2`를 명시하면 이 스킬의 `main` 직접 업데이트 절차를 적용하지 않습니다. `main-v2`는 기존 `main`과 분리된 탐색형 운영 브랜치이며, branch-local 변경으로 먼저 진행할 수 있습니다.
+
 ## 원칙
 
 - main SSoT 수정은 현재 작업 브랜치에서 직접 하지 않습니다.
@@ -30,6 +32,7 @@ description: 공통 규칙, AGENTS.md, system 문서, 프롬프트, skill 초안
 - `진행해`, `작업 이어가`, `PR 만들어`, `main 업데이트`, `1. 승인`처럼 작업 또는 PR 생성 승인은 머지 승인으로 해석하지 않습니다.
 - PR이 머지된 뒤에만 원래 작업 브랜치를 최신 main 위로 rebase합니다.
 - 프로젝트 내부 실제 issue/task/coverage 결과는 main에 복사하지 않고, 반복 가능한 운영 규칙만 `system/`에 둡니다.
+- `main-v2` 변경은 `main`으로 자동 승격하지 않습니다.
 - `project/*` 브랜치는 프로젝트별 정보 보관용 장기 브랜치이며 main 병합 대상이 아닙니다. `project/*` 브랜치 작업에는 이 main 업데이트/PR 생성 흐름을 기본 적용하지 않습니다.
 
 ## 절차

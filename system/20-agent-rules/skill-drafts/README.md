@@ -9,6 +9,7 @@
 - 사용자가 특정 skill을 말하거나, 요청이 skill 설명과 맞으면 해당 `SKILL.md`를 먼저 읽습니다.
 - skill에 절차가 이미 정의되어 있으면 보고나 선택지에서 절차 전체를 반복하지 않고 skill 이름으로 압축합니다.
 - 공통 규칙, 프롬프트, `AGENTS.md`, skill 초안 변경은 `main-branch-update-flow`를 사용합니다.
+- `main-v2`에서는 기존 `main` 업데이트가 아니라 branch-local 탐색형 운영 변경으로 처리할 수 있습니다. 이때 `main`에는 자동 반영하지 않고, `Build -> Learn -> Spec` 원칙을 먼저 적용합니다.
 - skill 초안을 추가하거나 사용법을 바꾸면 이 README의 주요 skill 표와 관련 상위 README 또는 인덱스를 함께 갱신합니다.
 - README 또는 인덱스 갱신이 빠졌다면 skill 초안 변경은 완료로 보고하지 않습니다.
 - 프로젝트별 실제 issue, task, QA, coverage 결과는 이 디렉토리에 복사하지 않습니다.
@@ -28,6 +29,29 @@
 - [`page-lifecycle-runtime-flow`](page-lifecycle-runtime-flow/SKILL.md): page-lifecycle L 채점을 위해 단일 page를 생성하고 dynavite와 agent-browser로 확인해야 할 때 사용합니다.
 - [`add-dict`](add-dict/SKILL.md): 용어 추가, dict 정리, PR 본문 용어 점검, dictionary 변경이 필요할 때 사용합니다.
 - [`user-personality-adaptive-response`](user-personality-adaptive-response/SKILL.md): 사용자가 선택지, 보고 방식, 승인 경계, 톤이 맞지 않는다고 지적할 때 사용합니다.
+
+## main-v2 운영
+
+`main-v2`는 기존 `main`과 다른 탐색형 운영 브랜치입니다.
+
+```text
+Build -> Learn -> Spec
+```
+
+원칙:
+
+- 완벽한 설계보다 사용 가능한 첫 결과물을 우선합니다.
+- 불확실성이 남아도 합리적으로 가정하고 진행합니다.
+- 질문이 필요해도 저위험 구현은 멈추지 않습니다.
+- 구현 후 문제를 찾고, 그 문제를 새 spec/task/issue 후보로 승격합니다.
+- secret, production, destructive action, data SSoT, 보호 브랜치 직접 수정, 법적/IP 위험은 여전히 승인 gate입니다.
+
+리뷰 gate:
+
+- `main`: CodeRabbit 리뷰 gate
+- `main-v2`: Codex PR 리뷰 gate
+
+`main-v2`의 PR 본문에는 `CodeRabbit 자동 리뷰` 대신 `Codex PR 리뷰` 항목을 둡니다.
 
 ## Run Set과 runtime_set
 
