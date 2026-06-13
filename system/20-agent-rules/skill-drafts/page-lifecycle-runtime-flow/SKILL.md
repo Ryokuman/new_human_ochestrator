@@ -1,6 +1,6 @@
 ---
 name: page-lifecycle-runtime-flow
-description: Use when page-lifecycle, L0-L6 채점, 단일 page 테스트 사일로, dynamos-snapshot generate, dynavite runtime, agent-browser 확인 흐름을 정해야 할 때 사용합니다.
+description: page-lifecycle, L0-L6 채점, 단일 page 테스트 사일로, dynamos-snapshot generate, dynavite runtime, agent-browser 확인 흐름을 정해야 할 때 사용합니다.
 ---
 
 # Page Lifecycle Runtime Flow

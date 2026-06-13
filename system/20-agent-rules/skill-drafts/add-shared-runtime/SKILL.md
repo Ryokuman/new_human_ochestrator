@@ -43,7 +43,9 @@ shared runtime registry/status에는 최소 아래 후보 필드를 둡니다.
 | 필드 | 설명 |
 |---|---|
 | `project_id` | runtime을 사용하는 프로젝트 id |
+| `runtime_set` | 함께 준비하거나 참조할 runtime 묶음 이름 |
 | `runtime_name` | 사람이 구분할 수 있는 runtime 이름 |
+| `runtime_kind` | `server`, `source-checkout`, `service-mock`, `db-emulator`, `other` 같은 runtime 성격 |
 | `role` | `backend`, `frontend`, `worker`, `db-emulator`, `service-mock`, `generator`, `other` 같은 역할 |
 | `workspace_path` | workspace root 기준 runtime checkout 위치 |
 | `repo_remote` | token 없는 remote URL 또는 project SSoT의 repo reference |
@@ -52,7 +54,8 @@ shared runtime registry/status에는 최소 아래 후보 필드를 둡니다.
 | `purpose` | 어떤 task silo가 왜 참조하는지 |
 | `ports` | 노출 port 목록과 용도 |
 | `env_file_policy` | env 파일 경로와 주입 방식. 실제 secret 값은 쓰지 않음 |
-| `health_check_command` | runtime 준비 상태를 확인하는 명령 |
+| `requires_health_check` | 서버형 runtime처럼 실행 전 health gate가 필요한지 여부 |
+| `health_check` | runtime 준비 상태를 확인하는 명령, URL, 기대 결과, timeout, 실패 시 조치 |
 | `owner` | 관리 주체. 예: `main-orchestrator`, `project-maintainer` |
 | `last_checked` | 마지막 확인 시각 또는 확인 필요 상태 |
 | `linked_tasks` | 이 runtime을 참조한 task/issue/silo 목록 |
