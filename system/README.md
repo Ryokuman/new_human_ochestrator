@@ -29,7 +29,7 @@
 Build -> Learn -> Spec
 ```
 
-`main-v2`에서는 완벽한 설계보다 가장 빠르게 사용 가능한 결과물을 우선합니다. 불확실성이 있어도 합리적으로 가정하고 진행하며, 구현 후 발견한 문제를 새 spec, task, issue, SSoT 승격 후보로 정리합니다. PR 리뷰 gate는 CodeRabbit이 아니라 PR 댓글의 수동 `@codex review`를 기본으로 둡니다. 변경 이후에도 승인 또는 actionable major/critical 및 보호 절차를 깨는 P1/P2 없음 상태가 될 때까지 최대 3회까지 수동 재호출합니다.
+`main-v2`에서는 완벽한 설계보다 가장 빠르게 사용 가능한 결과물을 우선합니다. 불확실성이 있어도 합리적으로 가정하고 진행하며, 구현 후 발견한 문제를 새 spec, task, issue, SSoT 승격 후보로 정리합니다. PR 리뷰 gate는 CodeRabbit이 아니라 PR 댓글의 수동 `@codex review`를 기본으로 둡니다. 변경 이후에도 승인 또는 actionable major/critical 및 보호 절차를 깨는 P1/P2 없음 상태가 될 때까지 최대 5회까지 수동 재호출합니다.
 
 ## 읽는 순서
 

@@ -54,7 +54,7 @@ description: 레거시 main 업데이트 절차 문서입니다. 이 프로젝�
 12. PR base branch가 `main-v2`인지 확인합니다.
 13. PR 댓글로 수동 `@codex review`를 호출합니다.
 14. Codex 리뷰 결과와 호출 횟수를 PR 본문에 기록합니다.
-15. major/critical 지적 또는 P1/P2처럼 보호 절차를 깨는 지적이 있으면 수정 후 최대 3회까지 수동 재호출합니다.
+15. major/critical 지적 또는 P1/P2처럼 보호 절차를 깨는 지적이 있으면 수정 후 최대 5회까지 수동 재호출합니다.
 16. PR URL, 상태, mergeable 여부, Codex 리뷰 gate 상태를 확인해 보고합니다.
 17. 사용자의 명시 머지 승인이 있으면 PR을 머지합니다.
 18. 머지했다면 `state`, `mergedAt`, `mergeCommit`을 재조회해 보고합니다.
