@@ -110,6 +110,8 @@ Issue는 0계층 SSoT가 아니라 project SSoT에 저장합니다.
 
 Task는 0계층 SSoT가 아니라 project SSoT에 저장합니다.
 
+모든 task 명세서는 읽고 실행 범위를 파악하는 시간이 기본 5분을 넘지 않도록 작성합니다. 최대 허용치는 7분입니다. 7분을 넘길 분량이면 task를 분할하거나, 상단에 5분 이내로 읽을 수 있는 실행 요약, 금지선, acceptance criteria, test plan을 먼저 둡니다.
+
 필드:
 
 - id
