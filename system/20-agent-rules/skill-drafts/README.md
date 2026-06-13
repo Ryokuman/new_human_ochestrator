@@ -19,7 +19,7 @@
 
 아래 목록은 이 디렉토리의 `*/SKILL.md` 기준 사용 가능한 skill 초안 전체입니다.
 
-- [`main-branch-update-flow`](main-branch-update-flow/SKILL.md): 레거시 main 업데이트 절차 문서입니다. 이 프로젝트에서는 실행하지 않고 `main-v2` 기준 업데이트만 사용합니다.
+- [`main-branch-update-flow`](main-branch-update-flow/SKILL.md): 공통 SSoT, 프롬프트, `AGENTS.md`, skill 초안 변경을 `main-v2` 파생 브랜치와 PR로만 반영할 때 사용합니다.
 - [`root-layer-manager`](root-layer-manager/SKILL.md): 정보가 0~3계층 중 어디에 속하는지 판단해야 할 때 사용합니다.
 - [`projects-setup`](projects-setup/SKILL.md): 새 프로젝트를 `projects/` 구조에 등록하거나 project SSoT와 사일로 config를 함께 셋업해야 할 때 사용합니다.
 - [`add-shared-runtime`](add-shared-runtime/SKILL.md): 여러 task silo가 함께 참조하는 프로젝트별 shared runtime set을 등록하거나 준비할 때 사용합니다.
@@ -51,7 +51,7 @@ Build -> Learn -> Spec
 - `main`: CodeRabbit 리뷰 gate
 - `main-v2`: 수동 `@codex review` gate
 
-`main-v2`의 PR 본문에는 `CodeRabbit 자동 리뷰` 대신 `Codex PR 리뷰` 항목을 둡니다.
+`main-v2`의 PR은 생성 직후 base branch가 `main-v2`인지 확인하고, PR 댓글로 수동 `@codex review`를 호출합니다. PR 본문에는 `CodeRabbit 자동 리뷰` 대신 `Codex PR 리뷰` 항목을 두고, 호출 횟수와 결과를 기록합니다.
 
 ## Run Set과 runtime_set
 

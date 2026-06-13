@@ -36,6 +36,7 @@ description: 레거시 main 업데이트 절차 문서입니다. 이 프로젝�
 - 프로젝트 내부 실제 issue/task/coverage 결과는 main에 복사하지 않고, 반복 가능한 운영 규칙만 `system/`에 둡니다.
 - `main-v2` 변경은 `main`으로 승격하지 않습니다.
 - `project/*` 브랜치는 프로젝트별 정보 보관용 장기 브랜치이며 `main-v2` 병합 대상이 아닙니다. `project/*` 브랜치 작업에는 이 `main-v2` 업데이트/PR 생성 흐름을 기본 적용하지 않습니다.
+- PR 생성 후에는 Codex 수동 리뷰 gate를 통과해야 하며, CodeRabbit 자동 리뷰를 이 gate로 대체하지 않습니다.
 
 ## 절차
 
@@ -50,12 +51,16 @@ description: 레거시 main 업데이트 절차 문서입니다. 이 프로젝�
 9. 한국어 커밋을 만듭니다.
 10. 작업 브랜치를 push합니다.
 11. 한국어 제목/본문으로 PR을 만듭니다.
-12. PR URL, 상태, mergeable 여부를 확인해 보고합니다.
-13. 사용자의 명시 머지 승인이 있으면 PR을 머지합니다.
-14. 머지했다면 `state`, `mergedAt`, `mergeCommit`을 재조회해 보고합니다.
-15. PR이 머지된 뒤에도 `main`을 fetch/rebase 기준으로 쓰지 않습니다.
-16. `main-v2` 기준으로 원격 추적 상태와 dirty state를 확인합니다.
-17. worktree 정리 여부를 보고합니다.
+12. PR base branch가 `main-v2`인지 확인합니다.
+13. PR 댓글로 수동 `@codex review`를 호출합니다.
+14. Codex 리뷰 결과와 호출 횟수를 PR 본문에 기록합니다.
+15. major/critical 지적 또는 P1/P2처럼 보호 절차를 깨는 지적이 있으면 수정 후 최대 3회까지 수동 재호출합니다.
+16. PR URL, 상태, mergeable 여부, Codex 리뷰 gate 상태를 확인해 보고합니다.
+17. 사용자의 명시 머지 승인이 있으면 PR을 머지합니다.
+18. 머지했다면 `state`, `mergedAt`, `mergeCommit`을 재조회해 보고합니다.
+19. PR이 머지된 뒤에도 `main`을 fetch/rebase 기준으로 쓰지 않습니다.
+20. `main-v2` 기준으로 원격 추적 상태와 dirty state를 확인합니다.
+21. worktree 정리 여부를 보고합니다.
 
 ## 보기 3개 규칙
 
