@@ -53,6 +53,21 @@
 | `60-final-prompts/` | 실제 복붙하거나 설치할 최종 프롬프트 초안 |
 | `90-archive/` | 더 이상 중심이 아닌 보관 자료 |
 
+## 사용 가능한 skill 초안
+
+전체 사용법은 [`20-agent-rules/skill-drafts/README.md`](20-agent-rules/skill-drafts/README.md)를 기준으로 봅니다.
+
+- [`add-dict`](20-agent-rules/skill-drafts/add-dict/SKILL.md)
+- [`add-shared-runtime`](20-agent-rules/skill-drafts/add-shared-runtime/SKILL.md)
+- [`command-intent-preflight`](20-agent-rules/skill-drafts/command-intent-preflight/SKILL.md)
+- [`delete-shared-runtime`](20-agent-rules/skill-drafts/delete-shared-runtime/SKILL.md)
+- [`main-branch-update-flow`](20-agent-rules/skill-drafts/main-branch-update-flow/SKILL.md)
+- [`page-lifecycle-runtime-flow`](20-agent-rules/skill-drafts/page-lifecycle-runtime-flow/SKILL.md)
+- [`projects-setup`](20-agent-rules/skill-drafts/projects-setup/SKILL.md)
+- [`root-layer-manager`](20-agent-rules/skill-drafts/root-layer-manager/SKILL.md)
+- [`shared-runtime-health-check`](20-agent-rules/skill-drafts/shared-runtime-health-check/SKILL.md)
+- [`user-personality-adaptive-response`](20-agent-rules/skill-drafts/user-personality-adaptive-response/SKILL.md)
+
 ## Git 포함 기준
 
 git에 남길 것은 프로젝트에 독립적인 코어 문서입니다.
