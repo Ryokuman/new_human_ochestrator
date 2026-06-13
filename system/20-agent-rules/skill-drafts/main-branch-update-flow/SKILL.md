@@ -3,11 +3,11 @@ name: main-branch-update-flow
 description: 레거시 main 업데이트 절차 문서입니다. 이 프로젝트에서는 main을 절대로 작업 대상으로 쓰지 않으며, 공통 규칙, AGENTS.md, system 문서, 프롬프트, skill 초안 변경은 main-v2 기준으로만 처리합니다.
 ---
 
-# Main Branch Update Flow
+# Main-v2 Update Flow
 
-이 문서는 레거시 `main` 업데이트 절차를 설명합니다.
+이 문서는 공통 SSoT를 `main-v2` 기준으로 업데이트하는 절차를 설명합니다.
 
-현재 프로젝트에서는 이 절차를 실행하지 않습니다. `main-v2`는 new main 보호 브랜치이며, `main` checkout, `origin/main` 기준 worktree 생성, `main` 대상 PR, `main` merge, `main` rebase는 금지합니다. `main-v2` 직접 commit/push도 금지하고, 항상 파생 작업 브랜치와 PR로 반영합니다.
+현재 프로젝트에서는 레거시 `main` 업데이트 절차를 실행하지 않습니다. `main-v2`는 new main 보호 브랜치이며, `main` checkout, `origin/main` 기준 worktree 생성, `main` 대상 PR, `main` merge, `main` rebase는 금지합니다. `main-v2` 직접 commit/push도 금지하고, 항상 파생 작업 브랜치와 PR로 반영합니다.
 
 ## 적용 시점
 

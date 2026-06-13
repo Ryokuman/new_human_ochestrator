@@ -174,9 +174,9 @@
 - `@codex review`는 base branch가 `main-v2`인 PR에서만 호출합니다. base branch가 `main`이면 먼저 PR 대상을 `main-v2`로 바꾸도록 보고하고 리뷰를 호출하지 않습니다.
 - Codex PR 리뷰는 변경 diff, task 목표, 실행한 검증, 남은 위험, SSoT 승격 후보를 대상으로 합니다.
 - 리뷰 결과는 PR 본문에 `Codex PR 리뷰` 항목으로 기록합니다.
-- critical 또는 major 수준 correctness/security/data-loss 위험이 있으면 먼저 수정하고 Codex PR 리뷰를 재호출합니다.
-- 변경 이후에도 Codex PR 리뷰가 `승인` 또는 actionable major/critical 없음 상태가 될 때까지 최대 3회까지 수동 재호출합니다.
-- 3회 수동 호출 후에도 남은 major/critical 항목은 더 반복하지 않고 `사용자 판단 필요` 또는 `의도된 남은 위험`으로 분리합니다.
+- critical 또는 major 수준 correctness/security/data-loss 위험이나 보호 절차를 깨는 P1/P2 지적이 있으면 먼저 수정하고 Codex PR 리뷰를 재호출합니다.
+- 변경 이후에도 Codex PR 리뷰가 `승인` 또는 actionable major/critical 및 보호 절차를 깨는 P1/P2 없음 상태가 될 때까지 최대 3회까지 수동 재호출합니다.
+- 3회 수동 호출 후에도 남은 major/critical 또는 보호 절차 P1/P2 항목은 더 반복하지 않고 `사용자 판단 필요` 또는 `의도된 남은 위험`으로 분리합니다.
 - Codex 리뷰가 실패했거나 도구 실행이 불가능하면 실패 원인과 대체 수동 검토 범위를 분리해서 기록합니다.
 - `main-v2`에서 CodeRabbit 결과를 Codex 리뷰처럼 보고하지 않습니다.
 
