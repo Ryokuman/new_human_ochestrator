@@ -55,7 +55,7 @@ shared runtime registry/status에는 최소 아래 후보 필드를 둡니다.
 | `ports` | 노출 port 목록과 용도 |
 | `env_file_policy` | env 파일 경로와 주입 방식. 실제 secret 값은 쓰지 않음 |
 | `requires_health_check` | 서버형 runtime처럼 실행 전 health gate가 필요한지 여부 |
-| `health_check` | runtime 준비 상태를 확인하는 명령, URL, 기대 결과, timeout, 실패 시 조치 |
+| `health_check` | registry/status에서는 `command`, `url`, `expected`, `timeout_seconds`, `on_fail`을 담는 구조화 객체. `requires_health_check: false`이면 `skipped_reason`을 기록 |
 | `owner` | 관리 주체. 예: `main-orchestrator`, `project-maintainer` |
 | `last_checked` | 마지막 확인 시각 또는 확인 필요 상태 |
 | `linked_tasks` | 이 runtime을 참조한 task/issue/silo 목록 |
@@ -92,6 +92,8 @@ Shared runtime:
 - health_check: <command> -> <result>
 - env_policy: <env file path or secret provider policy, no secret values>
 ```
+
+위 `goal.md`의 `health_check: <command> -> <result>`는 사람이 읽는 요약입니다. registry/status 원본에는 `requires_health_check`와 구조화된 `health_check` 객체를 사용하고, `system/config/shared-runtime-registry.example.yaml`의 `command`, `url`, `expected`, `timeout_seconds`, `on_fail` 또는 `skipped_reason` 형식을 따릅니다.
 
 shared runtime 자체 수정이 필요하면 현재 task PR에 섞지 않고 별도 task/branch/PR 후보로 보고합니다.
 
