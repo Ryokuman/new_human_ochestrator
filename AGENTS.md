@@ -12,8 +12,10 @@
 
 - 이 프로젝트의 유일한 작업 기준 브랜치는 `main-v2`입니다.
 - `main`은 레거시 보존 브랜치이며 절대로 checkout, commit, push, PR, merge, rebase, cherry-pick, worktree 기준으로 사용하지 않습니다.
+- `main-v2`는 new main이자 보호 브랜치입니다. 직접 commit하거나 push하지 않습니다.
 - `main-v2`는 탐색형 제품 엔지니어 운영 방식 기준 브랜치입니다. `main-v2`는 `Build -> Learn -> Spec`을 우선하고, 빠른 사용 가능 결과물을 만든 뒤 학습 내용을 SSoT/task/spec으로 승격합니다.
 - `main-v2` 변경은 `main`에 반영하지 않습니다. 사용자 요청이 있더라도 이 프로젝트에서는 `main` 반영 대신 `main-v2` 안에서만 후속 브랜치, PR, 문서 승격을 다룹니다.
+- `main-v2` 변경은 항상 `main-v2`에서 파생한 단기 브랜치에서 커밋하고, base branch가 `main-v2`인 PR로만 반영합니다.
 - `main-v2`에서 PR 리뷰 gate는 CodeRabbit이 아니라 PR 댓글의 수동 `@codex review`를 기본으로 둡니다.
 - `main-v2`에서 CodeRabbit 관련 문구는 레거시 설명이 필요한 경우에만 남기고, 실행 gate로 사용하지 않습니다.
 
@@ -74,10 +76,10 @@
 ## Branch Lifecycle Policy
 
 - `main`은 레거시 보존 브랜치입니다. 삭제하지 않지만 작업, 추적 확인, rebase 기준으로 사용하지 않습니다.
-- `main-v2`는 탐색형 제품 엔지니어 운영 기준 브랜치이며 삭제하지 않습니다. 모든 공통 운영 변경은 `main-v2` 기준으로만 처리합니다.
+- `main-v2`는 탐색형 제품 엔지니어 운영 기준 보호 브랜치이며 삭제하지 않습니다. 모든 공통 운영 변경은 `main-v2`에서 파생한 단기 브랜치와 PR로만 처리합니다.
 - `project/*`는 프로젝트별 정보 보관용 장기 브랜치이며 `main-v2` 병합 대상이 아닙니다.
 - `silo/*`는 task PR 제출용 단기 브랜치입니다. PR 머지 후 `state`, `mergedAt`, `mergeCommit`을 재조회하고 clean 상태, ahead 없음, PR/패치 대응 관계가 확인되면 로컬 브랜치를 삭제합니다.
-- `docs/*`, `chore/*` 같은 `main-v2` 업데이트용 단기 브랜치는 PR 머지 확인 후 로컬 브랜치와 연결 worktree를 정리합니다.
+- `docs/*`, `chore/*` 같은 `main-v2` 업데이트용 단기 브랜치는 PR이 `main-v2`에 머지된 것을 확인한 뒤 로컬 브랜치와 연결 worktree를 정리합니다.
 - `repair/*`는 conflict 해결이나 이력 복구용 임시 브랜치입니다. 원 PR 또는 대체 PR 머지와 패치 동등성을 확인한 뒤 `삭제 후보`로 보고하고, 자동 삭제하지 않습니다.
 - 브랜치 정리 전에는 작업트리가 clean인지 확인하고 `git fetch --all --prune` 이후 상태를 기준으로 판단합니다.
 - 열린 PR의 head 브랜치는 보존합니다. upstream이 살아 있어도 PR 머지와 로컬 안전 조건이 확인된 브랜치는 로컬 삭제 대상이 될 수 있으며, 원격 head는 별도 확인 대상으로 보고합니다.
@@ -172,9 +174,9 @@
 - `@codex review`는 base branch가 `main-v2`인 PR에서만 호출합니다. base branch가 `main`이면 먼저 PR 대상을 `main-v2`로 바꾸도록 보고하고 리뷰를 호출하지 않습니다.
 - Codex PR 리뷰는 변경 diff, task 목표, 실행한 검증, 남은 위험, SSoT 승격 후보를 대상으로 합니다.
 - 리뷰 결과는 PR 본문에 `Codex PR 리뷰` 항목으로 기록합니다.
-- critical 또는 major 수준 correctness/security/data-loss 위험이 있으면 먼저 수정하고 Codex PR 리뷰를 재호출합니다.
-- 변경 이후에도 Codex PR 리뷰가 `승인` 또는 actionable major/critical 없음 상태가 될 때까지 최대 3회까지 수동 재호출합니다.
-- 3회 수동 호출 후에도 남은 major/critical 항목은 더 반복하지 않고 `사용자 판단 필요` 또는 `의도된 남은 위험`으로 분리합니다.
+- critical 또는 major 수준 correctness/security/data-loss 위험이나 보호 절차를 깨는 P1/P2 지적이 있으면 먼저 수정하고 Codex PR 리뷰를 재호출합니다.
+- 변경 이후에도 Codex PR 리뷰가 `승인` 또는 actionable major/critical 및 보호 절차를 깨는 P1/P2 없음 상태가 될 때까지 최대 5회까지 수동 재호출합니다.
+- 5회 수동 호출 후에도 남은 major/critical 또는 보호 절차 P1/P2 항목은 더 반복하지 않고 `사용자 판단 필요` 또는 `의도된 남은 위험`으로 분리합니다.
 - Codex 리뷰가 실패했거나 도구 실행이 불가능하면 실패 원인과 대체 수동 검토 범위를 분리해서 기록합니다.
 - `main-v2`에서 CodeRabbit 결과를 Codex 리뷰처럼 보고하지 않습니다.
 
@@ -265,9 +267,10 @@
 
 - 공통 규칙, 스킬 초안, 프롬프트, AGENTS.md, system 문서 변경은 `main-v2` 기준으로만 처리합니다.
 - `main`은 절대로 작업 기준으로 사용하지 않습니다. `main` checkout, `origin/main` 기준 worktree 생성, `main` 대상 PR, `main` merge, `main` rebase는 금지합니다.
-- 현재 `main-v2`에서 직접 수정하거나, 필요한 경우 `main-v2`에서 파생한 단기 브랜치를 만들어 PR을 생성합니다.
+- `main-v2`도 보호 브랜치이므로 직접 commit/push하지 않습니다.
+- 항상 `main-v2`에서 파생한 단기 브랜치를 만들고, 변경은 해당 브랜치에서 커밋한 뒤 base branch가 `main-v2`인 PR로 제출합니다.
 - PR 머지는 `PR Merge Approval Policy`의 명시 승인 후에만 수행합니다. 머지 확인 후에도 `main`으로 rebase하지 않고 `main-v2` 기준으로만 정리합니다.
-- remote 접근 계정이 맞지 않아 fetch/push가 실패하면 먼저 계정과 remote를 복구하되, 복구 후에도 대상 브랜치는 `main-v2`로 제한합니다.
+- remote 접근 계정이 맞지 않아 fetch/push가 실패하면 먼저 계정과 remote를 복구하되, 복구 후에도 직접 push 대상은 `main-v2`가 아니라 파생 작업 브랜치로 제한합니다.
 
 ## Reporting
 
