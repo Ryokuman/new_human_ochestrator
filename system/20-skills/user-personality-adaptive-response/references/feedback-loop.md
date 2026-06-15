@@ -31,23 +31,33 @@
 
 감정 해석은 기록하지 않습니다.
 
-## 보기 밖 선택 보고서
+## 보기 밖 선택 Evidence
 
-사용자가 보기 1~3 대신 직접 답변하면, 답변 직후 퍼스널리티 업데이트 보고서 후보를 만듭니다.
+사용자가 보기 1~3 대신 직접 답변하면, 답변 직후 로컬 evidence를 반드시 남깁니다.
 
 보고 전 사용자에게 알릴 문구:
 
 ```text
-`user-personality-adaptive-response` 스킬을 사용하여 백그라운드 에이전트로 퍼스널리티 업데이트 보고서를 작성합니다.
+`user-personality-adaptive-response` 스킬 기준으로 보기 밖 선택 evidence를 남겼습니다.
 ```
 
-보고서 저장 위치:
+evidence 저장 위치:
 
 ```text
-system/50-feedback-personality-loop/personality-update-report.template.md
+local/personality-feedback-log/evidence/YYYY-MM-DD-<short-topic>.md
 ```
 
-보고서는 gitignore된 로컬 자료입니다. 템플릿만 git에 포함합니다.
+evidence는 gitignore된 로컬 자료입니다. 승격이 될지 아닐지는 evidence 작성 시점에 확정하지 않습니다.
+
+보고서 후보는 사용자가 원하는 주기로 퍼스널리티 검토 세션을 열 때 여러 evidence를 묶어 작성합니다.
+
+보고서 후보 저장 위치:
+
+```text
+local/personality-feedback-log/reports/YYYY-MM-DD-personality-update-report.md
+```
+
+보고서 형식은 `system/50-feedback-personality-loop/personality-update-report.template.md`를 따릅니다. 템플릿만 git에 포함합니다.
 
 실제 업데이트 승인 보기:
 
@@ -61,7 +71,7 @@ system/50-feedback-personality-loop/personality-update-report.template.md
 
 ### Tier 1: 현재 thread
 
-일회성 교정에 사용합니다.
+현재 답변부터 즉시 적용합니다. 단, 응답 계약에 영향을 주는 사건이면 로컬 evidence도 남깁니다.
 
 ```text
 Current-thread rule: 이 작업에서는 파일 수정 전에 승인 단위를 먼저 제시합니다.
@@ -69,7 +79,7 @@ Current-thread rule: 이 작업에서는 파일 수정 전에 승인 단위를 �
 
 ### Tier 2: 메모리 또는 프롬프트 노트
 
-반복될 수 있는 규칙이면 사용합니다.
+사용자 주도 검토 세션에서 반복될 수 있는 규칙으로 판단하면 사용합니다.
 
 ```markdown
 Title: 응답 miss - 승인 민감 편집 전에 선택지 누락
@@ -84,7 +94,7 @@ Promotion status: memory
 
 ### Tier 3: 장기 규칙
 
-다음 경우에만 사용합니다.
+사용자 주도 검토 세션에서 다음 경우에만 사용합니다.
 
 - 사용자가 영구 반영을 명시적으로 요청
 - 관련 miss가 3회 이상 있고 사용자가 승격 승인
@@ -103,7 +113,7 @@ Promotion status: memory
 2. 충돌하면 같은 scope에서는 최신 명시 교정을 우선합니다.
 3. 과적합을 피하기 위해 scope를 좁힙니다.
 4. confidence를 표시합니다.
-5. 보고서 후보를 만든 뒤 사용자 승인 여부를 확인합니다.
+5. 사용자 주도 검토 세션에서 evidence를 묶어 보고서 후보를 만든 뒤 사용자 승인 여부를 확인합니다.
 6. 승인된 내용만 실제 공통 규칙, 역할별 agent 프롬프트, 또는 스킬 초안에 반영합니다.
 7. 바로 다음 답변부터 승인된 규칙을 적용합니다.
 
