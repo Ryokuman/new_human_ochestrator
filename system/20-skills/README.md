@@ -28,7 +28,7 @@
 - [`command-intent-preflight`](command-intent-preflight/SKILL.md): lifecycle, run, E2E, 다건 테스트 사일로 실행 전에 실행 전제가 완성됐는지 확인해야 할 때 사용합니다.
 - [`page-lifecycle-runtime-flow`](page-lifecycle-runtime-flow/SKILL.md): page-lifecycle L 채점을 위해 단일 page를 생성하고 dynavite와 agent-browser로 확인해야 할 때 사용합니다.
 - [`add-dict`](add-dict/SKILL.md): 용어 추가, dict 정리, PR 본문 용어 점검, dictionary 변경이 필요할 때 사용합니다.
-- [`user-personality-adaptive-response`](user-personality-adaptive-response/SKILL.md): 사용자가 선택지, 보고 방식, 승인 경계, 톤이 맞지 않는다고 지적할 때 사용합니다. 응답 계약에 영향을 주는 사건은 로컬 evidence로 반드시 남기고, 장기 규칙 반영은 사용자가 원하는 주기로 여는 검토 세션에서 판단합니다.
+- [`user-personality-adaptive-response`](user-personality-adaptive-response/SKILL.md): 사용자가 선택지, 보고 방식, 승인 경계, skill 사용 누락, 톤이 맞지 않는다고 지적할 때 사용합니다. 외부 skill 목록에 보이지 않아도 repo-local `system/20-skills/`에 같은 skill이 있는지 확인합니다. 응답 계약에 영향을 주는 사건은 로컬 evidence로 반드시 남기고, 장기 규칙 반영은 사용자가 원하는 주기로 여는 검토 세션에서 판단합니다.
 
 ## main-v2 운영
 

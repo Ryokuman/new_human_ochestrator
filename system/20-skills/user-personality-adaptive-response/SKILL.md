@@ -36,6 +36,19 @@ description: 사용자의 작업 방식, 응답 선호, 승인 경계, 피드백
 5. 사용자가 응답이 빗나갔다고 말하면 피드백 루프를 실행하고 evidence를 남깁니다.
 6. 사용자가 보기 1~3 대신 직접 답변하면 보기 밖 선택 루프를 실행하고 evidence를 남깁니다.
 
+## Repo-local skill 확인
+
+사용자가 이 스킬 자체, 퍼스널리티 업데이트, 선택지 정책, 보고 방식, 승인 경계 누락을 지적했는데 세션의 외부 skill 목록에 `user-personality-adaptive-response`가 없으면 바로 "없다"고 단정하지 않습니다.
+
+먼저 현재 repo 또는 workspace의 repo-local skill 위치를 확인합니다.
+
+```text
+system/20-skills/user-personality-adaptive-response/SKILL.md
+system/20-skills/<관련-skill>/SKILL.md
+```
+
+repo-local skill이 있으면 해당 `SKILL.md`와 직접 연결된 references를 읽고 이 스킬 기준으로 처리합니다. 그래도 없을 때만 사용 불가 사유를 말하고 fallback으로 evidence를 남깁니다.
+
 ## 태스크 실행 사일로 기본값
 
 사용자가 task 실행, 태스크 진행, task 수행을 요청하면, 이는 단순 계획 요청이 아니라 사일로 준비 실행 요청입니다.

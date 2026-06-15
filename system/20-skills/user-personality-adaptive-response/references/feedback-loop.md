@@ -18,6 +18,16 @@
 
 그 다음 원래 작업을 계속합니다.
 
+## Skill 탐색 누락 처리
+
+사용자가 특정 skill을 언급했거나, 이 스킬이 적용되어야 할 피드백을 했는데 세션의 외부 skill 목록에 보이지 않으면 repo-local skill도 확인합니다.
+
+```text
+system/20-skills/<skill-name>/SKILL.md
+```
+
+repo-local skill이 있으면 해당 지침을 읽고 적용합니다. 외부 목록과 repo-local skill이 충돌하면 현재 repo의 AGENTS.md, system 문서, 해당 skill 본문 순서로 우선합니다.
+
 ## 기록할 내용
 
 업무 관련 사실만 기록합니다.
