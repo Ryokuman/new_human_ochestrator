@@ -2,7 +2,7 @@
 
 ## Scope
 
-이 저장소는 여러 프로젝트에서 재사용할 수 있는 에이전트 운영 규칙, 프롬프트, 계층 관리 skill 초안을 보관합니다.
+이 저장소는 여러 프로젝트에서 재사용할 수 있는 에이전트 운영 규칙, 프롬프트, 계층 관리 repo skill을 보관합니다.
 
 최종 정의는 `system/`을 기준으로 봅니다.
 
@@ -16,8 +16,7 @@
 - `main-v2`는 탐색형 제품 엔지니어 운영 방식 기준 브랜치입니다. `main-v2`는 `Build -> Learn -> Spec`을 우선하고, 빠른 사용 가능 결과물을 만든 뒤 학습 내용을 SSoT/task/spec으로 승격합니다.
 - `main-v2` 변경은 `main`에 반영하지 않습니다. 사용자 요청이 있더라도 이 프로젝트에서는 `main` 반영 대신 `main-v2` 안에서만 후속 브랜치, PR, 문서 승격을 다룹니다.
 - `main-v2` 변경은 항상 `main-v2`에서 파생한 단기 브랜치에서 커밋하고, base branch가 `main-v2`인 PR로만 반영합니다.
-- `main-v2`에서 PR 리뷰 gate는 CodeRabbit이 아니라 PR 댓글의 수동 `@codex review`를 기본으로 둡니다.
-- `main-v2`에서 CodeRabbit 관련 문구는 레거시 설명이 필요한 경우에만 남기고, 실행 gate로 사용하지 않습니다.
+- `main-v2`에서 PR 리뷰 gate는 PR 댓글의 수동 `@codex review`를 기본으로 둡니다.
 
 ## Exploratory Product Engineering Policy
 
@@ -37,16 +36,17 @@
 2. `system/00-system-overview/계층-구조와-관리-원칙.md`
 3. `system/00-system-overview/전체-시스템-개요.md`
 4. `system/10-ssot/SSoT-스키마-초안.md`
-5. `system/20-agent-rules/skill-drafts/root-layer-manager/SKILL.md`
-6. `system/20-agent-rules/references/agent-md-reinforcement-guide.md`
-7. `system/60-final-prompts/메인-오케스트레이터-프롬프트-초안.md`
+5. `system/10-agents/main.md`
+6. `system/20-skills/README.md`
+7. `system/20-skills/root-layer-manager/SKILL.md`
+8. `system/50-feedback-personality-loop/README.md`
 
 ## Layer Policy
 
 요청을 받으면 먼저 계층을 판정합니다.
 
 ```text
-0계층: 공통 규칙, skill, config template, profile template, 계층 운영 방식
+0계층: 공통 규칙, skill, config template, 역할별 agent prompt, 계층 운영 방식
 1계층: project 등록, fork/submodule/external clone 연결, project SSoT 위치
 2계층: project 내부 issue/task/QA/decision/coverage/runbook
 3계층: silo 로컬 발견, local task, 실험 로그, PR 전 임시 상태
@@ -69,7 +69,7 @@
 - `project/*` 브랜치에는 특정 프로젝트의 실제 제품 코드, issue/task 원문, QA 결과 원문을 무분별하게 복사하지 않습니다. 필요한 경우 프로젝트별 SSoT 위치와 요약 색인만 둡니다.
 - `project/*` 브랜치 작업에는 `main-branch-update-flow`의 PR 생성/머지 절차를 기본 적용하지 않습니다.
 - `project/*` 브랜치에서 발견한 반복 가능한 운영 규칙만 별도 사용자 요청이 있을 때 `main-v2` 업데이트 후보로 분리합니다.
-- `project/*` 브랜치가 최신 `main-v2` 위로 rebase되어 있지 않아 rebase할 때는, 먼저 `main-v2`에서 변경된 공통 규칙, AGENTS.md, system 문서, 프롬프트, skill 초안을 확인합니다.
+- `project/*` 브랜치가 최신 `main-v2` 위로 rebase되어 있지 않아 rebase할 때는, 먼저 `main-v2`에서 변경된 공통 규칙, AGENTS.md, system 문서, 프롬프트, repo skill을 확인합니다.
 - rebase 후에는 현재 project 브랜치의 SSoT, task, issue, 실행 방식이 새 `main-v2` 규칙과 맞지 않는 부분을 찾아 `완료된 것`, `아직 안 된 것`, `규칙 불일치`, `조치 후보`로 분리해 보고합니다.
 - 이 규칙 확인은 project 브랜치를 `main-v2`에 머지하라는 뜻이 아닙니다. project 브랜치는 계속 장기 정보 브랜치로 유지하고, 반복 가능한 운영 규칙만 별도 `main-v2` 업데이트 후보로 분리합니다.
 
@@ -86,18 +86,18 @@
 - ahead 커밋이 있거나 PR/패치 대응 관계가 불명확한 브랜치는 삭제하지 않고 `위험`으로 보고합니다.
 - 브랜치 정리 보고는 `삭제됨`, `보존`, `삭제 후보`, `위험`을 분리합니다.
 
-## Reference Policy
+## Agent Rule Update Policy
 
-에이전트 md, AGENTS.md, CLAUDE.md, 프롬프트, skill 초안이 빈약하다는 피드백을 받으면 바로 새 규칙을 상상해서 추가하지 않습니다.
+에이전트 md, AGENTS.md, CLAUDE.md, 프롬프트, repo skill이 빈약하다는 피드백을 받으면 바로 새 규칙을 상상해서 추가하지 않습니다.
 
-먼저 `system/20-agent-rules/references/`를 사용합니다.
+먼저 `system/50-feedback-personality-loop/` 기준으로 피드백 유형, 적용 범위, 증거 등급, 승격 여부를 분리합니다.
 
-- 프로젝트 맥락이 부족하면 `project-context-reference-template.md` 기준으로 기존 프로젝트 운영 패턴을 정리합니다.
-- PR 리뷰 기준이 부족하면 `pr-review-reference-template.md` 기준으로 반복 피드백을 정리합니다.
-- 보고 방식이나 퍼스널리티 판단이 부족하면 `reporting-and-personality-reference-template.md` 기준으로 관찰, 해석, 승인 상태를 분리합니다.
-- 보강 절차 전체가 필요하면 `agent-md-reinforcement-guide.md`를 따릅니다.
+- 프로젝트 맥락이 부족하면 project SSoT 위치와 반복 가능한 운영 패턴만 정리합니다.
+- PR 리뷰 기준이 부족하면 `system/40-pr-review-loop/` 기준과 실제 반복 피드백을 대조합니다.
+- 보고 방식이나 퍼스널리티 판단이 부족하면 `system/50-feedback-personality-loop/`에서 관찰, 해석, 승인 상태를 분리합니다.
+- 역할별 실행 규칙이 부족하면 `system/10-agents/<agent>/README.md`와 `main-prompt.md`를 함께 갱신합니다.
 
-에이전트 md에는 reference 원문을 모두 넣지 않습니다. 언제 어떤 reference를 읽을지, 어떤 기준으로 장기 규칙에 반영할지만 넣습니다.
+에이전트 md에는 프로젝트 내부 원문을 모두 넣지 않습니다. 언제 어떤 기준을 적용할지, 어떤 조건에서 장기 규칙으로 반영할지만 넣습니다.
 
 프로젝트 내부 실제 issue/task/QA 결과는 0계층에 복사하지 않고, project SSoT 위치와 반복 가능한 운영 패턴만 기록합니다.
 
@@ -111,14 +111,14 @@
 - 프로젝트 내부 자료는 `main-v2`에 기본 커밋하지 않습니다.
 - 프로젝트 자료를 이 저장소에 추가해야 하면 별도 브랜치에서만 다룹니다.
 - 실제 secret, token, password, credential 값은 읽거나 기록하지 않습니다.
-- `profile/*.local.md`, `config/silo-projects.yaml`, `config/*.env`는 로컬 설정으로 취급합니다.
+- `config/silo-projects.yaml`, `config/*.env`는 로컬 설정으로 취급합니다.
 
 ## Skill README Policy
 
-- skill 초안을 추가하거나 기존 skill의 사용 시점, 절차, 금지선, 산출물이 바뀌면 관련 README 또는 인덱스를 함께 갱신합니다.
-- 기본 확인 대상은 `system/20-agent-rules/skill-drafts/README.md`와 `system/README.md`입니다.
+- repo skill을 추가하거나 기존 skill의 사용 시점, 절차, 금지선, 산출물이 바뀌면 관련 README 또는 인덱스를 함께 갱신합니다.
+- 기본 확인 대상은 `system/20-skills/README.md`와 `system/README.md`입니다.
 - README 또는 인덱스에 skill 이름, 사용할 때, 사용법이 연결되지 않으면 skill 변경을 완료로 보고하지 않습니다.
-- skill 초안 본문만 바꾸고 사용자가 찾을 수 있는 README를 갱신하지 않는 것은 누락으로 보고합니다.
+- repo skill 본문만 바꾸고 사용자가 찾을 수 있는 README를 갱신하지 않는 것은 누락으로 보고합니다.
 
 ## Personality Option Policy
 
@@ -136,8 +136,23 @@
 - 선택지가 실행 승인 역할을 할 때는 사용자가 그 번호를 고르는 순간 어떤 절차가 실행되는지 예측 가능해야 합니다.
 - 사용자가 보기 1~3 중 하나를 고르지 않고 직접 답변하면, 해당 답변은 "보기 밖 선택"으로 보고 퍼스널리티 업데이트 후보 신호로 남깁니다.
 - 답변이 끝난 뒤 필요한 경우 `user-personality-adaptive-response` 스킬을 사용하여 백그라운드 에이전트로 퍼스널리티 업데이트 보고서를 작성한다고 보고합니다.
-- 퍼스널리티 업데이트 보고서는 후보 자료이며, 실제 프로필, 공통 규칙, 또는 관련 스킬 초안 반영은 사용자 승인 후에만 실행합니다.
+- 퍼스널리티 업데이트 evidence는 `local/personality-feedback-log/evidence/`에 저장하고, 보고서 후보는 `local/personality-feedback-log/reports/`에 저장합니다. 실제 로그는 기본적으로 커밋하지 않습니다.
+- 퍼스널리티 업데이트 보고서는 후보 자료이며, 실제 공통 규칙, 역할별 agent 프롬프트, 또는 관련 repo skill 반영은 사용자 승인 후에만 실행합니다.
+- 장기 업데이트 검토는 세션 종료 전, PR 생성 전, 같은 유형 증거 3건 누적, 사용자 명시 요청, 주 1회 유지보수 시점에 수행합니다.
 - 승인되지 않은 단일 응답은 장기 퍼스널리티 규칙으로 확정하지 않습니다.
+
+## Skill Usage Reporting Policy
+
+- repo skill 또는 local skill을 사용한 경우 최종 보고에 `사용한 스킬` 섹션을 포함합니다.
+- 스킬을 사용하지 않은 경우에도 사용자가 스킬 사용 여부를 걱정한 맥락에서는 `사용한 스킬: 없음`으로 명시합니다.
+- 스킬 섹션에는 스킬 이름과 사용 이유만 짧게 적습니다.
+- 도구 실행 명령과 스킬 사용은 구분합니다. `rg`, `git diff`, `bash -n` 같은 명령은 `검증`이나 `실행한 명령`에 적고, 스킬 목록에 섞지 않습니다.
+
+## Final Response Option Policy
+
+- 최종 보고에서 다음 행동이 조금이라도 남아 있으면 `다음 행동` 섹션에 보기 3개를 제공합니다.
+- 보기 3개는 생략하지 않습니다. 단, 사용자가 "답변만", "보기 없이", "수정하지 말고 설명만"처럼 명시한 경우에는 생략 사유를 적습니다.
+- 작업이 완전히 종료되어 다음 행동이 필요 없으면 `다음 행동 없음`이라고 적습니다.
 
 ## Task Silo Execution Policy
 
@@ -151,26 +166,10 @@
 - diff 있는 repo만 PR을 만들고, PR 제목과 본문은 한국어로 작성합니다.
 - 이 자동 진행 규칙은 source/data/secret/production 금지선을 넘지 않습니다. 금지선에 닿으면 진행하지 않고 승격 후보 또는 사용자 판단 필요로 보고합니다.
 
-## CodeRabbit Review Gate Policy
-
-- 이 정책은 레거시 `main` 운영 설명입니다. 이 프로젝트의 실행 기준으로 사용하지 않습니다.
-- `main-v2`에서는 CodeRabbit 대신 수동 `@codex review`를 기본 gate로 사용합니다.
-- 일반 사일로가 source code, generated output, test, tooling 변경으로 PR을 만들 때는 PR 생성 전 `coderabbit review --agent --base <base-branch>` 실행을 기본 gate로 둡니다.
-- 변경이 문서만 있거나 CodeRabbit CLI가 설치 또는 인증되어 있지 않거나 네트워크가 불가능하면 gate를 생략할 수 있습니다. 이때 PR 본문과 완료 보고에 생략 사유를 남깁니다.
-- CodeRabbit 결과는 PR 본문에 `CodeRabbit 자동 리뷰` 항목으로 기록합니다. 0 issues이면 0건으로 적고, issue가 있으면 severity, 파일, 영향, 처리 여부를 요약합니다.
-- critical 또는 major issue가 있으면 사일로 내부에서 먼저 수정하고 CodeRabbit을 재실행합니다. 재실행 후에도 남는 항목은 사용자 판단 필요 또는 의도된 남은 위험으로 분리합니다.
-- CodeRabbit CLI gate는 PR 전 자체 검토입니다. GitHub 앱이 PR 생성 후 자동으로 다는 리뷰는 프로젝트별 repo 설정에 의존하므로 공통 규칙만으로 보장하지 않습니다.
-- CodeRabbit이 실패했을 때 수동 리뷰를 CodeRabbit 결과처럼 보고하지 않습니다. 실패 원인과 재시도 방법을 남기고, 메인 오케스트레이터 리뷰와 일반 검증은 별도로 진행합니다.
-- task, 사일로, PR 작업은 CodeRabbit 리뷰가 종결될 때까지 완료로 보고하지 않습니다.
-- CodeRabbit 리뷰 종결은 최신 CodeRabbit check가 success이고, unresolved actionable comment가 없으며, 남은 지적이 모두 수정, 의도된 잔여 위험, 또는 사용자 판단 필요로 분리된 상태를 뜻합니다.
-- CodeRabbit이 새 커밋마다 재리뷰를 실행하면 그 결과를 다시 확인하고, actionable comment가 있으면 수정과 재리뷰 확인을 반복합니다.
-- CodeRabbit 리뷰 종결 이후에만 사용자 재리뷰 단계로 넘깁니다. 사용자의 재리뷰 전에는 머지 가능 상태라도 task를 최종 종료한 것으로 보고하지 않습니다.
-
 ## Codex PR Review Gate Policy
 
 - 이 정책은 `main-v2` 기준 기본값입니다.
 - 일반 사일로가 source code, generated output, test, tooling 변경으로 PR을 만들 때는 PR 생성 직후 PR 댓글로 수동 `@codex review`를 호출합니다.
-- Codex 자동 리뷰는 기본 gate로 사용하지 않습니다. 리뷰가 필요한 PR에서만 수동 호출합니다.
 - `@codex review`는 base branch가 `main-v2`인 PR에서만 호출합니다. base branch가 `main`이면 먼저 PR 대상을 `main-v2`로 바꾸도록 보고하고 리뷰를 호출하지 않습니다.
 - Codex PR 리뷰는 변경 diff, task 목표, 실행한 검증, 남은 위험, SSoT 승격 후보를 대상으로 합니다.
 - 리뷰 결과는 PR 본문에 `Codex PR 리뷰` 항목으로 기록합니다.
@@ -178,7 +177,6 @@
 - 변경 이후에도 Codex PR 리뷰가 `승인` 또는 actionable major/critical 및 보호 절차를 깨는 P1/P2 없음 상태가 될 때까지 최대 5회까지 수동 재호출합니다.
 - 5회 수동 호출 후에도 남은 major/critical 또는 보호 절차 P1/P2 항목은 더 반복하지 않고 `사용자 판단 필요` 또는 `의도된 남은 위험`으로 분리합니다.
 - Codex 리뷰가 실패했거나 도구 실행이 불가능하면 실패 원인과 대체 수동 검토 범위를 분리해서 기록합니다.
-- `main-v2`에서 CodeRabbit 결과를 Codex 리뷰처럼 보고하지 않습니다.
 
 ## Command Intent Preflight Policy
 
@@ -188,9 +186,8 @@
 - 사용자가 실행 결과가 이상하다고 지적하면, 이를 단순한 잘못이나 태도 문제로 처리하지 않습니다.
 - 핵심 질문은 "왜 사용자 명령이 시스템 안에서 실행 가능한 형태로 전달되지 않았는가"입니다.
 - 재발방지는 진짜 원인을 찾아 제거하는 방향으로 다룹니다.
-- `main`에서는 실행 전제가 빠진 상태에서 합리적으로 추정해 진행하지 않습니다.
-- `main`에서는 실행 전제가 빠진 경우 먼저 멈추고 어떤 정의가 없는지 보고한 뒤, 사용자에게 필요한 정의를 물어봅니다.
-- `main`에서는 특히 `run set`, `runtime_set`, 실행 대상 목록, 제외 기준, 실행 창 크기, 사일로 유형, 사일로 root, L별 evidence 기준, destructive boundary가 없으면 정식 실행을 시작하지 않습니다.
+- lifecycle, run, E2E, 다건 테스트, destructive/data/production 위험 실행에서 전제가 빠진 경우에는 먼저 멈추고 어떤 정의가 없는지 보고한 뒤, 사용자에게 필요한 정의를 물어봅니다.
+- `run set`, `runtime_set`, 실행 대상 목록, 제외 기준, 실행 창 크기, 사일로 유형, 사일로 root, L별 evidence 기준, destructive boundary가 없으면 정식 lifecycle/run 실행을 시작하지 않습니다.
 - runner, shell command, browser smoke를 직접 실행한 것은 정식 사일로 실행으로 간주하지 않습니다.
 - 정식 사일로 실행은 사일로 root, `goal.md`, runtime 참조, evidence 위치, report 위치, 종료 gate가 준비된 뒤에만 시작합니다.
 - 여러 page나 task를 묶어 실행할 때의 묶음은 scheduler 또는 execution window일 뿐이며, 별도 정의 없이 하나의 사일로로 취급하지 않습니다.
@@ -222,7 +219,6 @@
 
 ## Task Test Contract Policy
 
-- `main`에서 Task는 구현 요청이 아니라 검증 가능한 계약으로 작성합니다.
 - `main-v2`에서 Task는 실행 가능한 실험 단위로 시작할 수 있습니다. 먼저 build하고, learn 결과를 acceptance criteria, Test Plan, Coverage Target으로 승격합니다.
 - 모든 task 명세서는 읽고 실행 범위를 파악하는 시간이 기본 5분을 넘지 않도록 작성합니다.
 - task 명세서 읽기 시간의 최대 허용치는 7분입니다. 7분을 넘길 분량이면 task를 분할하거나, 상단에 5분 이내로 읽을 수 있는 실행 요약, 금지선, acceptance criteria, test plan을 먼저 둡니다.
@@ -265,7 +261,7 @@
 
 ## Main-v2 Only Update Flow Policy
 
-- 공통 규칙, 스킬 초안, 프롬프트, AGENTS.md, system 문서 변경은 `main-v2` 기준으로만 처리합니다.
+- 공통 규칙, repo skill, 프롬프트, AGENTS.md, system 문서 변경은 `main-v2` 기준으로만 처리합니다.
 - `main`은 절대로 작업 기준으로 사용하지 않습니다. `main` checkout, `origin/main` 기준 worktree 생성, `main` 대상 PR, `main` merge, `main` rebase는 금지합니다.
 - `main-v2`도 보호 브랜치이므로 직접 commit/push하지 않습니다.
 - 항상 `main-v2`에서 파생한 단기 브랜치를 만들고, 변경은 해당 브랜치에서 커밋한 뒤 base branch가 `main-v2`인 PR로 제출합니다.

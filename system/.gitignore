@@ -59,15 +59,6 @@ project-local/
 project-overrides/
 workspace-local/
 
-# 개인 프로필 실제 값
-profile/*.local.md
-profile/personal-profile.md
-profile/user-profile.md
-profile/personality.md
-profile/personality-update-reports/*
-!profile/personality-update-reports/.gitkeep
-!profile/personality-update-reports/personality-update-report.template.md
-
 # 실제 프로젝트/사일로 런타임 설정
 config/*.env
 !config/*.env.example

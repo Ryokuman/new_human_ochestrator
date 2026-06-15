@@ -6,7 +6,7 @@ SSoT는 메인 오케스트레이터와 모든 사일로가 공유하는 상태�
 
 SSoT는 다음을 저장해야 합니다.
 
-- 사용자 취향과 판단 기준
+- 전역 사용자 규칙과 판단 기준
 - 프로젝트 등록과 SSoT 위치
 - 프로젝트별 shared runtime registry/status 위치
 - 계층별 저장 위치
@@ -22,8 +22,8 @@ SSoT는 다음을 저장해야 합니다.
 ssot/
 ├── context.md
 ├── layer-policy.md
-├── user-model/
-│   ├── 취향-불변성.md
+├── feedback-rules/
+│   ├── 전역-사용자-규칙.md
 │   ├── 응답-보고-규칙.md
 │   └── 피드백-반영-이력.md
 ├── projects/
@@ -82,7 +82,7 @@ project-ssot/
 | 이슈 관리 | 문제, 원인 가설, 영향, 연결 Task를 추적한다. | 2계층 Project Internal |
 | 대시보드 | 사람이 현재 상태, 활성 Task, 활성 Issue, 다음 행동을 한 화면에서 확인한다. | 2계층 Project Internal |
 
-0계층 `system/`은 위 구조가 필요하다는 규칙, 템플릿, 생성 스크립트만 관리합니다. 특정 프로젝트의 실제 Task, Issue, L runner 결과, page 목록, report 내용은 0계층으로 복사하지 않습니다.
+0계층 `system/`은 위 구조가 필요하다는 규칙, 템플릿, `setup.sh` 셋업 흐름만 관리합니다. 특정 프로젝트의 실제 Task, Issue, L runner 결과, page 목록, report 내용은 0계층으로 복사하지 않습니다.
 
 ### Issue
 
@@ -110,7 +110,7 @@ Issue는 0계층 SSoT가 아니라 project SSoT에 저장합니다.
 
 Task는 0계층 SSoT가 아니라 project SSoT에 저장합니다.
 
-`main`에서는 Task를 검증 가능한 계약으로 작성합니다. `main-v2`에서는 Task가 처음부터 완전한 계약일 필요가 없습니다. 작은 build 실험으로 시작하고, 실행 후 관찰한 learn 결과를 acceptance criteria, test plan, follow-up spec으로 승격할 수 있습니다.
+`main-v2`에서는 Task가 처음부터 완전한 계약일 필요가 없습니다. 작은 build 실험으로 시작하고, 실행 후 관찰한 learn 결과를 acceptance criteria, test plan, follow-up spec으로 승격할 수 있습니다.
 
 모든 task 명세서는 읽고 실행 범위를 파악하는 시간이 기본 5분을 넘지 않도록 작성합니다. 최대 허용치는 7분입니다. 7분을 넘길 분량이면 task를 분할하거나, 상단에 5분 이내로 읽을 수 있는 실행 요약, 금지선, acceptance criteria, test plan을 먼저 둡니다.
 
@@ -294,7 +294,7 @@ Command Intent Preflight는 사용자 명령이 시스템 안에서 실행 가�
 - destructive boundary
 - 실행 후 report/evidence 승격 위치
 
-`main`에서는 하나라도 누락되면 정식 실행을 시작하지 않고, `누락된 정의`, `실행하면 위험한 이유`, `사용자에게 물어볼 항목`을 보고합니다. `main-v2`에서는 이 중단 규칙을 lifecycle, run, E2E, 다건 테스트, production/data/destructive 위험 실행에만 강제합니다.
+누락 시 중단 규칙은 lifecycle, run, E2E, 다건 테스트, production/data/destructive 위험 실행에만 강제합니다. 이 경우 정식 실행을 시작하지 않고 `누락된 정의`, `실행하면 위험한 이유`, `사용자에게 물어볼 항목`을 보고합니다.
 
 ### Shared Runtime
 
@@ -336,7 +336,6 @@ Shared Runtime은 0계층 SSoT가 아니라 프로젝트별 registry/status에�
 - linked_task
 - summary
 - verification
-- coderabbit_review
 - codex_review
 - review_rounds
 - promoted_to_ssot
@@ -344,9 +343,7 @@ Shared Runtime은 0계층 SSoT가 아니라 프로젝트별 registry/status에�
 - user_feedback
 - merge_decision
 
-`coderabbit_review`에는 PR 전 CodeRabbit CLI 리뷰의 실행 여부, base branch, issue 수, 남은 critical/major 여부, 실패 또는 생략 사유를 기록합니다. GitHub 앱이 PR 생성 후 남긴 리뷰는 프로젝트별 repo 설정에 따른 외부 리뷰로 구분하고, 공통 SSoT에서는 보장된 gate로 간주하지 않습니다.
-
-`codex_review`에는 `main-v2`의 PR 전 Codex 리뷰 실행 여부, 리뷰 대상 diff, 발견한 major/critical 위험, 수정 여부, 재리뷰 결과, 실패 또는 생략 사유를 기록합니다. `main-v2`에서는 CodeRabbit을 기본 gate로 보지 않습니다.
+`codex_review`에는 `main-v2`의 Codex 리뷰 실행 여부, 리뷰 대상 diff, 발견한 major/critical 위험, 수정 여부, 재리뷰 결과, 실패 또는 생략 사유를 기록합니다.
 
 ## 승격 상태
 
