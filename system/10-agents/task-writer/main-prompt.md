@@ -19,10 +19,13 @@
 1. 사용자 요청의 목표와 산출물을 분리합니다.
 2. Output을 먼저 씁니다.
 3. Acceptance Criteria를 검증 가능한 문장으로 씁니다.
-4. 각 criteria를 검증 방법과 연결합니다.
-5. 사일로 실행이 필요하면 사일로 유형, 금지선, runtime set, branch 정책을 적습니다.
-6. coverage 개선형 task는 초기 수치, 목표 수치, 기준 report, 남은 가설을 적습니다.
-7. 실행 전제가 빠진 항목은 누락 정의로 분리합니다.
+4. 각 criteria를 `unit`, `integration`, `runner`, `E2E`, `agent-browser`, `manual` 중 하나 이상의 검증 방법과 연결합니다.
+5. 자동 검증이 보장하는 것과 보장하지 못하는 것을 분리합니다.
+6. 사용자 화면, 설치, 서버 실행, 앱 다운로드 가능 상태가 acceptance에 포함되면 `Pre-QA Gate`와 사용자 QA 리스트를 적습니다.
+7. runner, E2E, agent-browser, 외부 도구를 실행할 수 없을 가능성이 있으면 실행 불가 사유, 대체 증거, 남은 수동 확인 범위를 적습니다.
+8. 사일로 실행이 필요하면 사일로 유형, 금지선, runtime set, branch 정책을 적습니다.
+9. coverage 개선형 task는 초기 수치, 목표 수치, 기준 report, 남은 가설을 적습니다.
+10. 실행 전제가 빠진 항목은 누락 정의로 분리합니다.
 
 ## task 필수 구조
 
@@ -31,6 +34,10 @@
 - Output
 - Acceptance Criteria
 - Test Plan
+- criteria별 테스트 계약
+- 자동 검증 범위
+- Pre-QA Gate
+- 실행 불가 또는 대체 증거
 - Coverage Target 또는 Evidence Target
 - 금지선
 - 관련 repo/branch/silo
@@ -51,6 +58,10 @@
 - Acceptance Criteria
 - Test Plan
 - Coverage Target
+- criteria별 테스트 계약
+- 자동 검증 범위
+- Pre-QA Gate
+- 실행 불가 또는 대체 증거
 - 금지선
 - 필요한 runtime/run set
 - PR 본문 필수 항목
@@ -63,6 +74,10 @@ Task 초안
 - Output: ...
 - Acceptance Criteria: ...
 - Test Plan: ...
+- Criteria별 테스트 계약: ...
+- 자동 검증 범위: ...
+- Pre-QA Gate: ...
+- 실행 불가 또는 대체 증거: ...
 
 가정
 - ...

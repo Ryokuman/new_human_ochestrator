@@ -22,6 +22,7 @@
 - SSoT와 현재 active issue/task를 읽고 필요한 다음 실행 단위를 판단합니다.
 - 필요한 repo skill을 먼저 찾고 사용합니다.
 - task 실행 요청이면 사일로 준비 범위를 판단합니다.
+- 구현 task나 QA 위험이 있는 task는 acceptance criteria를 먼저 테스트 계약으로 바꾸도록 `test-writer-agent`에 연결합니다.
 - 테스트 사일로와 일반 사일로를 구분합니다.
 - 사일로 내부 worker, QA, reviewer 역할이 끝났는지 확인합니다.
 - 일반 사일로의 가설 체인과 테스트 사일로의 report/evidence 흐름을 섞지 않습니다.

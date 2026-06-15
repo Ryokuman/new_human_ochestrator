@@ -17,11 +17,13 @@
 ## 작업 방식
 
 1. Output, Acceptance Criteria, 변경 범위를 읽습니다.
-2. 각 criteria를 `unit`, `runner`, `E2E`, `agent-browser`, `manual` 중 하나 이상에 연결합니다.
-3. 입력만으로 판단 가능한 규칙은 unit test를 우선합니다.
-4. 실제 UI 상태, DOM, route mock, browser event가 필요한 흐름은 E2E 또는 agent-browser를 우선합니다.
-5. 경계값이 있는 규칙은 경계값 테스트를 포함합니다.
-6. 생략한 테스트는 이유를 남깁니다.
+2. 각 criteria를 `unit`, `integration`, `runner`, `E2E`, `agent-browser`, `manual` 중 하나 이상에 연결합니다.
+3. 자동 검증이 보장하는 것과 보장하지 못하는 것을 분리합니다.
+4. 입력만으로 판단 가능한 규칙은 unit test를 우선합니다.
+5. 여러 모듈, 저장소, API, DB, runtime adapter가 함께 맞아야 하는 계약은 integration test를 검토합니다.
+6. 실제 UI 상태, DOM, route mock, browser event가 필요한 흐름은 E2E 또는 agent-browser를 우선합니다.
+7. 경계값이 있는 규칙은 경계값 테스트를 포함합니다.
+8. 생략한 테스트는 이유를 남깁니다.
 
 ## 테스트 설계 기준
 
@@ -38,6 +40,9 @@
 - E2E는 모든 validation을 다시 검증하는 용도가 아니라, 브라우저, grid, modal, route mock, 실제 DOM 상태가 함께 필요한 사용자 체감 흐름에 씁니다.
 - 데이터가 없거나 조건을 안정적으로 만들 수 없으면 실패시키지 않고 skip 사유 또는 mock 전략을 명시합니다.
 - E2E helper는 selector 조작이 아니라 `openMenu`, `clickSearch`, `selectFirstRow`, `clickActionButton`, `expectErrorModal`처럼 사용자 행동 언어를 만듭니다.
+- mock, fixture, dev login, local seed 같은 통제된 경로는 실제 사용자 설치/로그인/네트워크 경로와 분리해서 적습니다.
+- 사용자 화면, 설치, 서버 실행, 앱 다운로드 가능 상태가 acceptance에 포함된 작업은 인간 QA 전에 실행 가능한 runtime, 접근 방법, `Pre-QA Gate`, 사용자가 따라 할 QA 리스트를 테스트 계약에 포함합니다.
+- runner, E2E, agent-browser, 외부 도구를 실행할 수 없으면 실행 불가 사유, 대체 증거, 남은 수동 확인 범위를 별도 종료 상태로 남깁니다.
 
 ## 유닛과 E2E 선택 기준
 
@@ -67,7 +72,20 @@
 실행 명령
 - ...
 
+자동 검증 범위
+- 보장하는 것:
+- 보장하지 못하는 것:
+
+Pre-QA Gate
+- ...
+
+사용자 QA 리스트
+- ...
+
 생략한 범위
+- ...
+
+실행 불가 또는 대체 증거
 - ...
 ```
 
@@ -78,3 +96,4 @@
 - coverage 수치를 측정하지 않았으면 측정한 것처럼 쓰지 않습니다.
 - 테스트 편의를 위해 업무 행위 흐름을 부자연스럽게 찢지 않습니다.
 - 데이터가 없는 환경에서 이유 없이 실패하는 E2E를 만들지 않습니다.
+- 통제된 dev/mock 경로 통과를 실제 사용자 경로 통과로 확장해서 보고하지 않습니다.

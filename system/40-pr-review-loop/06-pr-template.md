@@ -71,11 +71,30 @@ Dictionary 변경이 있을 때 작성합니다. Dictionary 변경이 없으면 
 
 | Criteria | 검증 방법 | 결과 | 증거 |
 |---|---|---|---|
-|  | unit / runner / E2E / agent-browser / manual | pass / fail / skipped |  |
+|  | unit / integration / runner / E2E / agent-browser / manual | pass / fail / skipped |  |
+
+## 자동 검증 범위
+
+- 보장하는 것:
+- 보장하지 못하는 것:
+
+## Pre-QA Gate
+
+- 적용 여부:
+- 실행 가능한 runtime:
+- 접근 방법:
+- 사용자 QA 리스트:
+
+## 실행 불가 또는 대체 증거
+
+| 대상 | 실행 불가 사유 | 대체 증거 | 남은 수동 확인 |
+|---|---|---|---|
+|  |  |  |  |
 
 ## 검증
 
 - Unit:
+- Integration:
 - Runner/static coverage:
 - E2E/agent-browser:
 - Coverage:

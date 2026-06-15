@@ -15,6 +15,10 @@
 - Output
 - Acceptance Criteria
 - Test Plan
+- criteria별 테스트 계약
+- 자동 검증 범위
+- Pre-QA Gate
+- 실행 불가 또는 대체 증거
 - Coverage Target
 - 금지선
 - PR 본문 필수 항목

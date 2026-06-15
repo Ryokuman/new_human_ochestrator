@@ -7,7 +7,7 @@
 ## 사용할 때
 
 - task acceptance criteria를 테스트로 연결해야 할 때
-- 변경 로직에 unit, runner, E2E, agent-browser, manual 검증 중 무엇이 맞는지 정해야 할 때
+- 변경 로직에 unit, integration, runner, E2E, agent-browser, manual 검증 중 무엇이 맞는지 정해야 할 때
 - 실패 재현 후 회귀 테스트가 필요할 때
 
 ## 산출물
@@ -15,6 +15,7 @@
 - 테스트 대상
 - 테스트 방법
 - 통과 기준
+- 자동 검증이 보장하는 것과 보장하지 못하는 것
 - 생략한 테스트와 이유
 - coverage target 또는 측정 불가 사유
 
@@ -22,4 +23,5 @@
 
 - 테스트가 없는데 안정성을 단정하지 않습니다.
 - manual 확인만으로 자동화 가능한 회귀를 덮지 않습니다.
+- mock, fixture, dev login, local seed 통과를 실제 사용자 경로 통과로 보고하지 않습니다.
 - coverage 수치를 측정하지 않았으면 측정한 것처럼 쓰지 않습니다.

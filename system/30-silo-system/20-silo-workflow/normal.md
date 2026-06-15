@@ -6,11 +6,12 @@
 
 | 역할 | 책임 |
 |---|---|
+| 테스트 작성 에이전트 | acceptance criteria를 criteria별 테스트 계약, 자동 검증 범위, Pre-QA Gate, 실행 불가 대체 증거 기준으로 바꾼다. |
 | 개발자 에이전트 | task/issue를 구현하고 필요한 repo branch와 diff를 만든다. |
-| QA 에이전트 | acceptance criteria 기준으로 unit, runner, E2E, agent-browser, report, 회귀 여부를 검증한다. |
+| QA 에이전트 | acceptance criteria 기준으로 unit, integration, runner, E2E, agent-browser, manual, report, 회귀 여부를 검증한다. |
 | 리뷰 에이전트 | scope, branch safety, secret/protected branch 위반, PR 본문, SSoT 승격 후보를 검토한다. |
 
-세 역할은 별도 사일로가 아닙니다. 같은 task 사일로 안에서 순차 또는 병렬 worker로 호출됩니다.
+네 역할은 별도 사일로가 아닙니다. 같은 task 사일로 안에서 순차 또는 병렬 worker로 호출됩니다.
 
 ## 실행 루프
 
@@ -21,17 +22,18 @@
 4. 필요한 repo만 사일로 root에 clone
 5. 필요한 runtime set 확인
 6. 각 repo에서 기준 브랜치 확인 후 작업 브랜치 생성
-7. 개발 세션에 `/goal`로 `goal.md 달성 부탁해` 전달
-8. 개발자 에이전트가 관련 코드와 QA 증거를 확인하고 수정 수행
-9. QA 에이전트가 테스트, agent-browser 검증, report 실행
-10. 리뷰 에이전트가 diff, scope, branch safety, secret policy, SSoT 후보 검토
-11. PR 필요 시 base branch와 리뷰 gate 확인
-12. 실패 또는 생략 사유 기록
-13. 실패하면 task 내부 Hypothesis Chain에 현재 가설, 실행 로그, 실패 결과, 원인을 기록하고 다음 가설을 작성
-14. 통과하면 diff가 있는 repo만 PR 생성
-15. PR 본문에 결과, criteria별 검증 결과, 리뷰 gate 결과, 승격 후보, 비승격 항목 기록
-16. project SSoT의 task/issue/인수인계 상태 갱신 후보 정리
-17. 메인 오케스트레이터에게 최종 보고
+7. 테스트 작성 에이전트가 criteria별 테스트 계약과 검증 범위를 작성하고 `goal.md`에 반영
+8. 개발 세션에 `/goal`로 `goal.md 달성 부탁해` 전달
+9. 개발자 에이전트가 관련 코드와 QA 증거를 확인하고 수정 수행
+10. QA 에이전트가 테스트, agent-browser 검증, report 실행
+11. 리뷰 에이전트가 diff, scope, branch safety, secret policy, SSoT 후보 검토
+12. PR 필요 시 base branch와 리뷰 gate 확인
+13. 실패 또는 생략 사유 기록
+14. 실패하면 task 내부 Hypothesis Chain에 현재 가설, 실행 로그, 실패 결과, 원인을 기록하고 다음 가설을 작성
+15. 통과하면 diff가 있는 repo만 PR 생성
+16. PR 본문에 결과, criteria별 검증 결과, 리뷰 gate 결과, 승격 후보, 비승격 항목 기록
+17. project SSoT의 task/issue/인수인계 상태 갱신 후보 정리
+18. 메인 오케스트레이터에게 최종 보고
 ```
 
 YOLO 모드는 [`yolo-mode.md`](yolo-mode.md)를 기준으로 봅니다.

@@ -21,6 +21,12 @@
 
 ## Criteria 검증 결과
 
+## 자동 검증 범위
+
+## Pre-QA Gate
+
+## 실행 불가 또는 대체 증거
+
 ## 검증
 
 ## Codex PR 리뷰
@@ -81,7 +87,10 @@ dictionary SSoT에 실제 추가/수정/삭제된 용어가 있을 때 작성합
 
 - 실행한 테스트, generation, runner, agent-browser 여부를 적습니다.
 - 각 acceptance criteria를 어떤 검증 방법으로 덮었는지 적습니다.
+- 자동 검증이 보장하는 것과 보장하지 못하는 것을 분리합니다.
+- 사용자 화면, 설치, 서버 실행, 앱 다운로드 가능 상태가 acceptance에 포함되면 `Pre-QA Gate`와 사용자 QA 리스트를 적습니다.
 - 실행하지 않은 검증이 있으면 이유를 적습니다.
+- runner, E2E, agent-browser, 외부 도구를 실행할 수 없으면 실행 불가 사유, 대체 증거, 남은 수동 확인 범위를 적습니다.
 
 ## 좋지 않은 본문
 
