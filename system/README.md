@@ -76,8 +76,6 @@ Build -> Learn -> Spec
 | [`10-agents/task-writer/main-prompt.md`](10-agents/task-writer/main-prompt.md) | task writer agent 전달 프롬프트 |
 | [`10-agents/issue-writer/README.md`](10-agents/issue-writer/README.md) | 부수 발견과 반복 실패를 issue 후보로 정리하는 역할 설명 |
 | [`10-agents/issue-writer/main-prompt.md`](10-agents/issue-writer/main-prompt.md) | issue writer agent 전달 프롬프트 |
-| [`10-agents/ryokuman-code-coder-prompt.md`](10-agents/ryokuman-code-coder-prompt.md) | 코드 작업 역할 프로필 후보 |
-| [`10-agents/ryokuman-test-coder-prompt.md`](10-agents/ryokuman-test-coder-prompt.md) | 테스트 작업 역할 프로필 후보 |
 
 ## 사용 가능한 repo skill
 

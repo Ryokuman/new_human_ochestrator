@@ -64,6 +64,8 @@ config/*.env
 !config/*.env.example
 config/*.local.yaml
 config/*.local.yml
+config/shared-runtime-registry.yaml
+config/shared-runtime-registry.yml
 config/silo-projects.yaml
 config/silo-projects.yml
 config/silo-secrets.yaml
