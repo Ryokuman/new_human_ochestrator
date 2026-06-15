@@ -2,7 +2,8 @@
 # 프로젝트 조사 결과와 원본 프롬프트는 재사용 코어가 아니라서 git에 올리지 않습니다.
 projects/
 sources/
-task-*/
+/task-*/
+local/
 
 # 일반 로컬/시크릿 파일
 .DS_Store

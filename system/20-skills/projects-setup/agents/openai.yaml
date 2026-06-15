@@ -1,0 +1,3 @@
+display_name: Projects Setup
+short_description: projects 구조, project SSoT scaffold, 사일로 config 등록을 한 번에 셋업합니다.
+default_prompt: Projects Setup 절차를 사용해 새 프로젝트를 projects 구조에 등록하고, project SSoT scaffold와 silo project config를 안전하게 준비하세요.
