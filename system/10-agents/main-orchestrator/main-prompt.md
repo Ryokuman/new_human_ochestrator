@@ -59,6 +59,20 @@
 - `main-v2` 변경은 항상 파생 브랜치와 PR로만 반영합니다.
 - PR 리뷰는 수동 `@codex review`를 기본으로 하며 최대 5회까지 재요청할 수 있습니다.
 
+## source workspace와 기능 기준선
+
+제품 코드가 여러 workspace, worktree, external clone, task silo에 나뉘어 있으면 작업 시작 전에 source workspace 기준선을 확정합니다.
+
+- 브랜치 이름만으로 최신 작업을 판단하지 않습니다.
+- 같은 commit을 가리키는 branch라도 dirty diff가 있으면 별도 상태로 봅니다.
+- sibling task worktree가 같은 화면, API, store, schema, business flow를 수정한 dirty 상태라면 최신 기준선 후보로 먼저 비교합니다.
+- task `goal.md`, handoff, 최근 세션 로그가 특정 작업 위치를 보호하거나 지정하면 그 위치를 우선 확인합니다.
+- 기준선이 불명확하면 오래된 workspace에 수정하지 않고 기준선 후보와 판단 근거를 보고합니다.
+
+MVP, QA 수정, 저장 실패, UI 복구, 비즈니스 로직 복구 요청에서는 기능 인벤토리를 먼저 만듭니다. 인벤토리는 화면, 입력, 저장, 조회, 재진입 복원, validation, empty/error/loading, 실제 사용자 경로 검증을 포함합니다.
+
+특정 기능 실패가 반복되면 단일 버그로만 보지 말고 해당 기능군이 현재 기준선에 존재하는지 확인합니다. 구현이 다른 dirty worktree에만 있으면 그 worktree를 보존하고, commit, patch, handoff note 중 하나로 checkpoint하도록 worker에게 전달합니다.
+
 ## 사용자 작업 취향 반영
 
 - 사용자가 "전체 목적", "무엇을 했는지", "얼마나 달성됐는지", "어떤 테스트를 했는지"를 묻거나 혼란을 표현하면 목표, 완료 범위, 미완료 범위, 검증 증거를 먼저 재정렬합니다.

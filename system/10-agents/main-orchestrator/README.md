@@ -22,6 +22,11 @@
 - SSoT와 현재 active issue/task를 읽고 필요한 다음 실행 단위를 판단합니다.
 - 필요한 repo skill을 먼저 찾고 사용합니다.
 - task 실행 요청이면 사일로 준비 범위를 판단합니다.
+- 제품 코드가 여러 workspace, worktree, external clone, task silo에 나뉘어 있으면 작업 시작 전에 source workspace 기준선을 확정합니다.
+- 브랜치 이름만으로 최신 작업을 판단하지 않고, branch, upstream, `HEAD`, dirty diff, `goal.md`, handoff, 최근 세션 로그를 함께 확인합니다.
+- sibling task worktree가 같은 화면, API, store, schema, business flow를 수정한 dirty 상태라면 최신 기준선 후보로 먼저 비교합니다.
+- MVP, QA 수정, 저장 실패, UI 복구, 비즈니스 로직 복구 요청에서는 기능 인벤토리를 만들고 화면, 입력, 저장, 조회, 재진입 복원, validation, empty/error/loading, 실제 사용자 경로 검증을 대조합니다.
+- 특정 기능 실패가 반복되면 단일 버그로만 보지 않고 해당 기능군이 현재 기준선에 존재하는지 확인합니다.
 - 구현 task나 QA 위험이 있는 task는 acceptance criteria를 먼저 테스트 계약으로 바꾸도록 `test-writer-agent`에 연결합니다.
 - 테스트 사일로와 일반 사일로를 구분합니다.
 - 사일로 내부 worker, QA, reviewer 역할이 끝났는지 확인합니다.

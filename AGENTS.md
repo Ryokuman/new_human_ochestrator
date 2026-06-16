@@ -84,6 +84,9 @@
 - 브랜치 정리 전에는 작업트리가 clean인지 확인하고 `git fetch --all --prune` 이후 상태를 기준으로 판단합니다.
 - 열린 PR의 head 브랜치는 보존합니다. upstream이 살아 있어도 PR 머지와 로컬 안전 조건이 확인된 브랜치는 로컬 삭제 대상이 될 수 있으며, 원격 head는 별도 확인 대상으로 보고합니다.
 - ahead 커밋이 있거나 PR/패치 대응 관계가 불명확한 브랜치는 삭제하지 않고 `위험`으로 보고합니다.
+- 같은 프로젝트의 sibling worktree와 external clone을 함께 확인합니다. branch commit이 같아도 dirty diff가 있으면 같은 상태로 보지 않습니다.
+- dirty diff가 화면, API, store, schema, business flow 같은 기능 표면을 수정했다면 삭제 대상이 아니라 기준선 후보 또는 checkpoint 필요 대상으로 분리합니다.
+- 가치 있는 dirty diff는 commit, patch, handoff note 중 하나로 고정되기 전까지 정리하지 않습니다.
 - 브랜치 정리 보고는 `삭제됨`, `보존`, `삭제 후보`, `위험`을 분리합니다.
 
 ## Agent Rule Update Policy
@@ -208,6 +211,11 @@
 - `projects/`에는 프로젝트 SSoT, registry, repo 연결 정보, 요약 색인처럼 프로젝트 운영 상태를 찾기 위한 자료만 둡니다.
 - 실제 제품 소스코드는 `.gitignore`된 `sources/` 같은 외부/로컬 소스 위치, 별도 repo, 별도 worktree, fork, submodule, external clone을 사용합니다.
 - 프로젝트별 evidence는 coverage 판단 근거이므로 project SSoT 내부에 보존할 수 있습니다.
+- 제품 코드가 여러 workspace, worktree, external clone, task silo에 나뉘어 있으면 구현 전 source workspace 기준선을 확정합니다. 브랜치 이름만으로 최신 작업을 판단하지 않고, 각 workspace의 branch, upstream, `HEAD`, dirty diff, `goal.md`, handoff, 최근 세션 로그를 함께 봅니다.
+- sibling task worktree가 같은 화면, API, store, schema, business flow를 수정한 dirty 상태라면 최신 기준선 후보로 먼저 비교합니다.
+- MVP, QA 수정, 저장 실패, UI 복구, 비즈니스 로직 복구 요청에서는 화면, 입력, 저장, 조회, 재진입 복원, validation, empty/error/loading, 실제 사용자 경로 검증을 기능 인벤토리로 대조합니다.
+- 특정 기능 실패가 반복되면 단일 버그로만 보지 않고 해당 기능군이 현재 기준선에 존재하는지, 다른 dirty worktree에만 존재하는지, PR/commit으로 checkpoint됐는지 확인합니다.
+- 기준선이 불명확한 상태에서 오래된 workspace에 수정 사항을 덧대지 않습니다. `완료된 것`, `아직 안 된 것`, `기준선 후보`, `선택하지 않은 이유`, `사용자 판단 필요 여부`를 분리해 보고합니다.
 
 ## Background Agent Policy
 

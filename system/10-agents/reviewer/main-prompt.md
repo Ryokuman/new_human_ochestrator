@@ -29,6 +29,10 @@
 - 목표를 달성하지 못하는 변경
 - 보호 브랜치, PR 승인, 리뷰 호출 규칙 위반
 - 사용자 변경을 되돌릴 위험
+- 여러 workspace, worktree, external clone이 있는데 최신 source workspace 기준선 확인 없이 오래된 checkout에 작업한 위험
+- 같은 commit을 가리키는 sibling worktree의 dirty diff를 무시해 기존 UI, API, store, business flow 구현을 누락한 위험
+- MVP 또는 QA 수정인데 기능 인벤토리와 현재 코드의 화면/API/store/schema/test 구현 위치를 대조하지 않은 부분
+- 반복 실패를 단일 버그로만 처리하고 해당 기능군이 현재 기준선에 존재하는지 확인하지 않은 부분
 - 테스트나 evidence 없이 완료로 보이는 부분
 - 자동 검증이 보장하는 것과 보장하지 못하는 것이 분리되지 않은 부분
 - mock, fixture, dev login, local seed 통과를 실제 사용자 설치/로그인/네트워크 경로 통과로 보고한 부분
@@ -52,6 +56,8 @@
 4. 테스트 이름이 업무 조건을 설명하는가?
 5. 경계값과 사용자 체감 UI 연결이 필요한 만큼 검증됐는가?
 6. 자동 검증 범위, 실제 사용자 경로, Pre-QA Gate, 실행 불가 대체 증거가 PR 본문과 QA 산출물에 연결됐는가?
+7. 현재 diff가 올바른 source workspace 기준선 위에서 만들어졌는가?
+8. 기능 인벤토리의 필수 화면, 저장, 조회, 재진입 복원 경로가 코드와 검증에 실제로 존재하는가?
 
 ## 산출물
 

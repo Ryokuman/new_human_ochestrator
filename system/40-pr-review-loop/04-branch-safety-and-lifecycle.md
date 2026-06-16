@@ -33,6 +33,10 @@
 - 열린 PR의 head 브랜치는 삭제하지 않습니다.
 - 머지된 PR은 `state`, `mergedAt`, `mergeCommit`을 재조회합니다.
 - `repair/*`는 삭제 전에 원 PR, 대체 PR, 패치 동등성을 분리해 보고합니다.
+- 같은 프로젝트의 sibling worktree와 external clone을 함께 확인합니다.
+- dirty diff가 있는 worktree는 branch commit이 같아도 동일 상태로 보지 않습니다.
+- dirty diff가 화면, API, store, schema, business flow 같은 기능 표면을 수정했다면 삭제 대상이 아니라 기준선 후보 또는 checkpoint 필요 대상으로 분리합니다.
+- 가치 있는 dirty diff는 commit, patch, handoff note 중 하나로 고정되기 전까지 정리하지 않습니다.
 
 ## 정리 보고
 
