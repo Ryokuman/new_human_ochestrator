@@ -50,7 +50,7 @@ Build -> Learn -> Spec
 
 - `main-v2`: 수동 `@codex review` gate
 
-`main-v2`의 PR은 생성 직후 base branch가 `main-v2`인지 확인하고, PR 댓글로 수동 `@codex review`를 호출합니다. PR 본문에는 `Codex PR 리뷰` 항목을 두고, 호출 횟수와 결과를 기록합니다.
+`main-v2`의 PR은 생성 직후 base branch가 `main-v2`인지 확인하고, PR 댓글로 수동 `@codex review`를 호출합니다. 호출 댓글에는 가능하면 `한국어로 리뷰해 주세요.` 또는 이에 준하는 한국어 요청을 함께 적습니다. 외부 리뷰 봇의 고정 템플릿 언어까지 보장하지는 못합니다. PR 본문에는 `Codex PR 리뷰` 항목을 두고, 호출 횟수와 결과를 기록합니다. 변경 이후에도 승인 또는 actionable major/critical 및 보호 절차를 깨는 P1/P2 없음 상태가 될 때까지 최대 5회까지 수동 재호출합니다. 5회 호출 후에도 남은 major/critical 또는 보호 절차 P1/P2 항목은 더 반복하지 않고 `사용자 판단 필요` 또는 `의도된 남은 위험`으로 분리합니다.
 
 ## Run Set과 runtime_set
 

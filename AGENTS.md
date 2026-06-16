@@ -177,6 +177,7 @@
 - 이 정책은 `main-v2` 기준 기본값입니다.
 - 일반 사일로가 source code, generated output, test, tooling 변경으로 PR을 만들 때는 PR 생성 직후 PR 댓글로 수동 `@codex review`를 호출합니다.
 - `@codex review`는 base branch가 `main-v2`인 PR에서만 호출합니다. base branch가 `main`이면 먼저 PR 대상을 `main-v2`로 바꾸도록 보고하고 리뷰를 호출하지 않습니다.
+- `@codex review` 호출 댓글에는 가능하면 `한국어로 리뷰해 주세요.` 또는 이에 준하는 한국어 요청을 함께 적습니다. 외부 리뷰 봇의 고정 템플릿 언어를 보장하지는 못하지만, repo 운영 언어와 맞추기 위한 기본 요청 문구로 둡니다.
 - Codex PR 리뷰는 변경 diff, task 목표, 실행한 검증, 남은 위험, SSoT 승격 후보를 대상으로 합니다.
 - 리뷰 결과는 PR 본문에 `Codex PR 리뷰` 항목으로 기록합니다.
 - critical 또는 major 수준 correctness/security/data-loss 위험이나 보호 절차를 깨는 P1/P2 지적이 있으면 먼저 수정하고 Codex PR 리뷰를 재호출합니다.
