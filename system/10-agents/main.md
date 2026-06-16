@@ -17,6 +17,8 @@
 | `worker/main-prompt.md`            | worker agent에게 직접 전달하는 프롬프트       |
 | `reviewer/README.md`               | 코드/문서/운영 규칙 검토 역할 설명              |
 | `reviewer/main-prompt.md`          | reviewer agent에게 직접 전달하는 프롬프트     |
+| `review-waiter/README.md`          | PR Codex 리뷰 대기, 수정, 재리뷰 반복 역할 설명 |
+| `review-waiter/main-prompt.md`     | review waiter agent에게 직접 전달하는 프롬프트 |
 | `test-writer/README.md`            | 테스트 설계와 회귀 방지 기준 작성 역할 설명         |
 | `test-writer/main-prompt.md`       | test writer agent에게 직접 전달하는 프롬프트  |
 | `task-writer/README.md`            | task를 검증 가능한 계약으로 작성하는 역할 설명      |
@@ -34,3 +36,4 @@
 - 역할별 규칙이 skill 절차와 겹치면 절차는 `system/20-skills/`를 우선합니다.
 - 에이전트 문서가 빈약하다는 피드백을 받으면 `system/50-feedback-personality-loop/` 기준으로 증거 등급과 승격 여부를 분리한 뒤 반영합니다.
 - PR 리뷰 기준 보강은 `system/40-pr-review-loop/`, 역할별 실행 규칙 보강은 각 agent의 `README.md`와 `main-prompt.md`를 기준으로 합니다.
+- 사용자가 `~PR을 리뷰 대기 에이전트로 돌려주세요`처럼 요청하면 `review-waiter-agent`를 사용합니다.

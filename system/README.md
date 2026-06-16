@@ -29,7 +29,7 @@
 Build -> Learn -> Spec
 ```
 
-`main-v2`에서는 완벽한 설계보다 가장 빠르게 사용 가능한 결과물을 우선합니다. 불확실성이 있어도 합리적으로 가정하고 진행하며, 구현 후 발견한 문제를 새 spec, task, issue, SSoT 승격 후보로 정리합니다. PR 리뷰 gate는 PR 댓글의 수동 `@codex review` 호출을 기본으로 두고, 호출 댓글에는 가능하면 `한국어로 리뷰해 주세요.` 또는 이에 준하는 한국어 요청을 함께 적습니다. 외부 리뷰 봇의 고정 템플릿 언어까지 보장하지는 못합니다. 변경 이후에도 승인 또는 actionable major/critical 및 보호 절차를 깨는 P1/P2 없음 상태가 될 때까지 최대 5회까지 수동 재호출합니다. 5회 호출 후에도 남은 major/critical 또는 보호 절차 P1/P2 항목은 더 반복하지 않고 `사용자 판단 필요` 또는 `의도된 남은 위험`으로 분리합니다.
+`main-v2`에서는 완벽한 설계보다 가장 빠르게 사용 가능한 결과물을 우선합니다. 불확실성이 있어도 합리적으로 가정하고 진행하며, 구현 후 발견한 문제를 새 spec, task, issue, SSoT 승격 후보로 정리합니다. PR 리뷰 gate는 PR 댓글의 수동 `@codex review` 호출을 기본으로 두고, 호출 댓글에는 가능하면 `한국어로 리뷰해 주세요.` 또는 이에 준하는 한국어 요청을 함께 적습니다. 외부 리뷰 봇의 고정 템플릿 언어까지 보장하지는 못합니다. 일반 PR gate는 변경 이후에도 승인 또는 actionable major/critical 및 보호 절차를 깨는 P1/P2 없음 상태가 될 때까지 최대 5회까지 수동 재호출합니다. 5회 호출 후에도 남은 major/critical 또는 보호 절차 P1/P2 항목은 더 반복하지 않고 `사용자 판단 필요` 또는 `의도된 남은 위험`으로 분리합니다. 사용자가 `~PR을 리뷰 대기 에이전트로 돌려주세요`처럼 명시하면 `review-waiter-agent`가 별도 백그라운드 루프로 관리하며, 이때 기본 상한은 전체 리뷰 호출 10회입니다.
 
 ## 읽는 순서
 
@@ -70,6 +70,8 @@ Build -> Learn -> Spec
 | [`10-agents/worker/main-prompt.md`](10-agents/worker/main-prompt.md) | worker agent 전달 프롬프트 |
 | [`10-agents/reviewer/README.md`](10-agents/reviewer/README.md) | 변경사항의 위험, 누락, 검증 공백 검토 역할 설명 |
 | [`10-agents/reviewer/main-prompt.md`](10-agents/reviewer/main-prompt.md) | reviewer agent 전달 프롬프트 |
+| [`10-agents/review-waiter/README.md`](10-agents/review-waiter/README.md) | PR Codex 리뷰 대기, 피드백 반영, 재리뷰 반복 역할 설명 |
+| [`10-agents/review-waiter/main-prompt.md`](10-agents/review-waiter/main-prompt.md) | review waiter agent 전달 프롬프트 |
 | [`10-agents/test-writer/README.md`](10-agents/test-writer/README.md) | 테스트 설계와 회귀 방지 기준 작성 역할 설명 |
 | [`10-agents/test-writer/main-prompt.md`](10-agents/test-writer/main-prompt.md) | test writer agent 전달 프롬프트 |
 | [`10-agents/task-writer/README.md`](10-agents/task-writer/README.md) | task를 검증 가능한 계약으로 작성하는 역할 설명 |

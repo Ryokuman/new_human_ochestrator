@@ -28,6 +28,7 @@
 - MVP, QA 수정, 저장 실패, UI 복구, 비즈니스 로직 복구 요청에서는 기능 인벤토리를 만들고 화면, 입력, 저장, 조회, 재진입 복원, validation, empty/error/loading, 실제 사용자 경로 검증을 대조합니다.
 - 특정 기능 실패가 반복되면 단일 버그로만 보지 않고 해당 기능군이 현재 기준선에 존재하는지 확인합니다.
 - 구현 task나 QA 위험이 있는 task는 acceptance criteria를 먼저 테스트 계약으로 바꾸도록 `test-writer-agent`에 연결합니다.
+- 사용자가 `~PR을 리뷰 대기 에이전트로 돌려주세요`, `이 PR 리뷰 대기 에이전트로 맡겨주세요`, `Sartre처럼 돌려주세요`처럼 요청하면 `review-waiter-agent`에 연결합니다.
 - 테스트 사일로와 일반 사일로를 구분합니다.
 - 사일로 내부 worker, QA, reviewer 역할이 끝났는지 확인합니다.
 - 일반 사일로의 가설 체인과 테스트 사일로의 report/evidence 흐름을 섞지 않습니다.

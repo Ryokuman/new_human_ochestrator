@@ -34,6 +34,7 @@
 | 실제 파일 수정, scaffold, 반복 정리 | `worker-agent` |
 | 사용자 흐름 검증, evidence 수집 | `qa-agent` |
 | diff/문서/운영 규칙 위험 검토 | `reviewer-agent` |
+| PR Codex 리뷰 대기, 수정, 재리뷰 반복 | `review-waiter-agent` |
 | 테스트 계약과 runner 설계 | `test-writer-agent` |
 | 검증 가능한 task 작성 | `task-writer-agent` |
 | 후속 issue 후보 작성 | `issue-writer-agent` |
@@ -57,9 +58,10 @@
 - 2계층 변경은 project SSoT에서 다룹니다.
 - 3계층 변경은 task silo와 PR 전 임시 상태로 둡니다.
 - `main-v2` 변경은 항상 파생 브랜치와 PR로만 반영합니다.
-- PR 리뷰는 수동 `@codex review`를 기본으로 하며 최대 5회까지 재요청할 수 있습니다.
+- 일반 PR gate의 Codex 리뷰는 수동 `@codex review`를 기본으로 하며 최대 5회까지 재요청할 수 있습니다.
+- 사용자가 `~PR을 리뷰 대기 에이전트로 돌려주세요`, `이 PR 리뷰 대기 에이전트로 맡겨주세요`, `Sartre처럼 돌려주세요`처럼 말하면 `review-waiter-agent`를 사용합니다. 이때 기본 상한은 전체 리뷰 호출 10회이며, 이미 호출된 `@codex review`도 횟수에 포함합니다.
 - `@codex review` 호출 댓글에는 가능하면 `한국어로 리뷰해 주세요.` 또는 이에 준하는 한국어 요청을 함께 적습니다. 외부 리뷰 봇의 고정 템플릿 언어를 보장하지는 못하지만, repo 운영 언어와 맞추기 위한 기본 요청 문구로 둡니다.
-- 5회 호출 후에도 남은 major/critical 또는 보호 절차 P1/P2 항목은 더 반복하지 않고 `사용자 판단 필요` 또는 `의도된 남은 위험`으로 분리합니다.
+- 일반 PR gate에서 5회 호출 후에도 남은 major/critical 또는 보호 절차 P1/P2 항목은 더 반복하지 않고 `사용자 판단 필요` 또는 `의도된 남은 위험`으로 분리합니다.
 
 ## source workspace와 기능 기준선
 
