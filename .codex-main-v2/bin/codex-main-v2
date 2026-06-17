@@ -1,0 +1,16 @@
+#!/bin/sh
+set -eu
+
+repo_root=$(git rev-parse --show-toplevel 2>/dev/null || pwd)
+codex_home="$repo_root/.codex-main-v2"
+guard="$codex_home/hooks/ponytail-branch-guard.sh"
+
+if [ ! -x "$guard" ]; then
+  echo "Ponytail guard is missing or not executable: $guard" >&2
+  exit 1
+fi
+
+"$guard"
+
+export CODEX_HOME="$codex_home"
+exec codex "$@"

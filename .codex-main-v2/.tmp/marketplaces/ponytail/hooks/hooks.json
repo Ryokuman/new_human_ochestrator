@@ -1,0 +1,31 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "guard=\"${CLAUDE_PLUGIN_ROOT}/hooks/ponytail-branch-guard.sh\"; if [ -x \"$guard\" ] && \"$guard\"; then command -v node >/dev/null 2>&1 && node \"${CLAUDE_PLUGIN_ROOT}/hooks/ponytail-activate.js\" || exit 0; else exit 0; fi",
+            "commandWindows": "$guard = Join-Path $env:CLAUDE_PLUGIN_ROOT 'hooks\\ponytail-branch-guard.ps1'; if ((Test-Path $guard) -and ((powershell -NoProfile -ExecutionPolicy Bypass -File $guard; $LASTEXITCODE) -eq 0) -and (Get-Command node -ErrorAction SilentlyContinue)) { node \"$env:CLAUDE_PLUGIN_ROOT\\hooks\\ponytail-activate.js\" }",
+            "timeout": 5,
+            "statusMessage": "Loading ponytail mode..."
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "guard=\"${CLAUDE_PLUGIN_ROOT}/hooks/ponytail-branch-guard.sh\"; if [ -x \"$guard\" ] && \"$guard\"; then command -v node >/dev/null 2>&1 && node \"${CLAUDE_PLUGIN_ROOT}/hooks/ponytail-mode-tracker.js\" || exit 0; else exit 0; fi",
+            "commandWindows": "$guard = Join-Path $env:CLAUDE_PLUGIN_ROOT 'hooks\\ponytail-branch-guard.ps1'; if ((Test-Path $guard) -and ((powershell -NoProfile -ExecutionPolicy Bypass -File $guard; $LASTEXITCODE) -eq 0) -and (Get-Command node -ErrorAction SilentlyContinue)) { node \"$env:CLAUDE_PLUGIN_ROOT\\hooks\\ponytail-mode-tracker.js\" }",
+            "timeout": 5,
+            "statusMessage": "Tracking ponytail mode..."
+          }
+        ]
+      }
+    ]
+  }
+}

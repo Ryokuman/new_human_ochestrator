@@ -1,0 +1,5 @@
+[marketplaces.ponytail]
+last_updated = "2026-06-17T05:00:00Z"
+
+[plugins."ponytail@ponytail"]
+enabled = true
