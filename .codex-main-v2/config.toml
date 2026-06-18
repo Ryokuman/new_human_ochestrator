@@ -1,5 +1,7 @@
 [marketplaces.ponytail]
-last_updated = "2026-06-17T05:00:00Z"
+source_type = "git"
+source = "https://github.com/DietrichGebert/ponytail.git"
+ref = "v4.7.0"
 
 [plugins."ponytail@ponytail"]
 enabled = true

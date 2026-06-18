@@ -10,6 +10,15 @@
 
 wrapper는 `CODEX_HOME`을 이 디렉터리로 지정하고, 실행 전 `.codex-main-v2/hooks/ponytail-branch-guard.sh`를 호출합니다. 일반 `codex` 실행은 이 디렉터리를 자동으로 쓰지 않으므로 Ponytail plugin enablement가 wrapper 밖으로 새지 않습니다.
 
+새 checkout처럼 `.codex-main-v2/.tmp/`와 `.codex-main-v2/plugins/cache/`가 비어 있으면 wrapper가 `.codex-main-v2/bin/bootstrap-ponytail`을 먼저 실행합니다. bootstrap은 repo-local `CODEX_HOME`에만 아래 설치 입력을 적용합니다.
+
+```bash
+codex plugin marketplace add DietrichGebert/ponytail --ref v4.7.0
+codex plugin add ponytail@ponytail
+```
+
+`.codex-main-v2/.tmp/`와 `.codex-main-v2/plugins/cache/`는 재생성 가능한 산출물이므로 git에 추적하지 않습니다. 추적 대상은 wrapper, guard, config, bootstrap처럼 새 checkout에서 같은 상태를 재생성하는 입력 파일입니다.
+
 guard 통과 조건은 아래와 같습니다.
 
 - 현재 브랜치가 `main-v2`

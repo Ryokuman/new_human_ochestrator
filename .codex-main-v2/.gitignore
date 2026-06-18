@@ -8,14 +8,11 @@
 /logs/
 /cache/
 /state/
+/.tmp/
+/plugins/cache/
 /*.log
 /*.sqlite
 /*.sqlite-shm
 /*.sqlite-wal
-!/plugins/cache/**/*.log
-!/plugins/cache/**/*.sqlite*
-!/.tmp/marketplaces/**/*.log
-!/.tmp/marketplaces/**/*.sqlite*
 skills/.system/
-.tmp/marketplaces/.staging/
 plugins/.marketplace-plugin-source-staging/
