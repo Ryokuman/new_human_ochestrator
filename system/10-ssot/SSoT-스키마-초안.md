@@ -48,7 +48,10 @@ ssot/
 ```text
 project-ssot/
 ├── 00-dashboard/
-│   └── 대시보드
+│   ├── project-overview.md
+│   ├── work-filter.md
+│   ├── work-items.base
+│   └── work-views.md
 ├── 20-issues/
 │   └── 이슈 관리
 ├── 30-tasks/
@@ -80,9 +83,27 @@ project-ssot/
 | 태스크 생성/관리 | 실제 수행 가능한 작업 단위를 만들고 상태, 완료 조건, 검증 결과를 추적한다. | 2계층 Project Internal |
 | L 기준 생성/관리 | 프로젝트의 단계별 채점 기준, runner 계약, report 위치를 명시한다. | 2계층 Project Internal |
 | 이슈 관리 | 문제, 원인 가설, 영향, 연결 Task를 추적한다. | 2계층 Project Internal |
-| 대시보드 | 사람이 현재 상태, 활성 Task, 활성 Issue, 다음 행동을 한 화면에서 확인한다. | 2계층 Project Internal |
+| 대시보드 | 사람이 현재 상태, 활성 Task, 활성 Issue, 다음 행동을 한 화면에서 필터링해 확인한다. | 2계층 Project Internal |
 
 0계층 `system/`은 위 구조가 필요하다는 규칙, 템플릿, `setup.sh` 셋업 흐름만 관리합니다. 특정 프로젝트의 실제 Task, Issue, L runner 결과, page 목록, report 내용은 0계층으로 복사하지 않습니다.
+
+Project SSoT의 `00-dashboard/`는 단순 설명 문서만 두지 않습니다. 기본 scaffold는 아래 네 파일을 생성해야 합니다.
+
+- `project-overview.md`: 프로젝트 목적, 위치, 운영 경계, 다음 행동을 설명합니다.
+- `work-filter.md`: issue/task를 종류, 상태, 레벨, 태그, 날짜, 검색어로 즉석 필터링하는 DataviewJS 대시보드입니다.
+- `work-items.base`: Obsidian Base에서 사용할 기본 table view와 저장된 view입니다. setup은 target이 현재 repo/vault 아래에 있으면 해당 Project SSoT 경로로 Base 필터를 제한하고, 외부 target이면 해당 SSoT를 vault root로 여는 전제의 로컬 `20-issues/`, `30-tasks/` 필터를 생성합니다.
+- `work-views.md`: Obsidian Base 사용법과 `work-items.base` embed를 둔 안내 문서입니다.
+
+대시보드의 기본 첫 화면은 `project-overview.md`의 정적 표가 아니라 `work-filter.md` 또는 `work-views.md`처럼 실제 issue/task를 필터링할 수 있는 작업 목록이어야 합니다. 프로젝트 설명은 overview에 두되, 운영자가 지금 볼 화면은 필터 가능한 작업 대시보드로 연결합니다.
+
+대시보드는 실제 작업 항목만 집계해야 합니다. `20-issues/ISSUE-template.md`, `30-tasks/TASK-template.md`처럼 live 폴더 안에 있는 템플릿 파일은 frontmatter가 있더라도 작업 목록에서 제외합니다.
+
+필터 대시보드가 동작하려면 issue/task 문서에 최소 frontmatter가 있어야 합니다.
+
+- issue: `type: issue`, `id`, `status`, `severity`, `updated`
+- task: `type: task`, `id`, `status`, `priority`, `updated`
+
+파일명과 문서 제목은 사람이 읽는 이름을 우선하고, 필터와 링크 표시는 frontmatter의 `id`를 기준으로 합니다.
 
 ### Issue
 
@@ -111,6 +132,8 @@ Issue는 0계층 SSoT가 아니라 project SSoT에 저장합니다.
 Task는 0계층 SSoT가 아니라 project SSoT에 저장합니다.
 
 `main-v2`에서는 Task가 처음부터 완전한 계약일 필요가 없습니다. 작은 build 실험으로 시작하고, 실행 후 관찰한 learn 결과를 acceptance criteria, test plan, follow-up spec으로 승격할 수 있습니다.
+
+Task 문서의 제목은 사람이 읽는 작업 목표나 문제 이름으로 작성합니다. `TASK-NNNN` 또는 `TASK-NNNNN` 같은 식별자는 제목에 합치지 않고 별도 `ID` 섹션이나 `id` 필드에 둡니다. 이렇게 해야 대시보드와 문서 목록에서 작업 의미와 식별자를 각각 안정적으로 읽을 수 있습니다.
 
 모든 task 명세서는 읽고 실행 범위를 파악하는 시간이 기본 5분을 넘지 않도록 작성합니다. 최대 허용치는 7분입니다. 7분을 넘길 분량이면 task를 분할하거나, 상단에 5분 이내로 읽을 수 있는 실행 요약, 금지선, acceptance criteria, test plan을 먼저 둡니다.
 
@@ -145,6 +168,8 @@ Task는 0계층 SSoT가 아니라 project SSoT에 저장합니다.
 - learn_summary
 - promoted_spec_candidate
 - follow_up_task_candidates
+
+Task 기본 필드에는 `owner`와 `files_touched`를 두지 않습니다. 담당 실행 단위는 `owner_silo`, `branch`, `pr`, 또는 관련 repo/branch/silo 섹션으로 추적합니다. 실제 변경 파일 목록은 task 작성 시점에 예측해야 하는 계약이 아니라 구현 결과이므로 PR 본문, 변경 요약, 리뷰 evidence에서 기록합니다.
 
 `hypothesis_chain`은 task 내부 summary 역할을 하며, 사일로 실행으로 검증한 가설을 시간순으로 누적합니다. 실패한 가설은 새 task를 자동 생성하지 않고 먼저 이 체인에 남깁니다. 하나의 task에서 가설 시도는 최대 3회이며, 3회 이후에는 자동 재시도 대신 사용자 판단이 필요합니다.
 

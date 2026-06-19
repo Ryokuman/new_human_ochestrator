@@ -32,6 +32,16 @@
 
 ## main-v2 운영
 
+## Project SSoT 대시보드 기본값
+
+`setup.sh --create-project-ssot`으로 만드는 Project SSoT는 `00-dashboard/project-overview.md`만 두지 않습니다. 기본으로 아래 작업 대시보드를 함께 생성합니다.
+
+- `00-dashboard/work-filter.md`: 종류, 상태, 레벨, 태그, 날짜, 검색어를 조합하는 즉석 멀티필터
+- `00-dashboard/work-items.base`: Obsidian Base table view와 저장된 view
+- `00-dashboard/work-views.md`: Base 사용법과 embed 안내
+
+`project-overview.md`는 프로젝트 설명과 운영 경계를 담고, 실제 issue/task 확인은 `work-filter.md` 또는 `work-views.md`에서 시작합니다. 생성되는 issue/task 템플릿은 대시보드 필터가 읽을 수 있도록 `type`, `id`, `status`, `priority` 또는 `severity`, `updated` frontmatter를 포함합니다.
+
 `main-v2`는 기존 `main`과 다른 탐색형 운영 브랜치입니다.
 
 ```text

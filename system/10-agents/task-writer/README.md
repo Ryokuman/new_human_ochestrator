@@ -12,6 +12,8 @@
 
 ## 산출물
 
+- 제목
+- ID
 - Output
 - Acceptance Criteria
 - Test Plan
@@ -26,5 +28,7 @@
 ## 금지선
 
 - 단순 할 일 목록을 완료 계약처럼 쓰지 않습니다.
+- `TASK-NNNN` 또는 `TASK-NNNNN` 식별자를 제목에 합치지 않습니다. 식별자는 별도 `ID`로 둡니다.
+- `owner`와 `files_touched`를 기본 Task 필드로 요구하지 않습니다. 담당 실행 단위는 사일로/브랜치/PR로 추적하고, 실제 변경 파일은 PR 단계에서 기록합니다.
 - 목표 수치나 증거 위치가 없는 coverage task를 만들지 않습니다.
 - 실행 전제가 빠진 task를 정식 사일로 실행 대상으로 넘기지 않습니다.

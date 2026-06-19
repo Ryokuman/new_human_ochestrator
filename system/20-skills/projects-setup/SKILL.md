@@ -25,7 +25,10 @@ projects/<project-id>/
 ├── 02-project-internal/
 │   ├── README.md
 │   ├── 00-dashboard/
-│   │   └── project-overview.md
+│   │   ├── project-overview.md
+│   │   ├── work-filter.md
+│   │   ├── work-items.base
+│   │   └── work-views.md
 │   ├── 10-dictionary/
 │   │   └── project-dictionary.md
 │   ├── 20-issues/
@@ -61,6 +64,8 @@ projects/<project-id>/
 
 모든 project SSoT에는 프로젝트 전반 설명과 dictionary가 있어야 합니다.
 
+`00-dashboard/`에는 project overview와 작업 필터 대시보드를 함께 둡니다. `project-overview.md`는 프로젝트 설명이고, 실제 운영 첫 화면은 `work-filter.md` 또는 `work-views.md`처럼 issue/task를 필터링할 수 있는 작업 목록입니다.
+
 `00-dashboard/project-overview.md`에는 최소 아래 항목을 둡니다.
 
 - 프로젝트 목적
@@ -69,6 +74,24 @@ projects/<project-id>/
 - 주요 workflow
 - 검증/배포/운영 경계
 - 금지선/주의사항
+
+`00-dashboard/work-filter.md`에는 최소 아래 필터를 둡니다.
+
+- 종류: issue/task
+- 상태: todo, in_progress, blocked, review, done, closed 등 실제 문서에 있는 상태
+- 레벨: `level_target`
+- 태그: `tags` 또는 파일 태그
+- 날짜: `updated`, `created`, `closed`, `file.mtime`
+- 검색어
+
+`00-dashboard/work-items.base`와 `00-dashboard/work-views.md`는 Obsidian 기본 Base view/filter를 쓰는 사용자를 위한 대체 화면입니다. Base에는 전체 즉석 필터, 진행 중 Task, 완료 Task, 열린 Issue view를 기본으로 둡니다. setup은 target이 현재 repo/vault 아래에 있으면 해당 Project SSoT 경로로 Base 필터를 제한하고, 외부 target이면 해당 SSoT를 vault root로 여는 전제의 로컬 `20-issues/`, `30-tasks/` 필터를 생성합니다.
+
+작업 대시보드는 실제 issue/task만 보여야 하므로 `20-issues/ISSUE-template.md`, `30-tasks/TASK-template.md` 같은 live 폴더 안 템플릿 파일은 필터 결과에서 제외합니다.
+
+작업 대시보드가 비지 않으려면 setup scaffold가 만드는 issue/task 템플릿에 최소 frontmatter가 있어야 합니다.
+
+- issue: `type: issue`, `id`, `status`, `severity`, `updated`
+- task: `type: task`, `id`, `status`, `priority`, `updated`
 
 `10-dictionary/project-dictionary.md`에는 프로젝트에서 쓰는 용어, 고유명사, 내부 약어, runner 용어, coverage 용어를 기록합니다. 최소 필드는 아래와 같습니다.
 
@@ -127,6 +150,9 @@ test -f "$tmp/sample-ssot/README.md"
 - `projects/<project-id>/README.md`
 - `projects/<project-id>/00-secrets/README.md`
 - `projects/<project-id>/02-project-internal/00-dashboard/project-overview.md`
+- `projects/<project-id>/02-project-internal/00-dashboard/work-filter.md`
+- `projects/<project-id>/02-project-internal/00-dashboard/work-items.base`
+- `projects/<project-id>/02-project-internal/00-dashboard/work-views.md`
 - `projects/<project-id>/02-project-internal/10-dictionary/project-dictionary.md`
 - `projects/<project-id>/03-silo-local/pr-description-template.md`
 - `system/config/silo-projects.yaml`의 프로젝트 id 중복 없음

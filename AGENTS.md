@@ -252,6 +252,8 @@
 ## Task Test Contract Policy
 
 - `main-v2`에서 Task는 실행 가능한 실험 단위로 시작할 수 있습니다. 먼저 build하고, learn 결과를 acceptance criteria, Test Plan, Coverage Target으로 승격합니다.
+- Task 문서의 제목은 사람이 읽는 작업 목표나 문제 이름으로 작성하고, `TASK-NNNN` 또는 `TASK-NNNNN` 같은 식별자는 제목에 합치지 않고 별도 `ID` 섹션에 둡니다.
+- Task 기본 필드에는 `owner`와 `files_touched`를 두지 않습니다. 담당 실행 단위는 필요할 때 `owner_silo` 또는 `관련 repo/branch/silo`로 표현하고, 실제 변경 파일은 사전 task 계약이 아니라 PR 본문과 변경 요약에서 기록합니다.
 - 모든 task 명세서는 읽고 실행 범위를 파악하는 시간이 기본 5분을 넘지 않도록 작성합니다.
 - task 명세서 읽기 시간의 최대 허용치는 7분입니다. 7분을 넘길 분량이면 task를 분할하거나, 상단에 5분 이내로 읽을 수 있는 실행 요약, 금지선, acceptance criteria, test plan을 먼저 둡니다.
 - 각 task는 `Output`, `Acceptance Criteria`, `Test Plan`, `Coverage Target`을 포함해야 합니다.
@@ -265,6 +267,15 @@
 - 신규/변경 로직은 가능한 범위에서 unit test를 추가합니다.
 - 전체 coverage 90%는 프로젝트가 측정 범위와 적용 시점을 정한 뒤 단계적으로 강제합니다. 그 전에는 신규/변경 코드 coverage와 실행한 테스트 증거를 우선합니다.
 - coverage를 측정하지 못했거나 테스트를 생략했다면 PR 본문과 완료 보고에 이유를 남깁니다.
+
+## Project Dashboard Filter Policy
+
+- Project SSoT의 `00-dashboard/`는 단순 설명 문서만 두지 않고, issue/task를 바로 필터링할 수 있는 작업 대시보드를 기본 생성합니다.
+- 기본 대시보드는 `work-filter.md`, `work-items.base`, `work-views.md`로 구성합니다.
+- `work-filter.md`는 종류, 상태, 레벨, 태그, 날짜, 검색어를 조합하는 즉석 멀티필터 역할을 합니다.
+- `work-items.base`와 `work-views.md`는 Obsidian 기본 Base view/filter를 쓰는 사용자를 위한 대체 화면입니다.
+- `project-overview.md`는 프로젝트 설명, 위치, 운영 경계, 다음 행동을 담되, 운영자가 지금 볼 작업 목록은 필터 가능한 대시보드로 연결합니다.
+- setup scaffold가 만드는 issue/task 템플릿은 `type`, `id`, `status`, `updated` 같은 frontmatter를 포함해야 합니다. 대시보드는 이 구조화 필드를 기준으로 필터링합니다.
 
 ## Coverage Task Goal Tree Policy
 
