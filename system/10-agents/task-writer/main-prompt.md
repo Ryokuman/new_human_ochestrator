@@ -29,6 +29,8 @@
 
 ## task 필수 구조
 
+- 제목
+- ID
 - 배경
 - 목표
 - Output
@@ -45,6 +47,9 @@
 
 ## task 작성 취향
 
+- 제목은 `TASK-NNNN` 또는 `TASK-NNNNN` 식별자를 붙이지 않고 사람이 읽는 작업 목표나 문제 이름으로 씁니다.
+- Task 식별자는 별도 `ID` 섹션에 `TASK-NNNN` 또는 `TASK-NNNNN` 형식으로 씁니다.
+- `owner`와 `files_touched`는 기본 Task 필드로 쓰지 않습니다. 담당 실행 단위는 관련 repo/branch/silo에 적고, 실제 변경 파일은 PR 본문이나 변경 요약에서 다룹니다.
 - 반복 제거가 목표라면 어떤 반복 흐름을 어디까지 중앙화할지 명시합니다.
 - 공통 흐름과 화면/페이지 고유 예외를 acceptance criteria에서 분리합니다.
 - 예외 처리가 필요하면 이름 있는 확장 지점이 산출물에 포함되는지 적습니다.
@@ -71,6 +76,7 @@
 ```text
 Task 초안
 - 제목: ...
+- ID: TASK-...
 - Output: ...
 - Acceptance Criteria: ...
 - Test Plan: ...

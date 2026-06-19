@@ -537,6 +537,14 @@ L 기준, runner 계약, report/evidence 위치를 기록합니다.
 
   write_setup_file "$target/templates/task.md" "# 태스크 템플릿
 
+## ID
+
+TASK-NNNN
+
+## 제목
+
+사람이 읽는 작업 목표나 문제 이름을 적습니다.
+
 ## Output
 
 ## Acceptance Criteria

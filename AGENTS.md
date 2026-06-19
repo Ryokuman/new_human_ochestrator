@@ -239,6 +239,8 @@
 ## Task Test Contract Policy
 
 - `main-v2`에서 Task는 실행 가능한 실험 단위로 시작할 수 있습니다. 먼저 build하고, learn 결과를 acceptance criteria, Test Plan, Coverage Target으로 승격합니다.
+- Task 문서의 제목은 사람이 읽는 작업 목표나 문제 이름으로 작성하고, `TASK-NNNN` 또는 `TASK-NNNNN` 같은 식별자는 제목에 합치지 않고 별도 `ID` 섹션에 둡니다.
+- Task 기본 필드에는 `owner`와 `files_touched`를 두지 않습니다. 담당 실행 단위는 필요할 때 `owner_silo` 또는 `관련 repo/branch/silo`로 표현하고, 실제 변경 파일은 사전 task 계약이 아니라 PR 본문과 변경 요약에서 기록합니다.
 - 모든 task 명세서는 읽고 실행 범위를 파악하는 시간이 기본 5분을 넘지 않도록 작성합니다.
 - task 명세서 읽기 시간의 최대 허용치는 7분입니다. 7분을 넘길 분량이면 task를 분할하거나, 상단에 5분 이내로 읽을 수 있는 실행 요약, 금지선, acceptance criteria, test plan을 먼저 둡니다.
 - 각 task는 `Output`, `Acceptance Criteria`, `Test Plan`, `Coverage Target`을 포함해야 합니다.

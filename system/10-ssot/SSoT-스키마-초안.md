@@ -112,6 +112,8 @@ Task는 0계층 SSoT가 아니라 project SSoT에 저장합니다.
 
 `main-v2`에서는 Task가 처음부터 완전한 계약일 필요가 없습니다. 작은 build 실험으로 시작하고, 실행 후 관찰한 learn 결과를 acceptance criteria, test plan, follow-up spec으로 승격할 수 있습니다.
 
+Task 문서의 제목은 사람이 읽는 작업 목표나 문제 이름으로 작성합니다. `TASK-NNNN` 또는 `TASK-NNNNN` 같은 식별자는 제목에 합치지 않고 별도 `ID` 섹션이나 `id` 필드에 둡니다. 이렇게 해야 대시보드와 문서 목록에서 작업 의미와 식별자를 각각 안정적으로 읽을 수 있습니다.
+
 모든 task 명세서는 읽고 실행 범위를 파악하는 시간이 기본 5분을 넘지 않도록 작성합니다. 최대 허용치는 7분입니다. 7분을 넘길 분량이면 task를 분할하거나, 상단에 5분 이내로 읽을 수 있는 실행 요약, 금지선, acceptance criteria, test plan을 먼저 둡니다.
 
 필드:
@@ -145,6 +147,8 @@ Task는 0계층 SSoT가 아니라 project SSoT에 저장합니다.
 - learn_summary
 - promoted_spec_candidate
 - follow_up_task_candidates
+
+Task 기본 필드에는 `owner`와 `files_touched`를 두지 않습니다. 담당 실행 단위는 `owner_silo`, `branch`, `pr`, 또는 관련 repo/branch/silo 섹션으로 추적합니다. 실제 변경 파일 목록은 task 작성 시점에 예측해야 하는 계약이 아니라 구현 결과이므로 PR 본문, 변경 요약, 리뷰 evidence에서 기록합니다.
 
 `hypothesis_chain`은 task 내부 summary 역할을 하며, 사일로 실행으로 검증한 가설을 시간순으로 누적합니다. 실패한 가설은 새 task를 자동 생성하지 않고 먼저 이 체인에 남깁니다. 하나의 task에서 가설 시도는 최대 3회이며, 3회 이후에는 자동 재시도 대신 사용자 판단이 필요합니다.
 
