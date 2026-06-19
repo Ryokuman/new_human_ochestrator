@@ -384,6 +384,110 @@ write_setup_file() {
   info "생성됨: $dest"
 }
 
+project_ssot_vault_path() {
+  local target="$1"
+
+  case "$target" in
+    "$REPO_ROOT"/*) printf '%s\n' "${target#"$REPO_ROOT/"}" ;;
+    *) printf '%s\n' "" ;;
+  esac
+}
+
+write_project_work_items_base() {
+  local dest="$1"
+  local project_path="$2"
+  local issue_folder="20-issues"
+  local task_folder="30-tasks"
+
+  if [ -n "$project_path" ]; then
+    issue_folder="$project_path/20-issues"
+    task_folder="$project_path/30-tasks"
+  fi
+
+  write_setup_file "$dest" "filters:
+  and:
+    - file.ext == \"md\"
+    - or:
+        - file.inFolder(\"$issue_folder\")
+        - file.inFolder(\"$task_folder\")
+properties:
+  id:
+    displayName: ID
+  type:
+    displayName: 타입
+  status:
+    displayName: 상태
+  priority:
+    displayName: 우선순위
+  severity:
+    displayName: 중요도
+  level_target:
+    displayName: 레벨
+  file.tags:
+    displayName: 태그
+  created:
+    displayName: 생성일
+  updated:
+    displayName: 수정일
+  closed:
+    displayName: 종료일
+  file.mtime:
+    displayName: 파일수정일
+views:
+  - type: table
+    name: 전체 - 즉석 필터
+    order:
+      - id
+      - type
+      - status
+      - priority
+      - severity
+      - level_target
+      - file.tags
+      - updated
+      - file.mtime
+  - type: table
+    name: 진행 중 Task
+    filters:
+      and:
+        - type == \"task\"
+        - '[\"todo\", \"in_progress\", \"blocked\", \"review\"].contains(status)'
+    order:
+      - id
+      - status
+      - priority
+      - level_target
+      - file.tags
+      - updated
+  - type: table
+    name: 완료 Task
+    filters:
+      and:
+        - type == \"task\"
+        - status == \"done\"
+    order:
+      - id
+      - status
+      - priority
+      - level_target
+      - file.tags
+      - closed
+      - updated
+  - type: table
+    name: 열린 Issue
+    filters:
+      and:
+        - type == \"issue\"
+        - '[\"todo\", \"in_progress\", \"blocked\", \"review\", \"open\"].contains(status)'
+    order:
+      - id
+      - status
+      - severity
+      - level_target
+      - file.tags
+      - updated"
+}
+
 init_config() {
   info ""
   info "config 초안 생성"
@@ -436,6 +540,8 @@ create_project_ssot() {
   info "project SSoT 반복 구조 생성"
   info "project id: $PROJECT_ID"
   info "target: $target"
+  local project_vault_path
+  project_vault_path="$(project_ssot_vault_path "$target")"
 
   mkdir -p \
     "$target/00-dashboard" \
@@ -482,7 +588,7 @@ create_project_ssot() {
 "
 
   copy_setup_file "$REPO_ROOT/system/templates/project-ssot/00-dashboard/work-filter.md" "$target/00-dashboard/work-filter.md"
-  copy_setup_file "$REPO_ROOT/system/templates/project-ssot/00-dashboard/work-items.base" "$target/00-dashboard/work-items.base"
+  write_project_work_items_base "$target/00-dashboard/work-items.base" "$project_vault_path"
   copy_setup_file "$REPO_ROOT/system/templates/project-ssot/00-dashboard/work-views.md" "$target/00-dashboard/work-views.md"
 
   write_setup_file "$target/10-dictionary/README.md" "# Dictionary

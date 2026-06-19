@@ -9,8 +9,12 @@ status: active
 프로젝트의 issue/task를 종류, 상태, 레벨, 태그, 날짜, 검색어로 조합해서 본다. 각 multiselect 필터 안에서는 OR/AND를 고를 수 있고, 필터 그룹끼리도 OR/AND를 고를 수 있다.
 
 ```dataviewjs
+const dashboardFolder = dv.current().file.folder;
+const projectRoot = dashboardFolder.replace(/(^|\/)00-dashboard$/, "");
+const projectPath = (child) => projectRoot ? projectRoot + "/" + child : child;
+const projectPaths = [projectPath("20-issues/"), projectPath("30-tasks/")];
 const pages = dv.pages()
-  .where((page) => /(^|\/)(20-issues|30-tasks)\//.test(page.file.path))
+  .where((page) => projectPaths.some((path) => page.file.path.startsWith(path)))
   .array();
 
 const normalize = (value) => {

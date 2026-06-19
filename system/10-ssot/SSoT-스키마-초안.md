@@ -91,7 +91,7 @@ Project SSoT의 `00-dashboard/`는 단순 설명 문서만 두지 않습니다. 
 
 - `project-overview.md`: 프로젝트 목적, 위치, 운영 경계, 다음 행동을 설명합니다.
 - `work-filter.md`: issue/task를 종류, 상태, 레벨, 태그, 날짜, 검색어로 즉석 필터링하는 DataviewJS 대시보드입니다.
-- `work-items.base`: Obsidian Base에서 사용할 기본 table view와 저장된 view입니다.
+- `work-items.base`: Obsidian Base에서 사용할 기본 table view와 저장된 view입니다. setup은 target이 현재 repo/vault 아래에 있으면 해당 Project SSoT 경로로 Base 필터를 제한하고, 외부 target이면 해당 SSoT를 vault root로 여는 전제의 로컬 `20-issues/`, `30-tasks/` 필터를 생성합니다.
 - `work-views.md`: Obsidian Base 사용법과 `work-items.base` embed를 둔 안내 문서입니다.
 
 대시보드의 기본 첫 화면은 `project-overview.md`의 정적 표가 아니라 `work-filter.md` 또는 `work-views.md`처럼 실제 issue/task를 필터링할 수 있는 작업 목록이어야 합니다. 프로젝트 설명은 overview에 두되, 운영자가 지금 볼 화면은 필터 가능한 작업 대시보드로 연결합니다.
