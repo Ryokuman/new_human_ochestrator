@@ -1,0 +1,13 @@
+.markdown-source-view.mod-cm6,
+.markdown-preview-view {
+    --file-line-width: 90%; /* 최대 너비를 90%로 설정, 원할 경우 100%로 변경 */
+}
+
+.markdown-source-view.mod-cm6 .cm-content,
+.markdown-source-view.mod-cm6 .cm-sizer,
+.markdown-preview-view .markdown-preview-sizer,
+.markdown-preview-view .markdown-rendered {
+    max-width: 90%; /* 최대 너비를 90%로 설정, 원할 경우 100%로 변경 */
+    padding-left: 20px;
+    padding-right: 20px;
+}

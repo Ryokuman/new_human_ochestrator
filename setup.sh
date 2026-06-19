@@ -384,6 +384,52 @@ write_setup_file() {
   info "생성됨: $dest"
 }
 
+write_obsidian_appearance() {
+  local dest="$1"
+  local snippet="readable-markdown-width"
+
+  mkdir -p "$(dirname "$dest")"
+  if [ ! -e "$dest" ]; then
+    printf '%s\n' "{
+  \"enabledCssSnippets\": [
+    \"$snippet\"
+  ]
+}" > "$dest"
+    info "생성됨: $dest"
+    return 0
+  fi
+
+  command -v python3 >/dev/null 2>&1 || fail "python3 is required to update existing Obsidian appearance.json"
+
+  python3 - "$dest" "$snippet" <<'PY'
+import json
+import sys
+
+path, snippet = sys.argv[1], sys.argv[2]
+
+with open(path, encoding="utf-8") as handle:
+    data = json.load(handle)
+
+if not isinstance(data, dict):
+    data = {}
+
+snippets = data.get("enabledCssSnippets")
+if not isinstance(snippets, list):
+    snippets = []
+
+if snippet not in snippets:
+    snippets.append(snippet)
+
+data["enabledCssSnippets"] = snippets
+
+with open(path, "w", encoding="utf-8") as handle:
+    json.dump(data, handle, ensure_ascii=False, indent=2)
+    handle.write("\n")
+PY
+
+  info "갱신됨: $dest"
+}
+
 project_ssot_vault_path() {
   local target="$1"
 
@@ -567,6 +613,7 @@ create_project_ssot() {
 
   mkdir -p \
     "$target/.obsidian" \
+    "$target/.obsidian/snippets" \
     "$target/00-dashboard" \
     "$target/10-dictionary" \
     "$target/20-issues" \
@@ -584,6 +631,7 @@ create_project_ssot() {
 
 - 작업 대시보드 \`00-dashboard/work-filter.md\`는 Dataview community plugin과 DataviewJS 활성화를 전제로 합니다.
 - \`00-dashboard/work-items.base\`는 Obsidian Base 뷰를 쓰는 대체 화면입니다.
+- \`.obsidian/snippets/readable-markdown-width.css\`는 Markdown 편집/미리보기 영역을 넓게 쓰기 위한 기본 CSS snippet입니다.
 - 이 scaffold는 \`.obsidian/community-plugins.json\`에 \`dataview\`를 기본 선언합니다. 실제 플러그인 설치와 DataviewJS 허용은 Obsidian 앱에서 확인합니다.
 
 ## 폴더
@@ -621,6 +669,9 @@ create_project_ssot() {
   \"properties\",
   \"bases\"
 ]"
+
+  write_obsidian_appearance "$target/.obsidian/appearance.json"
+  copy_setup_file "$REPO_ROOT/system/templates/project-ssot/.obsidian/snippets/readable-markdown-width.css" "$target/.obsidian/snippets/readable-markdown-width.css"
 
   write_setup_file "$target/00-dashboard/project-overview.md" "# $PROJECT_NAME 현황
 
