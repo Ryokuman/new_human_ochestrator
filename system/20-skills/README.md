@@ -97,7 +97,7 @@ Build -> Learn -> Spec
 - project 등록과 SSoT 생성: `projects-setup`
 - 세션 종료, handoff, task/issue/QA 갱신: 프로젝트별 설치 skill 또는 project SSoT의 운영 문서를 따릅니다.
 
-프로젝트 내부 문서를 쓸 때는 제품 repo 안의 `obs/`, `.obsidian`, `docs/`, submodule, external clone을 기준 SSoT로 추정하지 않습니다. 먼저 `projects/<project-id>/README.md`에서 선언된 project SSoT 경로를 확인하고, 선언이 없으면 기본 scaffold인 `projects/<project-id>/02-project-internal/` 아래 dashboard와 task 위치를 확인합니다. `project/<project-id>` 브랜치가 있으면 해당 브랜치 또는 그 브랜치에서 판 별도 worktree에서만 project SSoT 원문을 작성합니다. 기준 SSoT나 기준 worktree가 아닌 위치에는 새 task/issue/QA를 만들지 않습니다.
+프로젝트 내부 문서를 쓸 때는 제품 repo 안의 `obs/`, `.obsidian`, `docs/`, submodule, external clone을 기준 SSoT로 추정하지 않습니다. 먼저 `projects/<project-id>/README.md`에서 선언된 project SSoT 경로를 확인하고, 선언이 없으면 기본 scaffold인 `projects/<project-id>/02-project-internal/` 아래 dashboard와 task 위치를 확인합니다. `project/<project-id>` 브랜치가 있으면 해당 브랜치 또는 그 브랜치에서 판 별도 worktree에서만 project SSoT 원문을 작성합니다. 기준 SSoT나 기준 worktree가 아닌 위치에는 새 task/issue/QA/source doc을 만들지 않습니다.
 
 새로운 `ssot-manager` skill이 필요해지면 기존 세 역할과 겹치지 않게, “세션 종료와 SSoT 갱신을 언제 어떻게 수행하는가”를 전담하도록 추가합니다.
 
