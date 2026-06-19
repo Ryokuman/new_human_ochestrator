@@ -58,6 +58,9 @@
 - 2계층 변경은 project SSoT에서 다룹니다.
 - 3계층 변경은 task silo와 PR 전 임시 상태로 둡니다.
 - `main-v2` 변경은 항상 파생 브랜치와 PR로만 반영합니다.
+- 오래된 브랜치의 project SSoT diff를 평가할 때는 `main-v2` 기준 공통 규칙 drift와 `project/<project-id>` 기준 project SSoT diff를 분리합니다.
+- 브랜치 차이를 설명할 때는 최종 트리 차이인 `base..branch`와 브랜치 고유 변경인 `base...branch`를 구분합니다.
+- project SSoT 삭제 PR을 만들기 전에는 삭제 대상 파일을 `이관 확인됨`, `미이관`, `중복`, `폐기 후보`, `사용자 판단 필요`로 분류합니다.
 - 일반 PR gate의 Codex 리뷰는 수동 `@codex review`를 기본으로 하며 최대 5회까지 재요청할 수 있습니다.
 - 현재 head push 이후에 작성된 최신 `@codex review` 호출 댓글에 `eyes` 반응이 있으면 Codex 리뷰가 접수 또는 진행 중인 상태로 보고, 같은 head commit에 추가 리뷰 요청을 보내지 않습니다.
 - 사용자가 `~PR을 리뷰 대기 에이전트로 돌려주세요`, `이 PR 리뷰 대기 에이전트로 맡겨주세요`, `Sartre처럼 돌려주세요`처럼 말하면 `review-waiter-agent`를 사용합니다. 이때 기본 상한은 전체 리뷰 호출 10회이며, 이미 호출된 `@codex review`도 횟수에 포함합니다.

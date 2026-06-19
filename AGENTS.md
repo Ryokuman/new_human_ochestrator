@@ -76,6 +76,16 @@
 - rebase 후에는 현재 project 브랜치의 SSoT, task, issue, 실행 방식이 새 `main-v2` 규칙과 맞지 않는 부분을 찾아 `완료된 것`, `아직 안 된 것`, `규칙 불일치`, `조치 후보`로 분리해 보고합니다.
 - 이 규칙 확인은 project 브랜치를 `main-v2`에 머지하라는 뜻이 아닙니다. project 브랜치는 계속 장기 정보 브랜치로 유지하고, 반복 가능한 운영 규칙만 별도 `main-v2` 업데이트 후보로 분리합니다.
 
+## 브랜치 Drift 및 SSoT 삭제 Gate 정책
+
+- 오래된 `docs/*`, `repair/*`, `silo/*` 브랜치가 project SSoT 파일을 추가, 삭제, 이동한 것처럼 보이면 먼저 기준 브랜치를 분리합니다.
+- 공통 규칙 여부는 `main-v2` 기준으로 보고, 프로젝트 내부 SSoT 여부는 해당 `project/<project-id>` 브랜치 기준으로 봅니다.
+- 브랜치 차이를 설명할 때는 최종 트리 차이인 `base..branch`와 브랜치 고유 변경인 `base...branch`를 구분합니다. 둘을 섞어 "추가됐다", "이관됐다", "삭제됐다"고 말하지 않습니다.
+- project SSoT 삭제 PR을 만들기 전에는 삭제 대상 파일을 `이관 확인됨`, `미이관`, `중복`, `폐기 후보`, `사용자 판단 필요`로 분류합니다.
+- `이관 완료`라는 표현은 대상 `project/<project-id>` 브랜치, project SSoT 경로, fork/submodule/external clone 중 하나에서 동등한 정보가 확인된 파일에만 사용합니다.
+- 삭제 대상에 `todo`, `in_progress`, active issue, QA evidence, handoff, source doc이 포함되면 삭제 PR을 만들지 않고 먼저 이관 대조표를 작성합니다.
+- 삭제 PR은 이관 대조표 또는 명시 폐기 결정이 있는 파일만 포함합니다. 대조 없이 대량 삭제 PR을 새로 만들거나 기존 PR을 유지하지 않습니다.
+
 ## Branch Lifecycle Policy
 
 - `main`은 레거시 보존 브랜치입니다. 삭제하지 않지만 작업, 추적 확인, rebase 기준으로 사용하지 않습니다.
