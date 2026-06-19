@@ -20,7 +20,7 @@
 아래 목록은 이 디렉토리의 `*/SKILL.md` 기준 사용 가능한 repo skill 전체입니다.
 
 - [`main-branch-update-flow`](main-branch-update-flow/SKILL.md): 공통 SSoT, 프롬프트, `AGENTS.md`, skill 초안 변경을 `main-v2` 파생 브랜치와 PR로만 반영할 때 사용합니다.
-- [`root-layer-manager`](root-layer-manager/SKILL.md): 정보가 0~3계층 중 어디에 속하는지 판단하거나, 프로젝트 task/issue/QA/decision/dashboard를 쓰기 전에 실제 project SSoT 위치와 task 번호 registry를 확인해야 할 때 사용합니다.
+- [`root-layer-manager`](root-layer-manager/SKILL.md): 정보가 0~3계층 중 어디에 속하는지 판단하거나, 프로젝트 task/issue/QA/decision/dashboard/source doc을 쓰기 전에 실제 project SSoT 위치, 기준 `project/<project-id>` 브랜치/worktree, task 번호 registry를 확인해야 할 때 사용합니다.
 - [`projects-setup`](projects-setup/SKILL.md): 새 프로젝트를 `projects/` 구조에 등록하거나 project SSoT와 사일로 config를 함께 셋업해야 할 때 사용합니다.
 - [`add-shared-runtime`](add-shared-runtime/SKILL.md): 여러 task silo가 함께 참조하는 프로젝트별 shared runtime set을 등록하거나 준비할 때 사용합니다.
 - [`shared-runtime-health-check`](shared-runtime-health-check/SKILL.md): page-lifecycle, run, E2E 실행 전 `runtime_set` 유무나 서버형 shared runtime 상태를 확인해야 할 때 사용합니다.
@@ -97,7 +97,7 @@ Build -> Learn -> Spec
 - project 등록과 SSoT 생성: `projects-setup`
 - 세션 종료, handoff, task/issue/QA 갱신: 프로젝트별 설치 skill 또는 project SSoT의 운영 문서를 따릅니다.
 
-프로젝트 내부 문서를 쓸 때는 제품 repo 안의 `obs/`, `.obsidian`, `docs/`, submodule, external clone을 기준 SSoT로 추정하지 않습니다. 먼저 `projects/<project-id>/README.md`에서 선언된 project SSoT 경로를 확인하고, 선언이 없으면 기본 scaffold인 `projects/<project-id>/02-project-internal/` 아래 dashboard와 task 위치를 확인합니다. 기준 SSoT가 아닌 위치에는 새 task/issue/QA를 만들지 않습니다.
+프로젝트 내부 문서를 쓸 때는 제품 repo 안의 `obs/`, `.obsidian`, `docs/`, submodule, external clone을 기준 SSoT로 추정하지 않습니다. 먼저 `projects/<project-id>/README.md`에서 선언된 project SSoT 경로를 확인하고, 선언이 없으면 기본 scaffold인 `projects/<project-id>/02-project-internal/` 아래 dashboard와 task 위치를 확인합니다. `project/<project-id>` 브랜치가 있으면 해당 브랜치 또는 그 브랜치에서 판 별도 worktree에서만 project SSoT 원문을 작성합니다. 기준 SSoT나 기준 worktree가 아닌 위치에는 새 task/issue/QA/source doc을 만들지 않습니다.
 
 새로운 `ssot-manager` skill이 필요해지면 기존 세 역할과 겹치지 않게, “세션 종료와 SSoT 갱신을 언제 어떻게 수행하는가”를 전담하도록 추가합니다.
 
