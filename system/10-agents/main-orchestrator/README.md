@@ -20,6 +20,8 @@
 - `main`을 작업 대상으로 쓰지 않고 `main-v2` 보호 브랜치 정책을 지킵니다.
 - 요청을 0/1/2/3계층으로 분류합니다.
 - SSoT와 현재 active issue/task를 읽고 필요한 다음 실행 단위를 판단합니다.
+- project 내부 task, issue, QA, decision, dashboard, source doc을 쓰기 전에는 기준 project SSoT 위치와 `project/<project-id>` 브랜치/worktree를 함께 확인합니다.
+- `project/<project-id>` 브랜치가 있으면 해당 브랜치 또는 그 브랜치에서 판 별도 worktree에서만 project SSoT 원문을 작성하고, 다른 브랜치의 project SSoT diff는 `기준 아님`, `이관 후보`, `위험`으로 분리합니다.
 - 필요한 repo skill을 먼저 찾고 사용합니다.
 - task 실행 요청이면 사일로 준비 범위를 판단하고, 사일로 root, `goal.md`, repo clone, 작업 브랜치 중 하나라도 만들기 전에 원본 task/issue를 `in_progress`로 갱신합니다.
 - 제품 코드가 여러 workspace, worktree, external clone, task silo에 나뉘어 있으면 작업 시작 전에 source workspace 기준선을 확정합니다.

@@ -139,6 +139,7 @@ MVP, QA 수정, 저장 실패, UI 복구, 비즈니스 로직 복구 요청에�
 
 - 현재 판단한 계층
 - 실행 단위: 현재 브랜치 작업 / 일반 사일로 / 테스트 사일로 / project SSoT / repo skill
+- project SSoT 작업이면 기준 `project/<project-id>` 브랜치 또는 그 파생 worktree 여부
 - 완료된 것
 - 아직 안 된 것
 - 목표 밖 산출물

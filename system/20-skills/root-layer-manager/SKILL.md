@@ -45,7 +45,7 @@ description: 0계층 Root/Global 에이전트 운영 규칙을 적용해 요청�
 
 프로젝트 내부 task, issue, QA, decision, dashboard, source doc을 새로 만들거나 크게 수정하기 전에는 실제 저장 위치를 추정하지 않습니다.
 
-아래 순서로 기준 SSoT를 먼저 확인합니다.
+아래 순서로 기준 SSoT와 기준 worktree를 먼저 확인합니다.
 
 1. `projects/<project-id>/README.md`
 2. README에 선언된 project SSoT 경로
@@ -53,11 +53,15 @@ description: 0계층 Root/Global 에이전트 운영 규칙을 적용해 요청�
 4. project dashboard는 기본값 `projects/<project-id>/02-project-internal/00-dashboard/project-overview.md`
 5. task 작성이면 실제 project SSoT 아래 `30-tasks/`와 task registry 또는 기존 task 목록
 6. issue/QA/decision 작성이면 실제 project SSoT 아래 해당 index 또는 README
+7. `project/<project-id>` 브랜치가 존재하는지 확인합니다.
+8. `project/<project-id>` 브랜치가 있으면 해당 브랜치 또는 그 브랜치에서 판 별도 worktree가 현재 작업 기준인지 확인합니다.
 
 확인 결과와 다른 위치가 보이면 아래처럼 처리합니다.
 
 - 제품 repo 내부 `obs/`, `.obsidian`, `docs/`, submodule, external clone, 오래된 vault가 있어도 기준 SSoT라고 추정하지 않습니다.
 - 기준 SSoT가 아닌 제품 repo 내부 `obs/`, `.obsidian`, `docs/`, submodule, external clone, 오래된 vault에는 새 project task, issue, QA, dashboard, source doc, project handoff를 만들지 않습니다.
+- `project/<project-id>` 브랜치가 있는데 현재 브랜치가 `docs/*`, `chore/*`, `silo/*`, 또는 `main-v2` 파생 공통 규칙 브랜치라면 project SSoT 원문을 직접 쓰지 않습니다.
+- 현재 브랜치에 project SSoT diff가 이미 있으면 기준 worktree로 이어 쓰지 않고 `기준 아님`, `이관 후보`, `위험`, `사용자 판단 필요`로 분리해 보고합니다.
 - 단, 3계층 task silo의 `goal.md`, 실행 보고, handoff, PR 본문은 PR 전 임시 상태와 evidence로 허용합니다.
 - 후보 위치가 둘 이상이면 쓰기 전에 `기준 SSoT`, `기준 아님`, `위험`, `사용자 판단 필요`로 분리해 보고합니다.
 - task 번호는 실제 project SSoT의 task registry가 있으면 먼저 확인하고, 없으면 기존 task 파일과 README/index를 확인한 뒤 비어 있는 번호만 사용합니다.
@@ -70,6 +74,7 @@ description: 0계층 Root/Global 에이전트 운영 규칙을 적용해 요청�
 - 사일로 local finding을 PR 전 project SSoT에 바로 승격하지 않습니다.
 - project SSoT를 root 문서로 덮어쓰지 않습니다.
 - 기준 SSoT 확인 없이 제품 repo 내부 `obs/` 또는 submodule에 프로젝트 task/issue/QA를 작성하지 않습니다.
+- `project/<project-id>` 브랜치가 있는 프로젝트의 task/issue/QA/decision/dashboard/source doc 원문을 `docs/*`, `chore/*`, `silo/*`, 또는 `main-v2` 파생 공통 규칙 브랜치에서 직접 작성하지 않습니다.
 
 ## 프로젝트 자료 정책
 
@@ -85,6 +90,8 @@ description: 0계층 Root/Global 에이전트 운영 규칙을 적용해 요청�
 root 저장소 `main-v2`에는 공통 운영 규칙만 둡니다.
 
 `project/*` 브랜치는 별도 fork를 만들지 않을 때 쓰는 프로젝트별 정보 보관 브랜치입니다. 이 브랜치는 root `main-v2`로 머지할 기능 브랜치가 아니며, 프로젝트별 코드 분석, repo 연결 상태, SSoT 색인, 운영 메모를 보관합니다.
+
+프로젝트 내부 task, issue, QA, decision, dashboard, source doc처럼 2계층 project SSoT를 생성하거나 수정하는 작업은 해당 project의 `project/<project-id>` 브랜치 또는 그 브랜치에서 판 별도 worktree에서만 수행합니다. 공통 템플릿, scaffold 로직, repo skill, agent prompt처럼 0계층 규칙 자체를 수정하는 작업은 `main-v2` 파생 단기 브랜치에서 수행합니다.
 
 `project/*` 브랜치가 최신 `main-v2` 위로 rebase되어 있지 않아 rebase할 때는, rebase 전후로 최신 `main-v2`에서 변경된 공통 규칙, AGENTS.md, system 문서, 프롬프트, skill 초안을 확인합니다. rebase 후에는 현재 project SSoT, task, issue, 실행 방식이 새 `main-v2` 규칙과 맞지 않는 부분을 `규칙 불일치`와 `조치 후보`로 분리해 보고합니다.
 

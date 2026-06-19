@@ -67,6 +67,9 @@
 - `project/*` 브랜치는 별도 fork를 만들지 않고 프로젝트별 정보, 코드 분석, SSoT 색인, repo 연결 상태를 보관하는 장기 브랜치입니다.
 - `project/*` 브랜치의 목적은 해당 프로젝트에 대한 정보 저장이며, root `main-v2`의 공통 규칙을 바꾸는 것이 아닙니다.
 - `project/*` 브랜치에는 특정 프로젝트의 실제 제품 코드, issue/task 원문, QA 결과 원문을 무분별하게 복사하지 않습니다. 필요한 경우 프로젝트별 SSoT 위치와 요약 색인만 둡니다.
+- project 내부 task, issue, QA, decision, dashboard, source doc처럼 2계층 project SSoT를 생성하거나 수정하는 작업은 해당 project의 `project/<project-id>` 브랜치 또는 그 브랜치에서 판 별도 worktree에서만 수행합니다.
+- `project/<project-id>` 브랜치가 존재하는 프로젝트의 2계층 SSoT 작업을 `docs/*`, `chore/*`, `silo/*`, 또는 `main-v2` 파생 공통 규칙 브랜치에서 직접 수행하지 않습니다.
+- 단, project SSoT를 만드는 공통 템플릿, scaffold 로직, repo skill, agent prompt처럼 0계층 규칙 자체를 수정하는 작업은 `main-v2` 파생 단기 브랜치에서 수행합니다.
 - `project/*` 브랜치 작업에는 `main-branch-update-flow`의 PR 생성/머지 절차를 기본 적용하지 않습니다.
 - `project/*` 브랜치에서 발견한 반복 가능한 운영 규칙만 별도 사용자 요청이 있을 때 `main-v2` 업데이트 후보로 분리합니다.
 - `project/*` 브랜치가 최신 `main-v2` 위로 rebase되어 있지 않아 rebase할 때는, 먼저 `main-v2`에서 변경된 공통 규칙, AGENTS.md, system 문서, 프롬프트, repo skill을 확인합니다.
@@ -235,6 +238,7 @@
 - `projects/`에는 프로젝트 SSoT, registry, repo 연결 정보, 요약 색인처럼 프로젝트 운영 상태를 찾기 위한 자료만 둡니다.
 - 실제 제품 소스코드는 `.gitignore`된 `sources/` 같은 외부/로컬 소스 위치, 별도 repo, 별도 worktree, fork, submodule, external clone을 사용합니다.
 - 프로젝트별 evidence는 coverage 판단 근거이므로 project SSoT 내부에 보존할 수 있습니다.
+- project SSoT 문서를 실제로 쓰기 전에는 기준 SSoT 위치뿐 아니라 기준 브랜치와 worktree도 확인합니다. `project/<project-id>` 브랜치가 있으면 그 브랜치 또는 그 브랜치에서 판 별도 worktree를 사용하고, 다른 브랜치에 열린 project SSoT diff가 있으면 `기준 아님`, `이관 후보`, `위험`으로 분리해 보고합니다.
 - 제품 코드가 여러 workspace, worktree, external clone, task silo에 나뉘어 있으면 구현 전 source workspace 기준선을 확정합니다. 브랜치 이름만으로 최신 작업을 판단하지 않고, 각 workspace의 branch, upstream, `HEAD`, dirty diff, `goal.md`, handoff, 최근 세션 로그를 함께 봅니다.
 - sibling task worktree가 같은 화면, API, store, schema, business flow를 수정한 dirty 상태라면 최신 기준선 후보로 먼저 비교합니다.
 - MVP, QA 수정, 저장 실패, UI 복구, 비즈니스 로직 복구 요청에서는 화면, 입력, 저장, 조회, 재진입 복원, validation, empty/error/loading, 실제 사용자 경로 검증을 기능 인벤토리로 대조합니다.
