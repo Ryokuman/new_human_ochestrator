@@ -39,8 +39,13 @@
 - `00-dashboard/work-filter.md`: 종류, 상태, 레벨, 태그, 날짜, 검색어를 조합하는 즉석 멀티필터
 - `00-dashboard/work-items.base`: Obsidian Base table view와 저장된 view
 - `00-dashboard/work-views.md`: Base 사용법과 embed 안내
+- `templates/work-filter-dashboard.md`: BE/FE/ops처럼 경로별 작업 대시보드를 추가할 때 복제하는 DataviewJS 템플릿
 
-`project-overview.md`는 프로젝트 설명과 운영 경계를 담고, 실제 issue/task 확인은 `work-filter.md` 또는 `work-views.md`에서 시작합니다. 생성되는 issue/task 템플릿은 대시보드 필터가 읽을 수 있도록 `type`, `id`, `status`, `priority` 또는 `severity`, `updated` frontmatter를 포함합니다.
+`project-overview.md`는 프로젝트 설명과 운영 경계를 담고, 실제 issue/task 확인은 `work-filter.md` 또는 `work-views.md`에서 시작합니다. 생성되는 issue/task 템플릿은 대시보드 필터가 읽을 수 있도록 `type`, `id`, `taskID`/`taskTitle` 또는 `issueID`/`issueTitle`, `status`, `priority` 또는 `severity`, `updated` frontmatter를 포함합니다.
+
+`work-filter.md`는 frontmatter의 `dashboardScope.paths`를 기준으로 수집 경로를 정합니다. 기본값은 `20-issues/`, `30-tasks/`이고, 같은 프로젝트 안에서 BE, FE, ops 대시보드를 나누려면 템플릿을 복제해 `dashboardTitle`과 `dashboardScope.paths`만 바꿉니다. 대시보드는 ID와 제목을 별도 컬럼으로 보여주며, 기존 `id`/`title` 문서도 호환합니다.
+
+DataviewJS 대시보드는 Obsidian community plugin `dataview`와 DataviewJS 허용을 전제로 합니다. scaffold는 `.obsidian/community-plugins.json`에 `dataview`를 선언하고, Obsidian Base 대체 화면인 `work-items.base`도 함께 생성합니다.
 
 `main-v2`는 기존 `main`과 다른 탐색형 운영 브랜치입니다.
 

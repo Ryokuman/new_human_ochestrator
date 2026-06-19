@@ -2,18 +2,33 @@
 type: dashboard
 id: DASH-WORK-FILTER
 status: active
+dashboardTitle: 전체 작업
+dashboardScope:
+  paths:
+    - 20-issues/
+    - 30-tasks/
 ---
 
 # 작업 멀티필터
 
 프로젝트의 issue/task를 종류, 상태, 레벨, 태그, 날짜, 검색어로 조합해서 본다. 각 multiselect 필터 안에서는 OR/AND를 고를 수 있고, 필터 그룹끼리도 OR/AND를 고를 수 있다.
 
+이 파일을 복제한 뒤 `dashboardTitle`과 `dashboardScope.paths`만 바꾸면 BE, FE, ops처럼 프로젝트 안에 여러 작업 대시보드를 둘 수 있다.
+
 ```dataviewjs
 const dashboardFolder = dv.current().file.folder;
 const projectRoot = dashboardFolder.replace(/(^|\/)00-dashboard$/, "");
 const projectPath = (child) => projectRoot ? projectRoot + "/" + child : child;
-const projectPaths = [projectPath("20-issues/"), projectPath("30-tasks/")];
-const isTemplatePage = (page) => page.file.name.endsWith("-template");
+const scope = dv.current().dashboardScope ?? {};
+const scopePaths = scope.paths?.length ? scope.paths : ["20-issues/", "30-tasks/"];
+const projectPaths = scopePaths.map(projectPath);
+const templateNames = new Set([
+  "ISSUE-template",
+  "ISSUE-template.md",
+  "TASK-template",
+  "TASK-template.md",
+]);
+const isTemplatePage = (page) => templateNames.has(page.file.name) || page.file.name.endsWith("-template");
 const pages = dv.pages()
   .where((page) => projectPaths.some((path) => page.file.path.startsWith(path)))
   .where((page) => !isTemplatePage(page))
@@ -29,9 +44,22 @@ const normalize = (value) => {
   }
   return [String(value)];
 };
+const first = (...values) => values.flatMap(normalize).find((value) => String(value).trim());
 const stripHash = (value) => String(value).replace(/^#/, "");
 const pageTags = (page) => normalize(page.tags ?? page.file.tags).map(stripHash).filter(Boolean);
 const unique = (values) => Array.from(new Set(values.flatMap(normalize).filter(Boolean))).sort();
+
+function itemId(page) {
+  if (page.type === "task") return first(page.taskID, page.taskId, page.id, page.file.name);
+  if (page.type === "issue") return first(page.issueID, page.issueId, page.id, page.file.name);
+  return first(page.id, page.taskID, page.issueID, page.file.name);
+}
+
+function itemTitle(page) {
+  if (page.type === "task") return first(page.taskTitle, page.title, page.file.name);
+  if (page.type === "issue") return first(page.issueTitle, page.title, page.file.name);
+  return first(page.title, page.taskTitle, page.issueTitle, page.file.name);
+}
 
 const optionSets = {
   type: unique(pages.map((page) => page.type)).filter(Boolean),
@@ -354,8 +382,14 @@ function matches(page) {
 
   if (state.query) {
     const haystack = [
+      itemId(page),
+      itemTitle(page),
       page.id,
       page.title,
+      page.taskID,
+      page.taskTitle,
+      page.issueID,
+      page.issueTitle,
       page.file.name,
       page.file.path,
       page.status,
@@ -372,8 +406,7 @@ function matches(page) {
 }
 
 function pageLink(page) {
-  const label = page.id ?? page.file.name;
-  const link = createEl("a", { text: label, href: page.file.path });
+  const link = createEl("a", { text: itemId(page), href: page.file.path });
   link.addEventListener("click", (event) => {
     event.preventDefault();
     if (typeof app !== "undefined" && app.workspace) {
@@ -394,7 +427,7 @@ function render() {
   const table = result.createEl("table", { cls: "wf-table" });
   const thead = table.createEl("thead");
   const headRow = thead.createEl("tr");
-  ["ID", "종류", "상태", "우선순위", "레벨", "태그", "수정일"].forEach((heading) => {
+  ["ID", "제목", "종류", "상태", "우선순위", "레벨", "태그", "수정일"].forEach((heading) => {
     headRow.createEl("th", { text: heading });
   });
 
@@ -402,6 +435,7 @@ function render() {
   rows.forEach((page) => {
     const row = tbody.createEl("tr");
     row.createEl("td").appendChild(pageLink(page));
+    row.createEl("td", { text: itemTitle(page) ?? "" });
     row.createEl("td", { text: page.type ?? "" });
     row.createEl("td", { text: page.status ?? "" });
     row.createEl("td", { text: page.priority ?? page.severity ?? "" });

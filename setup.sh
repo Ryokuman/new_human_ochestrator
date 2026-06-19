@@ -416,7 +416,17 @@ write_project_work_items_base() {
         - file.inFolder(\"$task_folder\")
 properties:
   id:
-    displayName: ID
+    displayName: 호환 ID
+  taskID:
+    displayName: Task ID
+  taskTitle:
+    displayName: Task 제목
+  issueID:
+    displayName: Issue ID
+  issueTitle:
+    displayName: Issue 제목
+  title:
+    displayName: 호환 제목
   type:
     displayName: 타입
   status:
@@ -441,7 +451,12 @@ views:
   - type: table
     name: 전체 - 즉석 필터
     order:
+      - taskID
+      - taskTitle
+      - issueID
+      - issueTitle
       - id
+      - title
       - type
       - status
       - priority
@@ -457,7 +472,8 @@ views:
         - type == \"task\"
         - '[\"todo\", \"in_progress\", \"blocked\", \"review\"].contains(status)'
     order:
-      - id
+      - taskID
+      - taskTitle
       - status
       - priority
       - level_target
@@ -470,7 +486,8 @@ views:
         - type == \"task\"
         - status == \"done\"
     order:
-      - id
+      - taskID
+      - taskTitle
       - status
       - priority
       - level_target
@@ -484,7 +501,8 @@ views:
         - type == \"issue\"
         - '[\"todo\", \"in_progress\", \"blocked\", \"review\", \"open\"].contains(status)'
     order:
-      - id
+      - issueID
+      - issueTitle
       - status
       - severity
       - level_target
@@ -548,6 +566,7 @@ create_project_ssot() {
   project_vault_path="$(project_ssot_vault_path "$target")"
 
   mkdir -p \
+    "$target/.obsidian" \
     "$target/00-dashboard" \
     "$target/10-dictionary" \
     "$target/20-issues" \
@@ -561,6 +580,12 @@ create_project_ssot() {
 
 이 폴더는 $PROJECT_NAME 프로젝트 내부 운영 SSoT입니다.
 
+## Obsidian 전제
+
+- 작업 대시보드 \`00-dashboard/work-filter.md\`는 Dataview community plugin과 DataviewJS 활성화를 전제로 합니다.
+- \`00-dashboard/work-items.base\`는 Obsidian Base 뷰를 쓰는 대체 화면입니다.
+- 이 scaffold는 \`.obsidian/community-plugins.json\`에 \`dataview\`를 기본 선언합니다. 실제 플러그인 설치와 DataviewJS 허용은 Obsidian 앱에서 확인합니다.
+
 ## 폴더
 
 - \`00-dashboard/\`: 현재 상태, 활성 issue/task, 다음 행동
@@ -573,12 +598,37 @@ create_project_ssot() {
 - \`templates/\`: 반복 문서 양식
 "
 
+  write_setup_file "$target/.obsidian/community-plugins.json" "[
+  \"dataview\"
+]"
+
+  write_setup_file "$target/.obsidian/core-plugins.json" "[
+  \"file-explorer\",
+  \"global-search\",
+  \"graph\",
+  \"backlink\",
+  \"canvas\",
+  \"outgoing-link\",
+  \"tag-pane\",
+  \"page-preview\",
+  \"daily-notes\",
+  \"templates\",
+  \"note-composer\",
+  \"command-palette\",
+  \"slash-command\",
+  \"editor-status\",
+  \"bookmarks\",
+  \"properties\",
+  \"bases\"
+]"
+
   write_setup_file "$target/00-dashboard/project-overview.md" "# $PROJECT_NAME 현황
 
 ## 작업 대시보드
 
 - 즉석 멀티필터: [[work-filter|작업 멀티필터]]
 - Obsidian Base 뷰: [[work-views|작업 필터]]
+- 대시보드 복제 템플릿: [[../templates/work-filter-dashboard|작업 대시보드 템플릿]]
 
 ## 현재 상태
 
@@ -594,6 +644,7 @@ create_project_ssot() {
   copy_setup_file "$REPO_ROOT/system/templates/project-ssot/00-dashboard/work-filter.md" "$target/00-dashboard/work-filter.md"
   write_project_work_items_base "$target/00-dashboard/work-items.base" "$project_vault_path"
   copy_setup_file "$REPO_ROOT/system/templates/project-ssot/00-dashboard/work-views.md" "$target/00-dashboard/work-views.md"
+  copy_setup_file "$REPO_ROOT/system/templates/project-ssot/00-dashboard/work-filter.md" "$target/templates/work-filter-dashboard.md"
 
   write_setup_file "$target/10-dictionary/README.md" "# Dictionary
 
@@ -603,6 +654,9 @@ create_project_ssot() {
   write_setup_file "$target/20-issues/ISSUE-template.md" "---
 type: issue
 id: ISSUE-0000
+issueID: ISSUE-0000
+issueTitle: 이슈 제목
+title: 이슈 제목
 status: todo
 severity: p0
 updated:
@@ -632,6 +686,9 @@ ISSUE-0000
   write_setup_file "$target/30-tasks/TASK-template.md" "---
 type: task
 id: TASK-0000
+taskID: TASK-0000
+taskTitle: 태스크 제목
+title: 태스크 제목
 status: todo
 priority: p0
 updated:
@@ -678,6 +735,9 @@ L 기준, runner 계약, report/evidence 위치를 기록합니다.
   write_setup_file "$target/templates/issue.md" "---
 type: issue
 id: ISSUE-0000
+issueID: ISSUE-0000
+issueTitle: 이슈 제목
+title: 이슈 제목
 status: todo
 severity: p0
 updated:
@@ -705,6 +765,9 @@ ISSUE-0000
   write_setup_file "$target/templates/task.md" "---
 type: task
 id: TASK-0000
+taskID: TASK-0000
+taskTitle: 태스크 제목
+title: 태스크 제목
 status: todo
 priority: p0
 updated:

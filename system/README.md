@@ -150,6 +150,7 @@ git에서 제외할 것은 프로젝트 의존 자료와 시크릿성 자료입�
 - `system/`에는 정의와 템플릿만 둡니다.
 - 프로젝트 조사 결과는 기본적으로 fork/submodule/external clone/project SSoT에 둡니다. 로컬 참고 자료는 `../projects/`에 둘 수 있지만 `main-v2` 커밋 대상은 아닙니다.
 - project SSoT의 dashboard, task format, issue format, L 기준이 필요하면 실제 산출물을 `main-v2`에 커밋하지 않고 `setup.sh --create-project-ssot`으로 project SSoT 위치에 scaffold를 만듭니다.
+- project SSoT scaffold는 DataviewJS 작업 대시보드와 Obsidian Base 대체 뷰를 함께 생성합니다. Dataview 대시보드는 `taskID`/`taskTitle`, `issueID`/`issueTitle`을 분리해서 보여주고, `dashboardScope.paths`를 바꿔 프로젝트 안에 여러 작업 대시보드를 둘 수 있습니다.
 - 프로젝트 내부 task, issue, QA, decision, dashboard를 쓰기 전에는 `projects/<project-id>/README.md`에서 선언된 project SSoT 경로를 먼저 확인합니다. 선언이 없으면 기본 scaffold인 `projects/<project-id>/02-project-internal/` 아래 dashboard와 task 위치를 확인합니다. 제품 repo 내부 `obs/`, `.obsidian`, `docs/`, submodule, external clone은 기준 SSoT라고 추정하지 않습니다.
 - 원본 프롬프트와 과거 초안은 `../sources/`에 둡니다.
 - 이 프롬프트 모음집은 여러 프로젝트에서 쓰는 것이 목표이므로, 프로젝트 의존 자료는 gitignore 대상으로 둡니다.

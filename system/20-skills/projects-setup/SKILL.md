@@ -11,7 +11,7 @@ description: 새 프로젝트를 root orchestrator의 projects 구조에 등록�
 
 - `projects/<project-id>/`는 프로젝트 연결 정보와 프로젝트 의존 운영 자료의 입구입니다.
 - `02-project-internal/`은 실제 project SSoT입니다. 이 안의 issue, task, QA, coverage 산출물은 0계층 `system/`으로 복사하지 않습니다.
-- `setup.sh --create-project-ssot`은 최소 project SSoT scaffold를 생성합니다. Obsidian/Dataview 같은 viewer 플러그인은 프로젝트별 필요가 확정될 때 별도 처리합니다.
+- `setup.sh --create-project-ssot`은 최소 project SSoT scaffold를 생성합니다. 작업 대시보드는 DataviewJS와 Obsidian Base를 기본 viewer 계약으로 포함합니다.
 - `system/config/silo-projects.yaml`은 로컬 설정입니다. secret 값은 쓰지 않고, repo URL, 보호 브랜치, 사일로 대상 여부 같은 운영 값만 기록합니다.
 - 기존 `project-ssot-bootstrap` 역할은 이 스킬에 흡수되었습니다.
 
@@ -84,14 +84,20 @@ projects/<project-id>/
 - 날짜: `updated`, `created`, `closed`, `file.mtime`
 - 검색어
 
+`work-filter.md`는 `dashboardScope.paths`를 읽습니다. 기본값은 `20-issues/`, `30-tasks/`이고, 파일을 복제해 `ops/20-issues/`, `ops/30-tasks/`, `be/30-tasks/`, `fe/30-tasks/`처럼 경로를 바꾸면 프로젝트 안에 여러 작업 대시보드를 둘 수 있습니다.
+
 `00-dashboard/work-items.base`와 `00-dashboard/work-views.md`는 Obsidian 기본 Base view/filter를 쓰는 사용자를 위한 대체 화면입니다. Base에는 전체 즉석 필터, 진행 중 Task, 완료 Task, 열린 Issue view를 기본으로 둡니다. setup은 target이 현재 repo/vault 아래에 있으면 해당 Project SSoT 경로로 Base 필터를 제한하고, 외부 target이면 해당 SSoT를 vault root로 여는 전제의 로컬 `20-issues/`, `30-tasks/` 필터를 생성합니다.
 
 작업 대시보드는 실제 issue/task만 보여야 하므로 `20-issues/ISSUE-template.md`, `30-tasks/TASK-template.md` 같은 live 폴더 안 템플릿 파일은 필터 결과에서 제외합니다.
 
 작업 대시보드가 비지 않으려면 setup scaffold가 만드는 issue/task 템플릿에 최소 frontmatter가 있어야 합니다.
 
-- issue: `type: issue`, `id`, `status`, `severity`, `updated`
-- task: `type: task`, `id`, `status`, `priority`, `updated`
+- issue: `type: issue`, `id`, `issueID`, `issueTitle`, `title`, `status`, `severity`, `updated`
+- task: `type: task`, `id`, `taskID`, `taskTitle`, `title`, `status`, `priority`, `updated`
+
+`id`와 `title`은 기존 문서 호환 필드이고, 새 문서는 `issueID`/`issueTitle`, `taskID`/`taskTitle`을 우선 사용합니다. 파일명이나 H1에 식별자를 합치지 않고, 대시보드는 ID와 제목을 별도 컬럼으로 보여줍니다.
+
+DataviewJS 대시보드를 쓰려면 Obsidian community plugin `dataview`를 설치하고 DataviewJS 실행을 허용해야 합니다. scaffold는 `.obsidian/community-plugins.json`에 `dataview`를 선언하고, Base 대체 뷰를 위해 `work-items.base`를 함께 생성합니다.
 
 `10-dictionary/project-dictionary.md`에는 프로젝트에서 쓰는 용어, 고유명사, 내부 약어, runner 용어, coverage 용어를 기록합니다. 최소 필드는 아래와 같습니다.
 
