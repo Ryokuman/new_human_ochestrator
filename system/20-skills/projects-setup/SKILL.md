@@ -86,6 +86,8 @@ projects/<project-id>/
 
 `00-dashboard/work-items.base`와 `00-dashboard/work-views.md`는 Obsidian 기본 Base view/filter를 쓰는 사용자를 위한 대체 화면입니다. Base에는 전체 즉석 필터, 진행 중 Task, 완료 Task, 열린 Issue view를 기본으로 둡니다. setup은 target이 현재 repo/vault 아래에 있으면 해당 Project SSoT 경로로 Base 필터를 제한하고, 외부 target이면 해당 SSoT를 vault root로 여는 전제의 로컬 `20-issues/`, `30-tasks/` 필터를 생성합니다.
 
+작업 대시보드는 실제 issue/task만 보여야 하므로 `20-issues/ISSUE-template.md`, `30-tasks/TASK-template.md` 같은 live 폴더 안 템플릿 파일은 필터 결과에서 제외합니다.
+
 작업 대시보드가 비지 않으려면 setup scaffold가 만드는 issue/task 템플릿에 최소 frontmatter가 있어야 합니다.
 
 - issue: `type: issue`, `id`, `status`, `severity`, `updated`

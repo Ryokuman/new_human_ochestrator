@@ -13,8 +13,10 @@ const dashboardFolder = dv.current().file.folder;
 const projectRoot = dashboardFolder.replace(/(^|\/)00-dashboard$/, "");
 const projectPath = (child) => projectRoot ? projectRoot + "/" + child : child;
 const projectPaths = [projectPath("20-issues/"), projectPath("30-tasks/")];
+const isTemplatePage = (page) => page.file.name.endsWith("-template");
 const pages = dv.pages()
   .where((page) => projectPaths.some((path) => page.file.path.startsWith(path)))
+  .where((page) => !isTemplatePage(page))
   .array();
 
 const normalize = (value) => {

@@ -407,6 +407,10 @@ write_project_work_items_base() {
   write_setup_file "$dest" "filters:
   and:
     - file.ext == \"md\"
+    - file.name != \"ISSUE-template\"
+    - file.name != \"ISSUE-template.md\"
+    - file.name != \"TASK-template\"
+    - file.name != \"TASK-template.md\"
     - or:
         - file.inFolder(\"$issue_folder\")
         - file.inFolder(\"$task_folder\")
