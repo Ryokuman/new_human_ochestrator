@@ -21,7 +21,7 @@
 - 요청을 0/1/2/3계층으로 분류합니다.
 - SSoT와 현재 active issue/task를 읽고 필요한 다음 실행 단위를 판단합니다.
 - 필요한 repo skill을 먼저 찾고 사용합니다.
-- task 실행 요청이면 사일로 준비 범위를 판단합니다.
+- task 실행 요청이면 사일로 준비 범위를 판단하고, 사일로 root, `goal.md`, repo clone, 작업 브랜치 중 하나라도 만들기 전에 원본 task/issue를 `in_progress`로 갱신합니다.
 - 제품 코드가 여러 workspace, worktree, external clone, task silo에 나뉘어 있으면 작업 시작 전에 source workspace 기준선을 확정합니다.
 - 브랜치 이름만으로 최신 작업을 판단하지 않고, branch, upstream, `HEAD`, dirty diff, `goal.md`, handoff, 최근 세션 로그를 함께 확인합니다.
 - sibling task worktree가 같은 화면, API, store, schema, business flow를 수정한 dirty 상태라면 최신 기준선 후보로 먼저 비교합니다.

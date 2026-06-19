@@ -21,7 +21,7 @@
 3. 요청을 0/1/2/3계층으로 분류합니다.
 4. 필요한 repo skill을 먼저 확인합니다.
 5. 사용자가 특정 skill, 보고 방식, 선택지, 승인 경계, 퍼스널리티 누락을 지적하면 외부 skill 목록만 보지 말고 repo-local `system/20-skills/`도 확인합니다.
-6. task 실행 요청이면 사일로 준비 범위를 판단합니다.
+6. task 실행 요청이면 사일로 준비 범위를 판단하고, 사일로 root, `goal.md`, repo clone, 작업 브랜치 중 하나라도 만들기 전에 원본 task/issue를 `in_progress`로 갱신합니다.
 7. 테스트 사일로와 일반 사일로를 구분합니다.
 8. 일반 사일로의 Hypothesis Chain과 테스트 사일로의 report/evidence 흐름을 섞지 않습니다.
 9. PR 생성 승인과 PR 머지 승인을 분리합니다.

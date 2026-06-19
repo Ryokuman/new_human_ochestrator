@@ -30,6 +30,8 @@
 - 사일로는 현재 workspace 루트의 보이는 디렉토리에 만듭니다.
 - 사용자가 명시하지 않는 한 `/tmp`, 홈 디렉토리, 숨김 디렉토리, 에이전트 전용 임시 경로를 기본 위치로 쓰지 않습니다.
 - 사일로는 보호 브랜치에서 직접 작업하지 않고 새 작업 브랜치를 만듭니다.
+- task 또는 issue 사일로를 실제로 시작하는 순간 project SSoT의 원본 task/issue 상태를 `in_progress`로 갱신합니다. 사일로 root, `goal.md`, repo clone, 작업 브랜치 중 하나라도 생성했으면 시작으로 봅니다.
+- 상태 갱신을 할 수 없으면 사일로를 계속 진행하지 않고, 갱신 불가 이유와 임시 evidence 위치를 보고합니다.
 - 격리 clone 내부에서는 문제 해결에 필요한 source code, generated output, test, tooling 수정을 허용합니다.
 - 결과는 PR, report, evidence, handoff, SSoT 승격 후보로 메인 오케스트레이터에게 돌아와야 합니다.
 - secret, credential, production 데이터, destructive action, 보호 브랜치 직접 수정, data SSoT 임의 변경은 사일로에서도 승인 gate입니다.

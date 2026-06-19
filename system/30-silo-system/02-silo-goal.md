@@ -30,6 +30,8 @@ task-xxxx/ 생성
 -> repo별 작업 브랜치 생성
 ```
 
+위 준비 중 하나라도 실제로 시작하면 project SSoT의 원본 task/issue 상태를 먼저 `in_progress`로 갱신합니다. 시작 시점은 사일로 root 생성, `goal.md` 작성, repo clone, 작업 브랜치 생성 중 가장 이른 실행으로 봅니다. SSoT 상태를 갱신할 수 없으면 사일로 진행을 멈추고, 갱신 불가 사유와 이미 생성한 로컬 evidence 위치를 보고합니다.
+
 ## goal.md 필수 항목
 
 - 원래 task/issue 목표와 SSoT 경로
