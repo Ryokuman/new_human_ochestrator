@@ -48,7 +48,10 @@ ssot/
 ```text
 project-ssot/
 ├── 00-dashboard/
-│   └── 대시보드
+│   ├── project-overview.md
+│   ├── work-filter.md
+│   ├── work-items.base
+│   └── work-views.md
 ├── 20-issues/
 │   └── 이슈 관리
 ├── 30-tasks/
@@ -80,9 +83,25 @@ project-ssot/
 | 태스크 생성/관리 | 실제 수행 가능한 작업 단위를 만들고 상태, 완료 조건, 검증 결과를 추적한다. | 2계층 Project Internal |
 | L 기준 생성/관리 | 프로젝트의 단계별 채점 기준, runner 계약, report 위치를 명시한다. | 2계층 Project Internal |
 | 이슈 관리 | 문제, 원인 가설, 영향, 연결 Task를 추적한다. | 2계층 Project Internal |
-| 대시보드 | 사람이 현재 상태, 활성 Task, 활성 Issue, 다음 행동을 한 화면에서 확인한다. | 2계층 Project Internal |
+| 대시보드 | 사람이 현재 상태, 활성 Task, 활성 Issue, 다음 행동을 한 화면에서 필터링해 확인한다. | 2계층 Project Internal |
 
 0계층 `system/`은 위 구조가 필요하다는 규칙, 템플릿, `setup.sh` 셋업 흐름만 관리합니다. 특정 프로젝트의 실제 Task, Issue, L runner 결과, page 목록, report 내용은 0계층으로 복사하지 않습니다.
+
+Project SSoT의 `00-dashboard/`는 단순 설명 문서만 두지 않습니다. 기본 scaffold는 아래 네 파일을 생성해야 합니다.
+
+- `project-overview.md`: 프로젝트 목적, 위치, 운영 경계, 다음 행동을 설명합니다.
+- `work-filter.md`: issue/task를 종류, 상태, 레벨, 태그, 날짜, 검색어로 즉석 필터링하는 DataviewJS 대시보드입니다.
+- `work-items.base`: Obsidian Base에서 사용할 기본 table view와 저장된 view입니다.
+- `work-views.md`: Obsidian Base 사용법과 `work-items.base` embed를 둔 안내 문서입니다.
+
+대시보드의 기본 첫 화면은 `project-overview.md`의 정적 표가 아니라 `work-filter.md` 또는 `work-views.md`처럼 실제 issue/task를 필터링할 수 있는 작업 목록이어야 합니다. 프로젝트 설명은 overview에 두되, 운영자가 지금 볼 화면은 필터 가능한 작업 대시보드로 연결합니다.
+
+필터 대시보드가 동작하려면 issue/task 문서에 최소 frontmatter가 있어야 합니다.
+
+- issue: `type: issue`, `id`, `status`, `severity`, `updated`
+- task: `type: task`, `id`, `status`, `priority`, `updated`
+
+파일명과 문서 제목은 사람이 읽는 이름을 우선하고, 필터와 링크 표시는 frontmatter의 `id`를 기준으로 합니다.
 
 ### Issue
 

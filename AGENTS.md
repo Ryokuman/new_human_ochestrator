@@ -255,6 +255,15 @@
 - 전체 coverage 90%는 프로젝트가 측정 범위와 적용 시점을 정한 뒤 단계적으로 강제합니다. 그 전에는 신규/변경 코드 coverage와 실행한 테스트 증거를 우선합니다.
 - coverage를 측정하지 못했거나 테스트를 생략했다면 PR 본문과 완료 보고에 이유를 남깁니다.
 
+## Project Dashboard Filter Policy
+
+- Project SSoT의 `00-dashboard/`는 단순 설명 문서만 두지 않고, issue/task를 바로 필터링할 수 있는 작업 대시보드를 기본 생성합니다.
+- 기본 대시보드는 `work-filter.md`, `work-items.base`, `work-views.md`로 구성합니다.
+- `work-filter.md`는 종류, 상태, 레벨, 태그, 날짜, 검색어를 조합하는 즉석 멀티필터 역할을 합니다.
+- `work-items.base`와 `work-views.md`는 Obsidian 기본 Base view/filter를 쓰는 사용자를 위한 대체 화면입니다.
+- `project-overview.md`는 프로젝트 설명, 위치, 운영 경계, 다음 행동을 담되, 운영자가 지금 볼 작업 목록은 필터 가능한 대시보드로 연결합니다.
+- setup scaffold가 만드는 issue/task 템플릿은 `type`, `id`, `status`, `updated` 같은 frontmatter를 포함해야 합니다. 대시보드는 이 구조화 필드를 기준으로 필터링합니다.
+
 ## Coverage Task Goal Tree Policy
 
 - coverage 개선형 task는 단순히 "줄인다"를 완료 기준으로 삼지 않습니다. 부모 task의 최종 목표는 기본적으로 해당 diff count `0` 또는 전건의 명시적 종결입니다.

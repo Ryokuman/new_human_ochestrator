@@ -465,6 +465,11 @@ create_project_ssot() {
 
   write_setup_file "$target/00-dashboard/project-overview.md" "# $PROJECT_NAME 현황
 
+## 작업 대시보드
+
+- 즉석 멀티필터: [[work-filter|작업 멀티필터]]
+- Obsidian Base 뷰: [[work-views|작업 필터]]
+
 ## 현재 상태
 
 - status: draft
@@ -476,12 +481,32 @@ create_project_ssot() {
 ## 다음 행동
 "
 
+  copy_setup_file "$REPO_ROOT/system/templates/project-ssot/00-dashboard/work-filter.md" "$target/00-dashboard/work-filter.md"
+  copy_setup_file "$REPO_ROOT/system/templates/project-ssot/00-dashboard/work-items.base" "$target/00-dashboard/work-items.base"
+  copy_setup_file "$REPO_ROOT/system/templates/project-ssot/00-dashboard/work-views.md" "$target/00-dashboard/work-views.md"
+
   write_setup_file "$target/10-dictionary/README.md" "# Dictionary
 
 프로젝트 용어, 고유명사, 내부 약어, 공통 승격 후보를 기록합니다.
 "
 
-  write_setup_file "$target/20-issues/ISSUE-template.md" "# ISSUE-0000 제목
+  write_setup_file "$target/20-issues/ISSUE-template.md" "---
+type: issue
+id: ISSUE-0000
+status: todo
+severity: p0
+updated:
+---
+
+# 이슈 제목
+
+## ID
+
+ISSUE-0000
+
+## 제목
+
+사람이 읽는 문제 이름을 적습니다.
 
 ## 문제
 
@@ -494,7 +519,23 @@ create_project_ssot() {
 ## 상태
 "
 
-  write_setup_file "$target/30-tasks/TASK-template.md" "# TASK-0000 제목
+  write_setup_file "$target/30-tasks/TASK-template.md" "---
+type: task
+id: TASK-0000
+status: todo
+priority: p0
+updated:
+---
+
+# 태스크 제목
+
+## ID
+
+TASK-0000
+
+## 제목
+
+사람이 읽는 작업 목표나 문제 이름을 적습니다.
 
 ## Output
 
@@ -524,7 +565,23 @@ create_project_ssot() {
 L 기준, runner 계약, report/evidence 위치를 기록합니다.
 "
 
-  write_setup_file "$target/templates/issue.md" "# 이슈 템플릿
+  write_setup_file "$target/templates/issue.md" "---
+type: issue
+id: ISSUE-0000
+status: todo
+severity: p0
+updated:
+---
+
+# 이슈 제목
+
+## ID
+
+ISSUE-0000
+
+## 제목
+
+사람이 읽는 문제 이름을 적습니다.
 
 ## 문제
 
@@ -535,11 +592,19 @@ L 기준, runner 계약, report/evidence 위치를 기록합니다.
 ## 연결 Task
 "
 
-  write_setup_file "$target/templates/task.md" "# 태스크 템플릿
+  write_setup_file "$target/templates/task.md" "---
+type: task
+id: TASK-0000
+status: todo
+priority: p0
+updated:
+---
+
+# 태스크 제목
 
 ## ID
 
-TASK-NNNN
+TASK-0000
 
 ## 제목
 
