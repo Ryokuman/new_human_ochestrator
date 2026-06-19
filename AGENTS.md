@@ -78,15 +78,18 @@
 - `main`은 레거시 보존 브랜치입니다. 삭제하지 않지만 작업, 추적 확인, rebase 기준으로 사용하지 않습니다.
 - `main-v2`는 탐색형 제품 엔지니어 운영 기준 보호 브랜치이며 삭제하지 않습니다. 모든 공통 운영 변경은 `main-v2`에서 파생한 단기 브랜치와 PR로만 처리합니다.
 - `project/*`는 프로젝트별 정보 보관용 장기 브랜치이며 `main-v2` 병합 대상이 아닙니다.
-- `silo/*`는 task PR 제출용 단기 브랜치입니다. PR 머지 후 `state`, `mergedAt`, `mergeCommit`을 재조회하고 clean 상태, ahead 없음, PR/패치 대응 관계가 확인되면 로컬 브랜치를 삭제합니다.
+- `silo/*`는 task PR 제출용 단기 브랜치입니다. PR 머지 후 `state`, `mergedAt`, `mergeCommit`, PR head SHA, base branch를 재조회하고 clean 상태, ahead 없음, PR/패치 대응 관계가 확인되면 로컬 브랜치를 삭제합니다.
 - `docs/*`, `chore/*` 같은 `main-v2` 업데이트용 단기 브랜치는 PR이 `main-v2`에 머지된 것을 확인한 뒤 로컬 브랜치와 연결 worktree를 정리합니다.
 - `repair/*`는 conflict 해결이나 이력 복구용 임시 브랜치입니다. 원 PR 또는 대체 PR 머지와 패치 동등성을 확인한 뒤 `삭제 후보`로 보고하고, 자동 삭제하지 않습니다.
-- 브랜치 정리 전에는 작업트리가 clean인지 확인하고 `git fetch --all --prune` 이후 상태를 기준으로 판단합니다.
-- 열린 PR의 head 브랜치는 보존합니다. upstream이 살아 있어도 PR 머지와 로컬 안전 조건이 확인된 브랜치는 로컬 삭제 대상이 될 수 있으며, 원격 head는 별도 확인 대상으로 보고합니다.
+- 브랜치 정리 전에는 작업트리가 clean인지 확인하고 `git fetch --all --prune` 이후 상태를 기준으로 판단합니다. 단, shell git 또는 GitHub CLI가 private repo를 `Repository not found`로 보고하더라도 GitHub 앱 등 다른 인증 경로에서 PR 상태가 확인될 수 있으므로, shell evidence와 GitHub evidence를 분리해서 기록합니다.
+- 열린 PR의 head 브랜치는 보존합니다. upstream이 살아 있어도 PR 머지와 로컬 안전 조건이 확인된 브랜치는 로컬 삭제 대상이 될 수 있으며, 원격 head 삭제는 별도 승인 경계로 보고합니다.
+- squash merge 또는 merge commit 방식 차이 때문에 `git branch --merged`나 `git merge-base --is-ancestor` 단독 결과만으로 브랜치 삭제를 결정하지 않습니다.
 - ahead 커밋이 있거나 PR/패치 대응 관계가 불명확한 브랜치는 삭제하지 않고 `위험`으로 보고합니다.
 - 같은 프로젝트의 sibling worktree와 external clone을 함께 확인합니다. branch commit이 같아도 dirty diff가 있으면 같은 상태로 보지 않습니다.
 - dirty diff가 화면, API, store, schema, business flow 같은 기능 표면을 수정했다면 삭제 대상이 아니라 기준선 후보 또는 checkpoint 필요 대상으로 분리합니다.
 - 가치 있는 dirty diff는 commit, patch, handoff note 중 하나로 고정되기 전까지 정리하지 않습니다.
+- 기준 SSoT가 아닌 repo, submodule, external clone이라도 ahead commit이나 untracked task/issue/evidence 문서가 있으면 바로 삭제하지 않고 `위험`으로 보고합니다.
+- 제품 source worktree와 사일로 메타 디렉터리는 분리해서 판단합니다. source worktree를 삭제하더라도 `goal.md`, handoff, report 같은 사일로 메타가 남아 있으면 별도 정리 대상으로 보고합니다.
 - 브랜치 정리 보고는 `삭제됨`, `보존`, `삭제 후보`, `위험`을 분리합니다.
 
 ## Agent Rule Update Policy

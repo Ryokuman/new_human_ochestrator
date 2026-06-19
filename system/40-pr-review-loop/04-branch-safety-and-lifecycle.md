@@ -30,13 +30,19 @@
 
 - 현재 작업트리가 clean인지 확인합니다.
 - `git fetch --all --prune` 이후 상태를 기준으로 판단합니다.
+- shell git 또는 GitHub CLI가 private repo를 `Repository not found`로 보고하더라도, GitHub 앱이나 다른 인증 경로에서 PR 상태가 확인될 수 있습니다. 이 경우 shell evidence와 GitHub evidence를 분리해 기록하고, 한쪽 실패만으로 삭제를 결정하지 않습니다.
 - 열린 PR의 head 브랜치는 삭제하지 않습니다.
-- 머지된 PR은 `state`, `mergedAt`, `mergeCommit`을 재조회합니다.
+- 머지된 PR은 `state`, `mergedAt`, `mergeCommit`, PR head SHA, base branch를 재조회합니다.
+- squash merge 또는 merge commit 방식 차이 때문에 `git branch --merged`나 `git merge-base --is-ancestor` 단독 결과만으로 브랜치 삭제를 결정하지 않습니다.
+- 로컬 브랜치 HEAD가 PR head SHA와 일치하고, PR이 merged이며, 해당 worktree가 clean일 때만 로컬 삭제 후보로 둡니다.
+- 원격 head 브랜치 삭제는 로컬 브랜치와 worktree 삭제와 별도 승인 경계로 보고합니다.
 - `repair/*`는 삭제 전에 원 PR, 대체 PR, 패치 동등성을 분리해 보고합니다.
 - 같은 프로젝트의 sibling worktree와 external clone을 함께 확인합니다.
 - dirty diff가 있는 worktree는 branch commit이 같아도 동일 상태로 보지 않습니다.
 - dirty diff가 화면, API, store, schema, business flow 같은 기능 표면을 수정했다면 삭제 대상이 아니라 기준선 후보 또는 checkpoint 필요 대상으로 분리합니다.
 - 가치 있는 dirty diff는 commit, patch, handoff note 중 하나로 고정되기 전까지 정리하지 않습니다.
+- 기준 SSoT가 아닌 repo, submodule, external clone이라도 ahead commit이나 untracked task/issue/evidence 문서가 있으면 바로 삭제하지 않고 `위험`으로 보고합니다.
+- 제품 source worktree와 사일로 메타 디렉터리는 분리해서 판단합니다. source worktree를 삭제하더라도 `goal.md`, handoff, report 같은 사일로 메타가 남아 있으면 별도 정리 대상으로 보고합니다.
 
 ## 정리 보고
 
@@ -49,8 +55,23 @@
 
 삭제 후보:
 - gone 상태이며 ahead 커밋이 없고 PR/패치 대응 관계가 확인된 브랜치
+- upstream이 살아 있어도 PR merged, PR head SHA 일치, worktree clean 상태가 확인되어 로컬 삭제만 가능한 브랜치
 - PR은 머지됐지만 자동 삭제하기 전에 확인이 필요한 repair/* 브랜치
 
 위험:
-- upstream이 살아 있거나, ahead 커밋이 있거나, PR/패치 대응 관계가 불명확한 브랜치
+- upstream이 살아 있고 PR merged/head/clean 안전 조건이 확인되지 않았거나, ahead 커밋이 있거나, PR/패치 대응 관계가 불명확한 브랜치
+- dirty source workspace, 기준 SSoT가 아닌 repo의 ahead/untracked 문서, 원격 인증 실패로 evidence가 갈린 브랜치
 ```
+
+## evidence 기록
+
+브랜치 정리 보고에는 최소한 아래 값을 남깁니다.
+
+| 항목 | 이유 |
+|---|---|
+| repo 경로와 역할 | root SSoT, 제품 source, 사일로, external clone, submodule을 구분하기 위해 |
+| local branch와 HEAD | 삭제 또는 보존 판단의 로컬 기준 |
+| upstream branch와 fetch/prune 결과 | gone 상태와 원격 접근 실패를 구분하기 위해 |
+| PR URL, state, mergedAt, mergeCommit, head SHA, base branch | PR 대응 관계와 merge 상태를 검증하기 위해 |
+| worktree clean 여부 | 같은 commit이어도 dirty diff가 있으면 같은 상태가 아니기 때문 |
+| 남은 dirty/ahead/untracked 항목 | `삭제됨`, `보존`, `삭제 후보`, `위험` 분류의 근거 |
