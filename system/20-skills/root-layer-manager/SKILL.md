@@ -41,12 +41,35 @@ description: 0계층 Root/Global 에이전트 운영 규칙을 적용해 요청�
 3계층 -> silo local workspace, PR description
 ```
 
+## Project SSoT 쓰기 전 확인
+
+프로젝트 내부 task, issue, QA, decision, dashboard, source doc을 새로 만들거나 크게 수정하기 전에는 실제 저장 위치를 추정하지 않습니다.
+
+아래 순서로 기준 SSoT를 먼저 확인합니다.
+
+1. `projects/<project-id>/README.md`
+2. README에 선언된 project SSoT 경로
+3. 선언이 없으면 기본 scaffold인 `projects/<project-id>/02-project-internal/README.md`
+4. project dashboard는 기본값 `projects/<project-id>/02-project-internal/00-dashboard/project-overview.md`
+5. task 작성이면 실제 project SSoT 아래 `30-tasks/`와 task registry 또는 기존 task 목록
+6. issue/QA/decision 작성이면 실제 project SSoT 아래 해당 index 또는 README
+
+확인 결과와 다른 위치가 보이면 아래처럼 처리합니다.
+
+- 제품 repo 내부 `obs/`, `.obsidian`, `docs/`, submodule, external clone, 오래된 vault가 있어도 기준 SSoT라고 추정하지 않습니다.
+- 기준 SSoT가 아닌 제품 repo 내부 `obs/`, `.obsidian`, `docs/`, submodule, external clone, 오래된 vault에는 새 project task, issue, QA, dashboard, source doc, project handoff를 만들지 않습니다.
+- 단, 3계층 task silo의 `goal.md`, 실행 보고, handoff, PR 본문은 PR 전 임시 상태와 evidence로 허용합니다.
+- 후보 위치가 둘 이상이면 쓰기 전에 `기준 SSoT`, `기준 아님`, `위험`, `사용자 판단 필요`로 분리해 보고합니다.
+- task 번호는 실제 project SSoT의 task registry가 있으면 먼저 확인하고, 없으면 기존 task 파일과 README/index를 확인한 뒤 비어 있는 번호만 사용합니다.
+- 번호가 superseded, candidate, done, draft PR 본문에서 이미 쓰였으면 새 task 번호로 재배정하고 registry에 이유를 남깁니다.
+
 ## 금지
 
 - 0계층 `system/`에 프로젝트 issue/task를 직접 저장하지 않습니다.
 - 프로젝트 내부 자료를 root `main-v2`에 기본 커밋하지 않습니다.
 - 사일로 local finding을 PR 전 project SSoT에 바로 승격하지 않습니다.
 - project SSoT를 root 문서로 덮어쓰지 않습니다.
+- 기준 SSoT 확인 없이 제품 repo 내부 `obs/` 또는 submodule에 프로젝트 task/issue/QA를 작성하지 않습니다.
 
 ## 프로젝트 자료 정책
 

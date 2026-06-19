@@ -29,7 +29,7 @@
 Build -> Learn -> Spec
 ```
 
-`main-v2`에서는 완벽한 설계보다 가장 빠르게 사용 가능한 결과물을 우선합니다. 불확실성이 있어도 합리적으로 가정하고 진행하며, 구현 후 발견한 문제를 새 spec, task, issue, SSoT 승격 후보로 정리합니다. PR 리뷰 gate는 PR 댓글의 수동 `@codex review` 호출을 기본으로 두고, 호출 댓글에는 가능하면 `한국어로 리뷰해 주세요.` 또는 이에 준하는 한국어 요청을 함께 적습니다. 외부 리뷰 봇의 고정 템플릿 언어까지 보장하지는 못합니다. 일반 PR gate는 변경 이후에도 승인 또는 actionable major/critical 및 보호 절차를 깨는 P1/P2 없음 상태가 될 때까지 최대 5회까지 수동 재호출합니다. 5회 호출 후에도 남은 major/critical 또는 보호 절차 P1/P2 항목은 더 반복하지 않고 `사용자 판단 필요` 또는 `의도된 남은 위험`으로 분리합니다. 사용자가 `~PR을 리뷰 대기 에이전트로 돌려주세요`처럼 명시하면 `review-waiter-agent`가 별도 백그라운드 루프로 관리하며, 이때 기본 상한은 전체 리뷰 호출 10회입니다.
+`main-v2`에서는 완벽한 설계보다 가장 빠르게 사용 가능한 결과물을 우선합니다. 불확실성이 있어도 합리적으로 가정하고 진행하며, 구현 후 발견한 문제를 새 spec, task, issue, SSoT 승격 후보로 정리합니다. PR 리뷰 gate는 PR 댓글의 수동 `@codex review` 호출을 기본으로 두고, 호출 댓글에는 가능하면 `한국어로 리뷰해 주세요.` 또는 이에 준하는 한국어 요청을 함께 적습니다. 외부 리뷰 봇의 고정 템플릿 언어까지 보장하지는 못합니다. 현재 head push 이후에 작성된 최신 `@codex review` 호출 댓글에 `eyes` 반응이 있으면 리뷰가 접수 또는 진행 중인 상태로 보고 같은 head commit에 추가 호출하지 않습니다. 일반 PR gate는 변경 이후에도 승인 또는 actionable major/critical 및 보호 절차를 깨는 P1/P2 없음 상태가 될 때까지 최대 5회까지 수동 재호출합니다. 재호출 전에도 현재 head 이후 `eyes` 진행 중 상태를 먼저 확인합니다. 5회 호출 후에도 남은 major/critical 또는 보호 절차 P1/P2 항목은 더 반복하지 않고 `사용자 판단 필요` 또는 `의도된 남은 위험`으로 분리합니다. 사용자가 `~PR을 리뷰 대기 에이전트로 돌려주세요`처럼 명시하면 `review-waiter-agent`가 별도 백그라운드 루프로 관리하며, 이때 기본 상한은 전체 리뷰 호출 10회입니다.
 
 ## 읽는 순서
 
@@ -150,6 +150,7 @@ git에서 제외할 것은 프로젝트 의존 자료와 시크릿성 자료입�
 - `system/`에는 정의와 템플릿만 둡니다.
 - 프로젝트 조사 결과는 기본적으로 fork/submodule/external clone/project SSoT에 둡니다. 로컬 참고 자료는 `../projects/`에 둘 수 있지만 `main-v2` 커밋 대상은 아닙니다.
 - project SSoT의 dashboard, task format, issue format, L 기준이 필요하면 실제 산출물을 `main-v2`에 커밋하지 않고 `setup.sh --create-project-ssot`으로 project SSoT 위치에 scaffold를 만듭니다.
+- 프로젝트 내부 task, issue, QA, decision, dashboard를 쓰기 전에는 `projects/<project-id>/README.md`에서 선언된 project SSoT 경로를 먼저 확인합니다. 선언이 없으면 기본 scaffold인 `projects/<project-id>/02-project-internal/` 아래 dashboard와 task 위치를 확인합니다. 제품 repo 내부 `obs/`, `.obsidian`, `docs/`, submodule, external clone은 기준 SSoT라고 추정하지 않습니다.
 - 원본 프롬프트와 과거 초안은 `../sources/`에 둡니다.
 - 이 프롬프트 모음집은 여러 프로젝트에서 쓰는 것이 목표이므로, 프로젝트 의존 자료는 gitignore 대상으로 둡니다.
 - 현재 목표 기준 다음 행동은 코드 수정이 아니라, 분석 초안 검토와 규칙 승격입니다.

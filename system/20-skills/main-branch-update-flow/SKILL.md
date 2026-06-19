@@ -53,14 +53,15 @@ description: main-v2 업데이트 절차 문서입니다. 이 프로젝트에서
 11. 한국어 제목/본문으로 PR을 만듭니다.
 12. PR base branch가 `main-v2`인지 확인합니다.
 13. PR 댓글로 수동 `@codex review`를 호출하고, 가능하면 `한국어로 리뷰해 주세요.` 또는 이에 준하는 한국어 요청을 함께 적습니다. 외부 리뷰 봇의 고정 템플릿 언어까지 보장하지는 못합니다.
-14. Codex 리뷰 결과와 호출 횟수를 PR 본문에 기록합니다.
-15. major/critical 지적 또는 P1/P2처럼 보호 절차를 깨는 지적이 있으면 수정 후 최대 5회까지 수동 재호출합니다. 5회 호출 후에도 남은 major/critical 또는 보호 절차 P1/P2 항목은 더 반복하지 않고 `사용자 판단 필요` 또는 `의도된 남은 위험`으로 분리합니다.
-16. PR URL, 상태, mergeable 여부, Codex 리뷰 gate 상태를 확인해 보고합니다.
-17. 사용자의 명시 머지 승인이 있으면 PR을 머지합니다.
-18. 머지했다면 `state`, `mergedAt`, `mergeCommit`을 재조회해 보고합니다.
-19. PR이 머지된 뒤에도 `main`을 fetch/rebase 기준으로 쓰지 않습니다.
-20. `main-v2` 기준으로 원격 추적 상태와 dirty state를 확인합니다.
-21. worktree 정리 여부를 보고합니다.
+14. 현재 head push 이후에 작성된 최신 `@codex review` 호출 댓글에 `eyes` 반응이 있으면 Codex 리뷰가 접수 또는 진행 중인 상태로 보고, 같은 head commit에 추가 리뷰 요청을 호출하지 않습니다.
+15. Codex 리뷰 결과와 호출 횟수를 PR 본문에 기록합니다.
+16. major/critical 지적 또는 P1/P2처럼 보호 절차를 깨는 지적이 있으면 수정 후 최대 5회까지 수동 재호출합니다. 재호출 전 현재 head push 이후에 작성된 최신 호출 댓글에 `eyes` 반응이 있으면 중복 호출하지 않고 기존 요청의 결과를 기다립니다. 5회 호출 후에도 남은 major/critical 또는 보호 절차 P1/P2 항목은 더 반복하지 않고 `사용자 판단 필요` 또는 `의도된 남은 위험`으로 분리합니다.
+17. PR URL, 상태, mergeable 여부, Codex 리뷰 gate 상태를 확인해 보고합니다.
+18. 사용자의 명시 머지 승인이 있으면 PR을 머지합니다.
+19. 머지했다면 `state`, `mergedAt`, `mergeCommit`을 재조회해 보고합니다.
+20. PR이 머지된 뒤에도 `main`을 fetch/rebase 기준으로 쓰지 않습니다.
+21. `main-v2` 기준으로 원격 추적 상태와 dirty state를 확인합니다.
+22. worktree 정리 여부를 보고합니다.
 
 ## 보기 3개 규칙
 

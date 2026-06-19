@@ -20,7 +20,7 @@
 아래 목록은 이 디렉토리의 `*/SKILL.md` 기준 사용 가능한 repo skill 전체입니다.
 
 - [`main-branch-update-flow`](main-branch-update-flow/SKILL.md): 공통 SSoT, 프롬프트, `AGENTS.md`, skill 초안 변경을 `main-v2` 파생 브랜치와 PR로만 반영할 때 사용합니다.
-- [`root-layer-manager`](root-layer-manager/SKILL.md): 정보가 0~3계층 중 어디에 속하는지 판단해야 할 때 사용합니다.
+- [`root-layer-manager`](root-layer-manager/SKILL.md): 정보가 0~3계층 중 어디에 속하는지 판단하거나, 프로젝트 task/issue/QA/decision/dashboard를 쓰기 전에 실제 project SSoT 위치와 task 번호 registry를 확인해야 할 때 사용합니다.
 - [`projects-setup`](projects-setup/SKILL.md): 새 프로젝트를 `projects/` 구조에 등록하거나 project SSoT와 사일로 config를 함께 셋업해야 할 때 사용합니다.
 - [`add-shared-runtime`](add-shared-runtime/SKILL.md): 여러 task silo가 함께 참조하는 프로젝트별 shared runtime set을 등록하거나 준비할 때 사용합니다.
 - [`shared-runtime-health-check`](shared-runtime-health-check/SKILL.md): page-lifecycle, run, E2E 실행 전 `runtime_set` 유무나 서버형 shared runtime 상태를 확인해야 할 때 사용합니다.
@@ -60,7 +60,7 @@ Build -> Learn -> Spec
 
 - `main-v2`: 수동 `@codex review` gate
 
-`main-v2`의 PR은 생성 직후 base branch가 `main-v2`인지 확인하고, PR 댓글로 수동 `@codex review`를 호출합니다. 호출 댓글에는 가능하면 `한국어로 리뷰해 주세요.` 또는 이에 준하는 한국어 요청을 함께 적습니다. 외부 리뷰 봇의 고정 템플릿 언어까지 보장하지는 못합니다. PR 본문에는 `Codex PR 리뷰` 항목을 두고, 호출 횟수와 결과를 기록합니다. 변경 이후에도 승인 또는 actionable major/critical 및 보호 절차를 깨는 P1/P2 없음 상태가 될 때까지 최대 5회까지 수동 재호출합니다. 5회 호출 후에도 남은 major/critical 또는 보호 절차 P1/P2 항목은 더 반복하지 않고 `사용자 판단 필요` 또는 `의도된 남은 위험`으로 분리합니다.
+`main-v2`의 PR은 생성 직후 base branch가 `main-v2`인지 확인하고, PR 댓글로 수동 `@codex review`를 호출합니다. 호출 댓글에는 가능하면 `한국어로 리뷰해 주세요.` 또는 이에 준하는 한국어 요청을 함께 적습니다. 외부 리뷰 봇의 고정 템플릿 언어까지 보장하지는 못합니다. PR 본문에는 `Codex PR 리뷰` 항목을 두고, 호출 횟수와 결과를 기록합니다. 현재 head push 이후에 작성된 최신 `@codex review` 호출 댓글에 `eyes` 반응이 있으면 리뷰가 접수 또는 진행 중인 상태로 보고 같은 head commit에 추가 호출하지 않습니다. 변경 이후에도 승인 또는 actionable major/critical 및 보호 절차를 깨는 P1/P2 없음 상태가 될 때까지 최대 5회까지 수동 재호출합니다. 재호출 전에도 현재 head 이후 `eyes` 진행 중 상태를 먼저 확인합니다. 5회 호출 후에도 남은 major/critical 또는 보호 절차 P1/P2 항목은 더 반복하지 않고 `사용자 판단 필요` 또는 `의도된 남은 위험`으로 분리합니다.
 
 ## Run Set과 runtime_set
 
@@ -91,6 +91,8 @@ Build -> Learn -> Spec
 - root 계층 판단: `root-layer-manager`
 - project 등록과 SSoT 생성: `projects-setup`
 - 세션 종료, handoff, task/issue/QA 갱신: 프로젝트별 설치 skill 또는 project SSoT의 운영 문서를 따릅니다.
+
+프로젝트 내부 문서를 쓸 때는 제품 repo 안의 `obs/`, `.obsidian`, `docs/`, submodule, external clone을 기준 SSoT로 추정하지 않습니다. 먼저 `projects/<project-id>/README.md`에서 선언된 project SSoT 경로를 확인하고, 선언이 없으면 기본 scaffold인 `projects/<project-id>/02-project-internal/` 아래 dashboard와 task 위치를 확인합니다. 기준 SSoT가 아닌 위치에는 새 task/issue/QA를 만들지 않습니다.
 
 새로운 `ssot-manager` skill이 필요해지면 기존 세 역할과 겹치지 않게, “세션 종료와 SSoT 갱신을 언제 어떻게 수행하는가”를 전담하도록 추가합니다.
 
