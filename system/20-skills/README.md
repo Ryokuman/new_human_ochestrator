@@ -20,7 +20,7 @@
 아래 목록은 이 디렉토리의 `*/SKILL.md` 기준 사용 가능한 repo skill 전체입니다.
 
 - [`main-branch-update-flow`](main-branch-update-flow/SKILL.md): 공통 SSoT, 프롬프트, `AGENTS.md`, skill 초안 변경을 `main-v2` 파생 브랜치와 PR로만 반영할 때 사용합니다.
-- [`codex-pr-review-loop`](codex-pr-review-loop/SKILL.md): `main-v2` target/base PR을 만든 뒤 Codex가 최신 head에 대해 `Didn't find any major issues`라고 명시 응답할 때까지 목표 세팅, 리뷰 호출, 수정, 검증, 재리뷰 반복을 관리할 때 사용합니다.
+- [`codex-pr-review-loop`](codex-pr-review-loop/SKILL.md): 0계층 공통 변경만 담은 `main-v2` PR을 만든 뒤 Codex가 최신 head에 대해 `Didn't find any major issues`라고 명시 응답할 때까지 목표 세팅, 리뷰 호출, 수정, 검증, 재리뷰 반복을 관리할 때 사용합니다.
 - [`main-v2-pr-scope-gate`](main-v2-pr-scope-gate/SKILL.md): `main-v2` 대상 PR 제안, push, PR 생성 전 diff path와 브랜치명을 계층별로 분류해 project SSoT 원문이나 local/silo 자료가 섞였는지 확인할 때 사용합니다.
 - [`root-layer-manager`](root-layer-manager/SKILL.md): 정보가 0~3계층 중 어디에 속하는지 판단하거나, 프로젝트 task/issue/QA/decision/dashboard/source doc을 쓰기 전에 실제 project SSoT 위치, 기준 `project/<project-id>` 브랜치/worktree, task 번호 registry를 확인해야 할 때 사용합니다.
 - [`projects-setup`](projects-setup/SKILL.md): 새 프로젝트를 `projects/` 구조에 등록하거나 project SSoT와 사일로 config를 함께 셋업해야 할 때 사용합니다.
@@ -68,9 +68,9 @@ Build -> Learn -> Spec
 
 리뷰 gate:
 
-- `main-v2`: 수동 `@codex review` gate
+- 0계층 공통 변경만 담은 `main-v2` PR: 수동 `@codex review` gate
 
-`main-v2`의 PR은 생성 직후 GitHub PR target/base branch가 `main-v2`인지 확인하고, [`codex-pr-review-loop`](codex-pr-review-loop/SKILL.md)를 사용해 PR 댓글로 수동 `@codex review`를 호출합니다. 호출 댓글에는 가능하면 `한국어로 리뷰해 주세요.` 또는 이에 준하는 한국어 요청과 no-major 목표를 함께 적습니다. 외부 리뷰 봇의 고정 템플릿 언어까지 보장하지는 못합니다. PR 본문에는 `Codex PR 리뷰` 항목을 두고, 호출 횟수와 결과를 기록합니다. 현재 head push 이후에 작성된 최신 `@codex review` 호출 댓글에 `eyes` 반응이 있으면 리뷰가 접수 또는 진행 중인 상태로 보고 같은 head commit에 추가 호출하지 않습니다. PR 생성 이후에는 최신 head에 대한 `Didn't find any major issues` 명시 응답이 나올 때까지 수정, 검증, 재리뷰를 반복합니다. task silo의 `goal.md`가 확인되면 no-major 목표를 `goal.md`에 세팅하고, 그렇지 않은 공통 문서/skill PR은 PR 본문, 리뷰 thread, 현재 사용자 요청을 재리뷰 컨텍스트로 사용합니다. 기본 중단 기준은 호출 횟수가 아니라 리뷰 결과입니다. 사용자가 이번 PR에 명시한 반복 한도가 있을 때만 그 한도를 따릅니다.
+`main-v2`의 PR은 먼저 변경 내용이 0계층 공통 변경만 담는지 확인합니다. branch base는 계층 기준 브랜치이며, 0계층은 `main-v2`, 1계층 이상 project 변경은 해당 `project/<project-id>`가 기준입니다. GitHub PR target/base branch는 이 계층 판단이 반영된 최종 머지 대상입니다. 0계층 공통 변경만 남은 `main-v2` PR은 생성 직후 [`codex-pr-review-loop`](codex-pr-review-loop/SKILL.md)를 사용해 PR 댓글로 수동 `@codex review`를 호출합니다. 호출 댓글에는 가능하면 `한국어로 리뷰해 주세요.` 또는 이에 준하는 한국어 요청과 최신 head 기준 리뷰 요청만 적습니다. no-major 목표, exact pass phrase, 반복 조건은 외부 댓글이 아니라 PR 본문 `Codex PR 리뷰` 항목, task silo의 `goal.md`, 메인 에이전트 내부 상태에서 관리합니다. 외부 리뷰 봇의 고정 템플릿 언어까지 보장하지는 못합니다. PR 본문에는 `Codex PR 리뷰` 항목을 두고, 호출 횟수와 결과를 기록합니다. 현재 head push 이후에 작성된 최신 `@codex review` 호출 댓글에 `eyes` 반응이 있으면 리뷰가 접수 또는 진행 중인 상태로 보고 같은 head commit에 추가 호출하지 않습니다. PR 생성 이후에는 최신 head에 대한 `Didn't find any major issues` 명시 응답이 나올 때까지 수정, 검증, 재리뷰를 반복합니다. task silo의 `goal.md`가 확인되면 no-major 목표를 `goal.md`에 세팅하고, 그렇지 않은 공통 문서/skill PR은 PR 본문, 리뷰 thread, 현재 사용자 요청을 재리뷰 컨텍스트로 사용합니다. 기본 중단 기준은 호출 횟수가 아니라 리뷰 결과입니다. 사용자가 이번 PR에 명시한 반복 한도가 있을 때만 그 한도를 따릅니다.
 
 ## Run Set과 runtime_set
 

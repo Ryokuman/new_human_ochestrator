@@ -4,7 +4,7 @@
 
 ## main-v2
 
-`main-v2` 대상 PR은 생성 직후 [`codex-pr-review-loop`](../../20-skills/codex-pr-review-loop/SKILL.md)를 사용해 no-major 목표를 세팅하고, 수동 `@codex review`를 호출합니다.
+0계층 공통 변경만 담은 `main-v2` 대상 PR은 생성 직후 [`codex-pr-review-loop`](../../20-skills/codex-pr-review-loop/SKILL.md)를 사용해 no-major 목표를 세팅하고, 수동 `@codex review`를 호출합니다.
 
 현재 head push 이후에 작성된 최신 `@codex review` 호출 댓글에 `eyes` 반응이 있으면 Codex 리뷰가 접수 또는 진행 중인 상태로 보고, 같은 head commit에 추가 `@codex review`를 호출하지 않습니다.
 
@@ -14,7 +14,7 @@
 - 보호 절차를 깨는 P1/P2 지적
 - 보호 브랜치 직접 commit/push 위험
 
-GitHub PR target/base branch가 `main-v2`가 아닌 PR은 반복 재리뷰 대상이 아닙니다. `@codex review`를 호출하지 않고 해당 project gate 또는 target main 불일치로 보고한 뒤 종료합니다.
+0계층 공통 변경만 담은 `main-v2` 대상 PR만 반복 재리뷰 대상입니다. branch base는 계층 기준 브랜치이며, 1계층 이상 project 변경은 해당 `project/<project-id>` 기준 브랜치와 project gate를 따릅니다. GitHub PR target/base branch가 `main-v2`가 아니거나 project 변경이 섞인 PR은 `@codex review`를 호출하지 않고 계층 분리 필요 또는 project gate 대상으로 보고한 뒤 종료합니다.
 
 사용자가 이번 PR에 명시한 반복 한도가 있으면 그 한도를 따릅니다. secret, credential, production 데이터, destructive action, data SSoT 임의 변경, 보호 브랜치 직접 수정에 닿으면 반복보다 승인 gate를 우선합니다.
 

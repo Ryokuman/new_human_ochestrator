@@ -65,12 +65,13 @@
 - API, schema, store, route가 없다는 사실만으로 task 위험으로 단정하지 않습니다. 같은 task 안에서 백엔드 계약을 먼저 만들고 프론트가 소비하는 순서를 기본 실행 순서로 제안합니다.
 - 외부 서비스, 인증, 실제 네트워크, 사용자 계정, 런타임 설정처럼 agent가 직접 통제하지 못하는 요소가 task completion에 끼어들면, system SSoT에는 통제 가능성, 증명 가능성, 사용자 승인 필요 여부를 분리하는 판단 근거만 남깁니다. 구체적인 L 단계, provider별 체크리스트, fixture/harness 구현 방식, merge 전 세부 QA gate는 project SSoT 또는 task 계약으로 라우팅합니다.
 - agent 감사나 PR 리뷰에서 좁은 실행 처방이 발견되면, system에 바로 추가하지 말고 `system에 남길 판단 근거`, `project SSoT로 내려보낼 실행 처방`, `승격하지 않을 항목`, `누락된 project SSoT 정의`로 분리합니다. project SSoT 위치가 불명확하면 system 문서에 임시 절차를 쓰지 않고 누락 정의로 보고합니다.
-- 일반 PR gate의 Codex 리뷰는 `codex-pr-review-loop` skill로 no-major 목표를 세팅한 뒤 수동 `@codex review`를 호출하는 것을 기본으로 합니다.
+- Codex 리뷰 gate는 0계층 공통 변경만 담은 `main-v2` PR에서만 `codex-pr-review-loop` skill로 no-major 목표를 세팅한 뒤 수동 `@codex review`를 호출하는 것을 기본으로 합니다.
 - 현재 head push 이후에 작성된 최신 `@codex review` 호출 댓글에 `eyes` 반응이 있으면 Codex 리뷰가 접수 또는 진행 중인 상태로 보고, 같은 head commit에 추가 리뷰 요청을 보내지 않습니다.
 - 사용자가 `~PR을 리뷰 대기 에이전트로 돌려주세요`, `이 PR 리뷰 대기 에이전트로 맡겨주세요`, `Sartre처럼 돌려주세요`처럼 말하면 `codex-pr-review-loop` 목표를 확인한 뒤 `review-waiter-agent`를 사용합니다. 사용자가 이번 PR에 명시한 반복 한도가 있을 때만 그 한도를 따릅니다.
-- `@codex review` 호출 댓글에는 가능하면 `한국어로 리뷰해 주세요.` 또는 이에 준하는 한국어 요청을 함께 적습니다. 외부 리뷰 봇의 고정 템플릿 언어를 보장하지는 못하지만, repo 운영 언어와 맞추기 위한 기본 요청 문구로 둡니다.
-- 일반 PR gate에서 남은 major/critical 또는 보호 절차 P1/P2 항목은 횟수 기준으로 중단하지 않고, 실제 blocker 여부와 사용자 승인 gate 필요 여부를 분리합니다.
-- 일반 PR gate의 Codex 리뷰는 최신 head에 대한 `Didn't find any major issues` 명시 응답이 나올 때까지 수정, 검증, 재요청할 수 있으며, 기본 중단 기준은 호출 횟수가 아니라 리뷰 결과입니다.
+- `@codex review` 호출 댓글에는 가능하면 `한국어로 리뷰해 주세요.` 또는 이에 준하는 한국어 요청과 최신 head 기준 리뷰 요청만 적습니다. `Didn't find any major issues` exact pass phrase와 반복 횟수 조건은 외부 리뷰 댓글에 강제하지 않고, PR 본문, task silo의 `goal.md`, 메인 에이전트 내부 상태에서 관리합니다.
+- 1계층 이상 project PR은 해당 project gate를 따르며, 0계층 `main-v2` Codex 리뷰 gate 때문에 `main-v2`로 retarget하거나 `@codex review`를 호출하지 않습니다.
+- 0계층 `main-v2` Codex 리뷰 gate에서 남은 major/critical 또는 보호 절차 P1/P2 항목은 횟수 기준으로 중단하지 않고, 실제 blocker 여부와 사용자 승인 gate 필요 여부를 분리합니다.
+- 0계층 `main-v2` Codex 리뷰는 최신 head에 대한 `Didn't find any major issues` 명시 응답이 나올 때까지 수정, 검증, 재요청할 수 있으며, 기본 중단 기준은 호출 횟수가 아니라 리뷰 결과입니다.
 - secret, credential, production 데이터, destructive action, data SSoT 임의 변경, 보호 브랜치 직접 수정에 닿으면 리뷰 반복보다 승인 gate를 우선합니다.
 
 ## source workspace와 기능 기준선

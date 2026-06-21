@@ -41,6 +41,20 @@ description: 0계층 Root/Global 에이전트 운영 규칙을 적용해 요청�
 3계층 -> silo local workspace, PR description
 ```
 
+## 계층 기준 브랜치
+
+branch base는 먼저 계층으로 판단합니다. GitHub PR target/base branch는 이 판단 결과가 반영된 최종 머지 대상일 뿐입니다.
+
+```text
+0계층 공통 변경 -> main-v2 기준 브랜치와 main-v2 대상 PR
+1계층 이상 project 변경 -> project/<project-id> 기준 브랜치와 project/<project-id> 대상 PR
+```
+
+- `project/onjump`의 SSoT, task, issue, QA, decision, coverage 같은 project 내부 변경은 `project/onjump` 기반으로 처리합니다.
+- 작업 중 공통 system update가 발견되면 그 변경만 `main-v2` 기준 worktree와 브랜치로 분리합니다.
+- 하나의 브랜치에 0계층 변경과 project 변경이 섞이면 계층별 커밋을 분리하고, 서로 다른 PR로 제출합니다.
+- 0계층 PR이 `main-v2`에 머지되면 관련 `project/<project-id>` 브랜치와 진행 중인 project 작업 브랜치를 최신 `main-v2` 위로 rebase한 뒤 project 작업을 이어갑니다.
+
 ## Project SSoT 쓰기 전 확인
 
 프로젝트 내부 task, issue, QA, decision, dashboard, source doc을 새로 만들거나 크게 수정하기 전에는 실제 저장 위치를 추정하지 않습니다.
@@ -63,6 +77,7 @@ description: 0계층 Root/Global 에이전트 운영 규칙을 적용해 요청�
 - `project/<project-id>` 브랜치가 있는데 현재 브랜치가 `docs/*`, `chore/*`, `silo/*`, 또는 `main-v2` 파생 공통 규칙 브랜치라면 project SSoT 원문을 직접 쓰지 않습니다.
 - 현재 브랜치에 project SSoT diff가 이미 있으면 기준 worktree로 이어 쓰지 않고 `기준 아님`, `이관 후보`, `위험`, `사용자 판단 필요`로 분리해 보고합니다.
 - `main-v2` 대상 PR을 제안하거나 생성하려는 순간에는 [`main-v2-pr-scope-gate`](../main-v2-pr-scope-gate/SKILL.md)를 먼저 적용합니다. project SSoT 원문이 diff에 있으면 PR 제안을 중단합니다.
+- project 작업 브랜치에서 `main-v2` 대상 공통 승격 후보가 생기면 project SSoT 원문과 함께 PR로 올리지 않고, 0계층 변경만 별도 worktree로 분리합니다.
 - 단, 3계층 task silo의 `goal.md`, 실행 보고, handoff, PR 본문은 PR 전 임시 상태와 evidence로 허용합니다.
 - 후보 위치가 둘 이상이면 쓰기 전에 `기준 SSoT`, `기준 아님`, `위험`, `사용자 판단 필요`로 분리해 보고합니다.
 - task 번호는 실제 project SSoT의 task registry가 있으면 먼저 확인하고, 없으면 기존 task 파일과 README/index를 확인한 뒤 비어 있는 번호만 사용합니다.

@@ -383,7 +383,7 @@ Shared Runtime은 0계층 SSoT가 아니라 프로젝트별 registry/status에�
 - user_feedback
 - merge_decision
 
-`codex_review`에는 `main-v2`의 Codex 리뷰 실행 여부, 리뷰 대상 diff, 발견한 major/critical 위험, 수정 여부, 재리뷰 결과, 실패 또는 생략 사유를 기록합니다.
+`codex_review`에는 0계층 공통 변경만 담은 `main-v2` PR의 Codex 리뷰 실행 여부, 리뷰 대상 diff, 발견한 major/critical 위험, 수정 여부, 재리뷰 결과, 실패 또는 생략 사유를 기록합니다.
 
 ## 승격 상태
 

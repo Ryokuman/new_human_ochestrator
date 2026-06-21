@@ -5,8 +5,11 @@
 `main-v2`에서는 Codex PR 리뷰 결과를 적습니다.
 
 - 자동 리뷰가 아니라 [`codex-pr-review-loop`](../20-skills/codex-pr-review-loop/SKILL.md)로 no-major 목표를 세팅한 뒤 PR 댓글의 수동 `@codex review`를 호출하는 것을 기본으로 합니다.
-- `@codex review`는 GitHub PR target/base branch가 `main-v2`인 PR에서만 호출합니다.
-- 호출 댓글에는 가능하면 `한국어로 리뷰해 주세요.` 또는 이에 준하는 한국어 요청을 함께 적습니다. 외부 리뷰 봇의 고정 안내 템플릿 언어까지 보장하지는 못하지만, repo 운영 언어와 맞추기 위한 기본 요청 문구로 둡니다.
+- `@codex review`는 0계층 공통 변경만 담은 `main-v2` 대상 PR에서만 호출합니다. branch base는 먼저 계층으로 판단하며, GitHub PR target/base branch는 그 판단 결과가 반영된 최종 머지 대상입니다.
+- 1계층 이상 project SSoT, task, issue, QA, decision, coverage 변경은 해당 `project/<project-id>` 기준 브랜치와 PR에서 처리합니다. 이 변경을 `main-v2` Codex review gate 때문에 `main-v2` PR로 retarget하지 않습니다.
+- 하나의 작업 브랜치에 0계층 변경과 1계층 이상 변경이 함께 있으면, 0계층 변경만 별도 `main-v2` worktree/브랜치/PR로 분리하고 project 변경은 원래 project 기준 브랜치에 남깁니다.
+- 호출 댓글에는 가능하면 `한국어로 리뷰해 주세요.` 또는 이에 준하는 한국어 요청과 최신 head 기준 리뷰 요청만 적습니다. 외부 리뷰 봇의 고정 안내 템플릿 언어까지 보장하지는 못하지만, repo 운영 언어와 맞추기 위한 기본 요청 문구로 둡니다.
+- `Didn't find any major issues` exact pass phrase와 반복 횟수 조건은 외부 리뷰 댓글에 강제하지 않고, PR 본문, task silo의 `goal.md`, 메인 에이전트 내부 상태에서 관리합니다.
 - 같은 PR에서 현재 head push 이후에 작성된 최신 `@codex review` 호출 댓글에 `eyes` 반응이 있으면 Codex 리뷰가 접수 또는 진행 중인 상태로 봅니다. 이 상태에서만 같은 head commit에 추가 `@codex review`를 호출하지 않고, 기존 요청의 리뷰 결과를 기다립니다.
 - 재호출 전에는 PR 댓글, 리뷰 제출, 최신 head commit, 최신 head push 이후 작성된 리뷰 요청 여부를 함께 확인합니다. 최신 head에 대한 리뷰 결과가 아직 없고 현재 head 이후 호출 댓글에 `eyes`가 있으면 중복 호출이 아니라 대기 상태로 기록합니다.
 - 리뷰는 변경 diff, task 목표, 검증 결과, 남은 위험, SSoT 승격 후보를 기준으로 합니다.

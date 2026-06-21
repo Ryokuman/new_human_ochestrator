@@ -36,4 +36,4 @@
 - 역할별 규칙이 skill 절차와 겹치면 절차는 `system/20-skills/`를 우선합니다.
 - 에이전트 문서가 빈약하다는 피드백을 받으면 `system/50-feedback-personality-loop/` 기준으로 증거 등급과 승격 여부를 분리한 뒤 반영합니다.
 - PR 리뷰 기준 보강은 `system/40-pr-review-loop/`, 역할별 실행 규칙 보강은 각 agent의 `README.md`와 `main-prompt.md`를 기준으로 합니다.
-- `main-v2` target/base PR의 Codex gate는 `codex-pr-review-loop` skill로 no-major 목표를 세팅하고, 사용자가 `~PR을 리뷰 대기 에이전트로 돌려주세요`처럼 요청하면 `review-waiter-agent`를 실행자로 사용합니다.
+- 0계층 공통 변경만 담은 `main-v2` PR의 Codex gate는 `codex-pr-review-loop` skill로 no-major 목표를 세팅하고, 사용자가 `~PR을 리뷰 대기 에이전트로 돌려주세요`처럼 요청하면 `review-waiter-agent`를 실행자로 사용합니다.

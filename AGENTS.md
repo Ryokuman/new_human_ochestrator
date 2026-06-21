@@ -16,7 +16,7 @@
 - `main-v2`는 탐색형 제품 엔지니어 운영 방식 기준 브랜치입니다. `main-v2`는 `Build -> Learn -> Spec`을 우선하고, 빠른 사용 가능 결과물을 만든 뒤 학습 내용을 SSoT/task/spec으로 승격합니다.
 - `main-v2` 변경은 `main`에 반영하지 않습니다. 사용자 요청이 있더라도 이 프로젝트에서는 `main` 반영 대신 `main-v2` 안에서만 후속 브랜치, PR, 문서 승격을 다룹니다.
 - `main-v2` 변경은 항상 `main-v2`에서 파생한 단기 브랜치에서 커밋하고, GitHub PR target/base branch가 `main-v2`인 PR로만 반영합니다.
-- `main-v2`에서 PR 리뷰 gate는 `codex-pr-review-loop` skill로 no-major 목표를 세팅한 뒤 PR 댓글의 수동 `@codex review`를 호출하는 것을 기본으로 둡니다.
+- 0계층 공통 변경만 담은 `main-v2` PR의 리뷰 gate는 `codex-pr-review-loop` skill로 no-major 목표를 세팅한 뒤 PR 댓글의 수동 `@codex review`를 호출하는 것을 기본으로 둡니다.
 
 ## Exploratory Product Engineering Policy
 
@@ -61,6 +61,17 @@
 3계층 -> silo local workspace, PR 본문
 ```
 
+## Layer Branch Base Policy
+
+여기서 말하는 branch base는 단순히 GitHub PR 화면의 target/base branch만 뜻하지 않습니다. 먼저 변경 내용이 속한 계층을 판정하고, 그 계층의 기준 브랜치를 branch base로 봅니다. GitHub PR target/base branch는 이 계층 판단 결과를 반영한 최종 머지 대상입니다.
+
+- 0계층 system update, 공통 규칙, `AGENTS.md`, `system/` 문서, repo skill, agent prompt는 `main-v2`가 기준 브랜치입니다. 이 변경만 `main-v2` 파생 브랜치와 `main-v2` 대상 PR로 제출합니다.
+- 1계층 이상 project 등록, project SSoT, project 내부 task/issue/QA/decision/coverage/runbook은 해당 `project/<project-id>`가 기준 브랜치입니다. 해당 변경은 `project/<project-id>` 기반 브랜치와 `project/<project-id>` 대상 PR로 제출합니다.
+- 예를 들어 `project/onjump`의 SSoT update는 `project/onjump` 기반 PR로 처리합니다. 대화 중 공통 system update가 새로 생긴 경우에만 별도 `main-v2` PR로 분리합니다.
+- 하나의 작업 브랜치에 0계층 변경과 1계층 이상 변경이 함께 생기면, worktree를 둘로 나누고 계층별 커밋을 분리해 서로 다른 PR로 처리합니다.
+- 0계층 PR이 `main-v2`에 머지되면 관련 `project/<project-id>` 브랜치와 진행 중인 project 작업 브랜치를 최신 `main-v2` 위로 rebase한 뒤 project 작업을 이어갑니다.
+- `project/onjump-add-login` 같은 브랜치는 이름상 feature branch라도, 계층 기준으로는 0계층 `main-v2`와 1계층 `project/onjump` 기준을 동시에 의식해야 합니다. system update가 섞이면 `main-v2`용 분리 PR을 먼저 만들고, project 변경은 `project/onjump` 계층 기준으로 남깁니다.
+
 ## Project Branch Policy
 
 - `project/<project-id>` 브랜치는 `main-v2`에 머지하기 위한 기능 브랜치가 아닙니다.
@@ -70,6 +81,7 @@
 - project 내부 task, issue, QA, decision, dashboard, source doc처럼 2계층 project SSoT를 생성하거나 수정하는 작업은 해당 project의 `project/<project-id>` 브랜치 또는 그 브랜치에서 판 별도 worktree에서만 수행합니다.
 - `project/<project-id>` 브랜치가 존재하는 프로젝트의 2계층 SSoT 작업을 `docs/*`, `chore/*`, `silo/*`, 또는 `main-v2` 파생 공통 규칙 브랜치에서 직접 수행하지 않습니다.
 - 단, project SSoT를 만드는 공통 템플릿, scaffold 로직, repo skill, agent prompt처럼 0계층 규칙 자체를 수정하는 작업은 `main-v2` 파생 단기 브랜치에서 수행합니다.
+- project 작업 브랜치에서 0계층 공통 변경이 함께 발생하면 해당 변경만 `main-v2` 기준 worktree로 분리하고, project 브랜치와 작업 브랜치는 0계층 PR 머지 후 최신 `main-v2` 위로 rebase합니다.
 - `project/*` 브랜치 작업에는 `main-branch-update-flow`의 PR 생성/머지 절차를 기본 적용하지 않습니다.
 - `project/*` 브랜치에서 발견한 반복 가능한 운영 규칙만 별도 사용자 요청이 있을 때 `main-v2` 업데이트 후보로 분리합니다.
 - `project/*` 브랜치가 최신 `main-v2` 위로 rebase되어 있지 않아 rebase할 때는, 먼저 `main-v2`에서 변경된 공통 규칙, AGENTS.md, system 문서, 프롬프트, repo skill을 확인합니다.
@@ -199,7 +211,7 @@
 - 사일로 root 생성, `goal.md` 작성, repo clone, repo별 작업 브랜치 생성 중 하나라도 실제로 시작하기 전에 project SSoT의 원본 task/issue 상태를 `in_progress`로 갱신합니다.
 - SSoT 상태 갱신을 할 수 없으면 사일로 진행을 멈추고, 갱신 불가 사유와 이미 생성한 로컬 evidence 위치를 보고합니다.
 - 사일로 디렉토리는 현재 workspace 루트에 만듭니다. 사용자가 직접 지정하지 않는 한 `/tmp`, 홈 디렉토리, 숨김 디렉토리, 에이전트 전용 임시 경로에 만들지 않습니다.
-- `goal.md`에는 task 목표, 필요한 repo, 보호 브랜치, 금지선, criteria별 테스트 계약, 검증 기준, 리뷰 gate 적용 여부, PR 본문 필수 항목을 적습니다. `main-v2`는 `codex-pr-review-loop` skill로 no-major 목표를 세팅한 뒤 수동 `@codex review`를 호출하는 것을 기본 gate로 둡니다.
+- `goal.md`에는 task 목표, 필요한 repo, 보호 브랜치, 금지선, criteria별 테스트 계약, 검증 기준, 리뷰 gate 적용 여부, PR 본문 필수 항목을 적습니다. 0계층 공통 변경만 담은 `main-v2` PR은 `codex-pr-review-loop` skill로 no-major 목표를 세팅한 뒤 수동 `@codex review`를 호출하는 것을 기본 gate로 둡니다.
 - 기능 task는 프론트/백엔드를 별도 소유권으로 나누지 않고 사용자 목적과 완료 경로 기준의 풀스택 단위로 봅니다.
 - 소비 API, schema, store method, route가 아직 없다는 사실은 단독 위험으로 단정하지 않고, 같은 task 안에서 백엔드 계약을 먼저 만들고 프론트가 소비하는 순서로 `goal.md`에 적습니다.
 - Dynamos 사일로에서 브라우저로 화면이나 동작을 확인해야 하면 `agent-browser`로만 확인합니다.
@@ -211,9 +223,11 @@
 ## Codex PR Review Gate Policy
 
 - 이 정책은 `main-v2` 기준 기본값입니다.
-- 일반 사일로가 source code, generated output, test, tooling 변경으로 PR을 만들 때는 PR 생성 직후 PR 댓글로 수동 `@codex review`를 호출합니다.
-- `@codex review`는 GitHub PR target/base branch가 `main-v2`인 PR에서만 호출합니다. base branch가 `main`이면 먼저 project gate와 target main을 확인하고, `project/dynamos`처럼 target main이 `main`인 PR은 이 root repo의 `main-v2` gate를 위해 retarget하지 않습니다.
-- `@codex review` 호출 댓글에는 가능하면 `한국어로 리뷰해 주세요.` 또는 이에 준하는 한국어 요청을 함께 적습니다. 외부 리뷰 봇의 고정 템플릿 언어를 보장하지는 못하지만, repo 운영 언어와 맞추기 위한 기본 요청 문구로 둡니다.
+- 0계층 공통 변경 사일로가 source code, generated output, test, tooling 변경으로 `main-v2` PR을 만들 때는 PR 생성 직후 PR 댓글로 수동 `@codex review`를 호출합니다.
+- `@codex review`는 0계층 공통 변경만 담은 `main-v2` 대상 PR에서만 호출합니다. GitHub PR target/base branch가 `main-v2`인지 확인하기 전에 먼저 변경 내용의 계층 기준 브랜치를 확인합니다.
+- 1계층 이상 project 변경은 해당 `project/<project-id>` 기준 브랜치와 project gate를 따릅니다. `project/dynamos` 또는 `project/onjump`처럼 project 계층 기준 브랜치가 따로 있는 변경을 이 root repo의 `main-v2` gate 때문에 retarget하지 않습니다.
+- `@codex review` 호출 댓글에는 가능하면 `한국어로 리뷰해 주세요.` 또는 이에 준하는 한국어 요청과 최신 head 기준 리뷰 요청만 적습니다. 외부 리뷰 봇의 고정 템플릿 언어를 보장하지는 못하지만, repo 운영 언어와 맞추기 위한 기본 요청 문구로 둡니다.
+- `Didn't find any major issues` exact pass phrase와 반복 횟수 조건은 외부 리뷰 댓글에 강제하지 않고, PR 본문, task silo의 `goal.md`, 메인 에이전트 내부 상태에서 관리합니다.
 - 현재 head push 이후에 작성된 최신 `@codex review` 호출 댓글에 `eyes` 반응이 있으면 Codex 리뷰가 접수 또는 진행 중인 상태로 봅니다. 이 상태에서만 같은 head commit에 추가 `@codex review`를 호출하지 않고, 기존 요청의 리뷰 결과를 기다립니다.
 - Codex PR 리뷰는 변경 diff, task 목표, 실행한 검증, 남은 위험, SSoT 승격 후보를 대상으로 합니다.
 - 리뷰 결과는 PR 본문에 `Codex PR 리뷰` 항목으로 기록합니다.
