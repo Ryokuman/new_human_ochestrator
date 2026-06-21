@@ -10,9 +10,9 @@
 - 같은 PR에서 현재 head push 이후에 작성된 최신 `@codex review` 호출 댓글에 `eyes` 반응이 있으면 Codex 리뷰가 접수 또는 진행 중인 상태로 봅니다. 이 상태에서만 같은 head commit에 추가 `@codex review`를 호출하지 않고, 기존 요청의 리뷰 결과를 기다립니다.
 - 재호출 전에는 PR 댓글, 리뷰 제출, 최신 head commit, 최신 head push 이후 작성된 리뷰 요청 여부를 함께 확인합니다. 최신 head에 대한 리뷰 결과가 아직 없고 현재 head 이후 호출 댓글에 `eyes`가 있으면 중복 호출이 아니라 대기 상태로 기록합니다.
 - 리뷰는 변경 diff, task 목표, 검증 결과, 남은 위험, SSoT 승격 후보를 기준으로 합니다.
-- major/critical 수준의 correctness, security, data-loss 위험 또는 보호 절차를 깨는 P1/P2 지적이 있으면 수정 후 최대 5회까지 수동 재호출합니다.
-- 5회 호출 후에도 남은 major/critical 또는 보호 절차 P1/P2 항목은 `사용자 판단 필요` 또는 `의도된 남은 위험`으로 분리합니다.
-- 사용자가 `~PR을 리뷰 대기 에이전트로 돌려주세요`, `이 PR 리뷰 대기 에이전트로 맡겨주세요`, `Sartre처럼 돌려주세요`처럼 명시하면 `review-waiter-agent`가 별도 루프로 관리합니다. 이 경우 기본 상한은 전체 리뷰 호출 10회이며, 기존 `@codex review` 호출도 횟수에 포함합니다.
+- major/critical 수준의 correctness, security, data-loss 위험 또는 보호 절차를 깨는 P1/P2 지적이 있으면 수정 후 수동 재호출합니다.
+- PR 생성 후에는 승인 리뷰 또는 actionable major/critical 및 보호 절차를 깨는 P1/P2 없음 상태가 될 때까지 수정, 검증, 재리뷰를 반복합니다. task silo의 `goal.md`가 확인되면 `/goal`을 재사용하고, 그렇지 않은 공통 문서/skill PR은 PR 본문, 리뷰 thread, 현재 사용자 요청을 재리뷰 컨텍스트로 사용합니다. 기본 반복 상한은 두지 않습니다.
+- 사용자가 `~PR을 리뷰 대기 에이전트로 돌려주세요`, `이 PR 리뷰 대기 에이전트로 맡겨주세요`, `Sartre처럼 돌려주세요`처럼 명시하면 `review-waiter-agent`가 별도 루프로 관리합니다. 사용자가 이번 PR에 명시한 상한이 있으면 그 상한만 적용합니다.
 - 도구 실행 실패 또는 생략 시 실패 원인과 대체 검토 범위를 분리합니다.
 
 ## 리뷰 라운드

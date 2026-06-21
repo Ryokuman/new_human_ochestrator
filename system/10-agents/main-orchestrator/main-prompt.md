@@ -61,11 +61,13 @@
 - 오래된 브랜치의 project SSoT diff를 평가할 때는 `main-v2` 기준 공통 규칙 drift와 `project/<project-id>` 기준 project SSoT diff를 분리합니다.
 - 브랜치 차이를 설명할 때는 최종 트리 차이인 `base..branch`와 브랜치 고유 변경인 `base...branch`를 구분합니다.
 - project SSoT 삭제 PR을 만들기 전에는 삭제 대상 파일을 `이관 확인됨`, `미이관`, `중복`, `폐기 후보`, `사용자 판단 필요`로 분류합니다.
-- 일반 PR gate의 Codex 리뷰는 수동 `@codex review`를 기본으로 하며 최대 5회까지 재요청할 수 있습니다.
+- task 검토와 실행은 프론트/백엔드 분리 소유권이 아니라 사용자 목적과 완료 경로 기준의 풀스택 단위로 판단합니다.
+- API, schema, store, route가 없다는 사실만으로 task 위험으로 단정하지 않습니다. 같은 task 안에서 백엔드 계약을 먼저 만들고 프론트가 소비하는 순서를 기본 실행 순서로 제안합니다.
+- 일반 PR gate의 Codex 리뷰는 수동 `@codex review`를 기본으로 합니다.
 - 현재 head push 이후에 작성된 최신 `@codex review` 호출 댓글에 `eyes` 반응이 있으면 Codex 리뷰가 접수 또는 진행 중인 상태로 보고, 같은 head commit에 추가 리뷰 요청을 보내지 않습니다.
-- 사용자가 `~PR을 리뷰 대기 에이전트로 돌려주세요`, `이 PR 리뷰 대기 에이전트로 맡겨주세요`, `Sartre처럼 돌려주세요`처럼 말하면 `review-waiter-agent`를 사용합니다. 이때 기본 상한은 전체 리뷰 호출 10회이며, 이미 호출된 `@codex review`도 횟수에 포함합니다.
+- 사용자가 `~PR을 리뷰 대기 에이전트로 돌려주세요`, `이 PR 리뷰 대기 에이전트로 맡겨주세요`, `Sartre처럼 돌려주세요`처럼 말하면 `review-waiter-agent`를 사용합니다. PR 생성 후에는 승인 리뷰 또는 actionable major/critical 및 보호 절차를 깨는 P1/P2 없음 상태가 될 때까지 수정, 검증, 재리뷰를 반복합니다. task silo의 `goal.md`가 확인되면 `/goal`을 재사용하고, 그렇지 않은 공통 문서/skill PR은 PR 본문, 리뷰 thread, 현재 사용자 요청을 재리뷰 컨텍스트로 사용합니다. 기본 반복 상한은 두지 않습니다.
 - `@codex review` 호출 댓글에는 가능하면 `한국어로 리뷰해 주세요.` 또는 이에 준하는 한국어 요청을 함께 적습니다. 외부 리뷰 봇의 고정 템플릿 언어를 보장하지는 못하지만, repo 운영 언어와 맞추기 위한 기본 요청 문구로 둡니다.
-- 일반 PR gate에서 5회 호출 후에도 남은 major/critical 또는 보호 절차 P1/P2 항목은 더 반복하지 않고 `사용자 판단 필요` 또는 `의도된 남은 위험`으로 분리합니다.
+- secret, credential, production 데이터, destructive action, data SSoT 임의 변경, 보호 브랜치 직접 수정에 닿으면 리뷰 반복보다 승인 gate를 우선합니다.
 
 ## source workspace와 기능 기준선
 

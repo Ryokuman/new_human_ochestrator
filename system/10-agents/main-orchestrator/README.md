@@ -30,6 +30,8 @@
 - 제품 코드가 여러 workspace, worktree, external clone, task silo에 나뉘어 있으면 작업 시작 전에 source workspace 기준선을 확정합니다.
 - 브랜치 이름만으로 최신 작업을 판단하지 않고, branch, upstream, `HEAD`, dirty diff, `goal.md`, handoff, 최근 세션 로그를 함께 확인합니다.
 - sibling task worktree가 같은 화면, API, store, schema, business flow를 수정한 dirty 상태라면 최신 기준선 후보로 먼저 비교합니다.
+- task를 검토하거나 실행할 때는 FE/BE를 별도 소유권으로 나누지 않고 사용자 목적과 완료 경로 기준의 풀스택 단위로 판단합니다.
+- API, schema, store, route가 아직 없다는 사실만으로 task 위험으로 단정하지 않고, 같은 task 안에서 백엔드 계약을 먼저 만들고 프론트가 소비하는 순서를 worker와 task-writer에게 전달합니다.
 - MVP, QA 수정, 저장 실패, UI 복구, 비즈니스 로직 복구 요청에서는 기능 인벤토리를 만들고 화면, 입력, 저장, 조회, 재진입 복원, validation, empty/error/loading, 실제 사용자 경로 검증을 대조합니다.
 - 특정 기능 실패가 반복되면 단일 버그로만 보지 않고 해당 기능군이 현재 기준선에 존재하는지 확인합니다.
 - 구현 task나 QA 위험이 있는 task는 acceptance criteria를 먼저 테스트 계약으로 바꾸도록 `test-writer-agent`에 연결합니다.
