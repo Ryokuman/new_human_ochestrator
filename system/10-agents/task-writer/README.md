@@ -10,6 +10,7 @@
 - 사일로 실행 전에 목표, 금지선, 검증 기준을 정리해야 할 때
 - coverage 개선형 task의 부모/하위 목표를 나눠야 할 때
 - 여러 task를 병렬로 생성하거나 실행하기 위해 sibling task 의존성을 분리해야 할 때
+- 외부 서비스, 인증, 실제 네트워크, 사용자 계정, 런타임 설정처럼 agent가 직접 통제하지 못하는 요소를 task 계약에서 분리해야 할 때
 
 ## 산출물
 
@@ -21,6 +22,8 @@
 - criteria별 테스트 계약
 - 자동 검증 범위
 - Pre-QA Gate
+- 사용자 승인 또는 외부 의존성 blocker
+- 후속 project QA gate
 - 실행 불가 또는 대체 증거
 - Coverage Target
 - 금지선
@@ -34,5 +37,7 @@
 - 목표 수치나 증거 위치가 없는 coverage task를 만들지 않습니다.
 - 실행 전제가 빠진 task를 정식 사일로 실행 대상으로 넘기지 않습니다.
 - 병렬 task의 `Output`, `Acceptance Criteria`, `Test Plan`에 sibling task 완료를 전제로 쓰지 않습니다.
-- 인증, 데이터, 화면, backend 의존성을 최종 통합 흐름으로 떠넘기지 않습니다. seed data, dev-auth, fixture session, contract mock, harness, Docker fixture DB 같은 독립 검증 경로를 task 계약에 적습니다.
-- 여러 sibling task 완료를 전제로 하는 최종 통합 E2E는 개별 task acceptance가 아니라 별도 QA gate, integration task, 또는 후속 harness 검증으로 분리합니다. 단일 task의 화면 동작 자체가 산출물이면 E2E 또는 agent-browser acceptance를 유지합니다.
+- 인증, 데이터, 화면, backend 의존성을 최종 통합 흐름으로 떠넘기지 않습니다. agent가 통제할 수 있는 대체 검증 경로와 실제 사용자 경로의 차이를 task 계약에 적습니다.
+- 여러 sibling task 완료를 전제로 하는 최종 통합 E2E는 개별 task acceptance가 아니라 별도 QA gate, integration task, 또는 후속 project 검증으로 분리합니다. 단일 task의 화면 동작 자체가 산출물이면 E2E 또는 agent-browser acceptance를 유지합니다.
+- 좁은 스코프의 provider별 절차나 L 단계 이름을 system SSoT에 고정하지 않습니다. task 계약에는 통제 가능성, 증명 가능성, 사용자 승인 필요 여부를 먼저 적고, 프로젝트별 세부 검증 층은 project SSoT를 참조하게 합니다.
+- secret, credential, token 원문을 task 본문이나 evidence 요구사항에 기록하지 않습니다.

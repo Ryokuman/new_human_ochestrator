@@ -63,6 +63,7 @@
 - project SSoT 삭제 PR을 만들기 전에는 삭제 대상 파일을 `이관 확인됨`, `미이관`, `중복`, `폐기 후보`, `사용자 판단 필요`로 분류합니다.
 - task 검토와 실행은 프론트/백엔드 분리 소유권이 아니라 사용자 목적과 완료 경로 기준의 풀스택 단위로 판단합니다.
 - API, schema, store, route가 없다는 사실만으로 task 위험으로 단정하지 않습니다. 같은 task 안에서 백엔드 계약을 먼저 만들고 프론트가 소비하는 순서를 기본 실행 순서로 제안합니다.
+- 외부 서비스, 인증, 실제 네트워크, 사용자 계정, 런타임 설정처럼 agent가 직접 통제하지 못하는 요소가 task completion에 끼어들면, system SSoT에는 통제 가능성, 증명 가능성, 사용자 승인 필요 여부를 분리하는 판단 근거만 남깁니다. 구체적인 L 단계, provider별 체크리스트, fixture/harness 구현 방식, merge 전 세부 QA gate는 project SSoT 또는 task 계약으로 라우팅합니다.
 - 일반 PR gate의 Codex 리뷰는 수동 `@codex review`를 기본으로 합니다.
 - 현재 head push 이후에 작성된 최신 `@codex review` 호출 댓글에 `eyes` 반응이 있으면 Codex 리뷰가 접수 또는 진행 중인 상태로 보고, 같은 head commit에 추가 리뷰 요청을 보내지 않습니다.
 - 사용자가 `~PR을 리뷰 대기 에이전트로 돌려주세요`, `이 PR 리뷰 대기 에이전트로 맡겨주세요`, `Sartre처럼 돌려주세요`처럼 말하면 `review-waiter-agent`를 사용합니다. 사용자가 이번 PR에 명시한 반복 한도가 있을 때만 그 한도를 따릅니다.
@@ -93,7 +94,8 @@ MVP, QA 수정, 저장 실패, UI 복구, 비즈니스 로직 복구 요청에�
 - 페이지별 예외는 이름 있는 확장 지점으로 받도록 요구합니다.
 - 테스트 task에서는 업무 조건 이름, 차단/통과 조건, 경계값, UI 연결 검증, 데이터 의존성 처리 기준을 test-writer와 QA에게 전달합니다.
 - 구현 task나 QA 위험이 있는 task에서는 acceptance criteria를 먼저 테스트 계약으로 바꾸고, criteria별로 `unit`, `integration`, `runner`, `E2E`, `agent-browser`, `manual` 중 무엇으로 확인할지 test-writer에게 연결합니다.
-- mock, fixture, dev login, local seed 같은 통제된 경로의 통과와 실제 사용자 설치/로그인/네트워크 경로 통과를 구분해서 보고하도록 worker, test-writer, QA에게 전달합니다.
+- agent가 통제한 대체 검증 경로의 통과와 실제 사용자 설치/로그인/네트워크 경로 통과를 구분해서 보고하도록 worker, test-writer, QA에게 전달합니다.
+- 외부 통제 요소가 있는 작업은 test-writer와 QA에게 통제 가능성, 증명 가능성, 사용자 승인 필요 여부를 먼저 분리하게 합니다. 세부 테스트 층과 provider별 checklist는 project SSoT 또는 task 계약에서 정의하게 하고, secret/credential 값은 읽거나 기록하지 않게 합니다.
 - 사용자 화면, 설치, 서버 실행, 앱 다운로드 가능 상태가 걸린 작업은 인간 QA 전에 `Pre-QA Gate`와 사용자가 따라 할 QA 리스트를 준비합니다.
 - reviewer에게는 반복 복사, 하드코딩 예외, boolean flag 증가, 조건문 분산, 경계값 누락, E2E/unit 선택 오류를 우선 검토하도록 전달합니다.
 

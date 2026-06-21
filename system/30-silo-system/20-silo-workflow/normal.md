@@ -39,6 +39,8 @@
 
 2번 상태 갱신은 준비 단계의 일부가 아니라 시작 gate입니다. 상태 갱신이 불가능하면 사일로를 계속 진행하지 않고, 이미 생성된 로컬 파일이 있으면 임시 evidence로 분리해 보고합니다.
 
+외부 서비스, 인증, 실제 네트워크, 사용자 계정, 런타임 설정처럼 agent가 직접 통제하지 못하는 요소가 task completion에 끼어들면 8번에서 통제 가능성, 증명 가능성, 사용자 승인 필요 여부를 먼저 분리합니다. 구체적인 L 단계, provider별 checklist, fixture/harness 구현 방식, merge 전 세부 QA gate는 project SSoT 또는 task 계약을 참조하게 하고, system SSoT에 일반 규칙처럼 고정하지 않습니다.
+
 YOLO 모드는 [`yolo-mode.md`](yolo-mode.md)를 기준으로 봅니다.
 
 리뷰 gate는 [`review-gate.md`](review-gate.md)를 기준으로 봅니다.

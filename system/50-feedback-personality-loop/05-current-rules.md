@@ -25,7 +25,8 @@
 19. 기능 task는 프론트/백엔드 분리 소유권이 아니라 사용자 목적과 완료 경로 기준의 풀스택 단위로 검토하고 실행합니다.
 20. 소비 API, schema, store method, route 부재는 단독 task 위험으로 단정하지 않고, 같은 task 안에서 백엔드 계약을 먼저 만들고 프론트가 소비하는 순서를 기본 실행안으로 둡니다.
 21. PR 생성 후에는 승인 리뷰 또는 actionable major/critical 및 보호 절차를 깨는 P1/P2 없음 상태가 될 때까지 수정, 검증, 재리뷰를 반복합니다. task silo의 `goal.md`가 확인되면 `/goal`을 재사용하고, 그렇지 않은 공통 문서/skill PR은 PR 본문, 리뷰 thread, 현재 사용자 요청을 재리뷰 컨텍스트로 사용합니다. 기본 반복 상한은 두지 않습니다.
-22. 병렬로 생성하거나 실행할 task는 sibling task 완료를 `Output`, `Acceptance Criteria`, `Test Plan`의 전제로 삼지 않습니다. 개별 task output은 그 task가 독립적으로 증명할 수 있는 산출물로 제한하고, 인증/데이터/화면/backend 의존성이 있으면 seed data, dev-auth, fixture session, contract mock, harness, Docker fixture DB 같은 독립 검증 경로를 task 계약에 명시합니다. 여러 sibling task 완료를 전제로 하는 최종 통합 E2E는 개별 task acceptance가 아니라 별도 QA gate, integration task, 또는 후속 harness 검증으로 분리합니다. 단일 task의 화면 동작 자체가 산출물이면 E2E 또는 agent-browser acceptance를 유지합니다.
+22. 병렬로 생성하거나 실행할 task는 sibling task 완료를 `Output`, `Acceptance Criteria`, `Test Plan`의 전제로 삼지 않습니다. 개별 task output은 그 task가 독립적으로 증명할 수 있는 산출물로 제한하고, 인증/데이터/화면/backend 의존성이 있으면 agent가 통제할 수 있는 대체 검증 경로와 실제 사용자 경로의 차이를 task 계약에 명시합니다. 여러 sibling task 완료를 전제로 하는 최종 통합 E2E는 개별 task acceptance가 아니라 별도 QA gate, integration task, 또는 후속 project 검증으로 분리합니다. 단일 task의 화면 동작 자체가 산출물이면 E2E 또는 agent-browser acceptance를 유지합니다.
+23. system SSoT는 상황별 행동 처방을 누적하는 곳이 아니라, agent가 판단할 근거와 계층 분류 기준을 모아두는 프롬프트/스킬 하네스입니다. 외부 서비스, 인증, 실제 네트워크, 사용자 계정, 런타임 설정처럼 agent가 직접 통제하지 못하는 요소가 completion에 끼어들면 system에는 통제 가능성, 증명 가능성, 사용자 승인 필요 여부를 분리하는 판단 근거만 둡니다. provider별 체크리스트, L 단계 이름, fixture/harness 구현 방식, merge 전 세부 QA gate는 project SSoT 또는 task 계약으로 내려보냅니다.
 
 ## 현재 강한 후보 규칙
 

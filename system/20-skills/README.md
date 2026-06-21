@@ -29,7 +29,7 @@
 - [`command-intent-preflight`](command-intent-preflight/SKILL.md): lifecycle, run, E2E, 다건 테스트 사일로 실행 전에 실행 전제가 완성됐는지 확인해야 할 때 사용합니다.
 - [`page-lifecycle-runtime-flow`](page-lifecycle-runtime-flow/SKILL.md): page-lifecycle L 채점을 위해 단일 page를 생성하고 dynavite와 agent-browser로 확인해야 할 때 사용합니다.
 - [`add-dict`](add-dict/SKILL.md): 용어 추가, dict 정리, PR 본문 용어 점검, dictionary 변경이 필요할 때 사용합니다.
-- [`user-personality-adaptive-response`](user-personality-adaptive-response/SKILL.md): 사용자가 선택지, 보고 방식, 승인 경계, skill 사용 누락, 현재 워크트리 누락, 톤이 맞지 않는다고 지적할 때 사용합니다. 외부 skill 목록에 보이지 않아도 repo-local `system/20-skills/`에 같은 skill이 있는지 확인합니다. 응답 계약에 영향을 주는 사건은 로컬 evidence로 반드시 남기고, 최종 응답 직전에는 `사용한 스킬`, `현재 워크트리`, `다음 행동`, `보기 밖 선택/evidence` 계약을 체크합니다. 장기 규칙 반영은 사용자가 원하는 주기로 여는 검토 세션에서 판단합니다.
+- [`user-personality-adaptive-response`](user-personality-adaptive-response/SKILL.md): 사용자가 선택지, 보고 방식, 승인 경계, skill 사용 누락, 현재 워크트리 누락, 톤이 맞지 않는다고 지적할 때 사용합니다. 외부 skill 목록에 보이지 않아도 repo-local `system/20-skills/`에 같은 skill이 있는지 확인합니다. 응답 계약에 영향을 주는 사건은 로컬 evidence로 반드시 남기고, 최종 응답 직전에는 `사용한 스킬`, `현재 워크트리`, `다음 행동`, `보기 밖 선택/evidence` 계약을 체크합니다. 사용자가 좁은 스코프의 처방과 판단 근거의 위치를 지적하면 system SSoT에는 판단 근거만 남기고 구체 대처는 project SSoT 또는 task 계약으로 내려보내는 evidence로 분리합니다. 장기 규칙 반영은 사용자가 원하는 주기로 여는 검토 세션에서 판단합니다.
 
 ## main-v2 운영
 
@@ -45,7 +45,7 @@
 
 `project-overview.md`는 프로젝트 설명과 운영 경계를 담고, 실제 issue/task 확인은 `work-filter.md` 또는 `work-views.md`에서 시작합니다. 생성되는 issue/task 템플릿은 대시보드 필터가 읽을 수 있도록 `type`, `id`, `taskID`/`taskTitle` 또는 `issueID`/`issueTitle`, `status`, `priority` 또는 `severity`, `updated` frontmatter를 포함합니다.
 
-생성되는 task 템플릿은 병렬 task 독립성 계약을 포함합니다. 병렬 task는 sibling task 완료를 Output, Acceptance Criteria, Test Plan의 전제로 삼지 않고, 개별 output은 해당 task가 독립적으로 증명할 수 있는 산출물로 제한합니다. 인증/데이터/화면/backend 의존성은 seed data, dev-auth, fixture session, contract mock, harness, Docker fixture DB 같은 독립 검증 경로로 적고, 여러 sibling task 완료를 전제로 하는 최종 통합 E2E는 별도 QA gate, integration task, 또는 후속 harness 검증으로 분리합니다. 단일 task의 화면 동작 자체가 산출물이면 E2E 또는 agent-browser acceptance를 유지합니다.
+생성되는 task 템플릿은 병렬 task 독립성 계약을 포함합니다. 병렬 task는 sibling task 완료를 Output, Acceptance Criteria, Test Plan의 전제로 삼지 않고, 개별 output은 해당 task가 독립적으로 증명할 수 있는 산출물로 제한합니다. 인증/데이터/화면/backend 의존성은 agent가 통제할 수 있는 대체 검증 경로와 실제 사용자 경로의 차이를 적고, 여러 sibling task 완료를 전제로 하는 최종 통합 E2E는 별도 QA gate, integration task, 또는 후속 project 검증으로 분리합니다. 단일 task의 화면 동작 자체가 산출물이면 E2E 또는 agent-browser acceptance를 유지합니다.
 
 `work-filter.md`는 frontmatter의 `dashboardScope.paths`를 기준으로 수집 경로를 정합니다. 기본값은 `20-issues/`, `30-tasks/`이고, 같은 프로젝트 안에서 BE, FE, ops 대시보드를 나누려면 템플릿을 복제해 `dashboardTitle`과 `dashboardScope.paths`만 바꿉니다. 대시보드는 ID와 제목을 별도 컬럼으로 보여주며, 기존 `id`/`title` 문서도 호환합니다.
 

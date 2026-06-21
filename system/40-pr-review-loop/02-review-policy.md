@@ -46,7 +46,7 @@
 - 검증 결과가 acceptance criteria를 덮는지
 - criteria별 검증 방법이 unit, integration, runner, E2E, agent-browser, manual 중 무엇인지 명시됐는지
 - 자동 검증이 보장하는 것과 보장하지 못하는 것이 분리됐는지
-- mock, fixture, dev login, local seed 통과를 실제 사용자 설치/로그인/네트워크 경로 통과로 보고하지 않았는지
+- agent가 통제한 대체 검증 경로 통과를 실제 사용자 설치/로그인/네트워크 경로 통과로 보고하지 않았는지
 - 사용자 화면, 설치, 서버 실행, 앱 다운로드 가능 상태가 acceptance에 포함될 때 `Pre-QA Gate`와 사용자 QA 리스트가 있는지
 - 실행 불가한 runner, E2E, agent-browser, 외부 도구가 있으면 실행 불가 사유, 대체 증거, 남은 수동 확인 범위가 기록됐는지
 - 화면 동작 변경에 E2E 또는 agent-browser 증거가 있는지

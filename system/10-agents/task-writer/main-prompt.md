@@ -24,11 +24,13 @@
 6. 자동 검증이 보장하는 것과 보장하지 못하는 것을 분리합니다.
 7. 기능 task는 프론트/백엔드 분리 task가 아니라 사용자 목적과 완료 경로 기준의 풀스택 task로 작성합니다.
 8. API, schema, store, route가 아직 없으면 위험으로 단정하지 않고, 같은 task 안에서 백엔드 계약을 먼저 만들고 프론트가 소비하는 실행 순서를 적습니다.
-9. 사용자 화면, 설치, 서버 실행, 앱 다운로드 가능 상태가 acceptance에 포함되면 `Pre-QA Gate`와 사용자 QA 리스트를 적습니다.
-10. runner, E2E, agent-browser, 외부 도구를 실행할 수 없을 가능성이 있으면 실행 불가 사유, 대체 증거, 남은 수동 확인 범위를 적습니다.
-11. 사일로 실행이 필요하면 사일로 유형, 금지선, runtime set, branch 정책을 적습니다.
-12. coverage 개선형 task는 초기 수치, 목표 수치, 기준 report, 남은 가설을 적습니다.
-13. 실행 전제가 빠진 항목은 누락 정의로 분리합니다.
+9. 외부 서비스, 인증, 실제 네트워크, 사용자 계정, 런타임 설정처럼 agent가 직접 통제하지 못하는 요소가 completion에 끼어들면 통제 가능성, 증명 가능성, 사용자 승인 필요 여부를 분리합니다.
+10. provider별 체크리스트, L 단계 이름, fixture/harness 구현 방식, merge 전 세부 QA gate는 system SSoT에 고정하지 않고 project SSoT 또는 task 계약에서 참조할 위치로 둡니다.
+11. 사용자 화면, 설치, 서버 실행, 앱 다운로드 가능 상태가 acceptance에 포함되면 `Pre-QA Gate`와 사용자 QA 리스트를 적습니다.
+12. runner, E2E, agent-browser, 외부 도구를 실행할 수 없을 가능성이 있으면 실행 불가 사유, 대체 증거, 남은 수동 확인 범위를 적습니다.
+13. 사일로 실행이 필요하면 사일로 유형, 금지선, runtime set, branch 정책을 적습니다.
+14. coverage 개선형 task는 초기 수치, 목표 수치, 기준 report, 남은 가설을 적습니다.
+15. 실행 전제가 빠진 항목은 누락 정의로 분리합니다.
 
 ## task 필수 구조
 
@@ -42,6 +44,8 @@
 - criteria별 테스트 계약
 - 자동 검증 범위
 - Pre-QA Gate
+- 사용자 승인 또는 외부 의존성 blocker
+- 후속 project QA gate
 - 실행 불가 또는 대체 증거
 - Coverage Target 또는 Evidence Target
 - 금지선
@@ -56,14 +60,15 @@
 - 반복 제거가 목표라면 어떤 반복 흐름을 어디까지 중앙화할지 명시합니다.
 - 사용자 목적을 달성하려면 백엔드 계약과 프론트 소비가 함께 필요하다는 점을 task 안에 포함합니다.
 - 소비 API 부재, schema 부재, store method 부재는 별도 blocker로만 쓰지 않고, 백엔드 개발 -> 프론트 개발 -> 통합 검증 순서의 acceptance 또는 test contract로 풀어 씁니다.
+- 외부 통제 요소가 있는 task는 완료 판단 근거를 먼저 둡니다. agent가 통제 가능한 검증과 사용자 승인 또는 외부 실행이 필요한 검증을 분리하기 위해서이며, project별 세부 체크리스트는 project SSoT 또는 task 계약을 참조합니다.
 - 공통 흐름과 화면/페이지 고유 예외를 acceptance criteria에서 분리합니다.
 - 예외 처리가 필요하면 이름 있는 확장 지점이 산출물에 포함되는지 적습니다.
 - 테스트 계약에는 업무 조건 이름, 실패 조건, 정상 조건, 경계값, UI 연결 검증 필요 여부를 포함합니다.
 - E2E가 필요한 경우 브라우저에서만 증명되는 이유를 적습니다.
-- 데이터 의존성이 있으면 필요한 fixture, route mock, skip 가능 조건을 task에 포함합니다.
+- 데이터 의존성이 있으면 agent가 통제할 수 있는 대체 검증 경로, project SSoT 참조 위치, skip 가능 조건을 task에 포함합니다.
 - 병렬 task의 output은 해당 task가 독립적으로 증명할 수 있는 산출물로 제한합니다.
-- 인증, 데이터, 화면, backend 의존성이 있으면 seed data, dev-auth, fixture session, contract mock, harness, Docker fixture DB 같은 독립 검증 경로를 task에 포함합니다.
-- 여러 sibling task 완료를 전제로 하는 최종 통합 E2E는 개별 task acceptance에 넣지 않고 별도 QA gate, integration task, 또는 후속 harness 검증으로 분리합니다. 단일 task의 화면 동작 자체가 산출물이면 E2E 또는 agent-browser acceptance를 유지합니다.
+- 인증, 데이터, 화면, backend 의존성이 있으면 agent가 통제할 수 있는 대체 검증 경로와 실제 사용자 경로의 차이를 task에 포함합니다.
+- 여러 sibling task 완료를 전제로 하는 최종 통합 E2E는 개별 task acceptance에 넣지 않고 별도 QA gate, integration task, 또는 후속 project 검증으로 분리합니다. 단일 task의 화면 동작 자체가 산출물이면 E2E 또는 agent-browser acceptance를 유지합니다.
 
 ## 산출물
 
@@ -74,6 +79,8 @@
 - criteria별 테스트 계약
 - 자동 검증 범위
 - Pre-QA Gate
+- 사용자 승인 또는 외부 의존성 blocker
+- 후속 project QA gate
 - 실행 불가 또는 대체 증거
 - 금지선
 - 필요한 runtime/run set
@@ -91,6 +98,8 @@ Task 초안
 - Criteria별 테스트 계약: ...
 - 자동 검증 범위: ...
 - Pre-QA Gate: ...
+- 사용자 승인 또는 외부 의존성 blocker: ...
+- 후속 project QA gate: ...
 - 실행 불가 또는 대체 증거: ...
 
 가정
@@ -106,3 +115,4 @@ Task 초안
 - 실행 전제가 빠진 task를 정식 사일로 실행 대상으로 넘기지 않습니다.
 - 프로젝트 내부 원문을 0계층 문서에 복사하지 않습니다.
 - 병렬 sibling task의 완료를 현재 task의 완료 조건으로 쓰지 않습니다.
+- secret, credential, token 원문을 task 본문이나 evidence 요구사항에 기록하지 않습니다.

@@ -280,7 +280,9 @@
 - `Output`은 완료 후 사용자, 시스템, 운영자가 확인할 수 있는 결과입니다.
 - `Acceptance Criteria`는 완료로 인정할 검수 기준이며, 각 기준은 `unit`, `integration`, `runner`, `E2E`, `agent-browser`, `manual` 중 하나 이상의 검증 방법과 연결합니다.
 - 구현 task는 작업 전에 각 criteria를 테스트 계약으로 바꾸고, 자동 검증이 보장하는 것과 보장하지 못하는 것을 분리합니다.
-- mock, fixture, dev login, local seed처럼 통제된 경로의 통과를 실제 사용자 설치/로그인/네트워크 경로 통과로 보고하지 않습니다.
+- agent가 통제한 대체 검증 경로의 통과를 실제 사용자 설치/로그인/네트워크 경로 통과로 보고하지 않습니다.
+- 외부 서비스, 인증, 실제 네트워크, 사용자 계정, 런타임 설정처럼 agent가 직접 통제하지 못하는 요소가 completion에 끼어들면, 먼저 통제 가능성, 증명 가능성, 사용자 승인 필요 여부를 분리합니다.
+- 이 분리의 구체적인 L 단계, provider별 체크리스트, fixture/harness 구현 방식은 project SSoT 또는 task 계약에 둡니다. 0계층 system SSoT에는 어떤 기준으로 project SSoT로 내려보낼지와 완료 보고에서 어떤 증거를 섞지 말아야 하는지만 둡니다.
 - 사용자 화면, 설치, 서버 실행, 앱 다운로드 가능 상태가 acceptance에 포함되면 인간 QA 전 `Pre-QA Gate`와 사용자가 따라 할 QA 리스트를 함께 둡니다.
 - runner, E2E, agent-browser, 외부 도구를 실행할 수 없으면 실행 불가 사유, 대체 증거, 남은 수동 확인 범위를 완료 보고와 PR 본문에 남깁니다.
 - 화면 동작이 바뀌는 task는 E2E 또는 `agent-browser` 증거를 우선합니다.

@@ -97,7 +97,7 @@ projects/<project-id>/
 
 `id`와 `title`은 기존 문서 호환 필드이고, 새 문서는 `issueID`/`issueTitle`, `taskID`/`taskTitle`을 우선 사용합니다. 파일명이나 H1에 식별자를 합치지 않고, 대시보드는 ID와 제목을 별도 컬럼으로 보여줍니다.
 
-생성되는 task 템플릿은 병렬 task 독립성 계약을 포함해야 합니다. 병렬로 생성하거나 실행할 task는 sibling task 완료를 Output, Acceptance Criteria, Test Plan의 전제로 두지 않고, 인증/데이터/화면/backend 의존성이 있으면 seed data, dev-auth, fixture session, contract mock, harness, Docker fixture DB 같은 독립 검증 경로를 적습니다. 여러 sibling task 완료를 전제로 하는 최종 통합 E2E는 개별 task acceptance가 아니라 별도 QA gate, integration task, 또는 후속 harness 검증으로 분리합니다. 단일 task의 화면 동작 자체가 산출물이면 E2E 또는 agent-browser acceptance를 유지합니다.
+생성되는 task 템플릿은 병렬 task 독립성 계약을 포함해야 합니다. 병렬로 생성하거나 실행할 task는 sibling task 완료를 Output, Acceptance Criteria, Test Plan의 전제로 두지 않고, 인증/데이터/화면/backend 의존성이 있으면 agent가 통제할 수 있는 대체 검증 경로와 실제 사용자 경로의 차이를 적습니다. 여러 sibling task 완료를 전제로 하는 최종 통합 E2E는 개별 task acceptance가 아니라 별도 QA gate, integration task, 또는 후속 project 검증으로 분리합니다. 단일 task의 화면 동작 자체가 산출물이면 E2E 또는 agent-browser acceptance를 유지합니다.
 
 DataviewJS 대시보드를 쓰려면 Obsidian community plugin `dataview`를 설치하고 DataviewJS 실행을 허용해야 합니다. scaffold는 `.obsidian/community-plugins.json`에 `dataview`를 선언하고, Base 대체 뷰를 위해 `work-items.base`를 함께 생성합니다.
 

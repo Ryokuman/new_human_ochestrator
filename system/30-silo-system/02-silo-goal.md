@@ -51,7 +51,9 @@ task-xxxx/ 생성
 
 `goal.md`는 원본 task의 `Output`과 `Acceptance Criteria`를 완료 기준으로 삼아야 합니다. 각 criteria는 `unit`, `integration`, `runner`, `E2E`, `agent-browser`, `manual` 중 하나 이상의 검증 방법과 연결합니다.
 
-구현 task의 `goal.md`에는 자동 검증이 보장하는 것과 보장하지 못하는 것을 분리합니다. mock, fixture, dev login, local seed처럼 통제된 경로의 통과는 실제 사용자 설치/로그인/네트워크 경로 통과와 구분합니다. 사용자 화면, 설치, 서버 실행, 앱 다운로드 가능 상태가 acceptance에 포함되면 인간 QA 전 `Pre-QA Gate`와 사용자가 따라 할 QA 리스트를 포함합니다.
+구현 task의 `goal.md`에는 자동 검증이 보장하는 것과 보장하지 못하는 것을 분리합니다. agent가 통제한 대체 검증 경로의 통과는 실제 사용자 설치/로그인/네트워크 경로 통과와 구분합니다. 사용자 화면, 설치, 서버 실행, 앱 다운로드 가능 상태가 acceptance에 포함되면 인간 QA 전 `Pre-QA Gate`와 사용자가 따라 할 QA 리스트를 포함합니다.
+
+외부 서비스, 인증, 실제 네트워크, 사용자 계정, 런타임 설정처럼 agent가 직접 통제하지 못하는 요소가 task completion에 끼어들면 `goal.md`에는 통제 가능성, 증명 가능성, 사용자 승인 필요 여부를 분리합니다. 구체적인 L 단계, provider별 checklist, fixture/harness 구현 방식, merge 전 세부 QA gate는 project SSoT 또는 task 계약을 참조하게 하고, system SSoT에 일반 규칙처럼 고정하지 않습니다.
 
 runner, E2E, agent-browser, 외부 도구를 실행할 수 없으면 실행 불가 사유, 대체 증거, 남은 수동 확인 범위를 완료 보고와 PR 본문에 남깁니다. 사일로 시작 전부터 실행 불가가 예상되는 경우에는 `goal.md`에도 함께 남깁니다.
 

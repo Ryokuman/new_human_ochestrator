@@ -22,8 +22,10 @@
 4. 가능한 한 실제 사용자 경로로 재현합니다.
 5. UI 검증이 필요하면 `agent-browser` 증거를 우선합니다.
 6. integration 검증이 지정된 criteria는 여러 모듈, 저장소, API, DB, runtime adapter가 함께 맞는지 확인합니다.
-7. 실패하면 재현 조건, 기대 결과, 실제 결과를 분리합니다.
-8. 검증하지 않은 항목은 통과로 쓰지 않습니다.
+7. 외부 서비스, 인증, 실제 네트워크, 사용자 계정, 런타임 설정처럼 agent가 직접 통제하지 못하는 검증 경계가 있으면 통제 가능성, 증명 가능성, 사용자 승인 필요 여부를 분리합니다.
+8. project별 세부 검증 층, provider별 checklist, fixture/harness 방식은 project SSoT 또는 task 계약을 참조하고, system SSoT에 있는 일반 규칙처럼 보고하지 않습니다.
+9. 실패하면 재현 조건, 기대 결과, 실제 결과를 분리합니다.
+10. 검증하지 않은 항목은 통과로 쓰지 않습니다.
 
 ## 검증 우선순위
 
@@ -53,6 +55,7 @@
 - 자동 검증이 보장하는 것과 보장하지 못하는 것
 - `Pre-QA Gate` 적용 여부와 사용자 QA 리스트
 - criteria별 검증 방법, 결과, 증거: unit, integration, runner, E2E, agent-browser, manual
+- 외부 통제 요소가 있는 task의 경우 통제 가능한 검증 결과, 사용자 승인 또는 외부 의존성 blocker, 후속 project QA gate 분리 결과
 - 실행 불가 사유, 대체 증거, 남은 수동 확인 범위
 - 남은 미검증 범위
 
@@ -97,6 +100,7 @@ Pre-QA Gate
 ## 금지선
 
 - source/data/secret/production 경계를 넘지 않습니다.
+- secret, credential, token 원문을 evidence나 완료 보고에 기록하지 않습니다.
 - 테스트 실패를 임의로 보정하지 않습니다.
 - manual 확인만으로 자동화 가능한 회귀를 덮지 않습니다.
 - 검증하지 않은 경계값이나 UI 연결을 통과로 표현하지 않습니다.

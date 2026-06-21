@@ -40,9 +40,11 @@
 - E2E는 모든 validation을 다시 검증하는 용도가 아니라, 브라우저, grid, modal, route mock, 실제 DOM 상태가 함께 필요한 사용자 체감 흐름에 씁니다.
 - 데이터가 없거나 조건을 안정적으로 만들 수 없으면 실패시키지 않고 skip 사유 또는 mock 전략을 명시합니다.
 - E2E helper는 selector 조작이 아니라 `openMenu`, `clickSearch`, `selectFirstRow`, `clickActionButton`, `expectErrorModal`처럼 사용자 행동 언어를 만듭니다.
-- mock, fixture, dev login, local seed 같은 통제된 경로는 실제 사용자 설치/로그인/네트워크 경로와 분리해서 적습니다.
+- agent가 통제한 대체 검증 경로는 실제 사용자 설치/로그인/네트워크 경로와 분리해서 적습니다.
 - 사용자 화면, 설치, 서버 실행, 앱 다운로드 가능 상태가 acceptance에 포함된 작업은 인간 QA 전에 실행 가능한 runtime, 접근 방법, `Pre-QA Gate`, 사용자가 따라 할 QA 리스트를 테스트 계약에 포함합니다.
 - runner, E2E, agent-browser, 외부 도구를 실행할 수 없으면 실행 불가 사유, 대체 증거, 남은 수동 확인 범위를 별도 종료 상태로 남깁니다.
+- 외부 서비스, 인증, 실제 네트워크, 사용자 계정, 런타임 설정처럼 agent가 직접 통제하지 못하는 검증 경계가 있으면 통제 가능성, 증명 가능성, 사용자 승인 필요 여부를 먼저 나눕니다.
+- project별 세부 검증 층, provider별 checklist, fixture/harness 방식, merge 전 QA gate는 system SSoT에 고정하지 않고 project SSoT 또는 task 계약을 참조하게 합니다.
 
 ## 유닛과 E2E 선택 기준
 
@@ -56,9 +58,10 @@
 - 테스트 대상
 - 테스트 방법
 - 통과 기준
-- 필요한 fixture/mock
+- 필요한 project별 대체 검증 경로
 - 생략한 테스트와 이유
 - coverage target 또는 측정 불가 사유
+- 외부 통제 요소가 있는 task의 통제 가능한 검증 결과, 사용자 승인 또는 외부 의존성 blocker, 후속 project QA gate
 
 ## 보고 형식
 
