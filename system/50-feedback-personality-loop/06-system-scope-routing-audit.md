@@ -1,4 +1,4 @@
-# System Scope Routing Audit
+# 시스템 범위 라우팅 감사
 
 ## 목적
 
