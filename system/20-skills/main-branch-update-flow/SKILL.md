@@ -57,10 +57,10 @@ description: main-v2 업데이트 절차 문서입니다. 이 프로젝트에서
 13. PR 생성 직전 `main-v2-pr-scope-gate`를 다시 실행합니다.
 14. 한국어 제목/본문으로 PR을 만듭니다.
 15. GitHub PR target/base branch가 `main-v2`인지 확인합니다.
-16. [`codex-pr-review-loop`](../codex-pr-review-loop/SKILL.md)를 사용해 no-major 목표를 세팅하고, PR 댓글로 수동 `@codex review`를 호출합니다. 가능하면 `한국어로 리뷰해 주세요.` 또는 이에 준하는 한국어 요청을 함께 적습니다. 외부 리뷰 봇의 고정 템플릿 언어까지 보장하지는 못합니다.
-17. 현재 head push 이후에 작성된 최신 `@codex review` 호출 댓글에 `eyes` 반응이 있으면 Codex 리뷰가 접수 또는 진행 중인 상태로 보고, 같은 head commit에 추가 리뷰 요청을 호출하지 않습니다.
+16. [`codex-pr-review-loop`](../codex-pr-review-loop/SKILL.md)를 사용해 no-major 목표를 세팅하고, PR 댓글로 수동 `@codex review`를 호출합니다. 가능하면 `한국어로 리뷰해 주세요.` 또는 이에 준하는 한국어 요청과 최신 head 기준 리뷰 요청만 적습니다. 외부 리뷰 봇의 고정 템플릿 언어까지 보장하지는 못합니다.
+17. 현재 head push 이후에 작성된 최신 `@codex review` 호출 댓글에 `eyes` 반응이 있으면 Codex 리뷰가 접수 또는 진행 중인 상태로 보고, 같은 head commit에 추가 리뷰 요청을 호출하지 않습니다. 최신 리뷰 요청 뒤 15분 동안 응답이 없으면 timeout으로 중단하고 보고합니다.
 18. Codex 리뷰 결과와 호출 횟수를 PR 본문에 기록합니다.
-19. 최신 head에 대한 `Didn't find any major issues` 명시 응답이 아니라 major/critical 지적 또는 P1/P2처럼 보호 절차를 깨는 지적이 있으면, `codex-pr-review-loop` 기준으로 수정, 검증, 수동 재호출을 반복합니다. 기본 중단 기준은 호출 횟수가 아니라 리뷰 결과입니다. 재호출 전 현재 head push 이후에 작성된 최신 호출 댓글에 `eyes` 반응이 있으면 중복 호출하지 않고 기존 요청의 결과를 기다립니다. 반복 이후에도 남은 major/critical 또는 보호 절차 P1/P2 항목은 횟수 기준으로 중단하지 않고, 실제 blocker 여부와 사용자 승인 gate 필요 여부를 분리합니다.
+19. 최신 head에 대한 `Didn't find any major issues` 또는 동등한 no-major 명시 응답이 아니라 major/critical 지적 또는 P1/P2처럼 보호 절차를 깨는 지적이 있으면, `codex-pr-review-loop` 기준으로 수정, 검증, 수동 재호출을 반복합니다. 기본 중단 기준은 호출 횟수가 아니라 리뷰 결과입니다. 재호출 전 현재 head push 이후에 작성된 최신 호출 댓글에 `eyes` 반응이 있으면 중복 호출하지 않고 15분 한도 안에서 기존 요청의 결과를 기다립니다. 반복 이후에도 남은 major/critical 또는 보호 절차 P1/P2 항목은 횟수 기준으로 중단하지 않고, 실제 blocker 여부와 사용자 승인 gate 필요 여부를 분리합니다.
 20. PR URL, 상태, mergeable 여부, Codex 리뷰 gate 상태를 확인해 보고합니다.
 21. 사용자의 명시 머지 승인이 있으면 PR을 머지합니다.
 22. 머지했다면 `state`, `mergedAt`, `mergeCommit`을 재조회해 보고합니다.

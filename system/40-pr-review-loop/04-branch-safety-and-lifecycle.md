@@ -8,7 +8,7 @@
 - `main`, `main-v2`, `dev`, `develop`, `master` 같은 보호 브랜치에서 직접 작업하지 않았음
 - 새 작업 브랜치에서 수정했음
 - 보호 브랜치에 직접 commit 또는 push하지 않았음
-- 0계층 공통 변경만 담은 `main-v2` PR에서는 PR 생성 직후 수동 `@codex review`를 호출했거나, 생략 또는 실패 사유를 PR 본문에 남겼음
+- 0계층 `main-v2` PR과 project 계층 `project/<project-id>` PR에서는 PR 생성 직후 수동 `@codex review`를 호출했거나, 생략 또는 실패 사유를 PR 본문에 남겼음
 - 리뷰 조건 종결 전에는 task, 사일로, PR 작업을 완료로 보고하지 않았음
 - 브랜치별 리뷰 조건 종결 후 사용자 재리뷰 대기 상태로 넘겼음
 - 결과를 PR로 제출했음

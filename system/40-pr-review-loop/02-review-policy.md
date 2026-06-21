@@ -1,20 +1,23 @@
 # 리뷰 정책
 
-## Main-v2 리뷰 조건
+## PR 유형별 Codex 리뷰 조건
 
-`main-v2`에서는 Codex PR 리뷰 결과를 적습니다.
+PR을 올리라는 지시는 먼저 현재 브랜치의 계층과 PR 유형을 판정하라는 뜻으로 해석합니다.
 
-- 자동 리뷰가 아니라 [`codex-pr-review-loop`](../20-skills/codex-pr-review-loop/SKILL.md)로 no-major 목표를 세팅한 뒤 PR 댓글의 수동 `@codex review`를 호출하는 것을 기본으로 합니다.
-- `@codex review`는 0계층 공통 변경만 담은 `main-v2` 대상 PR에서만 호출합니다. branch base는 먼저 계층으로 판단하며, GitHub PR target/base branch는 그 판단 결과가 반영된 최종 머지 대상입니다.
-- 1계층 이상 project SSoT, task, issue, QA, decision, coverage 변경은 해당 `project/<project-id>` 기준 브랜치와 PR에서 처리합니다. 이 변경을 `main-v2` Codex review gate 때문에 `main-v2` PR로 retarget하지 않습니다.
+- PR 전에는 현재 브랜치 diff를 0계층 공통 변경과 project 계층 변경으로 나눕니다.
+- 0계층 공통 규칙, `AGENTS.md`, `system/`, repo skill, agent prompt 변경은 `main-v2` 기준 브랜치와 `main-v2` 대상 PR로 올립니다.
+- 1계층 project 등록/색인, 2계층 project SSoT, task, issue, QA, decision, coverage, runbook 변경은 해당 `project/<project-id>` 기준 브랜치와 `project/<project-id>` 대상 PR로 올립니다. 사용자가 “1계층 PR”이라고 말하면 이 project 계층 PR까지 포함해 판정합니다.
+- project 변경을 Codex review gate 때문에 `main-v2`로 retarget하지 않습니다.
 - 하나의 작업 브랜치에 0계층 변경과 1계층 이상 변경이 함께 있으면, 0계층 변경만 별도 `main-v2` worktree/브랜치/PR로 분리하고 project 변경은 원래 project 기준 브랜치에 남깁니다.
+- PR 생성 직후에는 0계층 PR과 project 계층 PR 모두 [`codex-pr-review-loop`](../20-skills/codex-pr-review-loop/SKILL.md)로 no-major 목표를 세팅하고, PR 댓글의 수동 `@codex review`를 호출합니다.
 - 호출 댓글에는 가능하면 `한국어로 리뷰해 주세요.` 또는 이에 준하는 한국어 요청과 최신 head 기준 리뷰 요청만 적습니다. 외부 리뷰 봇의 고정 안내 템플릿 언어까지 보장하지는 못하지만, repo 운영 언어와 맞추기 위한 기본 요청 문구로 둡니다.
-- `Didn't find any major issues` exact pass phrase와 반복 횟수 조건은 외부 리뷰 댓글에 강제하지 않고, PR 본문, task silo의 `goal.md`, 메인 에이전트 내부 상태에서 관리합니다.
-- 같은 PR에서 현재 head push 이후에 작성된 최신 `@codex review` 호출 댓글에 `eyes` 반응이 있으면 Codex 리뷰가 접수 또는 진행 중인 상태로 봅니다. 이 상태에서만 같은 head commit에 추가 `@codex review`를 호출하지 않고, 기존 요청의 리뷰 결과를 기다립니다.
+- `Didn't find any major issues` 또는 그와 동등하게 최신 head에 major/actionable 지적이 없다는 Codex 명시 응답은 통과로 봅니다. 반복 조건과 통과 판정은 외부 리뷰 댓글에 강제하지 않고, PR 본문, task silo의 `goal.md`, 메인 에이전트 내부 상태에서 관리합니다.
+- 같은 PR에서 현재 head push 이후에 작성된 최신 `@codex review` 호출 댓글에 `eyes` 반응이 있으면 Codex 리뷰가 접수 또는 진행 중인 상태로 봅니다. 같은 head commit에 추가 요청을 보내지 않고 최대 15분까지 응답을 기다립니다.
+- 최신 head 기준 리뷰 요청 후 15분 동안 Codex 응답이 없으면 루프를 중단하고 `Codex 리뷰 응답 대기 timeout`으로 보고합니다. 이 경우 중복 호출이나 임의 수정 없이 PR URL, head SHA, 호출 댓글, 대기 시간을 남깁니다.
 - 재호출 전에는 PR 댓글, 리뷰 제출, 최신 head commit, 최신 head push 이후 작성된 리뷰 요청 여부를 함께 확인합니다. 최신 head에 대한 리뷰 결과가 아직 없고 현재 head 이후 호출 댓글에 `eyes`가 있으면 중복 호출이 아니라 대기 상태로 기록합니다.
 - 리뷰는 변경 diff, task 목표, 검증 결과, 남은 위험, SSoT 승격 후보를 기준으로 합니다.
-- major/critical 수준의 correctness, security, data-loss 위험 또는 보호 절차를 깨는 P1/P2 지적이 있으면 수정 후 수동 재호출합니다.
-- PR 생성 후에는 `codex-pr-review-loop` 기준으로 최신 head에 대한 `Didn't find any major issues` 명시 응답이 나올 때까지 수정, 검증, 재리뷰를 반복합니다. task silo의 `goal.md`가 확인되면 no-major 목표를 `goal.md`에 세팅하고, 그렇지 않은 공통 문서/skill PR은 PR 본문, 리뷰 thread, 현재 사용자 요청을 재리뷰 컨텍스트로 사용합니다.
+- Codex 응답이 no-major 통과 응답이 아니면 actionable 지적의 타당성을 판단합니다. 타당한 major/critical/P1/P2 또는 보호 절차 위반 지적은 수정, 검증, 커밋, push 후 새 head 기준으로 `@codex review`를 재호출합니다.
+- PR 생성 후에는 `codex-pr-review-loop` 기준으로 최신 head에 대한 no-major Codex 응답이 나올 때까지 수정, 검증, 재리뷰를 반복합니다. task silo의 `goal.md`가 확인되면 no-major 목표를 `goal.md`에 세팅하고, 그렇지 않으면 PR 본문, 리뷰 thread, 현재 사용자 요청을 재리뷰 컨텍스트로 사용합니다.
 - 기본 중단 기준은 호출 횟수가 아니라 리뷰 결과입니다.
 - 반복 이후에도 남은 major/critical 또는 보호 절차 P1/P2 항목은 횟수 기준으로 중단하지 않고, 실제 blocker 여부와 사용자 승인 gate 필요 여부를 분리합니다.
 - 사용자가 `~PR을 리뷰 대기 에이전트로 돌려주세요`, `이 PR 리뷰 대기 에이전트로 맡겨주세요`, `Sartre처럼 돌려주세요`처럼 명시하면 `review-waiter-agent`가 별도 루프로 관리합니다. 사용자가 이번 PR에 명시한 상한이 있을 때만 그 상한을 따릅니다.
