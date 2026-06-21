@@ -96,6 +96,7 @@ fork 또는 clone 이후 실제 Codex 환경에 설치하려면 저장소 루트
 - [`command-intent-preflight`](20-skills/command-intent-preflight/SKILL.md)
 - [`delete-shared-runtime`](20-skills/delete-shared-runtime/SKILL.md)
 - [`main-branch-update-flow`](20-skills/main-branch-update-flow/SKILL.md)
+- [`main-v2-pr-scope-gate`](20-skills/main-v2-pr-scope-gate/SKILL.md)
 - [`page-lifecycle-runtime-flow`](20-skills/page-lifecycle-runtime-flow/SKILL.md)
 - [`projects-setup`](20-skills/projects-setup/SKILL.md)
 - [`root-layer-manager`](20-skills/root-layer-manager/SKILL.md)
@@ -153,6 +154,7 @@ git에서 제외할 것은 프로젝트 의존 자료와 시크릿성 자료입�
 - project SSoT scaffold는 DataviewJS 작업 대시보드, Obsidian Base 대체 뷰, Markdown 본문 폭을 넓히는 기본 CSS snippet을 함께 생성합니다. Dataview 대시보드는 `taskID`/`taskTitle`, `issueID`/`issueTitle`을 분리해서 보여주고, `dashboardScope.paths`를 바꿔 프로젝트 안에 여러 작업 대시보드를 둘 수 있습니다. 생성되는 task 템플릿은 병렬 task 독립성 계약을 포함하며, sibling task 완료를 개별 task의 Output, Acceptance Criteria, Test Plan 전제로 두지 않습니다. 여러 sibling task 완료를 전제로 하는 최종 통합 E2E만 별도 QA gate 또는 integration task로 분리합니다.
 - 프로젝트 내부 task, issue, QA, decision, dashboard, source doc을 쓰기 전에는 `projects/<project-id>/README.md`에서 선언된 project SSoT 경로를 먼저 확인합니다. 선언이 없으면 기본 scaffold인 `projects/<project-id>/02-project-internal/` 아래 dashboard와 task 위치를 확인합니다. `project/<project-id>` 브랜치가 있으면 해당 브랜치 또는 그 브랜치에서 판 별도 worktree에서만 project SSoT 원문을 작성합니다. 제품 repo 내부 `obs/`, `.obsidian`, `docs/`, submodule, external clone은 기준 SSoT라고 추정하지 않습니다.
 - 오래된 브랜치가 project SSoT 파일을 추가, 삭제, 이동한 것처럼 보이면 `main-v2` 기준 공통 규칙 drift와 `project/<project-id>` 기준 project SSoT diff를 나눠 봅니다. 보고할 때는 최종 트리 차이인 `base..branch`와 브랜치 고유 변경인 `base...branch`를 구분합니다.
+- `main-v2` 대상 PR을 제안하거나 push하거나 생성하기 전에는 `main-v2-pr-scope-gate`로 diff path와 브랜치명을 먼저 분류합니다. project SSoT 원문이나 local/silo 자료가 포함되면 push/PR을 진행하지 않고 project 브랜치 유지 또는 공통 승격 후보 분리로 보고합니다.
 - project SSoT 삭제 PR은 삭제 대상 파일을 `이관 확인됨`, `미이관`, `중복`, `폐기 후보`, `사용자 판단 필요`로 먼저 분류한 뒤 만듭니다. `todo`, `in_progress`, active issue, QA evidence, handoff, source doc은 이관 또는 폐기 근거 없이 삭제하지 않습니다.
 - task/issue 사일로를 시작할 때는 사일로 root, `goal.md`, repo clone, 작업 브랜치 중 하나라도 만들기 전에 project SSoT의 원본 task/issue 상태를 `in_progress`로 갱신합니다. 갱신할 수 없으면 사일로 진행을 멈추고 이유를 보고합니다.
 - 원본 프롬프트와 과거 초안은 `../sources/`에 둡니다.

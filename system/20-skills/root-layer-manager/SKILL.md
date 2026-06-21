@@ -62,6 +62,7 @@ description: 0계층 Root/Global 에이전트 운영 규칙을 적용해 요청�
 - 기준 SSoT가 아닌 제품 repo 내부 `obs/`, `.obsidian`, `docs/`, submodule, external clone, 오래된 vault에는 새 project task, issue, QA, dashboard, source doc, project handoff를 만들지 않습니다.
 - `project/<project-id>` 브랜치가 있는데 현재 브랜치가 `docs/*`, `chore/*`, `silo/*`, 또는 `main-v2` 파생 공통 규칙 브랜치라면 project SSoT 원문을 직접 쓰지 않습니다.
 - 현재 브랜치에 project SSoT diff가 이미 있으면 기준 worktree로 이어 쓰지 않고 `기준 아님`, `이관 후보`, `위험`, `사용자 판단 필요`로 분리해 보고합니다.
+- `main-v2` 대상 PR을 제안하거나 생성하려는 순간에는 [`main-v2-pr-scope-gate`](../main-v2-pr-scope-gate/SKILL.md)를 먼저 적용합니다. project SSoT 원문이 diff에 있으면 PR 제안을 중단합니다.
 - 단, 3계층 task silo의 `goal.md`, 실행 보고, handoff, PR 본문은 PR 전 임시 상태와 evidence로 허용합니다.
 - 후보 위치가 둘 이상이면 쓰기 전에 `기준 SSoT`, `기준 아님`, `위험`, `사용자 판단 필요`로 분리해 보고합니다.
 - task 번호는 실제 project SSoT의 task registry가 있으면 먼저 확인하고, 없으면 기존 task 파일과 README/index를 확인한 뒤 비어 있는 번호만 사용합니다.
@@ -75,6 +76,7 @@ description: 0계층 Root/Global 에이전트 운영 규칙을 적용해 요청�
 - project SSoT를 root 문서로 덮어쓰지 않습니다.
 - 기준 SSoT 확인 없이 제품 repo 내부 `obs/` 또는 submodule에 프로젝트 task/issue/QA를 작성하지 않습니다.
 - `project/<project-id>` 브랜치가 있는 프로젝트의 task/issue/QA/decision/dashboard/source doc 원문을 `docs/*`, `chore/*`, `silo/*`, 또는 `main-v2` 파생 공통 규칙 브랜치에서 직접 작성하지 않습니다.
+- project SSoT 원문이 포함된 브랜치를 `main-v2` 대상 PR로 제안하지 않습니다.
 
 ## 프로젝트 자료 정책
 
