@@ -218,9 +218,10 @@
 - Codex PR 리뷰는 변경 diff, task 목표, 실행한 검증, 남은 위험, SSoT 승격 후보를 대상으로 합니다.
 - 리뷰 결과는 PR 본문에 `Codex PR 리뷰` 항목으로 기록합니다.
 - critical 또는 major 수준 correctness/security/data-loss 위험이나 보호 절차를 깨는 P1/P2 지적이 있으면 먼저 수정하고 Codex PR 리뷰를 재호출합니다.
-- PR 생성 후에는 Codex PR 리뷰가 `승인` 또는 actionable major/critical 및 보호 절차를 깨는 P1/P2 없음 상태가 될 때까지 수정, 검증, 재리뷰를 반복합니다. task silo의 `goal.md`가 확인되면 `/goal`을 재사용하고, 그렇지 않은 공통 문서/skill PR은 PR 본문, 리뷰 thread, 현재 사용자 요청을 재리뷰 컨텍스트로 사용합니다. 기본 반복 상한은 두지 않습니다.
-- 재호출 전 현재 head push 이후에 작성된 최신 호출 댓글에 `eyes` 반응이 있으면 중복 호출하지 않고 기존 요청의 리뷰 결과를 기다립니다.
-- 사용자가 `~PR을 리뷰 대기 에이전트로 돌려주세요`, `이 PR 리뷰 대기 에이전트로 맡겨주세요`, `Sartre처럼 돌려주세요`처럼 명시하면 `review-waiter-agent`를 사용합니다. 사용자가 이번 PR에 별도 상한을 명시한 경우에만 그 상한을 적용합니다.
+- PR 생성 후에는 Codex PR 리뷰가 `승인` 또는 actionable major/critical 및 보호 절차를 깨는 P1/P2 없음 상태가 될 때까지 수정, 검증, 재리뷰를 반복합니다. task silo의 `goal.md`가 확인되면 `/goal`을 재사용하고, 그렇지 않은 공통 문서/skill PR은 PR 본문, 리뷰 thread, 현재 사용자 요청을 재리뷰 컨텍스트로 사용합니다.
+- 기본 중단 기준은 호출 횟수가 아니라 리뷰 결과입니다. 재호출 전 현재 head push 이후에 작성된 최신 호출 댓글에 `eyes` 반응이 있으면 중복 호출하지 않고 기존 요청의 리뷰 결과를 기다립니다.
+- 반복 이후에도 남은 major/critical 또는 보호 절차 P1/P2 항목은 횟수 기준으로 중단하지 않고, 실제 blocker 여부와 사용자 승인 gate 필요 여부를 분리합니다.
+- 사용자가 `~PR을 리뷰 대기 에이전트로 돌려주세요`, `이 PR 리뷰 대기 에이전트로 맡겨주세요`, `Sartre처럼 돌려주세요`처럼 명시하면 `review-waiter-agent`를 사용합니다. 사용자가 이번 PR에 명시한 반복 한도가 있을 때만 그 한도를 따릅니다.
 - Codex 리뷰가 실패했거나 도구 실행이 불가능하면 실패 원인과 대체 수동 검토 범위를 분리해서 기록합니다.
 
 ## Command Intent Preflight Policy

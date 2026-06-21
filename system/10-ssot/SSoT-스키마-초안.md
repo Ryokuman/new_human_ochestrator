@@ -184,6 +184,8 @@ Task 문서의 제목은 사람이 읽는 작업 목표나 문제 이름으로 �
 
 Task 기본 필드에는 `owner`와 `files_touched`를 두지 않습니다. 담당 실행 단위는 `owner_silo`, `branch`, `pr`, 또는 관련 repo/branch/silo 섹션으로 추적합니다. 실제 변경 파일 목록은 task 작성 시점에 예측해야 하는 계약이 아니라 구현 결과이므로 PR 본문, 변경 요약, 리뷰 evidence에서 기록합니다.
 
+병렬로 생성하거나 실행할 task는 sibling task 완료를 `output`, `acceptance_criteria`, `test_plan`의 전제로 삼지 않습니다. 개별 task output은 해당 task가 독립적으로 증명할 수 있는 산출물로 제한합니다. 인증, 데이터, 화면, backend 의존성이 있으면 seed data, dev-auth, fixture session, contract mock, harness, Docker fixture DB 같은 독립 검증 경로를 `verification_plan` 또는 `test_plan`에 명시합니다. 여러 sibling task 완료를 전제로 하는 최종 통합 E2E는 개별 task acceptance가 아니라 별도 QA gate, integration task, 또는 후속 harness 검증으로 분리합니다. 단일 task의 화면 동작 자체가 산출물이면 E2E 또는 agent-browser acceptance를 유지합니다.
+
 `hypothesis_chain`은 task 내부 summary 역할을 하며, 사일로 실행으로 검증한 가설을 시간순으로 누적합니다. 실패한 가설은 새 task를 자동 생성하지 않고 먼저 이 체인에 남깁니다. 하나의 task에서 가설 시도는 최대 3회이며, 3회 이후에는 자동 재시도 대신 사용자 판단이 필요합니다.
 
 `mode: exploratory`인 task는 `hypothesis_chain`을 `Build -> Learn -> Spec` 기록으로 사용합니다. 이 경우 실패는 즉시 중단 사유가 아니라 학습 결과이며, 반복 가능하거나 소유권이 분리되는 문제만 새 task/spec 후보로 승격합니다.

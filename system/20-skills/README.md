@@ -44,6 +44,8 @@
 
 `project-overview.md`는 프로젝트 설명과 운영 경계를 담고, 실제 issue/task 확인은 `work-filter.md` 또는 `work-views.md`에서 시작합니다. 생성되는 issue/task 템플릿은 대시보드 필터가 읽을 수 있도록 `type`, `id`, `taskID`/`taskTitle` 또는 `issueID`/`issueTitle`, `status`, `priority` 또는 `severity`, `updated` frontmatter를 포함합니다.
 
+생성되는 task 템플릿은 병렬 task 독립성 계약을 포함합니다. 병렬 task는 sibling task 완료를 Output, Acceptance Criteria, Test Plan의 전제로 삼지 않고, 개별 output은 해당 task가 독립적으로 증명할 수 있는 산출물로 제한합니다. 인증/데이터/화면/backend 의존성은 seed data, dev-auth, fixture session, contract mock, harness, Docker fixture DB 같은 독립 검증 경로로 적고, 여러 sibling task 완료를 전제로 하는 최종 통합 E2E는 별도 QA gate, integration task, 또는 후속 harness 검증으로 분리합니다. 단일 task의 화면 동작 자체가 산출물이면 E2E 또는 agent-browser acceptance를 유지합니다.
+
 `work-filter.md`는 frontmatter의 `dashboardScope.paths`를 기준으로 수집 경로를 정합니다. 기본값은 `20-issues/`, `30-tasks/`이고, 같은 프로젝트 안에서 BE, FE, ops 대시보드를 나누려면 템플릿을 복제해 `dashboardTitle`과 `dashboardScope.paths`만 바꿉니다. 대시보드는 ID와 제목을 별도 컬럼으로 보여주며, 기존 `id`/`title` 문서도 호환합니다.
 
 DataviewJS 대시보드는 Obsidian community plugin `dataview`와 DataviewJS 허용을 전제로 합니다. scaffold는 `.obsidian/community-plugins.json`에 `dataview`를 선언하고, Obsidian Base 대체 화면인 `work-items.base`도 함께 생성합니다. Markdown 본문 폭을 넓히기 위해 `.obsidian/appearance.json`에서 `readable-markdown-width` CSS snippet도 기본 활성화합니다.
@@ -66,7 +68,7 @@ Build -> Learn -> Spec
 
 - `main-v2`: 수동 `@codex review` gate
 
-`main-v2`의 PR은 생성 직후 base branch가 `main-v2`인지 확인하고, PR 댓글로 수동 `@codex review`를 호출합니다. 호출 댓글에는 가능하면 `한국어로 리뷰해 주세요.` 또는 이에 준하는 한국어 요청을 함께 적습니다. 외부 리뷰 봇의 고정 템플릿 언어까지 보장하지는 못합니다. PR 본문에는 `Codex PR 리뷰` 항목을 두고, 호출 횟수와 결과를 기록합니다. 현재 head push 이후에 작성된 최신 `@codex review` 호출 댓글에 `eyes` 반응이 있으면 리뷰가 접수 또는 진행 중인 상태로 보고 같은 head commit에 추가 호출하지 않습니다. PR 생성 이후에는 승인 리뷰 또는 actionable major/critical 및 보호 절차를 깨는 P1/P2 없음 상태가 될 때까지 수정, 검증, 재리뷰를 반복합니다. task silo의 `goal.md`가 확인되면 `/goal`을 재사용하고, 그렇지 않은 공통 문서/skill PR은 PR 본문, 리뷰 thread, 현재 사용자 요청을 재리뷰 컨텍스트로 사용합니다. 기본 반복 상한은 두지 않으며, 사용자가 이번 PR에 별도 상한을 명시한 경우에만 그 상한을 적용합니다.
+`main-v2`의 PR은 생성 직후 base branch가 `main-v2`인지 확인하고, PR 댓글로 수동 `@codex review`를 호출합니다. 호출 댓글에는 가능하면 `한국어로 리뷰해 주세요.` 또는 이에 준하는 한국어 요청을 함께 적습니다. 외부 리뷰 봇의 고정 템플릿 언어까지 보장하지는 못합니다. PR 본문에는 `Codex PR 리뷰` 항목을 두고, 호출 횟수와 결과를 기록합니다. 현재 head push 이후에 작성된 최신 `@codex review` 호출 댓글에 `eyes` 반응이 있으면 리뷰가 접수 또는 진행 중인 상태로 보고 같은 head commit에 추가 호출하지 않습니다. PR 생성 이후에는 승인 리뷰 또는 actionable major/critical 및 보호 절차를 깨는 P1/P2 없음 상태가 될 때까지 수정, 검증, 재리뷰를 반복합니다. task silo의 `goal.md`가 확인되면 `/goal`을 재사용하고, 그렇지 않은 공통 문서/skill PR은 PR 본문, 리뷰 thread, 현재 사용자 요청을 재리뷰 컨텍스트로 사용합니다. 기본 중단 기준은 호출 횟수가 아니라 리뷰 결과입니다. 사용자가 이번 PR에 명시한 반복 한도가 있을 때만 그 한도를 따릅니다.
 
 ## Run Set과 runtime_set
 

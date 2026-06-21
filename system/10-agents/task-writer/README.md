@@ -9,6 +9,7 @@
 - 구현 요청을 task 문서로 내려야 할 때
 - 사일로 실행 전에 목표, 금지선, 검증 기준을 정리해야 할 때
 - coverage 개선형 task의 부모/하위 목표를 나눠야 할 때
+- 여러 task를 병렬로 생성하거나 실행하기 위해 sibling task 의존성을 분리해야 할 때
 
 ## 산출물
 
@@ -32,3 +33,6 @@
 - `owner`와 `files_touched`를 기본 Task 필드로 요구하지 않습니다. 담당 실행 단위는 사일로/브랜치/PR로 추적하고, 실제 변경 파일은 PR 단계에서 기록합니다.
 - 목표 수치나 증거 위치가 없는 coverage task를 만들지 않습니다.
 - 실행 전제가 빠진 task를 정식 사일로 실행 대상으로 넘기지 않습니다.
+- 병렬 task의 `Output`, `Acceptance Criteria`, `Test Plan`에 sibling task 완료를 전제로 쓰지 않습니다.
+- 인증, 데이터, 화면, backend 의존성을 최종 통합 흐름으로 떠넘기지 않습니다. seed data, dev-auth, fixture session, contract mock, harness, Docker fixture DB 같은 독립 검증 경로를 task 계약에 적습니다.
+- 여러 sibling task 완료를 전제로 하는 최종 통합 E2E는 개별 task acceptance가 아니라 별도 QA gate, integration task, 또는 후속 harness 검증으로 분리합니다. 단일 task의 화면 동작 자체가 산출물이면 E2E 또는 agent-browser acceptance를 유지합니다.

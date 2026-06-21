@@ -757,9 +757,16 @@ TASK-0000
 
 ## Output
 
+해당 task가 독립적으로 증명할 수 있는 산출물만 적습니다. 병렬 sibling task 완료를 전제로 삼지 않습니다.
+
 ## Acceptance Criteria
 
+병렬로 생성하거나 실행할 task라면 sibling task 완료를 완료 조건으로 두지 않습니다.
+
 ## Test Plan
+
+인증, 데이터, 화면, backend 의존성이 있으면 seed data, dev-auth, fixture session, contract mock, harness, Docker fixture DB 같은 독립 검증 경로를 적습니다.
+여러 sibling task 완료를 전제로 하는 최종 통합 E2E는 개별 task acceptance가 아니라 별도 QA gate, integration task, 또는 후속 harness 검증으로 분리합니다. 단일 task의 화면 동작 자체가 산출물이면 E2E 또는 agent-browser acceptance를 유지합니다.
 
 ## Coverage Target
 
@@ -836,9 +843,16 @@ TASK-0000
 
 ## Output
 
+해당 task가 독립적으로 증명할 수 있는 산출물만 적습니다. 병렬 sibling task 완료를 전제로 삼지 않습니다.
+
 ## Acceptance Criteria
 
+병렬로 생성하거나 실행할 task라면 sibling task 완료를 완료 조건으로 두지 않습니다.
+
 ## Test Plan
+
+인증, 데이터, 화면, backend 의존성이 있으면 seed data, dev-auth, fixture session, contract mock, harness, Docker fixture DB 같은 독립 검증 경로를 적습니다.
+여러 sibling task 완료를 전제로 하는 최종 통합 E2E는 개별 task acceptance가 아니라 별도 QA gate, integration task, 또는 후속 harness 검증으로 분리합니다. 단일 task의 화면 동작 자체가 산출물이면 E2E 또는 agent-browser acceptance를 유지합니다.
 
 ## Coverage Target
 "
