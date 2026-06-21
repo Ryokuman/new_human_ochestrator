@@ -64,6 +64,7 @@
 - task 검토와 실행은 프론트/백엔드 분리 소유권이 아니라 사용자 목적과 완료 경로 기준의 풀스택 단위로 판단합니다.
 - API, schema, store, route가 없다는 사실만으로 task 위험으로 단정하지 않습니다. 같은 task 안에서 백엔드 계약을 먼저 만들고 프론트가 소비하는 순서를 기본 실행 순서로 제안합니다.
 - 외부 서비스, 인증, 실제 네트워크, 사용자 계정, 런타임 설정처럼 agent가 직접 통제하지 못하는 요소가 task completion에 끼어들면, system SSoT에는 통제 가능성, 증명 가능성, 사용자 승인 필요 여부를 분리하는 판단 근거만 남깁니다. 구체적인 L 단계, provider별 체크리스트, fixture/harness 구현 방식, merge 전 세부 QA gate는 project SSoT 또는 task 계약으로 라우팅합니다.
+- agent 감사나 PR 리뷰에서 좁은 실행 처방이 발견되면, system에 바로 추가하지 말고 `system에 남길 판단 근거`, `project SSoT로 내려보낼 실행 처방`, `승격하지 않을 항목`, `누락된 project SSoT 정의`로 분리합니다. project SSoT 위치가 불명확하면 system 문서에 임시 절차를 쓰지 않고 누락 정의로 보고합니다.
 - 일반 PR gate의 Codex 리뷰는 수동 `@codex review`를 기본으로 합니다.
 - 현재 head push 이후에 작성된 최신 `@codex review` 호출 댓글에 `eyes` 반응이 있으면 Codex 리뷰가 접수 또는 진행 중인 상태로 보고, 같은 head commit에 추가 리뷰 요청을 보내지 않습니다.
 - 사용자가 `~PR을 리뷰 대기 에이전트로 돌려주세요`, `이 PR 리뷰 대기 에이전트로 맡겨주세요`, `Sartre처럼 돌려주세요`처럼 말하면 `review-waiter-agent`를 사용합니다. 사용자가 이번 PR에 명시한 반복 한도가 있을 때만 그 한도를 따릅니다.

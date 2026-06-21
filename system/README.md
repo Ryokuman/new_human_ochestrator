@@ -42,6 +42,7 @@ Build -> Learn -> Spec
 7. `30-silo-system/README.md`
 8. `40-pr-review-loop/README.md`
 9. `50-feedback-personality-loop/README.md`
+10. `50-feedback-personality-loop/06-system-scope-routing-audit.md`
 
 ## 폴더 역할
 
