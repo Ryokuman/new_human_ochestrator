@@ -32,7 +32,7 @@
 - `git fetch --all --prune` 이후 상태를 기준으로 판단합니다.
 - shell git 또는 GitHub CLI가 private repo를 `Repository not found`로 보고하더라도, GitHub 앱이나 다른 인증 경로에서 PR 상태가 확인될 수 있습니다. 이 경우 shell evidence와 GitHub evidence를 분리해 기록하고, 한쪽 실패만으로 삭제를 결정하지 않습니다.
 - 열린 PR의 head 브랜치는 삭제하지 않습니다.
-- 머지된 PR은 `state`, `mergedAt`, `mergeCommit`, PR head SHA, base branch를 재조회합니다.
+- 머지된 PR은 `state`, `mergedAt`, `mergeCommit`, PR head SHA, GitHub PR target/base branch를 재조회합니다.
 - squash merge 또는 merge commit 방식 차이 때문에 `git branch --merged`나 `git merge-base --is-ancestor` 단독 결과만으로 브랜치 삭제를 결정하지 않습니다.
 - 로컬 브랜치 HEAD가 PR head SHA와 일치하고, PR이 merged이며, 해당 worktree가 clean일 때만 로컬 삭제 후보로 둡니다.
 - 원격 head 브랜치 삭제는 로컬 브랜치와 worktree 삭제와 별도 승인 경계로 보고합니다.
@@ -72,6 +72,6 @@
 | repo 경로와 역할 | root SSoT, 제품 source, 사일로, external clone, submodule을 구분하기 위해 |
 | local branch와 HEAD | 삭제 또는 보존 판단의 로컬 기준 |
 | upstream branch와 fetch/prune 결과 | gone 상태와 원격 접근 실패를 구분하기 위해 |
-| PR URL, state, mergedAt, mergeCommit, head SHA, base branch | PR 대응 관계와 merge 상태를 검증하기 위해 |
+| PR URL, state, mergedAt, mergeCommit, head SHA, GitHub PR target/base branch | PR 대응 관계와 merge 상태를 검증하기 위해 |
 | worktree clean 여부 | 같은 commit이어도 dirty diff가 있으면 같은 상태가 아니기 때문 |
 | 남은 dirty/ahead/untracked 항목 | `삭제됨`, `보존`, `삭제 후보`, `위험` 분류의 근거 |

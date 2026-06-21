@@ -41,7 +41,7 @@ PR 또는 보고 시점에는 아래처럼 분리합니다.
 | `report-promoted` | 테스트 사일로의 개별 보고서와 evidence 승격 확인 완료 |
 | `window-reported` | 테스트 사일로 execution window의 전체 사일로 보고서 작성 및 승격 후보 정리 완료 |
 | `deleted` | 보고서/evidence 승격 gate와 dirty status 확인 뒤 사일로 디렉토리 삭제 완료 |
-| `codex-review-passed` | `main-v2`에서 수동 Codex PR 리뷰의 승인 또는 actionable major/critical 및 보호 절차 P1/P2 위험 정리 완료 |
+| `codex-review-passed` | `main-v2`에서 `codex-pr-review-loop` 기준 최신 head에 대한 `Didn't find any major issues` 명시 응답 확인 |
 | `user-review-pending` | 브랜치별 리뷰 gate 종결 후 사용자 재리뷰 대기 |
 | `pr-opened` | PR 생성 완료, 메인 리뷰 대기 |
 | `needs-rework` | 메인 리뷰 또는 사용자 피드백으로 재작업 필요 |

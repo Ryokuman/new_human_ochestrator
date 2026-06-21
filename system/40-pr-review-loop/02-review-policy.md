@@ -4,14 +4,14 @@
 
 `main-v2`에서는 Codex PR 리뷰 결과를 적습니다.
 
-- 자동 리뷰가 아니라 PR 댓글의 수동 `@codex review` 호출을 기본으로 합니다.
-- `@codex review`는 base branch가 `main-v2`인 PR에서만 호출합니다.
+- 자동 리뷰가 아니라 [`codex-pr-review-loop`](../20-skills/codex-pr-review-loop/SKILL.md)로 no-major 목표를 세팅한 뒤 PR 댓글의 수동 `@codex review`를 호출하는 것을 기본으로 합니다.
+- `@codex review`는 GitHub PR target/base branch가 `main-v2`인 PR에서만 호출합니다.
 - 호출 댓글에는 가능하면 `한국어로 리뷰해 주세요.` 또는 이에 준하는 한국어 요청을 함께 적습니다. 외부 리뷰 봇의 고정 안내 템플릿 언어까지 보장하지는 못하지만, repo 운영 언어와 맞추기 위한 기본 요청 문구로 둡니다.
 - 같은 PR에서 현재 head push 이후에 작성된 최신 `@codex review` 호출 댓글에 `eyes` 반응이 있으면 Codex 리뷰가 접수 또는 진행 중인 상태로 봅니다. 이 상태에서만 같은 head commit에 추가 `@codex review`를 호출하지 않고, 기존 요청의 리뷰 결과를 기다립니다.
 - 재호출 전에는 PR 댓글, 리뷰 제출, 최신 head commit, 최신 head push 이후 작성된 리뷰 요청 여부를 함께 확인합니다. 최신 head에 대한 리뷰 결과가 아직 없고 현재 head 이후 호출 댓글에 `eyes`가 있으면 중복 호출이 아니라 대기 상태로 기록합니다.
 - 리뷰는 변경 diff, task 목표, 검증 결과, 남은 위험, SSoT 승격 후보를 기준으로 합니다.
 - major/critical 수준의 correctness, security, data-loss 위험 또는 보호 절차를 깨는 P1/P2 지적이 있으면 수정 후 수동 재호출합니다.
-- PR 생성 후에는 승인 리뷰 또는 actionable major/critical 및 보호 절차를 깨는 P1/P2 없음 상태가 될 때까지 수정, 검증, 재리뷰를 반복합니다. task silo의 `goal.md`가 확인되면 `/goal`을 재사용하고, 그렇지 않은 공통 문서/skill PR은 PR 본문, 리뷰 thread, 현재 사용자 요청을 재리뷰 컨텍스트로 사용합니다.
+- PR 생성 후에는 `codex-pr-review-loop` 기준으로 최신 head에 대한 `Didn't find any major issues` 명시 응답이 나올 때까지 수정, 검증, 재리뷰를 반복합니다. task silo의 `goal.md`가 확인되면 no-major 목표를 `goal.md`에 세팅하고, 그렇지 않은 공통 문서/skill PR은 PR 본문, 리뷰 thread, 현재 사용자 요청을 재리뷰 컨텍스트로 사용합니다.
 - 기본 중단 기준은 호출 횟수가 아니라 리뷰 결과입니다.
 - 반복 이후에도 남은 major/critical 또는 보호 절차 P1/P2 항목은 횟수 기준으로 중단하지 않고, 실제 blocker 여부와 사용자 승인 gate 필요 여부를 분리합니다.
 - 사용자가 `~PR을 리뷰 대기 에이전트로 돌려주세요`, `이 PR 리뷰 대기 에이전트로 맡겨주세요`, `Sartre처럼 돌려주세요`처럼 명시하면 `review-waiter-agent`가 별도 루프로 관리합니다. 사용자가 이번 PR에 명시한 상한이 있을 때만 그 상한을 따릅니다.

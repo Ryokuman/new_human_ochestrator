@@ -29,7 +29,7 @@
 Build -> Learn -> Spec
 ```
 
-`main-v2`에서는 완벽한 설계보다 가장 빠르게 사용 가능한 결과물을 우선합니다. 불확실성이 있어도 합리적으로 가정하고 진행하며, 구현 후 발견한 문제를 새 spec, task, issue, SSoT 승격 후보로 정리합니다. task를 검토하거나 실행할 때는 프론트와 백엔드를 분리된 소유권으로 보지 않고, 사용자 목적과 완료 경로 기준의 풀스택 단위로 봅니다. API 부재는 단독 위험으로 단정하지 않고, 같은 task 안에서 백엔드 계약을 먼저 만들고 프론트가 소비하는 순서를 기본 제안으로 둡니다. system SSoT는 상황별 처방 모음이 아니라 agent가 판단할 근거, 계층 분류, 승격 기준을 모아둔 프롬프트/스킬 하네스입니다. 외부 서비스, 인증, 실제 네트워크, 사용자 계정, 런타임 설정처럼 agent가 직접 통제하지 못하는 요소가 completion에 끼어들면, system에는 통제 가능성, 증명 가능성, 사용자 승인 필요 여부를 분리하는 판단 근거만 둡니다. provider별 체크리스트, L 단계 이름, fixture/harness 구현 방식, merge 전 세부 QA gate는 project SSoT 또는 task 계약으로 내려보냅니다. PR 리뷰 gate는 PR 댓글의 수동 `@codex review` 호출을 기본으로 두고, 호출 댓글에는 가능하면 `한국어로 리뷰해 주세요.` 또는 이에 준하는 한국어 요청을 함께 적습니다. 외부 리뷰 봇의 고정 템플릿 언어까지 보장하지는 못합니다. 현재 head push 이후에 작성된 최신 `@codex review` 호출 댓글에 `eyes` 반응이 있으면 리뷰가 접수 또는 진행 중인 상태로 보고 같은 head commit에 추가 호출하지 않습니다. PR 생성 후에는 승인 리뷰 또는 actionable major/critical 및 보호 절차를 깨는 P1/P2 없음 상태가 될 때까지 수정, 검증, 재리뷰를 반복합니다. task silo의 `goal.md`가 확인되면 `/goal`을 재사용하고, 그렇지 않은 공통 문서/skill PR은 PR 본문, 리뷰 thread, 현재 사용자 요청을 재리뷰 컨텍스트로 사용합니다. 기본 중단 기준은 호출 횟수가 아니라 리뷰 결과입니다. 사용자가 `~PR을 리뷰 대기 에이전트로 돌려주세요`처럼 명시하면 `review-waiter-agent`가 별도 백그라운드 루프로 관리하며, 사용자가 이번 PR에 명시한 반복 한도가 있을 때만 그 한도를 따릅니다. 다만 secret, credential, production 데이터, destructive action, data SSoT 임의 변경, 보호 브랜치 직접 수정은 여전히 승인 gate입니다.
+`main-v2`에서는 완벽한 설계보다 가장 빠르게 사용 가능한 결과물을 우선합니다. 불확실성이 있어도 합리적으로 가정하고 진행하며, 구현 후 발견한 문제를 새 spec, task, issue, SSoT 승격 후보로 정리합니다. task를 검토하거나 실행할 때는 프론트와 백엔드를 분리된 소유권으로 보지 않고, 사용자 목적과 완료 경로 기준의 풀스택 단위로 봅니다. API 부재는 단독 위험으로 단정하지 않고, 같은 task 안에서 백엔드 계약을 먼저 만들고 프론트가 소비하는 순서를 기본 제안으로 둡니다. system SSoT는 상황별 처방 모음이 아니라 agent가 판단할 근거, 계층 분류, 승격 기준을 모아둔 프롬프트/스킬 하네스입니다. 외부 서비스, 인증, 실제 네트워크, 사용자 계정, 런타임 설정처럼 agent가 직접 통제하지 못하는 요소가 completion에 끼어들면, system에는 통제 가능성, 증명 가능성, 사용자 승인 필요 여부를 분리하는 판단 근거만 둡니다. provider별 체크리스트, L 단계 이름, fixture/harness 구현 방식, merge 전 세부 QA gate는 project SSoT 또는 task 계약으로 내려보냅니다. PR 리뷰 gate는 `codex-pr-review-loop` skill로 no-major 목표를 세팅한 뒤 PR 댓글의 수동 `@codex review` 호출을 기본으로 둡니다. 호출 댓글에는 가능하면 `한국어로 리뷰해 주세요.` 또는 이에 준하는 한국어 요청과 no-major 목표를 함께 적습니다. 외부 리뷰 봇의 고정 템플릿 언어까지 보장하지는 못합니다. 현재 head push 이후에 작성된 최신 `@codex review` 호출 댓글에 `eyes` 반응이 있으면 리뷰가 접수 또는 진행 중인 상태로 보고 같은 head commit에 추가 호출하지 않습니다. PR 생성 후에는 최신 head에 대한 `Didn't find any major issues` 명시 응답이 나올 때까지 수정, 검증, 재리뷰를 반복합니다. task silo의 `goal.md`가 확인되면 no-major 목표를 `goal.md`에 세팅하고, 그렇지 않은 공통 문서/skill PR은 PR 본문, 리뷰 thread, 현재 사용자 요청을 재리뷰 컨텍스트로 사용합니다. 기본 중단 기준은 호출 횟수가 아니라 리뷰 결과입니다. 사용자가 `~PR을 리뷰 대기 에이전트로 돌려주세요`처럼 명시하면 `review-waiter-agent`가 별도 백그라운드 루프로 관리하며, 사용자가 이번 PR에 명시한 반복 한도가 있을 때만 그 한도를 따릅니다. 다만 secret, credential, production 데이터, destructive action, data SSoT 임의 변경, 보호 브랜치 직접 수정은 여전히 승인 gate입니다.
 
 ## 읽는 순서
 
@@ -94,6 +94,7 @@ fork 또는 clone 이후 실제 Codex 환경에 설치하려면 저장소 루트
 
 - [`add-dict`](20-skills/add-dict/SKILL.md)
 - [`add-shared-runtime`](20-skills/add-shared-runtime/SKILL.md)
+- [`codex-pr-review-loop`](20-skills/codex-pr-review-loop/SKILL.md)
 - [`command-intent-preflight`](20-skills/command-intent-preflight/SKILL.md)
 - [`delete-shared-runtime`](20-skills/delete-shared-runtime/SKILL.md)
 - [`main-branch-update-flow`](20-skills/main-branch-update-flow/SKILL.md)

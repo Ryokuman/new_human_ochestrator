@@ -6,6 +6,8 @@
 
 사용자가 `~PR을 리뷰 대기 에이전트로 돌려주세요`, `이 PR 리뷰 대기 에이전트로 맡겨주세요`, `Sartre처럼 돌려주세요`처럼 말하면 이 에이전트를 사용합니다.
 
+`main-v2` target/base PR의 목표 세팅과 종료 기준은 `codex-pr-review-loop` skill을 따릅니다. 이 에이전트는 그 목표를 실제 PR에서 대기, 수정, 검증, push, 재리뷰 호출로 실행합니다.
+
 ## 사용할 때
 
 - PR 생성 이후 Codex 리뷰 결과를 기다리고 처리해야 할 때
@@ -16,12 +18,12 @@
 ## 책임
 
 - 대상 PR, repo, branch, base branch, 현재 head commit을 먼저 확인합니다.
-- base branch가 `main-v2`가 아니면 `@codex review`를 호출하지 않고, PR 대상을 `main-v2`로 바꿔야 한다고 보고합니다.
-- 기존 `@codex review` 호출이 있으면 호출 이력으로 기록합니다.
-- 기존 `@codex review` 호출이 0회이고 base branch가 `main-v2`이면, 리뷰 대기 전에 먼저 `@codex review`를 호출합니다.
+- GitHub PR target/base branch가 `main-v2`가 아니면 `@codex review`를 호출하지 않고, 해당 project gate 또는 target main 불일치로 보고합니다.
+- 기존 `@codex review` 호출이 있으면 호출 이력으로 기록하되, 최신 head 이후 호출인지 별도로 확인합니다.
+- 기존 `@codex review` 호출이 0회이거나 최신 head push 이후 호출이 없고 GitHub PR target/base branch가 `main-v2`이면, 리뷰 대기 전에 먼저 `@codex review`를 호출합니다.
 - 현재 head push 이후에 작성된 최신 `@codex review` 호출 댓글에 `eyes` 반응이 있으면 Codex 리뷰가 접수 또는 진행 중인 상태로 보고, 같은 head commit에 추가 리뷰 요청을 보내지 않습니다.
 - 리뷰 대기 중에는 최신 head commit, head push 시각, 마지막 `@codex review` 호출 시각, `eyes` 반응, Codex 리뷰 제출 여부를 함께 확인합니다. 최신 head에 대한 리뷰 제출이 없고 현재 head 이후 호출 댓글에 `eyes`가 있으면 호출 횟수를 늘리지 않고 대기합니다.
-- 기본 중단 기준은 호출 횟수가 아니라 리뷰 결과입니다. 사용자가 이번 PR에 명시한 반복 한도가 있을 때만 그 한도를 따릅니다.
+- 기본 중단 기준은 호출 횟수가 아니라 `codex-pr-review-loop`의 no-major 결과입니다. 사용자가 이번 PR에 명시한 반복 한도가 있을 때만 그 한도를 따릅니다.
 - 사용자 지정 반복 한도를 채우면 더 이상 호출하지 않고 남은 이슈와 사용자 판단 필요 항목을 보고합니다.
 - task silo의 `goal.md`가 확인되면 `/goal`을 재사용해 현재 PR의 목표, 남은 리뷰 지적, 검증 결과를 갱신합니다.
 - task silo의 `goal.md`가 없는 공통 문서/skill PR은 PR 본문, 리뷰 thread, 현재 사용자 요청을 기준으로 반복합니다.
@@ -31,10 +33,10 @@
 - 기본 검증은 `npm test`, `npm run typecheck`, `npm run build`, `git diff --check`입니다. 프로젝트에 해당 명령이 없으면 실행 가능한 대체 검증과 생략 사유를 남깁니다.
 - 수정한 내용만 커밋하고 push합니다.
 - PR 본문 또는 댓글에 수정 내용, 검증 결과, 남은 위험을 한국어로 남깁니다.
-- 재리뷰 호출 댓글에는 `@codex review`와 함께 `리뷰는 한국어로 남겨주세요.` 또는 이에 준하는 문구를 적습니다.
-- 재리뷰 호출 전에도 base branch가 `main-v2`인지 다시 확인합니다.
+- 최초 리뷰 호출과 재리뷰 호출 댓글에는 `@codex review`, `한국어로 리뷰해 주세요.`, `최신 head에 대해 Didn't find any major issues라고 명시 응답할 때까지 통과로 보지 않습니다.`를 함께 적습니다.
+- 재리뷰 호출 전에도 GitHub PR target/base branch가 `main-v2`인지 다시 확인합니다.
 - 재리뷰 호출 전 현재 head push 이후에 작성된 최신 호출 댓글에 `eyes` 반응이 남아 있으면 아직 진행 중인 리뷰로 보고 재호출하지 않습니다.
-- 리뷰가 문제 없음, 승인, 또는 actionable major/critical/P1/P2 없음으로 판단되면 루프를 종료합니다.
+- 최신 head에 대한 리뷰가 `Didn't find any major issues`라고 명시 응답하면 루프를 종료합니다.
 - 종료 시 리뷰 호출 횟수, 수정 커밋, 검증, 남은 위험, 사용자 지정 반복 한도 적용 여부를 보고합니다.
 
 ## 메인 대화와의 관계

@@ -71,7 +71,7 @@ task-xxxx/ 생성
 - 소비 API, schema, store method, route가 아직 없다는 사실은 단독 위험으로 단정하지 않고, 같은 task 안에서 백엔드 계약을 먼저 만들고 프론트가 소비하는 순서로 `goal.md`에 적습니다.
 - 사용자가 좁은 스코프의 처방과 판단 근거의 위치를 지적하면, 먼저 system SSoT가 상황별 행동표가 아니라 판단 근거와 계층 분류 기준을 담는 하네스라는 점을 기준으로 재분류합니다.
 - 외부 서비스, 인증, 실제 네트워크, 사용자 계정, 런타임 설정처럼 agent가 직접 통제하지 못하는 요소가 completion에 끼어드는 task는 통제 가능성, 증명 가능성, 사용자 승인 필요 여부를 분리해 기록합니다. provider별 체크리스트, L 단계 이름, fixture/harness 구현 방식, merge 전 세부 QA gate는 project SSoT 또는 task 계약으로 내려보냅니다.
-- PR 생성 후에는 승인 리뷰 또는 actionable major/critical 및 보호 절차를 깨는 P1/P2 없음 상태가 될 때까지 수정, 검증, 재리뷰를 반복합니다. task silo의 `goal.md`가 확인되면 `/goal`을 재사용하고, 그렇지 않은 공통 문서/skill PR은 PR 본문, 리뷰 thread, 현재 사용자 요청을 재리뷰 컨텍스트로 사용합니다. 기본 반복 상한은 두지 않습니다.
+- PR 생성 후에는 `main-v2` target/base PR에 대해 `codex-pr-review-loop` skill로 no-major 목표를 세팅하고, 최신 head에 대한 `Didn't find any major issues` 명시 응답이 나올 때까지 수정, 검증, 재리뷰를 반복합니다. task silo의 `goal.md`가 확인되면 no-major 목표를 `goal.md`에 세팅하고, 그렇지 않은 공통 문서/skill PR은 PR 본문, 리뷰 thread, 현재 사용자 요청을 재리뷰 컨텍스트로 사용합니다. 기본 반복 상한은 두지 않습니다.
 - Dynamos 사일로에서 브라우저로 화면이나 동작을 확인해야 하면 `agent-browser`로만 확인한다고 적습니다.
 - 개발 세션에는 상세 지시를 길게 전달하지 않고, 해당 사일로에서 `/goal`로 `goal.md 달성 부탁해` 수준의 짧은 요청만 전달합니다.
 - source/data/secret/production 금지선에 닿으면 자동 진행하지 않고 사용자 판단 또는 SSoT 승격 후보로 보고합니다.
