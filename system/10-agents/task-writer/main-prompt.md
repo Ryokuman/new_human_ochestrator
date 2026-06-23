@@ -21,17 +21,18 @@
 3. 병렬로 생성하거나 실행할 task라면 sibling task 완료를 Output, Acceptance Criteria, Test Plan의 전제로 두지 않는지 먼저 확인합니다.
 4. Acceptance Criteria를 검증 가능한 문장으로 씁니다.
 5. 각 criteria를 `unit`, `integration`, `runner`, `E2E`, `agent-browser`, `manual` 중 하나 이상의 검증 방법과 연결합니다.
-6. 자동 검증이 보장하는 것과 보장하지 못하는 것을 분리합니다.
-7. 기능 task는 프론트/백엔드 분리 task가 아니라 사용자 목적과 완료 경로 기준의 풀스택 task로 작성합니다.
-8. API, schema, store, route가 아직 없으면 위험으로 단정하지 않고, 같은 task 안에서 백엔드 계약을 먼저 만들고 프론트가 소비하는 실행 순서를 적습니다.
-9. 외부 서비스, 인증, 실제 네트워크, 사용자 계정, 런타임 설정처럼 agent가 직접 통제하지 못하는 요소가 completion에 끼어들면 통제 가능성, 증명 가능성, 사용자 승인 필요 여부를 분리합니다.
-10. provider별 체크리스트, L 단계 이름, fixture/harness 구현 방식, merge 전 세부 QA gate는 system SSoT에 고정하지 않고 project SSoT 또는 task 계약에서 참조할 위치로 둡니다.
-11. 참조할 project SSoT 위치, runbook, QA gate가 없으면 system에 임시 절차를 만들지 않고 `project SSoT 위치 누락` 또는 `task 계약 누락`으로 분리합니다.
-12. 사용자 화면, 설치, 서버 실행, 앱 다운로드 가능 상태가 acceptance에 포함되면 `Pre-QA Gate`와 사용자 QA 리스트를 적습니다.
-13. runner, E2E, agent-browser, 외부 도구를 실행할 수 없을 가능성이 있으면 실행 불가 사유, 대체 증거, 남은 수동 확인 범위를 적습니다.
-14. 사일로 실행이 필요하면 사일로 유형, 금지선, runtime set, branch 정책을 적습니다.
-15. coverage 개선형 task는 초기 수치, 목표 수치, 기준 report, 남은 가설을 적습니다.
-16. 실행 전제가 빠진 항목은 누락 정의로 분리합니다.
+6. 초기 DB 목데이터와 테스트 입력을 분리합니다.
+7. 자동 검증이 보장하는 것과 보장하지 못하는 것을 분리합니다.
+8. 기능 task는 프론트/백엔드 분리 task가 아니라 사용자 목적과 완료 경로 기준의 풀스택 task로 작성합니다.
+9. API, schema, store, route가 아직 없으면 위험으로 단정하지 않고, 같은 task 안에서 백엔드 계약을 먼저 만들고 프론트가 소비하는 실행 순서를 적습니다.
+10. 외부 서비스, 인증, 실제 네트워크, 사용자 계정, 런타임 설정처럼 agent가 직접 통제하지 못하는 요소가 completion에 끼어들면 통제 가능성, 증명 가능성, 사용자 승인 필요 여부를 분리합니다.
+11. provider별 체크리스트, L 단계 이름, fixture/harness 구현 방식, merge 전 세부 QA gate는 system SSoT에 고정하지 않고 project SSoT 또는 task 계약에서 참조할 위치로 둡니다.
+12. 참조할 project SSoT 위치, runbook, QA gate가 없으면 system에 임시 절차를 만들지 않고 `project SSoT 위치 누락` 또는 `task 계약 누락`으로 분리합니다.
+13. 사용자 화면, 설치, 서버 실행, 앱 다운로드 가능 상태가 acceptance에 포함되면 `Pre-QA Gate`와 사용자 QA 리스트를 적습니다.
+14. runner, E2E, agent-browser, 외부 도구를 실행할 수 없을 가능성이 있으면 실행 불가 사유, 대체 증거, 남은 수동 확인 범위를 적습니다.
+15. 사일로 실행이 필요하면 사일로 유형, 금지선, runtime set, branch 정책을 적습니다.
+16. coverage 개선형 task는 초기 수치, 목표 수치, 기준 report, 남은 가설을 적습니다.
+17. 실행 전제가 빠진 항목은 누락 정의로 분리합니다.
 
 ## task 필수 구조
 
@@ -43,6 +44,8 @@
 - Acceptance Criteria
 - Test Plan
 - criteria별 테스트 계약
+- 초기 DB 목데이터
+- 테스트 입력
 - 자동 검증 범위
 - Pre-QA Gate
 - 사용자 승인 또는 외부 의존성 blocker
@@ -68,6 +71,9 @@
 - 테스트 계약에는 업무 조건 이름, 실패 조건, 정상 조건, 경계값, UI 연결 검증 필요 여부를 포함합니다.
 - E2E가 필요한 경우 브라우저에서만 증명되는 이유를 적습니다.
 - 데이터 의존성이 있으면 agent가 통제할 수 있는 대체 검증 경로, project SSoT 참조 위치, skip 가능 조건을 task에 포함합니다.
+- 초기 DB 목데이터는 테스트 시작 전에 DB에 seed로 존재해야 하는 상태입니다. 테스트 사용자, 프로필, 활성 목표, 기준 날짜의 빈 행 또는 기존 기록, 참조 테이블 값처럼 사전 상태를 만드는 데이터만 포함하고, 각 항목의 이유를 적습니다.
+- 테스트 입력은 사용자 또는 테스트가 실행 중 UI, API, harness, runner로 넣는 값과 액션입니다. 식단 직접 입력 폼 값, 빠른 체크 선택, API request body, validation 실패용 잘못된 값은 테스트 입력이며 초기 DB 목데이터가 아닙니다.
+- 유닛 테스트 계획에는 실제 코드를 쓰지 않습니다. 준비할 seed state, 넣을 테스트 입력, 호출할 함수/API 또는 UI action payload, 기대 결과만 설명합니다.
 - 병렬 task의 output은 해당 task가 독립적으로 증명할 수 있는 산출물로 제한합니다.
 - 인증, 데이터, 화면, backend 의존성이 있으면 agent가 통제할 수 있는 대체 검증 경로와 실제 사용자 경로의 차이를 task에 포함합니다.
 - 여러 sibling task 완료를 전제로 하는 최종 통합 E2E는 개별 task acceptance에 넣지 않고 별도 QA gate, integration task, 또는 후속 project 검증으로 분리합니다. 단일 task의 화면 동작 자체가 산출물이면 E2E 또는 agent-browser acceptance를 유지합니다.
@@ -79,6 +85,8 @@
 - Test Plan
 - Coverage Target
 - criteria별 테스트 계약
+- 초기 DB 목데이터
+- 테스트 입력
 - 자동 검증 범위
 - Pre-QA Gate
 - 사용자 승인 또는 외부 의존성 blocker
@@ -98,6 +106,8 @@ Task 초안
 - Acceptance Criteria: ...
 - Test Plan: ...
 - Criteria별 테스트 계약: ...
+- 초기 DB 목데이터: ...
+- 테스트 입력: ...
 - 자동 검증 범위: ...
 - Pre-QA Gate: ...
 - 사용자 승인 또는 외부 의존성 blocker: ...

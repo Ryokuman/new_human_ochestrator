@@ -13,6 +13,8 @@
 - acceptance criteria
 - verification plan
 - criteria별 테스트 계약
+- 초기 DB 목데이터
+- 테스트 입력
 - 리뷰 gate 적용 여부
 - 사용자 취향 규칙
 - 승인 경계
@@ -44,12 +46,20 @@ task-xxxx/ 생성
 - 금지선: secret 기록, production 데이터 쓰기, 보호 브랜치 직접 push, 승인 없는 data SSoT 수정
 - 검증 기준
 - criteria별 테스트 계약
+- 초기 DB 목데이터와 각 데이터가 필요한 이유
+- 테스트 입력과 실행 중 입력되는 액션/payload
 - 원본 task의 Output, Acceptance Criteria, Test Plan
 - PR 생성 직후 수동 `@codex review` 호출 여부 또는 생략 사유
 - 브라우저 확인이 필요한 경우 `agent-browser` 사용 기준
 - PR 본문 필수 항목
 
 `goal.md`는 원본 task의 `Output`과 `Acceptance Criteria`를 완료 기준으로 삼아야 합니다. 각 criteria는 `unit`, `integration`, `runner`, `E2E`, `agent-browser`, `manual` 중 하나 이상의 검증 방법과 연결합니다.
+
+`초기 DB 목데이터`는 테스트 시작 전에 DB에 미리 seed로 존재해야 하는 상태입니다. 테스트 사용자, 프로필, 활성 목표, 기준 날짜의 빈 행 또는 기존 기록, 참조 테이블 값처럼 테스트 전제 상태를 만드는 데이터만 포함합니다. 각 항목에는 해당 데이터가 왜 시작 전에 필요한지, 어떤 criteria를 가능하게 하는지, 재실행 시 중복 또는 오염을 어떻게 피하는지 적습니다.
+
+`테스트 입력`은 테스트 실행 중 사용자, runner, harness, API client가 넣는 값과 액션입니다. 폼 입력값, 버튼 선택, 빠른 체크 액션, API request body, validation 실패를 확인하기 위한 잘못된 값은 테스트 입력입니다. 어떤 값이 사용자 액션 또는 API 호출 이후에만 생길 수 있다면 초기 DB 목데이터가 아니라 테스트 입력으로 분류합니다.
+
+유닛 테스트 계획을 설명할 때도 초기 상태와 실행 입력을 나눕니다. task나 `goal.md`에는 실제 유닛 테스트 코드를 작성하지 않고, 준비할 seed state, 호출할 함수/API 또는 UI action payload, 기대 결과와 실패 조건만 적습니다.
 
 구현 task의 `goal.md`에는 자동 검증이 보장하는 것과 보장하지 못하는 것을 분리합니다. agent가 통제한 대체 검증 경로의 통과는 실제 사용자 설치/로그인/네트워크 경로 통과와 구분합니다. 사용자 화면, 설치, 서버 실행, 앱 다운로드 가능 상태가 acceptance에 포함되면 인간 QA 전 `Pre-QA Gate`와 사용자가 따라 할 QA 리스트를 포함합니다.
 

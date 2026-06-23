@@ -20,6 +20,8 @@
 - Acceptance Criteria
 - Test Plan
 - criteria별 테스트 계약
+- 초기 DB 목데이터
+- 테스트 입력
 - 자동 검증 범위
 - Pre-QA Gate
 - 사용자 승인 또는 외부 의존성 blocker
@@ -37,6 +39,9 @@
 - 목표 수치나 증거 위치가 없는 coverage task를 만들지 않습니다.
 - 실행 전제가 빠진 task를 정식 사일로 실행 대상으로 넘기지 않습니다.
 - 병렬 task의 `Output`, `Acceptance Criteria`, `Test Plan`에 sibling task 완료를 전제로 쓰지 않습니다.
+- `초기 DB 목데이터`와 `테스트 입력`을 섞지 않습니다. 테스트 시작 전에 DB에 seed로 존재해야 하는 상태만 초기 DB 목데이터이며, UI/API/harness/runner가 실행 중 넣는 값과 액션은 테스트 입력입니다.
+- 식단 직접 입력 값, 빠른 체크 선택, API request body, validation 실패용 잘못된 값처럼 사용자 또는 테스트가 실행 중 넣는 payload는 초기 DB 목데이터로 쓰지 않습니다.
+- 초기 DB 목데이터에는 각 seed row 또는 상태가 필요한 이유를 적고, 테스트 입력에는 어떤 액션으로 넣고 어떤 결과를 검증하는지 적습니다.
 - 인증, 데이터, 화면, backend 의존성을 최종 통합 흐름으로 떠넘기지 않습니다. agent가 통제할 수 있는 대체 검증 경로와 실제 사용자 경로의 차이를 task 계약에 적습니다.
 - 여러 sibling task 완료를 전제로 하는 최종 통합 E2E는 개별 task acceptance가 아니라 별도 QA gate, integration task, 또는 후속 project 검증으로 분리합니다. 단일 task의 화면 동작 자체가 산출물이면 E2E 또는 agent-browser acceptance를 유지합니다.
 - 좁은 스코프의 provider별 절차나 L 단계 이름을 system SSoT에 고정하지 않습니다. task 계약에는 통제 가능성, 증명 가능성, 사용자 승인 필요 여부를 먼저 적고, 프로젝트별 세부 검증 층은 project SSoT를 참조하게 합니다.
