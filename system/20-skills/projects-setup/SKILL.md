@@ -12,7 +12,8 @@ description: 새 프로젝트를 root orchestrator의 projects 구조에 등록�
 - `projects/<project-id>/`는 프로젝트 연결 정보와 프로젝트 의존 운영 자료의 입구입니다.
 - `02-project-internal/`은 실제 project SSoT입니다. 이 안의 issue, task, QA, coverage 산출물은 0계층 `system/`으로 복사하지 않습니다.
 - `setup.sh --create-project-ssot`은 최소 project SSoT scaffold를 생성합니다. 작업 대시보드는 DataviewJS와 Obsidian Base를 기본 viewer 계약으로 포함합니다.
-- `system/config/silo-projects.yaml`은 로컬 설정입니다. secret 값은 쓰지 않고, repo URL, 보호 브랜치, 사일로 대상 여부 같은 운영 값만 기록합니다.
+- `system/config/silo-projects.yaml`은 로컬 설정입니다. secret 값은 쓰지 않고, repo URL, 보호 브랜치, 사일로 대상 여부, DB 사용 여부, DB schema 정본/요약/적용 경로 같은 운영 값만 기록합니다.
+- DB를 사용하는 프로젝트는 등록/setup 단계에서 DB schema 정본 위치 또는 schema 요약 위치를 project registry/config 또는 project SSoT에 기록합니다. Docker, compose, migration, startup script로 DB가 자동 생성되거나 갱신되면 schema 적용 경로도 함께 기록합니다.
 - 기존 `project-ssot-bootstrap` 역할은 이 스킬에 흡수되었습니다.
 
 ## 기본 구조
@@ -44,7 +45,7 @@ projects/<project-id>/
 ## 절차
 
 1. 계층을 판정합니다. 공통 규칙 변경이면 `main-branch-update-flow`, 특정 프로젝트 자료면 프로젝트 SSoT 또는 project 브랜치에서 처리합니다.
-2. `project-id`, 표시 이름, repo URL, default branch, 보호 브랜치, `allowed_for_silo`, `role`을 확인합니다.
+2. `project-id`, 표시 이름, repo URL, default branch, 보호 브랜치, `allowed_for_silo`, `role`, DB 사용 여부, DB schema 정본/요약/적용 경로를 확인합니다.
 3. `projects/<project-id>/`가 이미 있거나 `silo-projects.yaml`에 같은 id가 있으면 중단하고 병합/갱신 여부를 확인합니다.
 4. `02-project-internal` scaffold는 `setup.sh`로 생성합니다.
 
@@ -71,6 +72,9 @@ projects/<project-id>/
 - 프로젝트 목적
 - 주요 사용자/운영자
 - repo/SSoT 위치
+- DB 사용 여부
+- DB schema 정본 위치 또는 schema 요약 위치
+- Docker/compose/migration/startup script의 schema 적용 경로
 - 주요 workflow
 - 검증/배포/운영 경계
 - 금지선/주의사항
@@ -135,6 +139,13 @@ Project dictionary 파일을 새로 만들거나 기존 dictionary에 용어를 
     - main
   allowed_for_silo: true
   role: app
+  db:
+    uses_db: false
+    schema_canonical_path:
+    schema_summary_path:
+    schema_apply_path:
+    notes:
+      - DB를 사용하면 schema 정본/요약/적용 경로를 기록합니다.
   notes:
     - projects-setup으로 등록했습니다.
 ```

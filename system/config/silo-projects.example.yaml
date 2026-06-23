@@ -20,6 +20,12 @@ projects:
     protected_branches: []
     allowed_for_silo:
     role:
+    db:
+      uses_db:
+      schema_canonical_path:
+      schema_summary_path:
+      schema_apply_path:
+      notes: []
     service_policy:
       owner:
       startup:

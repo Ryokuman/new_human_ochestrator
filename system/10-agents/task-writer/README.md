@@ -41,7 +41,11 @@
 - 병렬 task의 `Output`, `Acceptance Criteria`, `Test Plan`에 sibling task 완료를 전제로 쓰지 않습니다.
 - `초기 DB 목데이터`와 `테스트 입력`을 섞지 않습니다. 테스트 시작 전에 DB에 seed로 존재해야 하는 상태만 초기 DB 목데이터이며, UI/API/harness/runner가 실행 중 넣는 값과 액션은 테스트 입력입니다.
 - 식단 직접 입력 값, 빠른 체크 선택, API request body, validation 실패용 잘못된 값처럼 사용자 또는 테스트가 실행 중 넣는 payload는 초기 DB 목데이터로 쓰지 않습니다.
-- 초기 DB 목데이터에는 각 seed row 또는 상태가 필요한 이유를 적고, 테스트 입력에는 어떤 액션으로 넣고 어떤 결과를 검증하는지 적습니다.
+- 초기 DB 목데이터에는 실제 DB schema에서 확인된 seed row 또는 상태만 적고, 각 항목이 필요한 이유를 적습니다. 테스트 입력에는 어떤 액션으로 넣고 어떤 결과를 검증하는지 적습니다.
+- 초기 DB 목데이터가 필요한 task는 project registry/config 또는 project SSoT에 있는 DB schema 정본 위치나 schema 요약을 먼저 참조합니다. schema 참조가 없으면 테이블, 컬럼, FK, profile, goal, 날짜 테이블 같은 제품 정보를 추정하지 않고 `project SSoT schema 계약 누락`으로 분류합니다.
+- DB를 사용하는 프로젝트인데 project setup/등록 기록에 DB schema 정본 위치, schema 요약 위치, Docker/compose/migration/startup script의 schema 적용 경로가 없으면 schema 관련 프롬프트나 목데이터 계약을 쓰기 전에 `project setup schema 계약 누락`으로 보고합니다.
+- API contract, auth/session contract, runtime DB/harness DB 계약처럼 task 작성과 mock data 정의에 필요한 중요 제품 정보도 project registry/config 또는 project SSoT에 정본 위치나 요약이 있어야 합니다. 참조가 없으면 task 내부에서 임시 계약을 발명하지 않고 누락 정의와 project SSoT 갱신 후보를 남깁니다.
+- 특정 task의 초기 DB 목데이터, 테스트 입력, 구현 준비 상태, 단일 API/page 실행 계약, endpoint 필요성을 project overview/registry/config에 쓰지 않습니다. project overview에는 정본 위치와 하위 SSoT 인덱스만 남기고, task 고유 내용은 task 문서나 사일로 `goal.md`에 둡니다.
 - 인증, 데이터, 화면, backend 의존성을 최종 통합 흐름으로 떠넘기지 않습니다. agent가 통제할 수 있는 대체 검증 경로와 실제 사용자 경로의 차이를 task 계약에 적습니다.
 - 여러 sibling task 완료를 전제로 하는 최종 통합 E2E는 개별 task acceptance가 아니라 별도 QA gate, integration task, 또는 후속 project 검증으로 분리합니다. 단일 task의 화면 동작 자체가 산출물이면 E2E 또는 agent-browser acceptance를 유지합니다.
 - 좁은 스코프의 provider별 절차나 L 단계 이름을 system SSoT에 고정하지 않습니다. task 계약에는 통제 가능성, 증명 가능성, 사용자 승인 필요 여부를 먼저 적고, 프로젝트별 세부 검증 층은 project SSoT를 참조하게 합니다.

@@ -71,12 +71,16 @@
 - 테스트 계약에는 업무 조건 이름, 실패 조건, 정상 조건, 경계값, UI 연결 검증 필요 여부를 포함합니다.
 - E2E가 필요한 경우 브라우저에서만 증명되는 이유를 적습니다.
 - 데이터 의존성이 있으면 agent가 통제할 수 있는 대체 검증 경로, project SSoT 참조 위치, skip 가능 조건을 task에 포함합니다.
-- 초기 DB 목데이터는 테스트 시작 전에 DB에 seed로 존재해야 하는 상태입니다. 테스트 사용자, 프로필, 활성 목표, 기준 날짜의 빈 행 또는 기존 기록, 참조 테이블 값처럼 사전 상태를 만드는 데이터만 포함하고, 각 항목의 이유를 적습니다.
+- 초기 DB 목데이터는 테스트 시작 전에 DB에 seed로 존재해야 하는 상태입니다. 실제 DB schema에서 FK나 조회 조건으로 확인된 테스트 사용자 row, 날짜 컬럼을 가진 기존 기록 row, 참조 테이블 값처럼 사전 상태를 만드는 데이터만 포함하고, 각 항목의 이유를 적습니다.
+- 초기 DB 목데이터가 필요한 task는 project registry/config 또는 project SSoT의 DB schema 정본 위치나 schema 요약을 먼저 참조합니다. 해당 참조가 없으면 테이블, 컬럼, FK, profile, goal, 날짜 테이블 같은 제품 정보를 추정하지 않고 `project SSoT schema 계약 누락`으로 분류합니다.
+- DB를 사용하는 프로젝트인데 project setup/등록 기록에 DB schema 정본 위치, schema 요약 위치, Docker/compose/migration/startup script의 schema 적용 경로가 없으면 schema 관련 프롬프트나 목데이터 계약을 쓰기 전에 `project setup schema 계약 누락`으로 보고합니다.
+- API contract, auth/session contract, runtime DB/harness DB 계약처럼 task 작성과 mock data 정의에 필요한 중요 제품 정보도 project registry/config 또는 project SSoT에 정본 위치나 요약이 있어야 합니다. 참조가 없으면 task 내부에서 임시 계약을 만들지 않고 누락 정의와 project SSoT 갱신 후보를 남깁니다.
 - 테스트 입력은 사용자 또는 테스트가 실행 중 UI, API, harness, runner로 넣는 값과 액션입니다. 식단 직접 입력 폼 값, 빠른 체크 선택, API request body, validation 실패용 잘못된 값은 테스트 입력이며 초기 DB 목데이터가 아닙니다.
 - 유닛 테스트 계획에는 실제 코드를 쓰지 않습니다. 준비할 seed state, 넣을 테스트 입력, 호출할 함수/API 또는 UI action payload, 기대 결과만 설명합니다.
 - 병렬 task의 output은 해당 task가 독립적으로 증명할 수 있는 산출물로 제한합니다.
 - 인증, 데이터, 화면, backend 의존성이 있으면 agent가 통제할 수 있는 대체 검증 경로와 실제 사용자 경로의 차이를 task에 포함합니다.
 - 여러 sibling task 완료를 전제로 하는 최종 통합 E2E는 개별 task acceptance에 넣지 않고 별도 QA gate, integration task, 또는 후속 project 검증으로 분리합니다. 단일 task의 화면 동작 자체가 산출물이면 E2E 또는 agent-browser acceptance를 유지합니다.
+- project overview, registry, config에 특정 task/silo의 구현 준비 상태나 `TASK-NNNN` 전용 문장을 쓰지 않습니다. project-level 반복 기준은 하위 SSoT 참조로만 남기고, task 고유 seed/input/API/page 계약은 task 문서나 사일로 `goal.md`에 둡니다.
 
 ## 산출물
 
@@ -126,5 +130,6 @@ Task 초안
 - 목표 수치나 evidence 위치가 없는 coverage task를 만들지 않습니다.
 - 실행 전제가 빠진 task를 정식 사일로 실행 대상으로 넘기지 않습니다.
 - 프로젝트 내부 원문을 0계층 문서에 복사하지 않습니다.
+- 특정 task/silo의 구현 준비 상태를 1계층 project overview/registry/config에 올리지 않습니다.
 - 병렬 sibling task의 완료를 현재 task의 완료 조건으로 쓰지 않습니다.
 - secret, credential, token 원문을 task 본문이나 evidence 요구사항에 기록하지 않습니다.

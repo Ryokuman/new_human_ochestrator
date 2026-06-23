@@ -23,7 +23,7 @@
 - [`codex-pr-review-loop`](codex-pr-review-loop/SKILL.md): PR 유형을 계층별로 판정한 뒤 0계층 `main-v2` PR 또는 project 계층 PR에서 Codex가 최신 head에 대해 no-major 응답을 명시할 때까지 목표 세팅, 리뷰 호출, 15분 응답 대기, 수정, 검증, 재리뷰 반복을 관리할 때 사용합니다.
 - [`main-v2-pr-scope-gate`](main-v2-pr-scope-gate/SKILL.md): `main-v2` 대상 PR 제안, push, PR 생성 전 diff path와 브랜치명을 계층별로 분류해 project SSoT 원문이나 local/silo 자료가 섞였는지 확인할 때 사용합니다.
 - [`root-layer-manager`](root-layer-manager/SKILL.md): 정보가 0~3계층 중 어디에 속하는지 판단하거나, 프로젝트 task/issue/QA/decision/dashboard/source doc을 쓰기 전에 실제 project SSoT 위치, 기준 `project/<project-id>` 브랜치, 별도 worktree의 파생 브랜치, task 번호 registry를 확인해야 할 때 사용합니다.
-- [`projects-setup`](projects-setup/SKILL.md): 새 프로젝트를 `projects/` 구조에 등록하거나 project SSoT와 사일로 config를 함께 셋업해야 할 때 사용합니다.
+- [`projects-setup`](projects-setup/SKILL.md): 새 프로젝트를 `projects/` 구조에 등록하거나 project SSoT와 사일로 config를 함께 셋업해야 할 때 사용합니다. DB를 사용하는 프로젝트는 setup 때 DB schema 정본/요약/적용 경로를 project registry/config 또는 project SSoT에 기록합니다.
 - [`add-shared-runtime`](add-shared-runtime/SKILL.md): 여러 task silo가 함께 참조하는 프로젝트별 shared runtime set을 등록하거나 준비할 때 사용합니다.
 - [`shared-runtime-health-check`](shared-runtime-health-check/SKILL.md): page-lifecycle, run, E2E 실행 전 `runtime_set` 유무나 서버형 shared runtime 상태를 확인해야 할 때 사용합니다.
 - [`delete-shared-runtime`](delete-shared-runtime/SKILL.md): shared runtime registry/status 정리, archived 표시, 명시 승인된 runtime checkout 제거가 필요할 때 사용합니다.
@@ -45,6 +45,8 @@
 - `.obsidian/snippets/readable-markdown-width.css`: Markdown 편집/미리보기 영역을 넓게 쓰는 기본 CSS snippet
 
 `project-overview.md`는 프로젝트 설명과 운영 경계를 담고, 실제 issue/task 확인은 `work-filter.md` 또는 `work-views.md`에서 시작합니다. 생성되는 issue/task 템플릿은 대시보드 필터가 읽을 수 있도록 `type`, `id`, `taskID`/`taskTitle` 또는 `issueID`/`issueTitle`, `status`, `priority` 또는 `severity`, `updated` frontmatter를 포함합니다.
+
+생성되는 `project-overview.md`에는 repo/source 위치, DB 사용 여부, DB schema 정본 위치, schema 요약 위치, schema 적용 경로, API/auth/session contract 위치, harness/runtime DB 계약 위치를 적는 정본 참조 섹션을 둡니다. 실제 테이블/컬럼은 project SSoT의 DB 문서나 제품 repo schema 정본에 두고, overview에는 참조 위치만 둡니다.
 
 생성되는 task 템플릿은 병렬 task 독립성 계약을 포함합니다. 병렬 task는 sibling task 완료를 Output, Acceptance Criteria, Test Plan의 전제로 삼지 않고, 개별 output은 해당 task가 독립적으로 증명할 수 있는 산출물로 제한합니다. 인증/데이터/화면/backend 의존성은 agent가 통제할 수 있는 대체 검증 경로와 실제 사용자 경로의 차이를 적고, 여러 sibling task 완료를 전제로 하는 최종 통합 E2E는 별도 QA gate, integration task, 또는 후속 project 검증으로 분리합니다. 단일 task의 화면 동작 자체가 산출물이면 E2E 또는 agent-browser acceptance를 유지합니다.
 

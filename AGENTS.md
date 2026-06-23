@@ -61,6 +61,8 @@
 3계층 -> silo local workspace, PR 본문
 ```
 
+1계층의 project overview, registry, config는 특정 `TASK-NNNN`, 사일로, 구현 PR 하나의 준비 상태를 설명하는 곳이 아닙니다. 1계층에는 프로젝트 정본 위치, repo/source/harness/DB 참조, 하위 SSoT로 가는 인덱스, 반복 가능한 project-level 운영 기준만 둡니다. 특정 task의 `Initial Mock Data`, `Test Inputs`, 구현 준비 상태, 단일 API/page 실행 계약, endpoint 추가 필요성은 task 문서, 사일로 `goal.md`, 또는 2계층 project internal task/runbook으로 내려보냅니다. project-level로 반복 적용되는 schema 정본 위치나 DB seed/test input 분리 원칙은 1계층에서 하위 SSoT 참조 형태로만 둘 수 있습니다.
+
 ## Layer Branch Base Policy
 
 여기서 말하는 branch base는 단순히 GitHub PR 화면의 target/base branch만 뜻하지 않습니다. 먼저 변경 내용이 속한 계층을 판정하고, 그 계층의 기준 브랜치를 branch base로 봅니다. GitHub PR target/base branch는 이 계층 판단 결과를 반영한 최종 머지 대상입니다.
@@ -78,6 +80,7 @@
 - `project/*` 브랜치는 별도 fork를 만들지 않고 프로젝트별 정보, 코드 분석, SSoT 색인, repo 연결 상태를 보관하는 장기 브랜치입니다.
 - `project/*` 브랜치의 목적은 해당 프로젝트에 대한 정보 저장이며, root `main-v2`의 공통 규칙을 바꾸는 것이 아닙니다.
 - `project/*` 브랜치에는 특정 프로젝트의 실제 제품 코드, issue/task 원문, QA 결과 원문을 무분별하게 복사하지 않습니다. 필요한 경우 프로젝트별 SSoT 위치와 요약 색인만 둡니다.
+- project overview, registry, config에는 특정 task/silo의 상세 구현 계약을 쓰지 않습니다. 좁은 task 문장이 필요하면 2계층 task/runbook 또는 3계층 사일로로 내리고, 1계층에는 그 위치를 찾는 인덱스와 반복 가능한 project-level 기준만 남깁니다.
 - project 내부 task, issue, QA, decision, dashboard, source doc처럼 2계층 project SSoT를 생성하거나 수정하는 작업은 해당 project의 `project/<project-id>`에서 판 별도 worktree의 파생 브랜치에서만 수행합니다. `project/<project-id>` 장기 브랜치에는 직접 커밋하지 않습니다.
 - `project/<project-id>` 브랜치가 존재하는 프로젝트의 2계층 SSoT 작업을 `docs/*`, `chore/*`, `silo/*`, 또는 `main-v2` 파생 공통 규칙 브랜치에서 직접 수행하지 않습니다.
 - 단, project SSoT를 만드는 공통 템플릿, scaffold 로직, repo skill, agent prompt처럼 0계층 규칙 자체를 수정하는 작업은 `main-v2` 파생 단기 브랜치에서 수행합니다.
@@ -214,9 +217,13 @@
 - SSoT 상태 갱신 PR을 만들거나 머지 상태를 확인할 수 없으면 사일로 진행을 멈추고, 갱신 불가 사유를 보고합니다.
 - 사일로 디렉토리는 현재 workspace 루트에 만듭니다. 사용자가 직접 지정하지 않는 한 `/tmp`, 홈 디렉토리, 숨김 디렉토리, 에이전트 전용 임시 경로에 만들지 않습니다.
 - `goal.md`에는 task 목표, 필요한 repo, 보호 브랜치, 금지선, criteria별 테스트 계약, 검증 기준, 리뷰 gate 적용 여부, PR 본문 필수 항목을 적습니다. PR 생성 시에는 계층별 target/base를 확인한 뒤 `codex-pr-review-loop` skill로 no-major 목표를 세팅하고 수동 `@codex review`를 호출하는 것을 기본 gate로 둡니다.
-- task와 `goal.md`에서 `초기 DB 목데이터`와 `테스트 입력`은 분리해서 씁니다. `초기 DB 목데이터`는 테스트 시작 전에 DB에 seed로 존재해야 하는 상태입니다. 예: 테스트 사용자, 프로필, 활성 목표, 기준 날짜의 빈 행 또는 기존 기록, 참조 테이블 값. 각 항목에는 왜 미리 존재해야 하는지와 재실행해도 안전한 기준을 적습니다.
+- task와 `goal.md`에서 `초기 DB 목데이터`와 `테스트 입력`은 분리해서 씁니다. `초기 DB 목데이터`는 테스트 시작 전에 DB에 seed로 존재해야 하는 상태입니다. 예: 실제 DB schema에서 FK나 조회 조건으로 요구되는 테스트 사용자 row, 날짜 컬럼을 가진 기존 기록 row, 참조 테이블 값. 각 항목에는 왜 미리 존재해야 하는지와 재실행해도 안전한 기준을 적습니다.
 - `테스트 입력`은 테스트 또는 사용자가 실행 중에 UI, API, harness, runner로 넣는 값과 액션입니다. 예: 식단 직접 입력 폼 값, 빠른 체크 버튼 선택, API request body, validation 실패를 확인하기 위한 잘못된 값. 테스트 중 액션 이후에만 생길 수 있는 값은 초기 DB 목데이터가 아니라 테스트 입력으로 분류합니다.
 - 유닛 테스트 계획을 task에 적을 때도 seed state와 action payload를 섞지 않습니다. 유닛 테스트는 실제 코드를 task에 작성하지 않고, 어떤 초기 상태를 준비하고 어떤 테스트 입력을 넣어 어떤 결과를 검증할지만 설명합니다.
+- 초기 DB 목데이터가 필요한 task를 쓰거나 실행할 때는 먼저 project registry/config 또는 project SSoT에서 실제 DB schema 정본 위치나 schema 요약을 확인합니다. 확인된 schema 없이 테이블, 컬럼, FK, 날짜 테이블, profile, goal 같은 제품 정보를 추정해 seed 항목으로 쓰지 않습니다.
+- DB schema 정본 위치나 요약이 project registry/config와 project SSoT 어디에도 없으면 task 본문에서 임시 schema를 상상하지 않고 `project SSoT schema 계약 누락`으로 분류합니다. 같은 원칙을 API contract, auth/session contract, runtime DB/harness DB 계약처럼 task 작성과 mock data 정의에 필수인 중요 제품 정보에도 적용합니다.
+- task에는 project SSoT의 중요 제품 정보 참조를 따라 어떤 실제 row를 seed할지와 어떤 payload/action을 테스트 입력으로 넣을지를 분리해서 적습니다. 참조가 없는 상태에서 초기 DB 목데이터를 일반 앱 구조로 추론하면 규칙 위반으로 봅니다.
+- 프로젝트 등록/setup 시 DB를 사용하는 프로젝트는 DB schema 정본 위치 또는 schema 요약 위치를 project registry/config 또는 project SSoT에 기록합니다. Docker, compose, migration, startup script로 DB가 자동 생성되거나 갱신되는 프로젝트는 setup 문서에 schema 적용 경로도 함께 기록합니다. 이 setup 기록이 없으면 task-writer는 schema 관련 프롬프트, 초기 DB 목데이터, 테스트 입력 계약을 쓰기 전에 `project setup schema 계약 누락`으로 보고하고 추정으로 진행하지 않습니다.
 - 기능 task는 프론트/백엔드를 별도 소유권으로 나누지 않고 사용자 목적과 완료 경로 기준의 풀스택 단위로 봅니다.
 - 소비 API, schema, store method, route가 아직 없다는 사실은 단독 위험으로 단정하지 않고, 같은 task 안에서 백엔드 계약을 먼저 만들고 프론트가 소비하는 순서로 `goal.md`에 적습니다.
 - Dynamos 사일로에서 브라우저로 화면이나 동작을 확인해야 하면 `agent-browser`로만 확인합니다.

@@ -685,6 +685,16 @@ create_project_ssot() {
 
 - status: draft
 
+## 정본 참조
+
+- repo/source 위치:
+- DB 사용 여부:
+- DB schema 정본 위치:
+- DB schema 요약 위치:
+- DB schema 적용 경로:
+- API/auth/session contract 위치:
+- harness/runtime DB 계약 위치:
+
 ## 활성 Issue
 
 ## 활성 Task

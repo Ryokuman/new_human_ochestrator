@@ -55,7 +55,9 @@ task-xxxx/ 생성
 
 `goal.md`는 원본 task의 `Output`과 `Acceptance Criteria`를 완료 기준으로 삼아야 합니다. 각 criteria는 `unit`, `integration`, `runner`, `E2E`, `agent-browser`, `manual` 중 하나 이상의 검증 방법과 연결합니다.
 
-`초기 DB 목데이터`는 테스트 시작 전에 DB에 미리 seed로 존재해야 하는 상태입니다. 테스트 사용자, 프로필, 활성 목표, 기준 날짜의 빈 행 또는 기존 기록, 참조 테이블 값처럼 테스트 전제 상태를 만드는 데이터만 포함합니다. 각 항목에는 해당 데이터가 왜 시작 전에 필요한지, 어떤 criteria를 가능하게 하는지, 재실행 시 중복 또는 오염을 어떻게 피하는지 적습니다.
+`초기 DB 목데이터`는 테스트 시작 전에 DB에 미리 seed로 존재해야 하는 상태입니다. 실제 DB schema에서 FK나 조회 조건으로 확인된 테스트 사용자 row, 날짜 컬럼을 가진 기존 기록 row, 참조 테이블 값처럼 테스트 전제 상태를 만드는 데이터만 포함합니다. 각 항목에는 해당 데이터가 왜 시작 전에 필요한지, 어떤 criteria를 가능하게 하는지, 재실행 시 중복 또는 오염을 어떻게 피하는지 적습니다.
+
+초기 DB 목데이터가 필요한 `goal.md`를 작성할 때는 먼저 project registry/config 또는 project SSoT의 DB schema 정본 위치나 schema 요약을 확인합니다. schema 참조가 없으면 테이블, 컬럼, FK, profile, goal, 날짜 테이블 같은 제품 정보를 추정하지 않고 `project SSoT schema 계약 누락`으로 분류합니다. API contract, auth/session contract, runtime DB/harness DB 계약처럼 mock data 정의와 task 실행에 필요한 중요 제품 정보도 같은 방식으로 정본 위치나 요약을 참조합니다.
 
 `테스트 입력`은 테스트 실행 중 사용자, runner, harness, API client가 넣는 값과 액션입니다. 폼 입력값, 버튼 선택, 빠른 체크 액션, API request body, validation 실패를 확인하기 위한 잘못된 값은 테스트 입력입니다. 어떤 값이 사용자 액션 또는 API 호출 이후에만 생길 수 있다면 초기 DB 목데이터가 아니라 테스트 입력으로 분류합니다.
 
