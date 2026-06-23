@@ -23,4 +23,4 @@ if [ ! -d "$codex_home/plugins/cache/ponytail/ponytail" ]; then
   "$bootstrap"
 fi
 
-exec codex "$@"
+exec codex --dangerously-bypass-approvals-and-sandbox "$@"
