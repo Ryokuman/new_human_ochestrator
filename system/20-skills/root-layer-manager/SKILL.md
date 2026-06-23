@@ -47,10 +47,10 @@ branch base는 먼저 계층으로 판단합니다. GitHub PR target/base branch
 
 ```text
 0계층 공통 변경 -> main-v2 기준 브랜치와 main-v2 대상 PR
-1계층 이상 project 변경 -> project/<project-id> 기준 브랜치와 project/<project-id> 대상 PR
+1계층 이상 project 변경 -> project/<project-id> 기준 브랜치, 별도 worktree의 파생 브랜치, project/<project-id> 대상 PR
 ```
 
-- `project/onjump`의 SSoT, task, issue, QA, decision, coverage 같은 project 내부 변경은 `project/onjump` 기반으로 처리합니다.
+- `project/onjump`의 SSoT, task, issue, QA, decision, coverage 같은 project 내부 변경은 `project/onjump`을 기준 브랜치로 삼되, 별도 worktree의 파생 브랜치에서 커밋하고 `project/onjump` 대상 PR로 처리합니다.
 - 작업 중 공통 system update가 발견되면 그 변경만 `main-v2` 기준 worktree와 브랜치로 분리합니다.
 - 하나의 브랜치에 0계층 변경과 project 변경이 섞이면 계층별 커밋을 분리하고, 서로 다른 PR로 제출합니다.
 - 0계층 PR이 `main-v2`에 머지되면 관련 `project/<project-id>` 브랜치와 진행 중인 project 작업 브랜치를 최신 `main-v2` 위로 rebase한 뒤 project 작업을 이어갑니다.
@@ -68,7 +68,7 @@ branch base는 먼저 계층으로 판단합니다. GitHub PR target/base branch
 5. task 작성이면 실제 project SSoT 아래 `30-tasks/`와 task registry 또는 기존 task 목록
 6. issue/QA/decision 작성이면 실제 project SSoT 아래 해당 index 또는 README
 7. `project/<project-id>` 브랜치가 존재하는지 확인합니다.
-8. `project/<project-id>` 브랜치가 있으면 해당 브랜치 또는 그 브랜치에서 판 별도 worktree가 현재 작업 기준인지 확인합니다.
+8. `project/<project-id>` 브랜치가 있으면 해당 브랜치에서 판 별도 worktree의 파생 브랜치가 현재 작업 기준인지 확인합니다.
 
 확인 결과와 다른 위치가 보이면 아래처럼 처리합니다.
 
@@ -108,7 +108,7 @@ root 저장소 `main-v2`에는 공통 운영 규칙만 둡니다.
 
 `project/*` 브랜치는 별도 fork를 만들지 않을 때 쓰는 프로젝트별 정보 보관 브랜치입니다. 이 브랜치는 root `main-v2`로 머지할 기능 브랜치가 아니며, 프로젝트별 코드 분석, repo 연결 상태, SSoT 색인, 운영 메모를 보관합니다.
 
-프로젝트 내부 task, issue, QA, decision, dashboard, source doc처럼 2계층 project SSoT를 생성하거나 수정하는 작업은 해당 project의 `project/<project-id>` 브랜치 또는 그 브랜치에서 판 별도 worktree에서만 수행합니다. 공통 템플릿, scaffold 로직, repo skill, agent prompt처럼 0계층 규칙 자체를 수정하는 작업은 `main-v2` 파생 단기 브랜치에서 수행합니다.
+프로젝트 내부 task, issue, QA, decision, dashboard, source doc처럼 2계층 project SSoT를 생성하거나 수정하는 작업은 해당 project의 `project/<project-id>`에서 판 별도 worktree의 파생 브랜치에서만 수행합니다. `project/<project-id>` 장기 브랜치에는 직접 커밋하지 않습니다. 공통 템플릿, scaffold 로직, repo skill, agent prompt처럼 0계층 규칙 자체를 수정하는 작업은 `main-v2` 파생 단기 브랜치에서 수행합니다.
 
 `project/*` 브랜치가 최신 `main-v2` 위로 rebase되어 있지 않아 rebase할 때는, rebase 전후로 최신 `main-v2`에서 변경된 공통 규칙, AGENTS.md, system 문서, 프롬프트, skill 초안을 확인합니다. rebase 후에는 현재 project SSoT, task, issue, 실행 방식이 새 `main-v2` 규칙과 맞지 않는 부분을 `규칙 불일치`와 `조치 후보`로 분리해 보고합니다.
 

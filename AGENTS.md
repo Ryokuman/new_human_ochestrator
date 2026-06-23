@@ -16,7 +16,7 @@
 - `main-v2`는 탐색형 제품 엔지니어 운영 방식 기준 브랜치입니다. `main-v2`는 `Build -> Learn -> Spec`을 우선하고, 빠른 사용 가능 결과물을 만든 뒤 학습 내용을 SSoT/task/spec으로 승격합니다.
 - `main-v2` 변경은 `main`에 반영하지 않습니다. 사용자 요청이 있더라도 이 프로젝트에서는 `main` 반영 대신 `main-v2` 안에서만 후속 브랜치, PR, 문서 승격을 다룹니다.
 - `main-v2` 변경은 항상 `main-v2`에서 파생한 단기 브랜치에서 커밋하고, GitHub PR target/base branch가 `main-v2`인 PR로만 반영합니다.
-- PR 생성 시 리뷰 gate는 먼저 현재 브랜치의 계층과 PR 유형을 판정합니다. 0계층 공통 변경은 `main-v2`, project 계층 변경은 해당 `project/<project-id>` 대상 PR로 올린 뒤 `codex-pr-review-loop` skill로 no-major 목표를 세팅하고 PR 댓글의 수동 `@codex review`를 호출하는 것을 기본으로 둡니다.
+- PR 생성 시 리뷰 gate는 먼저 현재 브랜치의 계층과 PR 유형을 판정합니다. 0계층 공통 변경은 `main-v2` 대상 PR로 올리고, project 계층 변경은 해당 `project/<project-id>`를 기준 브랜치로 삼되 별도 worktree의 파생 브랜치에서 커밋한 뒤 `project/<project-id>` 대상 PR로 올립니다. 이후 `codex-pr-review-loop` skill로 no-major 목표를 세팅하고 PR 댓글의 수동 `@codex review`를 호출하는 것을 기본으로 둡니다.
 
 ## Exploratory Product Engineering Policy
 
@@ -66,8 +66,8 @@
 여기서 말하는 branch base는 단순히 GitHub PR 화면의 target/base branch만 뜻하지 않습니다. 먼저 변경 내용이 속한 계층을 판정하고, 그 계층의 기준 브랜치를 branch base로 봅니다. GitHub PR target/base branch는 이 계층 판단 결과를 반영한 최종 머지 대상입니다.
 
 - 0계층 system update, 공통 규칙, `AGENTS.md`, `system/` 문서, repo skill, agent prompt는 `main-v2`가 기준 브랜치입니다. 이 변경만 `main-v2` 파생 브랜치와 `main-v2` 대상 PR로 제출합니다.
-- 1계층 이상 project 등록, project SSoT, project 내부 task/issue/QA/decision/coverage/runbook은 해당 `project/<project-id>`가 기준 브랜치입니다. 해당 변경은 `project/<project-id>` 기반 브랜치와 `project/<project-id>` 대상 PR로 제출합니다.
-- 예를 들어 `project/onjump`의 SSoT update는 `project/onjump` 기반 PR로 처리합니다. 대화 중 공통 system update가 새로 생긴 경우에만 별도 `main-v2` PR로 분리합니다.
+- 1계층 이상 project 등록, project SSoT, project 내부 task/issue/QA/decision/coverage/runbook은 해당 `project/<project-id>`가 기준 브랜치입니다. 해당 변경은 `project/<project-id>`에서 직접 커밋하지 않고, 별도 worktree에서 판 파생 브랜치로 작업한 뒤 `project/<project-id>` 대상 PR로 제출합니다.
+- 예를 들어 `project/onjump`의 SSoT update는 `project/onjump`을 기준 브랜치로 삼되, 별도 worktree의 파생 브랜치에서 커밋하고 `project/onjump` 대상 PR로 처리합니다. 대화 중 공통 system update가 새로 생긴 경우에만 별도 `main-v2` PR로 분리합니다.
 - 하나의 작업 브랜치에 0계층 변경과 1계층 이상 변경이 함께 생기면, worktree를 둘로 나누고 계층별 커밋을 분리해 서로 다른 PR로 처리합니다.
 - 0계층 PR이 `main-v2`에 머지되면 관련 `project/<project-id>` 브랜치와 진행 중인 project 작업 브랜치를 최신 `main-v2` 위로 rebase한 뒤 project 작업을 이어갑니다.
 - `project/onjump-add-login` 같은 브랜치는 이름상 feature branch라도, 계층 기준으로는 0계층 `main-v2`와 1계층 `project/onjump` 기준을 동시에 의식해야 합니다. system update가 섞이면 `main-v2`용 분리 PR을 먼저 만들고, project 변경은 `project/onjump` 계층 기준으로 남깁니다.
@@ -78,7 +78,7 @@
 - `project/*` 브랜치는 별도 fork를 만들지 않고 프로젝트별 정보, 코드 분석, SSoT 색인, repo 연결 상태를 보관하는 장기 브랜치입니다.
 - `project/*` 브랜치의 목적은 해당 프로젝트에 대한 정보 저장이며, root `main-v2`의 공통 규칙을 바꾸는 것이 아닙니다.
 - `project/*` 브랜치에는 특정 프로젝트의 실제 제품 코드, issue/task 원문, QA 결과 원문을 무분별하게 복사하지 않습니다. 필요한 경우 프로젝트별 SSoT 위치와 요약 색인만 둡니다.
-- project 내부 task, issue, QA, decision, dashboard, source doc처럼 2계층 project SSoT를 생성하거나 수정하는 작업은 해당 project의 `project/<project-id>` 브랜치 또는 그 브랜치에서 판 별도 worktree에서만 수행합니다.
+- project 내부 task, issue, QA, decision, dashboard, source doc처럼 2계층 project SSoT를 생성하거나 수정하는 작업은 해당 project의 `project/<project-id>`에서 판 별도 worktree의 파생 브랜치에서만 수행합니다. `project/<project-id>` 장기 브랜치에는 직접 커밋하지 않습니다.
 - `project/<project-id>` 브랜치가 존재하는 프로젝트의 2계층 SSoT 작업을 `docs/*`, `chore/*`, `silo/*`, 또는 `main-v2` 파생 공통 규칙 브랜치에서 직접 수행하지 않습니다.
 - 단, project SSoT를 만드는 공통 템플릿, scaffold 로직, repo skill, agent prompt처럼 0계층 규칙 자체를 수정하는 작업은 `main-v2` 파생 단기 브랜치에서 수행합니다.
 - project 작업 브랜치에서 0계층 공통 변경이 함께 발생하면 해당 변경만 `main-v2` 기준 worktree로 분리하고, project 브랜치와 작업 브랜치는 0계층 PR 머지 후 최신 `main-v2` 위로 rebase합니다.
@@ -209,7 +209,9 @@
 - 사용자가 task 실행, 태스크 진행, task 수행을 요청하면 별도 확인 없이 사일로 준비까지 진행합니다.
 - 기본 준비 범위는 `task-xxxx/` 생성, `goal.md` 작성, 필요한 repo clone, repo별 작업 브랜치 생성입니다.
 - 사일로 root 생성, `goal.md` 작성, repo clone, repo별 작업 브랜치 생성 중 하나라도 실제로 시작하기 전에 project SSoT의 원본 task/issue 상태를 `in_progress`로 갱신합니다.
-- SSoT 상태 갱신을 할 수 없으면 사일로 진행을 멈추고, 갱신 불가 사유와 이미 생성한 로컬 evidence 위치를 보고합니다.
+- 이 상태 갱신도 project 계층 변경이므로 기준 `project/<project-id>` 브랜치에 직접 커밋하지 않고, 별도 worktree의 파생 브랜치에서 상태 갱신 PR을 먼저 만든 뒤 `project/<project-id>`에 머지된 것을 확인합니다.
+- 상태 갱신 PR이 머지되기 전에는 사일로 root 생성, `goal.md` 작성, repo clone, repo별 작업 브랜치 생성을 시작하지 않습니다.
+- SSoT 상태 갱신 PR을 만들거나 머지 상태를 확인할 수 없으면 사일로 진행을 멈추고, 갱신 불가 사유를 보고합니다.
 - 사일로 디렉토리는 현재 workspace 루트에 만듭니다. 사용자가 직접 지정하지 않는 한 `/tmp`, 홈 디렉토리, 숨김 디렉토리, 에이전트 전용 임시 경로에 만들지 않습니다.
 - `goal.md`에는 task 목표, 필요한 repo, 보호 브랜치, 금지선, criteria별 테스트 계약, 검증 기준, 리뷰 gate 적용 여부, PR 본문 필수 항목을 적습니다. PR 생성 시에는 계층별 target/base를 확인한 뒤 `codex-pr-review-loop` skill로 no-major 목표를 세팅하고 수동 `@codex review`를 호출하는 것을 기본 gate로 둡니다.
 - 기능 task는 프론트/백엔드를 별도 소유권으로 나누지 않고 사용자 목적과 완료 경로 기준의 풀스택 단위로 봅니다.
@@ -225,7 +227,7 @@
 - 이 정책은 `main-v2` 기준 기본값입니다.
 - PR 생성 요청을 받으면 먼저 현재 브랜치의 diff를 0계층 공통 변경과 project 계층 변경으로 나눕니다.
 - 0계층 공통 변경은 `main-v2` 기준 브랜치와 `main-v2` 대상 PR로 올립니다.
-- 1계층 project 등록/색인, 2계층 project SSoT, task, issue, QA, decision, coverage, runbook 변경은 해당 `project/<project-id>` 기준 브랜치와 `project/<project-id>` 대상 PR로 올립니다. 사용자가 “1계층 PR”이라고 말하면 이 project 계층 PR까지 포함해 판정합니다.
+- 1계층 project 등록/색인, 2계층 project SSoT, task, issue, QA, decision, coverage, runbook 변경은 해당 `project/<project-id>`를 기준 브랜치로 삼되, 별도 worktree의 파생 브랜치에서 커밋하고 `project/<project-id>` 대상 PR로 올립니다. 사용자가 “1계층 PR”이라고 말하면 이 project 계층 PR까지 포함해 판정합니다.
 - 하나의 브랜치에 0계층 변경과 project 계층 변경이 함께 있으면 worktree와 브랜치를 나누고 계층별 PR을 따로 올립니다.
 - PR 생성 직후에는 0계층 PR과 project 계층 PR 모두 PR 댓글로 수동 `@codex review`를 호출합니다. 단, GitHub PR target/base branch가 계층 기준 브랜치와 다르면 호출하지 않고 계층 기준 브랜치 불일치로 보고합니다.
 - `project/dynamos` 또는 `project/onjump`처럼 project 계층 기준 브랜치가 따로 있는 변경을 Codex review gate 때문에 `main-v2`로 retarget하지 않습니다.
@@ -269,7 +271,7 @@
 - `projects/`에는 프로젝트 SSoT, registry, repo 연결 정보, 요약 색인처럼 프로젝트 운영 상태를 찾기 위한 자료만 둡니다.
 - 실제 제품 소스코드는 `.gitignore`된 `sources/` 같은 외부/로컬 소스 위치, 별도 repo, 별도 worktree, fork, submodule, external clone을 사용합니다.
 - 프로젝트별 evidence는 coverage 판단 근거이므로 project SSoT 내부에 보존할 수 있습니다.
-- project SSoT 문서를 실제로 쓰기 전에는 기준 SSoT 위치뿐 아니라 기준 브랜치와 worktree도 확인합니다. `project/<project-id>` 브랜치가 있으면 그 브랜치 또는 그 브랜치에서 판 별도 worktree를 사용하고, 다른 브랜치에 열린 project SSoT diff가 있으면 `기준 아님`, `이관 후보`, `위험`으로 분리해 보고합니다.
+- project SSoT 문서를 실제로 쓰기 전에는 기준 SSoT 위치뿐 아니라 기준 브랜치와 worktree도 확인합니다. `project/<project-id>` 브랜치가 있으면 그 브랜치에서 판 별도 worktree의 파생 브랜치를 사용하고, 다른 브랜치에 열린 project SSoT diff가 있으면 `기준 아님`, `이관 후보`, `위험`으로 분리해 보고합니다.
 - 제품 코드가 여러 workspace, worktree, external clone, task silo에 나뉘어 있으면 구현 전 source workspace 기준선을 확정합니다. 브랜치 이름만으로 최신 작업을 판단하지 않고, 각 workspace의 branch, upstream, `HEAD`, dirty diff, `goal.md`, handoff, 최근 세션 로그를 함께 봅니다.
 - sibling task worktree가 같은 화면, API, store, schema, business flow를 수정한 dirty 상태라면 최신 기준선 후보로 먼저 비교합니다.
 - MVP, QA 수정, 저장 실패, UI 복구, 비즈니스 로직 복구 요청에서는 화면, 입력, 저장, 조회, 재진입 복원, validation, empty/error/loading, 실제 사용자 경로 검증을 기능 인벤토리로 대조합니다.

@@ -4,7 +4,7 @@
 
 ```text
 1. 테스트 요청과 Run Set을 확인한다.
-2. task/issue에서 시작된 테스트 사일로라면 project SSoT의 원본 task/issue 상태를 `in_progress`로 갱신한다.
+2. task/issue에서 시작된 테스트 사일로라면 별도 worktree의 파생 브랜치에서 project SSoT 원본 task/issue 상태를 `in_progress`로 바꾸는 상태 갱신 PR을 만들고 머지를 확인한다.
 3. 사일로 유형이 테스트 사일로인지 판정한다.
 4. 사일로 root와 report/evidence 위치를 정한다.
 5. 필요한 runtime set을 확인한다.
@@ -17,7 +17,7 @@
 12. 삭제 전 gate를 확인하고 정리 가능 여부를 보고한다.
 ```
 
-2번 상태 갱신은 task/issue 원본이 있는 테스트 사일로의 시작 gate입니다. 상태 갱신이 불가능하면 사일로 root와 report/evidence 위치를 만들기 전에 멈추고, 갱신 불가 사유를 보고합니다.
+2번 상태 갱신은 task/issue 원본이 있는 테스트 사일로의 시작 gate입니다. 상태 갱신 PR이 `project/<project-id>`에 머지되기 전에는 사일로 root와 report/evidence 위치를 만들지 않습니다. 상태 갱신 PR을 만들거나 머지 상태를 확인할 수 없으면 멈추고, 갱신 불가 사유를 보고합니다.
 
 테스트 사일로는 `Hypothesis Chain`을 갱신하지 않습니다.
 

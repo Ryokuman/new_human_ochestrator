@@ -17,7 +17,7 @@
 
 ```text
 1. 입력 task/issue 읽기
-2. project SSoT의 원본 task/issue 상태를 `in_progress`로 갱신
+2. 별도 worktree의 파생 브랜치에서 project SSoT 원본 task/issue 상태를 `in_progress`로 바꾸는 상태 갱신 PR 생성 및 머지 확인
 3. 현재 workspace 루트에 `<unit-id>/` 사일로 root 생성
 4. `goal.md` 작성
 5. 필요한 repo만 사일로 root에 clone
@@ -37,7 +37,7 @@
 19. 메인 오케스트레이터에게 최종 보고
 ```
 
-2번 상태 갱신은 준비 단계의 일부가 아니라 시작 gate입니다. 상태 갱신이 불가능하면 사일로를 계속 진행하지 않고, 이미 생성된 로컬 파일이 있으면 임시 evidence로 분리해 보고합니다.
+2번 상태 갱신은 준비 단계의 일부가 아니라 시작 gate입니다. 상태 갱신 PR이 `project/<project-id>`에 머지되기 전에는 사일로 root, `goal.md`, repo clone, 작업 브랜치를 만들지 않습니다. 상태 갱신 PR을 만들거나 머지 상태를 확인할 수 없으면 사일로를 계속 진행하지 않고 갱신 불가 사유를 보고합니다.
 
 외부 서비스, 인증, 실제 네트워크, 사용자 계정, 런타임 설정처럼 agent가 직접 통제하지 못하는 요소가 task completion에 끼어들면 8번에서 통제 가능성, 증명 가능성, 사용자 승인 필요 여부를 먼저 분리합니다. 구체적인 L 단계, provider별 checklist, fixture/harness 구현 방식, merge 전 세부 QA gate는 project SSoT 또는 task 계약을 참조하게 하고, system SSoT에 일반 규칙처럼 고정하지 않습니다.
 

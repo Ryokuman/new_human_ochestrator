@@ -60,7 +60,7 @@ git diff --stat origin/main-v2...HEAD
 - secret 값을 포함하지 않는 공통 config example
 - project 자료를 직접 담지 않는 일반 운영 규칙
 
-project 작업 중 공통 규칙 변경이 발생한 경우에는 해당 0계층 변경만 `main-v2` 기준 worktree로 분리한 뒤 `main-v2` PR로 제안합니다. project SSoT 변경은 원래 `project/<project-id>` 기준 브랜치와 PR에 남깁니다.
+project 작업 중 공통 규칙 변경이 발생한 경우에는 해당 0계층 변경만 `main-v2` 기준 worktree로 분리한 뒤 `main-v2` PR로 제안합니다. project SSoT 변경은 해당 `project/<project-id>` 기준 브랜치에서 판 별도 worktree의 파생 브랜치로 분리하고, `project/<project-id>` 대상 PR로 제안합니다.
 
 ## 압력 사례
 
@@ -68,7 +68,7 @@ project 작업 중 공통 규칙 변경이 발생한 경우에는 해당 0계층
 - `project/<project-id>` 브랜치에 `projects/<project-id>/03-silo-local/` 아래 사일로 로컬 README, PR 본문 템플릿, 실행 로그가 있고 사용자가 PR 준비를 요청하면 `main-v2` PR을 쓰지 않습니다.
 - `docs/*` 브랜치인데 diff가 project SSoT 원문뿐이면 브랜치명 불일치로 보고하고, `main-v2`로 올릴 공통 규칙이 없다고 말합니다.
 - `setup.sh` 또는 project SSoT scaffold 템플릿처럼 여러 프로젝트에서 반복 가능한 생성 규칙만 남았을 때만 `main-v2` PR을 제안합니다.
-- `project/onjump-add-login` 같은 project 작업 브랜치에서 system update와 onjump SSoT update가 함께 발생하면, system update만 `main-v2` 기준 브랜치로 분리하고 onjump SSoT update는 `project/onjump` 기준으로 유지합니다.
+- `project/onjump-add-login` 같은 project 작업 브랜치에서 system update와 onjump SSoT update가 함께 발생하면, system update만 `main-v2` 기준 worktree로 분리하고 onjump SSoT update는 `project/onjump` 기준 브랜치에서 판 별도 worktree의 파생 브랜치와 `project/onjump` 대상 PR로 분리합니다.
 
 ## 보고 형식
 

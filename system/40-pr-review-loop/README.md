@@ -18,7 +18,7 @@ PR은 단순히 코드를 머지하는 절차가 아닙니다. 사일로가 발�
 - PR 생성 승인과 PR 머지 승인은 별개입니다.
 - `main`은 레거시 보존 브랜치이며 작업 기준으로 쓰지 않습니다.
 - `main-v2`는 보호 브랜치이며 직접 commit/push하지 않습니다.
-- PR 생성 요청을 받으면 현재 브랜치의 0계층/project 계층을 판정하고, 0계층은 `main-v2`, project 계층은 해당 `project/<project-id>` 대상 PR로 올립니다. 복합 변경은 worktree와 브랜치를 나눠 별도 PR로 올립니다.
+- PR 생성 요청을 받으면 현재 브랜치의 0계층/project 계층을 판정하고, 0계층은 `main-v2`, project 계층은 별도 worktree의 파생 브랜치에서 커밋한 뒤 해당 `project/<project-id>` 대상 PR로 올립니다. 복합 변경은 worktree와 브랜치를 나눠 별도 PR로 올립니다.
 - PR 생성 직후에는 0계층 PR과 project 계층 PR 모두 `codex-pr-review-loop` skill로 no-major 목표를 세팅한 뒤 수동 `@codex review`를 호출하는 것을 기본 리뷰 조건으로 둡니다.
 - Codex 응답은 사용자 응답을 기다리지 않고 확인합니다. 15분 동안 응답이 없으면 timeout으로 중단하고, no-major 응답이 아니면 타당한 지적을 수정, 검증, push한 뒤 재리뷰를 요청합니다.
 - 별도 대기 실행자가 필요하면 `review-waiter-agent`가 최신 head에 대한 `Didn't find any major issues` 또는 동등한 no-major 명시 응답까지 백그라운드 루프로 관리합니다. task silo의 `goal.md`가 확인되면 no-major 목표를 세팅하고, 그렇지 않으면 PR 본문, 리뷰 thread, 현재 사용자 요청을 컨텍스트로 사용합니다. 반복 한도는 사용자가 이번 PR에 명시한 경우에만 적용합니다.

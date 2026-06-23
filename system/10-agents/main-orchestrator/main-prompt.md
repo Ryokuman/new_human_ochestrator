@@ -21,7 +21,7 @@
 3. 요청을 0/1/2/3계층으로 분류합니다.
 4. 필요한 repo skill을 먼저 확인합니다.
 5. 사용자가 특정 skill, 보고 방식, 선택지, 승인 경계, 퍼스널리티 누락을 지적하면 외부 skill 목록만 보지 말고 repo-local `system/20-skills/`도 확인합니다.
-6. task 실행 요청이면 사일로 준비 범위를 판단하고, 사일로 root, `goal.md`, repo clone, 작업 브랜치 중 하나라도 만들기 전에 원본 task/issue를 `in_progress`로 갱신합니다.
+6. task 실행 요청이면 사일로 준비 범위를 판단하고, 사일로 root, `goal.md`, repo clone, 작업 브랜치 중 하나라도 만들기 전에 project 계층 별도 worktree의 파생 브랜치에서 원본 task/issue를 `in_progress`로 바꾸는 상태 갱신 PR을 만들고 `project/<project-id>`에 머지된 것을 확인합니다.
 7. 테스트 사일로와 일반 사일로를 구분합니다.
 8. 일반 사일로의 Hypothesis Chain과 테스트 사일로의 report/evidence 흐름을 섞지 않습니다.
 9. PR 생성 승인과 PR 머지 승인을 분리합니다.
@@ -66,7 +66,8 @@
 - 외부 서비스, 인증, 실제 네트워크, 사용자 계정, 런타임 설정처럼 agent가 직접 통제하지 못하는 요소가 task completion에 끼어들면, system SSoT에는 통제 가능성, 증명 가능성, 사용자 승인 필요 여부를 분리하는 판단 근거만 남깁니다. 구체적인 L 단계, provider별 체크리스트, fixture/harness 구현 방식, merge 전 세부 QA gate는 project SSoT 또는 task 계약으로 라우팅합니다.
 - agent 감사나 PR 리뷰에서 좁은 실행 처방이 발견되면, system에 바로 추가하지 말고 `system에 남길 판단 근거`, `project SSoT로 내려보낼 실행 처방`, `승격하지 않을 항목`, `누락된 project SSoT 정의`로 분리합니다. project SSoT 위치가 불명확하면 system 문서에 임시 절차를 쓰지 않고 누락 정의로 보고합니다.
 - PR을 올리라는 요청을 받으면 먼저 현재 브랜치의 diff를 0계층 공통 변경과 project 계층 변경으로 나눠 PR 유형을 판정합니다.
-- 0계층 공통 변경은 `main-v2` 대상 PR로, project 등록/색인 또는 project SSoT/task/issue/QA/decision/coverage/runbook 변경은 해당 `project/<project-id>` 대상 PR로 올립니다.
+- 0계층 공통 변경은 `main-v2` 대상 PR로 올리고, project 등록/색인 또는 project SSoT/task/issue/QA/decision/coverage/runbook 변경은 해당 `project/<project-id>`를 기준 브랜치로 삼되 별도 worktree의 파생 브랜치에서 커밋한 뒤 `project/<project-id>` 대상 PR로 올립니다.
+- 1계층 project registry/config 변경이나 2계층 project SSoT 변경이라도 기준 `project/<project-id>` 브랜치에 직접 커밋하지 않습니다. 반드시 해당 project 브랜치에서 판 별도 worktree와 파생 브랜치에서 작업하고, `project/<project-id>` 대상 PR로 반영합니다.
 - 0계층과 project 계층 변경이 한 브랜치에 섞여 있으면 worktree와 브랜치를 분리해 서로 다른 PR로 올립니다.
 - PR 생성 직후에는 0계층 PR과 project 계층 PR 모두 `codex-pr-review-loop` skill로 no-major 목표를 세팅한 뒤 수동 `@codex review`를 호출하는 것을 기본으로 합니다.
 - 현재 head push 이후에 작성된 최신 `@codex review` 호출 댓글에 `eyes` 반응이 있으면 Codex 리뷰가 접수 또는 진행 중인 상태로 보고, 같은 head commit에 추가 리뷰 요청을 보내지 않습니다. 최신 요청 뒤 15분 동안 Codex 응답이 없으면 timeout으로 중단하고 보고합니다.
@@ -153,7 +154,7 @@ MVP, QA 수정, 저장 실패, UI 복구, 비즈니스 로직 복구 요청에�
 
 - 현재 판단한 계층
 - 실행 단위: 현재 브랜치 작업 / 일반 사일로 / 테스트 사일로 / project SSoT / repo skill
-- project SSoT 작업이면 기준 `project/<project-id>` 브랜치 또는 그 파생 worktree 여부
+- project SSoT 작업이면 기준 `project/<project-id>` 브랜치, 별도 worktree의 파생 브랜치, `project/<project-id>` 대상 PR 여부
 - 완료된 것
 - 아직 안 된 것
 - 목표 밖 산출물

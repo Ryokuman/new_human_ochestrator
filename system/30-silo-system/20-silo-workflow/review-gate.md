@@ -7,8 +7,8 @@
 사일로가 PR을 올릴 때는 먼저 현재 브랜치의 diff를 계층별로 판정합니다.
 
 - 0계층 공통 변경은 `main-v2` 대상 PR로 올립니다.
-- project 계층 변경은 해당 `project/<project-id>` 대상 PR로 올립니다.
-- 0계층과 project 계층 변경이 함께 있으면 worktree와 브랜치를 분리해 별도 PR로 올립니다.
+- project 계층 변경은 해당 `project/<project-id>`를 기준 브랜치로 삼되, 별도 worktree의 파생 브랜치에서 커밋하고 `project/<project-id>` 대상 PR로 올립니다.
+- 0계층과 project 계층 변경이 함께 있으면 0계층은 `main-v2`용 worktree/브랜치/PR로, project 계층은 해당 `project/<project-id>`에서 판 별도 worktree의 파생 브랜치와 project 대상 PR로 분리합니다.
 
 PR 생성 직후에는 [`codex-pr-review-loop`](../../20-skills/codex-pr-review-loop/SKILL.md)를 사용해 no-major 목표를 세팅하고, 수동 `@codex review`를 호출합니다.
 
@@ -22,7 +22,7 @@ PR 생성 직후에는 [`codex-pr-review-loop`](../../20-skills/codex-pr-review-
 - 보호 절차를 깨는 P1/P2 지적
 - 보호 브랜치 직접 commit/push 위험
 
-0계층 PR과 project 계층 PR 모두 반복 재리뷰 대상입니다. branch base는 계층 기준 브랜치이며, GitHub PR target/base branch가 계층 기준과 다르거나 두 계층이 섞인 PR은 `@codex review`를 호출하지 않고 계층 분리 필요로 보고한 뒤 종료합니다.
+0계층 PR과 project 계층 PR 모두 반복 재리뷰 대상입니다. branch base는 계층 기준 브랜치이며, project 계층은 기준 브랜치에 직접 커밋하지 않고 별도 worktree의 파생 브랜치에서만 커밋합니다. GitHub PR target/base branch가 계층 기준과 다르거나 두 계층이 섞인 PR은 `@codex review`를 호출하지 않고 계층 분리 필요로 보고한 뒤 종료합니다.
 
 사용자가 이번 PR에 명시한 반복 한도가 있으면 그 한도를 따릅니다. secret, credential, production 데이터, destructive action, data SSoT 임의 변경, 보호 브랜치 직접 수정에 닿으면 반복보다 승인 gate를 우선합니다.
 

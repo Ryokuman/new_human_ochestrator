@@ -6,9 +6,9 @@ PR을 올리라는 지시는 먼저 현재 브랜치의 계층과 PR 유형을 �
 
 - PR 전에는 현재 브랜치 diff를 0계층 공통 변경과 project 계층 변경으로 나눕니다.
 - 0계층 공통 규칙, `AGENTS.md`, `system/`, repo skill, agent prompt 변경은 `main-v2` 기준 브랜치와 `main-v2` 대상 PR로 올립니다.
-- 1계층 project 등록/색인, 2계층 project SSoT, task, issue, QA, decision, coverage, runbook 변경은 해당 `project/<project-id>` 기준 브랜치와 `project/<project-id>` 대상 PR로 올립니다. 사용자가 “1계층 PR”이라고 말하면 이 project 계층 PR까지 포함해 판정합니다.
+- 1계층 project 등록/색인, 2계층 project SSoT, task, issue, QA, decision, coverage, runbook 변경은 해당 `project/<project-id>`를 기준 브랜치로 삼되, 별도 worktree의 파생 브랜치에서 커밋하고 `project/<project-id>` 대상 PR로 올립니다. 사용자가 “1계층 PR”이라고 말하면 이 project 계층 PR까지 포함해 판정합니다.
 - project 변경을 Codex review gate 때문에 `main-v2`로 retarget하지 않습니다.
-- 하나의 작업 브랜치에 0계층 변경과 1계층 이상 변경이 함께 있으면, 0계층 변경만 별도 `main-v2` worktree/브랜치/PR로 분리하고 project 변경은 원래 project 기준 브랜치에 남깁니다.
+- 하나의 작업 브랜치에 0계층 변경과 1계층 이상 변경이 함께 있으면, 0계층 변경은 별도 `main-v2` worktree/브랜치/PR로 분리하고 project 변경은 `project/<project-id>`에서 판 별도 worktree의 파생 브랜치와 `project/<project-id>` 대상 PR로 분리합니다.
 - PR 생성 직후에는 0계층 PR과 project 계층 PR 모두 [`codex-pr-review-loop`](../20-skills/codex-pr-review-loop/SKILL.md)로 no-major 목표를 세팅하고, PR 댓글의 수동 `@codex review`를 호출합니다.
 - 호출 댓글에는 가능하면 `한국어로 리뷰해 주세요.` 또는 이에 준하는 한국어 요청과 최신 head 기준 리뷰 요청만 적습니다. 외부 리뷰 봇의 고정 안내 템플릿 언어까지 보장하지는 못하지만, repo 운영 언어와 맞추기 위한 기본 요청 문구로 둡니다.
 - `Didn't find any major issues` 또는 그와 동등하게 최신 head에 major/actionable 지적이 없다는 Codex 명시 응답은 통과로 봅니다. 반복 조건과 통과 판정은 외부 리뷰 댓글에 강제하지 않고, PR 본문, task silo의 `goal.md`, 메인 에이전트 내부 상태에서 관리합니다.
