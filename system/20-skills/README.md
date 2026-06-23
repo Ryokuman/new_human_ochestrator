@@ -23,7 +23,7 @@
 - [`codex-pr-review-loop`](codex-pr-review-loop/SKILL.md): PR 유형을 계층별로 판정한 뒤 0계층 `main-v2` PR 또는 project 계층 PR에서 Codex가 최신 head에 대해 no-major 응답을 명시할 때까지 목표 세팅, 리뷰 호출, 15분 응답 대기, 수정, 검증, 재리뷰 반복을 관리할 때 사용합니다.
 - [`main-v2-pr-scope-gate`](main-v2-pr-scope-gate/SKILL.md): `main-v2` 대상 PR 제안, push, PR 생성 전 diff path와 브랜치명을 계층별로 분류해 project SSoT 원문이나 local/silo 자료가 섞였는지 확인할 때 사용합니다.
 - [`root-layer-manager`](root-layer-manager/SKILL.md): 정보가 0~3계층 중 어디에 속하는지 판단하거나, 프로젝트 task/issue/QA/decision/dashboard/source doc을 쓰기 전에 실제 project SSoT 위치, 기준 `project/<project-id>` 브랜치, 별도 worktree의 파생 브랜치, task 번호 registry를 확인해야 할 때 사용합니다.
-- [`projects-setup`](projects-setup/SKILL.md): 새 프로젝트를 `projects/` 구조에 등록하거나 project SSoT와 사일로 config를 함께 셋업해야 할 때 사용합니다. DB를 사용하는 프로젝트는 setup 때 DB schema 정본/요약/적용 경로를 project registry/config 또는 project SSoT에 기록합니다.
+- [`projects-setup`](projects-setup/SKILL.md): 새 프로젝트를 `projects/` 구조에 등록하거나 project SSoT, `.gitignore` 추적 예외, 사일로 config를 함께 셋업해야 할 때 사용합니다. DB를 사용하는 프로젝트는 setup 때 DB schema 정본/요약/적용 경로를 project registry/config 또는 project SSoT에 기록합니다.
 - [`add-shared-runtime`](add-shared-runtime/SKILL.md): 여러 task silo가 함께 참조하는 프로젝트별 shared runtime set을 등록하거나 준비할 때 사용합니다.
 - [`shared-runtime-health-check`](shared-runtime-health-check/SKILL.md): page-lifecycle, run, E2E 실행 전 `runtime_set` 유무나 서버형 shared runtime 상태를 확인해야 할 때 사용합니다.
 - [`delete-shared-runtime`](delete-shared-runtime/SKILL.md): shared runtime registry/status 정리, archived 표시, 명시 승인된 runtime checkout 제거가 필요할 때 사용합니다.
@@ -43,6 +43,8 @@
 - `00-dashboard/work-views.md`: Base 사용법과 embed 안내
 - `templates/work-filter-dashboard.md`: BE/FE/ops처럼 경로별 작업 대시보드를 추가할 때 복제하는 DataviewJS 템플릿
 - `.obsidian/snippets/readable-markdown-width.css`: Markdown 편집/미리보기 영역을 넓게 쓰는 기본 CSS snippet
+
+target이 `projects/<project-id>/...` 아래면 setup은 `.gitignore`의 `projects/` 전체 ignore를 `projects/*`로 바꾸고, 해당 project SSoT target만 추적 가능하게 예외를 추가합니다. target 밖 sibling 경로와 target 안의 `.env`, secret 디렉터리, key/db/dump/log/media 파일은 계속 ignore합니다.
 
 `project-overview.md`는 프로젝트 설명과 운영 경계를 담고, 실제 issue/task 확인은 `work-filter.md` 또는 `work-views.md`에서 시작합니다. 생성되는 issue/task 템플릿은 대시보드 필터가 읽을 수 있도록 `type`, `id`, `taskID`/`taskTitle` 또는 `issueID`/`issueTitle`, `status`, `priority` 또는 `severity`, `updated` frontmatter를 포함합니다.
 

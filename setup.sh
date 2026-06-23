@@ -370,6 +370,14 @@ copy_setup_file() {
   info "생성됨: $dest"
 }
 
+normalize_setup_path() {
+  local path="$1"
+  while [[ "$path" == *"/./"* ]]; do
+    path="${path//\/.\///}"
+  done
+  printf '%s\n' "$path"
+}
+
 write_setup_file() {
   local dest="$1"
   local content="$2"
@@ -382,6 +390,116 @@ write_setup_file() {
 
   printf '%s\n' "$content" > "$dest"
   info "생성됨: $dest"
+}
+
+ensure_project_ssot_gitignore() {
+  local target="$1"
+  local project_root="$REPO_ROOT/projects/$PROJECT_ID"
+
+  case "$target" in
+    "$project_root"|"$project_root"/*) ;;
+    *) return 0 ;;
+  esac
+
+  local gitignore="$REPO_ROOT/.gitignore"
+  [ -f "$gitignore" ] || return 0
+
+  if grep -qx 'projects/' "$gitignore"; then
+    local tmp="$gitignore.tmp.$$"
+    while IFS= read -r line || [ -n "$line" ]; do
+      if [ "$line" = "projects/" ]; then
+        printf '%s\n' 'projects/*'
+      else
+        printf '%s\n' "$line"
+      fi
+    done < "$gitignore" > "$tmp"
+    mv "$tmp" "$gitignore"
+    info "갱신됨: $gitignore"
+  fi
+
+  local rel="${target#$REPO_ROOT/}"
+  local project_rel="projects/$PROJECT_ID"
+  local exception
+  local exceptions
+
+  if [ "$rel" = "$project_rel" ]; then
+    exceptions="
+# project SSoT scaffold
+!$project_rel/
+!$project_rel/**"
+  else
+    local current="$project_rel"
+    local part
+    local rest="${rel#$project_rel/}"
+    exceptions="
+# project SSoT scaffold
+!$project_rel/"
+
+    IFS='/' read -r -a parts <<< "$rest"
+    for part in "${parts[@]}"; do
+      [ -n "$part" ] || continue
+      if [ "$current" != "$project_rel" ] && grep -qxF "!$current/**" "$gitignore"; then
+        exceptions="$exceptions
+!$current/$part/"
+      else
+        exceptions="$exceptions
+$current/*
+!$current/$part/"
+      fi
+      current="$current/$part"
+    done
+
+    exceptions="$exceptions
+!$rel/**"
+  fi
+
+  exceptions="$exceptions
+$rel/.env
+$rel/.env.*
+!$rel/.env.example
+$rel/**/.env
+$rel/**/.env.*
+!$rel/**/.env.example
+$rel/.DS_Store
+$rel/**/.DS_Store
+$rel/local/
+$rel/.worktrees/
+$rel/**/local/
+$rel/**/.worktrees/
+$rel/secret/
+$rel/secrets/
+$rel/credentials/
+$rel/credential/
+$rel/vault/
+$rel/private/
+$rel/**/secret/
+$rel/**/secrets/
+$rel/**/credentials/
+$rel/**/credential/
+$rel/**/vault/
+$rel/**/private/
+$rel/**/*.pem
+$rel/**/*.key
+$rel/**/*.p12
+$rel/**/*.pfx
+$rel/**/*.log
+$rel/**/*.sqlite
+$rel/**/*.sqlite3
+$rel/**/*.db
+$rel/**/*.dump
+$rel/**/*.har
+$rel/**/*.trace
+$rel/**/*.webm
+$rel/**/*.mp4
+$rel/**/*.mov"
+
+  while IFS= read -r exception; do
+    [ -n "$exception" ] || continue
+    grep -qxF "$exception" "$gitignore" || printf '%s\n' "$exception" >> "$gitignore"
+  done <<EOF
+$exceptions
+EOF
+  info "추가됨: $gitignore project SSoT target 예외"
 }
 
 write_obsidian_appearance() {
@@ -603,6 +721,7 @@ create_project_ssot() {
     /*) ;;
     *) target="$REPO_ROOT/$target" ;;
   esac
+  target="$(normalize_setup_path "$target")"
 
   info ""
   info "project SSoT 반복 구조 생성"
@@ -610,6 +729,7 @@ create_project_ssot() {
   info "target: $target"
   local project_vault_path
   project_vault_path="$(project_ssot_vault_path "$target")"
+  ensure_project_ssot_gitignore "$target"
 
   mkdir -p \
     "$target/.obsidian" \

@@ -48,6 +48,7 @@ projects/<project-id>/
 2. `project-id`, 표시 이름, repo URL, default branch, 보호 브랜치, `allowed_for_silo`, `role`, DB 사용 여부, DB schema 정본/요약/적용 경로를 확인합니다.
 3. `projects/<project-id>/`가 이미 있거나 `silo-projects.yaml`에 같은 id가 있으면 중단하고 병합/갱신 여부를 확인합니다.
 4. `02-project-internal` scaffold는 `setup.sh`로 생성합니다.
+   `projects/<project-id>/` 아래 target을 쓰면 `setup.sh`가 해당 project SSoT 경로만 git 추적 가능하도록 `.gitignore` 예외를 함께 보정합니다.
 
 ```bash
 ./setup.sh --create-project-ssot \

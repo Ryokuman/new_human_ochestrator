@@ -153,6 +153,7 @@ git에서 제외할 것은 프로젝트 의존 자료와 시크릿성 자료입�
 - `system/`에는 정의와 템플릿만 둡니다.
 - 프로젝트 조사 결과는 기본적으로 fork/submodule/external clone/project SSoT에 둡니다. 로컬 참고 자료는 `../projects/`에 둘 수 있지만 `main-v2` 커밋 대상은 아닙니다.
 - project SSoT의 dashboard, task format, issue format, L 기준이 필요하면 실제 산출물을 `main-v2`에 커밋하지 않고 `setup.sh --create-project-ssot`으로 project SSoT 위치에 scaffold를 만듭니다.
+- `setup.sh --create-project-ssot`은 `projects/<project-id>/` 아래 target을 만들 때 해당 project SSoT만 git 추적 가능하도록 `.gitignore` 예외를 보정합니다.
 - project SSoT scaffold는 DataviewJS 작업 대시보드, Obsidian Base 대체 뷰, Markdown 본문 폭을 넓히는 기본 CSS snippet을 함께 생성합니다. Dataview 대시보드는 `taskID`/`taskTitle`, `issueID`/`issueTitle`을 분리해서 보여주고, `dashboardScope.paths`를 바꿔 프로젝트 안에 여러 작업 대시보드를 둘 수 있습니다. 생성되는 task 템플릿은 병렬 task 독립성 계약을 포함하며, sibling task 완료를 개별 task의 Output, Acceptance Criteria, Test Plan 전제로 두지 않습니다. 여러 sibling task 완료를 전제로 하는 최종 통합 E2E만 별도 QA gate 또는 integration task로 분리합니다.
 - 프로젝트 내부 task, issue, QA, decision, dashboard, source doc을 쓰기 전에는 `projects/<project-id>/README.md`에서 선언된 project SSoT 경로를 먼저 확인합니다. 선언이 없으면 기본 scaffold인 `projects/<project-id>/02-project-internal/` 아래 dashboard와 task 위치를 확인합니다. `project/<project-id>` 브랜치가 있으면 기준 브랜치에 직접 쓰지 않고, 그 브랜치에서 판 별도 worktree와 파생 브랜치에서만 project SSoT 원문을 작성한 뒤 `project/<project-id>` 대상 PR로 반영합니다. 제품 repo 내부 `obs/`, `.obsidian`, `docs/`, submodule, external clone은 기준 SSoT라고 추정하지 않습니다.
 - 오래된 브랜치가 project SSoT 파일을 추가, 삭제, 이동한 것처럼 보이면 `main-v2` 기준 공통 규칙 drift와 `project/<project-id>` 기준 project SSoT diff를 나눠 봅니다. 보고할 때는 최종 트리 차이인 `base..branch`와 브랜치 고유 변경인 `base...branch`를 구분합니다.
