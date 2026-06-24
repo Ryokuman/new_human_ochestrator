@@ -280,6 +280,8 @@
 - 실제 제품 소스코드는 `projects/` 아래에 두지 않습니다.
 - `projects/`에는 프로젝트 SSoT, registry, repo 연결 정보, 요약 색인처럼 프로젝트 운영 상태를 찾기 위한 자료만 둡니다.
 - 실제 제품 소스코드는 `.gitignore`된 `sources/` 같은 외부/로컬 소스 위치, 별도 repo, 별도 worktree, fork, submodule, external clone을 사용합니다.
+- task 계약이 BE/FE 독립 git submodule을 요구하면 상위 제품 repo는 BE와 FE의 두 gitlink를 둔 submodule host로만 다룹니다. 상위 제품 repo PR에는 `.gitmodules`, gitlink, 빌드/보안 제외 설정처럼 host 연결에 필요한 최소 변경만 남기고, 제품 BE/FE 직접 변경은 각 독립 submodule repo의 브랜치와 PR에서 관리합니다. BE/FE/page/harness-scenario를 단일 기능 repo로 묶는 것은 task 계약이 그렇게 명시한 경우에만 허용합니다.
+- `vite-harness` 계열 repo는 스토리북 같은 재사용 하네스 라이브러리로 분류합니다. task별 제품 시나리오, seed, demo, adapter를 하네스 원본 repo에 커밋하거나 PR로 올리지 않고, task 계약이 지정한 기능 submodule repo 또는 project SSoT에 둡니다.
 - 프로젝트별 evidence는 coverage 판단 근거이므로 project SSoT 내부에 보존할 수 있습니다.
 - project SSoT 문서를 실제로 쓰기 전에는 기준 SSoT 위치뿐 아니라 기준 브랜치와 worktree도 확인합니다. `project/<project-id>` 브랜치가 있으면 그 브랜치에서 판 별도 worktree의 파생 브랜치를 사용하고, 다른 브랜치에 열린 project SSoT diff가 있으면 `기준 아님`, `이관 후보`, `위험`으로 분리해 보고합니다.
 - 제품 코드가 여러 workspace, worktree, external clone, task silo에 나뉘어 있으면 구현 전 source workspace 기준선을 확정합니다. 브랜치 이름만으로 최신 작업을 판단하지 않고, 각 workspace의 branch, upstream, `HEAD`, dirty diff, `goal.md`, handoff, 최근 세션 로그를 함께 봅니다.

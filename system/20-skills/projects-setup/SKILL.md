@@ -45,7 +45,7 @@ projects/<project-id>/
 ## 절차
 
 1. 계층을 판정합니다. 공통 규칙 변경이면 `main-branch-update-flow`, 특정 프로젝트 자료면 프로젝트 SSoT 또는 project 브랜치에서 처리합니다.
-2. `project-id`, 표시 이름, repo URL, default branch, 보호 브랜치, `allowed_for_silo`, `role`, DB 사용 여부, DB schema 정본/요약/적용 경로를 확인합니다.
+2. `project-id`, 표시 이름, repo URL, default branch, 보호 브랜치, `allowed_for_silo`, `role`, 상위 제품 repo host 역할, 기능 submodule 소유권, BE/FE submodule 경로, harness library 정책, 제품별 scenario/adapter 위치, DB 사용 여부, DB schema 정본/요약/적용 경로를 확인합니다.
 3. `projects/<project-id>/`가 이미 있거나 `silo-projects.yaml`에 같은 id가 있으면 중단하고 병합/갱신 여부를 확인합니다.
 4. `02-project-internal` scaffold는 `setup.sh`로 생성합니다.
    `projects/<project-id>/` 아래 target을 쓰면 `setup.sh`가 해당 project SSoT 경로만 git 추적 가능하도록 `.gitignore` 예외를 함께 보정합니다.
@@ -73,6 +73,9 @@ projects/<project-id>/
 - 프로젝트 목적
 - 주요 사용자/운영자
 - repo/SSoT 위치
+- 상위 제품 repo host 역할
+- 기능 submodule 소유권과 BE/FE submodule 경로
+- harness library 정책과 제품별 scenario/adapter 위치
 - DB 사용 여부
 - DB schema 정본 위치 또는 schema 요약 위치
 - Docker/compose/migration/startup script의 schema 적용 경로
@@ -140,6 +143,15 @@ Project dictionary 파일을 새로 만들거나 기존 dictionary에 용어를 
     - main
   allowed_for_silo: true
   role: app
+  repo_ownership:
+    product_host_role:
+    feature_submodule_owner:
+    be_submodule_path:
+    fe_submodule_path:
+    harness_library_policy:
+    scenario_adapter_location:
+    notes:
+      - task 계약이 BE/FE 독립 submodule을 요구하면 상위 제품 repo host 역할과 submodule 소유권을 기록합니다.
   db:
     uses_db: false
     schema_canonical_path:

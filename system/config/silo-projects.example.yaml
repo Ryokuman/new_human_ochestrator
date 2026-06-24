@@ -20,6 +20,14 @@ projects:
     protected_branches: []
     allowed_for_silo:
     role:
+    repo_ownership:
+      product_host_role:
+      feature_submodule_owner:
+      be_submodule_path:
+      fe_submodule_path:
+      harness_library_policy:
+      scenario_adapter_location:
+      notes: []
     db:
       uses_db:
       schema_canonical_path:

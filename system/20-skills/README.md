@@ -48,7 +48,7 @@ target이 `projects/<project-id>/...` 아래면 setup은 `.gitignore`의 `projec
 
 `project-overview.md`는 프로젝트 설명과 운영 경계를 담고, 실제 issue/task 확인은 `work-filter.md` 또는 `work-views.md`에서 시작합니다. 생성되는 issue/task 템플릿은 대시보드 필터가 읽을 수 있도록 `type`, `id`, `taskID`/`taskTitle` 또는 `issueID`/`issueTitle`, `status`, `priority` 또는 `severity`, `updated` frontmatter를 포함합니다.
 
-생성되는 `project-overview.md`에는 repo/source 위치, DB 사용 여부, DB schema 정본 위치, schema 요약 위치, schema 적용 경로, API/auth/session contract 위치, harness/runtime DB 계약 위치를 적는 정본 참조 섹션을 둡니다. 실제 테이블/컬럼은 project SSoT의 DB 문서나 제품 repo schema 정본에 두고, overview에는 참조 위치만 둡니다.
+생성되는 `project-overview.md`에는 repo/source 위치, 상위 제품 repo host 역할, 기능 submodule 소유권, BE/FE submodule 경로, harness library 정책, 제품별 scenario/adapter 위치, DB 사용 여부, DB schema 정본 위치, schema 요약 위치, schema 적용 경로, API/auth/session contract 위치, harness/runtime DB 계약 위치를 적는 정본 참조 섹션을 둡니다. 실제 테이블/컬럼과 제품별 scenario 원문은 project SSoT의 DB 문서, 제품 repo schema 정본, 기능 submodule repo 또는 task 계약이 지정한 위치에 두고, overview에는 참조 위치만 둡니다.
 
 생성되는 task 템플릿은 병렬 task 독립성 계약을 포함합니다. 병렬 task는 sibling task 완료를 Output, Acceptance Criteria, Test Plan의 전제로 삼지 않고, 개별 output은 해당 task가 독립적으로 증명할 수 있는 산출물로 제한합니다. 인증/데이터/화면/backend 의존성은 agent가 통제할 수 있는 대체 검증 경로와 실제 사용자 경로의 차이를 적고, 여러 sibling task 완료를 전제로 하는 최종 통합 E2E는 별도 QA gate, integration task, 또는 후속 project 검증으로 분리합니다. 단일 task의 화면 동작 자체가 산출물이면 E2E 또는 agent-browser acceptance를 유지합니다.
 

@@ -73,6 +73,10 @@ project-ssot/
 
 실제 제품 소스코드는 `.gitignore`된 `sources/` 같은 외부/로컬 소스 위치, 별도 repo/worktree, fork, submodule, external clone에 둡니다.
 
+task 계약이 BE/FE 독립 git submodule을 요구하면 상위 제품 repo를 BE와 FE의 두 gitlink를 둔 submodule host로만 기록합니다. 상위 제품 repo 변경은 `.gitmodules`, gitlink, 빌드/보안 제외 설정 같은 host 연결 변경으로 제한하고, 제품 BE/FE 구현 변경은 각 독립 submodule repo의 task branch와 PR에서 관리합니다. BE/FE/page/harness-scenario를 단일 기능 repo로 묶는 것은 task 계약이 그렇게 명시한 경우에만 허용합니다. Project SSoT에는 기능 repo/submodule의 소유권, 기준 브랜치, PR target, 상위 제품 repo에서 허용되는 최소 변경 범위를 참조로 남깁니다.
+
+`vite-harness` 계열 repo는 재사용 하네스 라이브러리로 분류합니다. task별 제품 시나리오, seed, demo, adapter는 하네스 원본 repo에 두지 않고 task 계약이 지정한 기능 submodule repo 또는 Project SSoT에 둡니다. 0계층 SSoT는 이 분리 원칙과 참조 필드만 정의하며, 특정 제품의 시나리오 원문은 저장하지 않습니다.
+
 여러 task silo가 함께 참조하는 runtime checkout은 shared runtime으로 분리할 수 있습니다. shared runtime은 workspace root 아래 공용 실행 repo 묶음이며, task silo가 직접 소유하지 않고 참조합니다. 기본 경로 후보는 `shared-runtime/<project-id>/<runtime-name>/`입니다. 프로젝트별 실제 runtime 구성과 registry/status는 project SSoT, project registry/config, 또는 gitignore된 local config에 둡니다.
 
 프로젝트별 evidence는 coverage 판단 근거이므로 project SSoT 내부에 보존할 수 있습니다. 단, evidence 원본이 대용량 영상, trace, runner output, 제품 소스코드인 경우에는 project SSoT에 위치와 요약을 남기고 원본은 프로젝트 정책에 맞는 외부/로컬 저장 위치에 둡니다.

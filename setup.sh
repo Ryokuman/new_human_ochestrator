@@ -808,6 +808,12 @@ create_project_ssot() {
 ## 정본 참조
 
 - repo/source 위치:
+- 상위 제품 repo host 역할:
+- 기능 submodule 소유권:
+- BE submodule 경로:
+- FE submodule 경로:
+- harness library 정책:
+- 제품별 scenario/adapter 위치:
 - DB 사용 여부:
 - DB schema 정본 위치:
 - DB schema 요약 위치:
