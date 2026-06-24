@@ -186,6 +186,8 @@ Task 기본 필드에는 `owner`와 `files_touched`를 두지 않습니다. 담�
 
 병렬로 생성하거나 실행할 task는 sibling task 완료를 `output`, `acceptance_criteria`, `test_plan`의 전제로 삼지 않습니다. 개별 task output은 해당 task가 독립적으로 증명할 수 있는 산출물로 제한합니다. 인증, 데이터, 화면, backend 의존성이 있으면 agent가 통제할 수 있는 대체 검증 경로와 실제 사용자 경로의 차이를 `verification_plan` 또는 `test_plan`에 명시합니다. 여러 sibling task 완료를 전제로 하는 최종 통합 E2E는 개별 task acceptance가 아니라 별도 QA gate, integration task, 또는 후속 project 검증으로 분리합니다. 단일 task의 화면 동작 자체가 산출물이면 E2E 또는 agent-browser acceptance를 유지합니다.
 
+기능 task와 사일로는 human check를 기본 완료 경로로 삼지 않습니다. 먼저 agent가 criteria별로 `test command`, `DB query`, `browser evidence`, 실행 URL/명령, 로그, report 위치처럼 직접 실행하거나 관찰 가능한 증거를 묶고, 사람이 볼 항목은 최종 승인, UX 판단, 로컬 재현, 실제 계정/기기 접근처럼 agent-verifiable evidence로 대체할 수 없는 범위로 제한합니다. provider별 QA 절차, 특정 fixture 값, task 고유 목데이터와 테스트 입력은 0계층에 쓰지 않고 project SSoT 또는 해당 task 계약에 둡니다.
+
 `hypothesis_chain`은 task 내부 summary 역할을 하며, 사일로 실행으로 검증한 가설을 시간순으로 누적합니다. 실패한 가설은 새 task를 자동 생성하지 않고 먼저 이 체인에 남깁니다. 하나의 task에서 가설 시도는 최대 3회이며, 3회 이후에는 자동 재시도 대신 사용자 판단이 필요합니다.
 
 `mode: exploratory`인 task는 `hypothesis_chain`을 `Build -> Learn -> Spec` 기록으로 사용합니다. 이 경우 실패는 즉시 중단 사유가 아니라 학습 결과이며, 반복 가능하거나 소유권이 분리되는 문제만 새 task/spec 후보로 승격합니다.

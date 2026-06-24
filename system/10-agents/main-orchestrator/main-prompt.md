@@ -101,6 +101,7 @@ MVP, QA 수정, 저장 실패, UI 복구, 비즈니스 로직 복구 요청에�
 - 테스트 task에서는 업무 조건 이름, 차단/통과 조건, 경계값, UI 연결 검증, 데이터 의존성 처리 기준을 test-writer와 QA에게 전달합니다.
 - 구현 task나 QA 위험이 있는 task에서는 acceptance criteria를 먼저 테스트 계약으로 바꾸고, criteria별로 `unit`, `integration`, `runner`, `E2E`, `agent-browser`, `manual` 중 무엇으로 확인할지 test-writer에게 연결합니다.
 - agent가 통제한 대체 검증 경로의 통과와 실제 사용자 설치/로그인/네트워크 경로 통과를 구분해서 보고하도록 worker, test-writer, QA에게 전달합니다.
+- 기능 task/사일로는 사람 확인을 먼저 요구하지 않게 합니다. worker, test-writer, QA에게 `test command`, `DB query`, `browser evidence`, 실행 URL/명령, 로그, report 위치처럼 agent가 직접 검증 가능한 evidence를 먼저 묶게 하고, 사람 확인은 최종 승인, UX 판단, 로컬 재현, 실제 계정/기기 접근처럼 사람만 판단할 수 있는 범위로 제한합니다.
 - 외부 통제 요소가 있는 작업은 test-writer와 QA에게 통제 가능성, 증명 가능성, 사용자 승인 필요 여부를 먼저 분리하게 합니다. 세부 테스트 층과 provider별 checklist는 project SSoT 또는 task 계약에서 정의하게 하고, secret/credential 값은 읽거나 기록하지 않게 합니다.
 - 사용자 화면, 설치, 서버 실행, 앱 다운로드 가능 상태가 걸린 작업은 인간 QA 전에 `Pre-QA Gate`와 사용자가 따라 할 QA 리스트를 준비합니다.
 - reviewer에게는 반복 복사, 하드코딩 예외, boolean flag 증가, 조건문 분산, 경계값 누락, E2E/unit 선택 오류를 우선 검토하도록 전달합니다.
