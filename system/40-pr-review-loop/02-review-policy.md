@@ -12,6 +12,8 @@ PR을 올리라는 지시는 먼저 현재 브랜치의 계층과 PR 유형을 �
 - PR 생성 직후에는 0계층 PR과 project 계층 PR 모두 [`codex-pr-review-loop`](../20-skills/codex-pr-review-loop/SKILL.md)로 no-major 목표를 세팅하고, PR 댓글의 수동 `@codex review`를 호출합니다.
 - 제품 소스가 독립 git submodule로 분리된 경우 상위 제품 repo PR에서 submodule gitlink만 리뷰받는 것으로는 충분하지 않습니다. 변경된 각 submodule repo도 보호 브랜치 직접 커밋을 금지하고, submodule repo별 파생 브랜치와 별도 PR, Codex no-major 또는 동등한 리뷰 gate를 거칩니다.
 - 상위 제품 repo PR은 no-major 또는 동등 리뷰가 끝난 submodule commit만 gitlink로 pin합니다. 상위 PR의 리뷰 범위는 submodule commit pin, host repo 설정, submodule 선언, 실행 경로 연결이 의도한 submodule PR 결과를 가리키는지로 제한하고, submodule 내부 코드 품질과 API 동작 평가는 해당 submodule repo PR에서 수행합니다.
+- 새 submodule repo는 먼저 repo를 만들고, 기본 브랜치에는 빈 기준 또는 최소 단일 후보 파일만 둡니다. 실제 적용 후보 코드는 PR로 올리고, PR 본문에 repo 존재 목적, 제품 적용 기준, 평가 기준, 검증 한계, pin 조건을 적습니다.
+- 기능 단위 BE/FE 분리는 곧바로 service/MSA로 승격하지 않습니다. 기본 시작점은 제품 적용 후보를 리뷰하는 `patch/evidence submodule` 또는 제품 repo가 submodule path에서 실제 import/register하는 `runtime submodule`입니다. 별도 배포, DB, auth, observability가 독립적으로 필요하다는 증거가 있을 때만 service/MSA 후보로 승격합니다.
 - 호출 댓글에는 가능하면 `한국어로 리뷰해 주세요.` 또는 이에 준하는 한국어 요청과 최신 head 기준 리뷰 요청만 적습니다. 외부 리뷰 봇의 고정 안내 템플릿 언어까지 보장하지는 못하지만, repo 운영 언어와 맞추기 위한 기본 요청 문구로 둡니다.
 - `Didn't find any major issues` 또는 그와 동등하게 최신 head에 major/actionable 지적이 없다는 Codex 명시 응답은 통과로 봅니다. 반복 조건과 통과 판정은 외부 리뷰 댓글에 강제하지 않고, PR 본문, task silo의 `goal.md`, 메인 에이전트 내부 상태에서 관리합니다.
 - 같은 PR에서 현재 head push 이후에 작성된 최신 `@codex review` 호출 댓글에 `eyes` 반응이 있으면 Codex 리뷰가 접수 또는 진행 중인 상태로 봅니다. 같은 head commit에 추가 요청을 보내지 않고 최대 15분까지 응답을 기다립니다.
@@ -53,6 +55,9 @@ PR을 올리라는 지시는 먼저 현재 브랜치의 계층과 PR 유형을 �
 - 새 작업 브랜치에서 작업했는지
 - 변경된 submodule repo가 있으면 각 submodule repo에도 별도 PR과 리뷰 gate가 있는지
 - 상위 제품 repo가 리뷰 통과한 submodule commit만 gitlink로 pin했는지
+- submodule repo 기본 브랜치가 제품 코드 우회 머지 경로가 아니라 빈 기준 또는 최소 후보 기준으로 유지됐는지
+- submodule 유형이 `patch/evidence`, `runtime`, `service/MSA` 중 무엇인지 PR 본문에 명시됐는지
+- service/MSA 승격이라면 별도 배포, DB, auth, observability 필요 증거가 있는지
 - 검증 결과가 acceptance criteria를 덮는지
 - criteria별 검증 방법이 unit, integration, runner, E2E, agent-browser, manual 중 무엇인지 명시됐는지
 - 자동 검증이 보장하는 것과 보장하지 못하는 것이 분리됐는지

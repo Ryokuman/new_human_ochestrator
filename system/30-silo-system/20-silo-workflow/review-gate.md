@@ -14,6 +14,8 @@ PR 생성 직후에는 [`codex-pr-review-loop`](../../20-skills/codex-pr-review-
 
 제품 repo가 독립 git submodule의 commit을 pin하는 구조라면 상위 제품 repo PR만으로 리뷰 gate가 끝나지 않습니다. 변경된 각 submodule repo는 보호 브랜치 직접 커밋 없이 submodule repo별 파생 브랜치와 별도 PR을 만들고, Codex no-major 또는 동등 리뷰를 먼저 통과해야 합니다. 상위 제품 repo PR은 리뷰 통과한 submodule commit의 gitlink pin, host repo 설정, submodule 선언, 실행 경로 연결만 검증합니다.
 
+새 submodule repo를 평가용으로 만들 때는 기본 브랜치에 빈 기준 또는 최소 단일 후보 파일만 두고, 실제 코드는 PR로 올립니다. PR 본문에는 submodule 유형을 `patch/evidence`, `runtime`, `service/MSA` 중 하나로 표시하고, 제품 적용 목적, 평가 기준, 검증 한계, 제품 repo가 pin할 수 있는 조건을 적습니다. 기능 단위 BE/FE 분리는 기본적으로 service/MSA가 아니라 `runtime submodule` 또는 `patch/evidence submodule`에서 시작합니다.
+
 현재 head push 이후에 작성된 최신 `@codex review` 호출 댓글에 `eyes` 반응이 있으면 Codex 리뷰가 접수 또는 진행 중인 상태로 보고, 같은 head commit에 추가 `@codex review`를 호출하지 않습니다.
 
 최신 리뷰 요청 뒤 15분 동안 Codex 응답이 없으면 timeout으로 중단하고 PR URL, head SHA, 호출 댓글, 대기 시간을 보고합니다.
