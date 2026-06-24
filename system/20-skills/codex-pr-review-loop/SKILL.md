@@ -16,8 +16,9 @@ branch base는 먼저 계층으로 판단합니다. 0계층 공통 변경은 `ma
 3. 0계층과 project 계층이 섞여 있으면 worktree와 브랜치를 나눠 서로 다른 PR로 올립니다.
 4. project 계층 PR이면 PR head branch가 기준 `project/<project-id>`와 같은지, 또는 현재 로컬 작업 위치가 해당 기준 브랜치 직접 checkout인지 확인합니다. 둘 중 하나라도 해당하면 `@codex review`를 호출하지 않고 별도 worktree의 파생 브랜치로 PR을 재생성해야 한다고 보고합니다.
 5. 제품 repo PR이 독립 git submodule의 gitlink를 pin한다면 변경된 submodule repo마다 별도 PR과 Codex no-major 또는 동등 리뷰 gate가 있는지 확인합니다. submodule repo 자체 리뷰가 없으면 상위 제품 repo PR의 no-major만으로 완료 처리하지 않습니다.
-6. PR을 만든 뒤 해당 PR의 target/base branch가 계층 판단과 맞는지 확인하고 `@codex review`를 호출합니다.
-7. 사용자 응답을 기다리지 않고 이 skill의 대기/수정/재요청 루프를 수행합니다.
+6. 새 submodule repo PR이면 repo 생성 의의, submodule 유형, 제품 적용 기준, 평가 기준, 검증 한계, pin 조건이 PR 본문에 있는지 확인합니다. 기본 브랜치에는 빈 기준 또는 최소 후보만 두고 실제 코드는 PR에서 평가하는 흐름을 우선합니다.
+7. PR을 만든 뒤 해당 PR의 target/base branch가 계층 판단과 맞는지 확인하고 `@codex review`를 호출합니다.
+8. 사용자 응답을 기다리지 않고 이 skill의 대기/수정/재요청 루프를 수행합니다.
 
 ## 실패 압력
 
@@ -58,16 +59,17 @@ Codex 실제 응답은 `Didn't find any major issues` 또는 그와 동등하게
 3. GitHub PR target/base branch를 확인합니다. 0계층 PR은 `main-v2`, project 계층 PR은 해당 `project/<project-id>`가 target/base여야 합니다. target/base가 계층 판단과 맞지 않으면 `@codex review`를 호출하지 않고 계층 기준 브랜치 불일치로 보고합니다.
 4. project 계층 PR이면 GitHub PR head branch와 로컬 현재 branch를 확인합니다. head branch나 로컬 현재 branch가 기준 `project/<project-id>`와 같으면 기준 브랜치 직접 커밋 위험이므로 `@codex review`를 호출하지 않고 별도 worktree의 파생 브랜치 PR로 재생성해야 한다고 보고합니다.
 5. PR diff에 submodule gitlink 변경이 있으면 해당 submodule repo의 head commit이 별도 PR과 Codex no-major 또는 동등 리뷰를 통과했는지 확인합니다. 확인되지 않으면 상위 제품 repo PR은 pin/host 변경 검토만 남기고, submodule repo PR gate 미완료를 blocker로 보고합니다.
-6. 로컬에서 PR head를 수정하며 루프를 수행할 때는 `git rev-parse --git-dir`와 `git rev-parse --git-common-dir`가 다른 linked worktree인지 확인합니다. submodule이면 `git rev-parse --show-superproject-working-tree`로 구분합니다. project 계층 PR인데 linked worktree가 아니면 commit/push를 진행하지 않고 별도 worktree 전환 필요로 보고합니다.
-7. task silo의 `goal.md`가 있으면 내부 목표 문구와 PR URL, head SHA, 검증 기준을 추가합니다. `goal.md`가 없으면 PR 본문 `Codex PR 리뷰` 항목에 내부 목표와 현재 상태를 남깁니다.
-8. 최신 head push 이후의 `@codex review` 호출 댓글, `eyes` 반응, Codex 리뷰 결과를 확인합니다.
-9. 최신 head 이후 호출 댓글에 `eyes` 반응이 있고 아직 리뷰 결과가 없으면 중복 호출하지 않고 최대 15분까지 대기합니다.
-10. 최신 head에 대한 리뷰 요청이 없으면 PR 댓글로 `@codex review`를 호출하고, 외부 리뷰 댓글 문구만 적습니다.
-11. 리뷰 요청 뒤 15분 동안 Codex 응답이 없으면 루프를 중단하고 PR URL, head SHA, 호출 댓글, 대기 시간을 보고합니다.
-12. Codex 결과가 도착하면 최신 head에 대해 no-major 응답인지 확인합니다.
-13. no-major 응답이 아니면 actionable major/critical/P1/P2 또는 보호 절차 위반 지적의 validity를 판단하고 타당한 항목만 수정합니다.
-14. 수정 후 변경 범위에 맞는 검증을 실행하고, 한국어 커밋 메시지로 커밋한 뒤 push합니다. project 계층 PR에서는 이 커밋이 별도 worktree의 파생 브랜치에서 발생해야 하며, 기준 `project/<project-id>` 브랜치에는 직접 커밋하지 않습니다.
-15. PR 댓글 또는 본문에 수정 내용, 검증 결과, 남은 위험, 새 head SHA를 기록하고 8번으로 돌아갑니다.
+6. 새 submodule repo PR이면 기본 브랜치가 우회 머지 경로가 아닌지, PR 본문에 `patch/evidence`, `runtime`, `service/MSA` 중 유형이 있는지 확인합니다. service/MSA 유형이면 별도 배포, DB, auth, observability 필요 증거가 있어야 합니다.
+7. 로컬에서 PR head를 수정하며 루프를 수행할 때는 `git rev-parse --git-dir`와 `git rev-parse --git-common-dir`가 다른 linked worktree인지 확인합니다. submodule이면 `git rev-parse --show-superproject-working-tree`로 구분합니다. project 계층 PR인데 linked worktree가 아니면 commit/push를 진행하지 않고 별도 worktree 전환 필요로 보고합니다.
+8. task silo의 `goal.md`가 있으면 내부 목표 문구와 PR URL, head SHA, 검증 기준을 추가합니다. `goal.md`가 없으면 PR 본문 `Codex PR 리뷰` 항목에 내부 목표와 현재 상태를 남깁니다.
+9. 최신 head push 이후의 `@codex review` 호출 댓글, `eyes` 반응, Codex 리뷰 결과를 확인합니다.
+10. 최신 head 이후 호출 댓글에 `eyes` 반응이 있고 아직 리뷰 결과가 없으면 중복 호출하지 않고 최대 15분까지 대기합니다.
+11. 최신 head에 대한 리뷰 요청이 없으면 PR 댓글로 `@codex review`를 호출하고, 외부 리뷰 댓글 문구만 적습니다.
+12. 리뷰 요청 뒤 15분 동안 Codex 응답이 없으면 루프를 중단하고 PR URL, head SHA, 호출 댓글, 대기 시간을 보고합니다.
+13. Codex 결과가 도착하면 최신 head에 대해 no-major 응답인지 확인합니다.
+14. no-major 응답이 아니면 actionable major/critical/P1/P2 또는 보호 절차 위반 지적의 validity를 판단하고 타당한 항목만 수정합니다.
+15. 수정 후 변경 범위에 맞는 검증을 실행하고, 한국어 커밋 메시지로 커밋한 뒤 push합니다. project 계층 PR에서는 이 커밋이 별도 worktree의 파생 브랜치에서 발생해야 하며, 기준 `project/<project-id>` 브랜치에는 직접 커밋하지 않습니다.
+16. PR 댓글 또는 본문에 수정 내용, 검증 결과, 남은 위험, 새 head SHA를 기록하고 9번으로 돌아갑니다.
 
 ## 종료 기준
 
