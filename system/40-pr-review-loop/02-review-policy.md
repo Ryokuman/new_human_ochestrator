@@ -16,8 +16,10 @@ PR을 올리라는 지시는 먼저 현재 브랜치의 계층과 PR 유형을 �
 - 기능 단위 BE/FE 분리는 곧바로 service/MSA로 승격하지 않습니다. 기본 시작점은 제품 적용 후보를 리뷰하는 `patch/evidence submodule` 또는 제품 repo가 submodule path에서 실제 import/register하는 `runtime submodule`입니다. 별도 배포, DB, auth, observability가 독립적으로 필요하다는 증거가 있을 때만 service/MSA 후보로 승격합니다.
 - 호출 댓글에는 가능하면 `한국어로 리뷰해 주세요.` 또는 이에 준하는 한국어 요청과 최신 head 기준 리뷰 요청만 적습니다. 외부 리뷰 봇의 고정 안내 템플릿 언어까지 보장하지는 못하지만, repo 운영 언어와 맞추기 위한 기본 요청 문구로 둡니다.
 - `Didn't find any major issues` 또는 그와 동등하게 최신 head에 major/actionable 지적이 없다는 Codex 명시 응답은 통과로 봅니다. 반복 조건과 통과 판정은 외부 리뷰 댓글에 강제하지 않고, PR 본문, task silo의 `goal.md`, 메인 에이전트 내부 상태에서 관리합니다.
-- 같은 PR에서 현재 head push 이후에 작성된 최신 `@codex review` 호출 댓글에 `eyes` 반응이 있으면 Codex 리뷰가 접수 또는 진행 중인 상태로 봅니다. 같은 head commit에 추가 요청을 보내지 않고 최대 15분까지 응답을 기다립니다.
-- 최신 head 기준 리뷰 요청 후 15분 동안 Codex 응답이 없으면 루프를 중단하고 `Codex 리뷰 응답 대기 timeout`으로 보고합니다. 이 경우 중복 호출이나 임의 수정 없이 PR URL, head SHA, 호출 댓글, 대기 시간을 남깁니다.
+- 같은 PR에서 현재 head push 이후에 작성된 최신 `@codex review` 호출 댓글에 `eyes` 반응이 있으면 Codex 리뷰가 접수 또는 진행 중인 상태로 봅니다. 같은 head commit에 추가 요청을 보내지 않고 `eyes` 확인 시점부터 최대 15분까지 응답을 기다립니다.
+- 현재 head push 이후에 `@codex review`를 호출했지만 3분 동안 해당 호출 댓글에 `eyes` 반응이 붙지 않으면 리뷰 요청이 접수되지 않은 것으로 보고, 같은 head 기준으로 `@codex review`를 재호출한 뒤 새 호출 댓글 기준으로 다시 확인합니다. 재호출 전에는 그 사이에 Codex 리뷰 결과가 도착했는지 먼저 확인합니다.
+- 같은 head의 no-`eyes` 재호출은 기본 최대 3회로 제한합니다. 3회 모두 `eyes` 반응과 리뷰 결과가 없으면 `Codex 리뷰 접수 실패 timeout`으로 중단하고 사용자 판단 필요로 보고합니다.
+- `eyes` 반응을 확인한 뒤 15분 동안 Codex 응답이 없으면 루프를 중단하고 `Codex 리뷰 응답 대기 timeout`으로 보고합니다. 이 경우 중복 호출이나 임의 수정 없이 PR URL, head SHA, 호출 댓글, 대기 시간을 남깁니다.
 - 재호출 전에는 PR 댓글, 리뷰 제출, 최신 head commit, 최신 head push 이후 작성된 리뷰 요청 여부를 함께 확인합니다. 최신 head에 대한 리뷰 결과가 아직 없고 현재 head 이후 호출 댓글에 `eyes`가 있으면 중복 호출이 아니라 대기 상태로 기록합니다.
 - 리뷰는 변경 diff, task 목표, 검증 결과, 남은 위험, SSoT 승격 후보를 기준으로 합니다.
 - Codex 응답이 no-major 통과 응답이 아니면 actionable 지적의 타당성을 판단합니다. 타당한 major/critical/P1/P2 또는 보호 절차 위반 지적은 수정, 검증, 커밋, push 후 새 head 기준으로 `@codex review`를 재호출합니다.

@@ -63,26 +63,28 @@ Codex 실제 응답은 `Didn't find any major issues` 또는 그와 동등하게
 7. 로컬에서 PR head를 수정하며 루프를 수행할 때는 `git rev-parse --git-dir`와 `git rev-parse --git-common-dir`가 다른 linked worktree인지 확인합니다. submodule이면 `git rev-parse --show-superproject-working-tree`로 구분합니다. project 계층 PR인데 linked worktree가 아니면 commit/push를 진행하지 않고 별도 worktree 전환 필요로 보고합니다.
 8. task silo의 `goal.md`가 있으면 내부 목표 문구와 PR URL, head SHA, 검증 기준을 추가합니다. `goal.md`가 없으면 PR 본문 `Codex PR 리뷰` 항목에 내부 목표와 현재 상태를 남깁니다.
 9. 최신 head push 이후의 `@codex review` 호출 댓글, `eyes` 반응, Codex 리뷰 결과를 확인합니다.
-10. 최신 head 이후 호출 댓글에 `eyes` 반응이 있고 아직 리뷰 결과가 없으면 중복 호출하지 않고 최대 15분까지 대기합니다.
-11. 최신 head에 대한 리뷰 요청이 없으면 PR 댓글로 `@codex review`를 호출하고, 외부 리뷰 댓글 문구만 적습니다.
-12. 리뷰 요청 뒤 15분 동안 Codex 응답이 없으면 루프를 중단하고 PR URL, head SHA, 호출 댓글, 대기 시간을 보고합니다.
-13. Codex 결과가 도착하면 최신 head에 대해 no-major 응답인지 확인합니다.
-14. no-major 응답이 아니면 actionable major/critical/P1/P2 또는 보호 절차 위반 지적의 validity를 판단하고 타당한 항목만 수정합니다.
-15. 수정 후 변경 범위에 맞는 검증을 실행하고, 한국어 커밋 메시지로 커밋한 뒤 push합니다. project 계층 PR에서는 이 커밋이 별도 worktree의 파생 브랜치에서 발생해야 하며, 기준 `project/<project-id>` 브랜치에는 직접 커밋하지 않습니다.
-16. PR 댓글 또는 본문에 수정 내용, 검증 결과, 남은 위험, 새 head SHA를 기록하고 9번으로 돌아갑니다.
+10. 최신 head 이후 호출 댓글에 `eyes` 반응이 있고 아직 리뷰 결과가 없으면 중복 호출하지 않고 `eyes` 확인 시점부터 최대 15분까지 대기합니다.
+11. 최신 head 이후 호출 댓글이 있지만 3분 동안 `eyes` 반응이 없고 아직 리뷰 결과도 없으면 리뷰 요청이 접수되지 않은 것으로 보고, 같은 head 기준으로 `@codex review`를 재호출한 뒤 9번으로 돌아갑니다. 같은 head의 no-`eyes` 재호출은 기본 최대 3회로 제한하고, 3회 모두 `eyes` 반응과 리뷰 결과가 없으면 `Codex 리뷰 접수 실패 timeout`으로 중단해 사용자 판단 필요로 보고합니다.
+12. 최신 head에 대한 리뷰 요청이 없으면 PR 댓글로 `@codex review`를 호출하고, 외부 리뷰 댓글 문구만 적은 뒤 9번으로 돌아갑니다.
+13. `eyes` 반응을 확인한 뒤 15분 동안 Codex 응답이 없으면 루프를 중단하고 PR URL, head SHA, 호출 댓글, 대기 시간을 보고합니다.
+14. Codex 결과가 도착하면 최신 head에 대해 no-major 응답인지 확인합니다.
+15. no-major 응답이 아니면 actionable major/critical/P1/P2 또는 보호 절차 위반 지적의 validity를 판단하고 타당한 항목만 수정합니다.
+16. 수정 후 변경 범위에 맞는 검증을 실행하고, 한국어 커밋 메시지로 커밋한 뒤 push합니다. project 계층 PR에서는 이 커밋이 별도 worktree의 파생 브랜치에서 발생해야 하며, 기준 `project/<project-id>` 브랜치에는 직접 커밋하지 않습니다.
+17. PR 댓글 또는 본문에 수정 내용, 검증 결과, 남은 위험, 새 head SHA를 기록하고 9번으로 돌아갑니다.
 
 ## 종료 기준
 
 - 최신 head에 대한 Codex 결과가 `Didn't find any major issues` 또는 동등한 no-major 응답을 명시했습니다.
-- 같은 head에 대해 진행 중인 `eyes` 반응이 있으면 종료가 아니라 15분 한도의 대기입니다.
-- 최신 리뷰 요청 뒤 15분 동안 Codex 응답이 없으면 timeout으로 중단하고 보고합니다.
+- 같은 head에 대해 진행 중인 `eyes` 반응이 있으면 종료가 아니라 `eyes` 확인 시점부터 15분 한도의 대기입니다.
+- 같은 head에 대해 호출했지만 3분 동안 `eyes` 반응이 없고 리뷰 결과도 없으면 접수 실패로 보고 재호출합니다. 같은 head의 no-`eyes` 재호출은 기본 최대 3회이며, 모두 실패하면 `Codex 리뷰 접수 실패 timeout`으로 중단해 사용자 판단 필요로 보고합니다.
+- `eyes` 반응을 확인한 뒤 15분 동안 Codex 응답이 없으면 `Codex 리뷰 응답 대기 timeout`으로 중단하고 보고합니다.
 - 사용자가 명시한 반복 한도가 없으면 횟수 제한으로 중단하지 않습니다.
 
 ## 금지
 
 - formal GitHub approve 리뷰 객체가 없다는 이유만으로 `Didn't find any major issues` 명시 응답을 무시하지 않습니다.
 - 이전 head의 no-major 결과를 현재 head의 승인으로 재사용하지 않습니다.
-- 최신 head 이후 `eyes` 반응이 붙은 호출이 있는데 같은 head에 중복 호출하지 않습니다.
+- 최신 head 이후 `eyes` 반응이 붙은 호출이 있는데 같은 head에 중복 호출하지 않습니다. 단, 최신 head 이후 호출 댓글에 3분 동안 `eyes` 반응이 없고 리뷰 결과도 없으면 접수 실패 재호출로 분류하고, 재호출 뒤 최신 호출 댓글 기준으로 다시 확인합니다.
 - PR을 머지하지 않습니다. 머지는 별도 명시 승인 뒤 메인 오케스트레이터가 처리합니다.
 - `project/dynamos` 또는 `project/onjump`처럼 project 계층 기준 브랜치가 따로 있는 변경을 이 skill 때문에 `main-v2`로 retarget하지 않습니다.
 - project 계층 PR에서 기준 `project/<project-id>` 브랜치 자체를 head로 쓰거나, 기준 브랜치 checkout에서 직접 commit/push하지 않습니다.

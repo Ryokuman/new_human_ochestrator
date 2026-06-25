@@ -16,9 +16,11 @@ PR 생성 직후에는 [`codex-pr-review-loop`](../../20-skills/codex-pr-review-
 
 새 submodule repo를 평가용으로 만들 때는 기본 브랜치에 빈 기준 또는 최소 단일 후보 파일만 두고, 실제 코드는 PR로 올립니다. PR 본문에는 submodule 유형을 `patch/evidence`, `runtime`, `service/MSA` 중 하나로 표시하고, 제품 적용 목적, 평가 기준, 검증 한계, 제품 repo가 pin할 수 있는 조건을 적습니다. 기능 단위 BE/FE 분리는 기본적으로 service/MSA가 아니라 `runtime submodule` 또는 `patch/evidence submodule`에서 시작합니다.
 
-현재 head push 이후에 작성된 최신 `@codex review` 호출 댓글에 `eyes` 반응이 있으면 Codex 리뷰가 접수 또는 진행 중인 상태로 보고, 같은 head commit에 추가 `@codex review`를 호출하지 않습니다.
+현재 head push 이후에 작성된 최신 `@codex review` 호출 댓글에 `eyes` 반응이 있으면 Codex 리뷰가 접수 또는 진행 중인 상태로 보고, 같은 head commit에 추가 `@codex review`를 호출하지 않고 `eyes` 확인 시점부터 최대 15분까지 기다립니다.
 
-최신 리뷰 요청 뒤 15분 동안 Codex 응답이 없으면 timeout으로 중단하고 PR URL, head SHA, 호출 댓글, 대기 시간을 보고합니다.
+현재 head push 이후에 작성된 최신 `@codex review` 호출 댓글에 3분 동안 `eyes` 반응이 붙지 않고 최신 head 리뷰 결과도 없으면 접수 실패로 보고, 같은 head 기준으로 `@codex review`를 재호출한 뒤 새 호출 댓글 기준으로 다시 확인합니다. 같은 head의 no-`eyes` 재호출은 기본 최대 3회로 제한하고, 3회 모두 `eyes` 반응과 리뷰 결과가 없으면 `Codex 리뷰 접수 실패 timeout`으로 중단해 사용자 판단 필요로 보고합니다.
+
+`eyes` 반응을 확인한 뒤 15분 동안 Codex 응답이 없으면 `Codex 리뷰 응답 대기 timeout`으로 중단하고 PR URL, head SHA, 호출 댓글, 대기 시간을 보고합니다.
 
 아래 항목이 있으면 `codex-pr-review-loop` 기준으로 수정, 검증, 재호출을 반복합니다. 기본 중단 기준은 호출 횟수가 아니라 최신 head에 대한 `Didn't find any major issues` 또는 동등한 no-major 명시 응답입니다.
 
@@ -32,7 +34,7 @@ PR 생성 직후에는 [`codex-pr-review-loop`](../../20-skills/codex-pr-review-
 
 반복 이후에도 남는 항목은 횟수 기준으로 중단하지 않고, 의도된 잔여 위험 또는 사용자 판단 필요로 분리합니다.
 
-재호출 전에도 최신 head push 이후에 작성된 호출 댓글의 `eyes` 반응과 최신 head commit 리뷰 결과를 확인합니다. 최신 head 리뷰 결과가 아직 없고 현재 head 이후 호출 댓글에 `eyes`가 있으면 중복 호출하지 않고 15분 한도 안에서 기존 요청을 기다립니다.
+재호출 전에도 최신 head push 이후에 작성된 호출 댓글의 `eyes` 반응과 최신 head commit 리뷰 결과를 확인합니다. 최신 head 리뷰 결과가 아직 없고 현재 head 이후 호출 댓글에 `eyes`가 있으면 중복 호출하지 않고 `eyes` 확인 시점부터 15분 한도 안에서 기존 요청을 기다립니다. 최신 호출 댓글에 3분 동안 `eyes` 반응이 없고 최신 head 리뷰 결과도 없으면 접수 실패 재호출로 분류하되, 같은 head의 no-`eyes` 재호출 기본 상한 3회를 넘기지 않습니다.
 
 ## 사용자 재리뷰
 

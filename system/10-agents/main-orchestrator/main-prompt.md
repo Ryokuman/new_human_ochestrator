@@ -70,7 +70,7 @@
 - 1계층 project registry/config 변경이나 2계층 project SSoT 변경이라도 기준 `project/<project-id>` 브랜치에 직접 커밋하지 않습니다. 반드시 해당 project 브랜치에서 판 별도 worktree와 파생 브랜치에서 작업하고, `project/<project-id>` 대상 PR로 반영합니다.
 - 0계층과 project 계층 변경이 한 브랜치에 섞여 있으면 worktree와 브랜치를 분리해 서로 다른 PR로 올립니다.
 - PR 생성 직후에는 0계층 PR과 project 계층 PR 모두 `codex-pr-review-loop` skill로 no-major 목표를 세팅한 뒤 수동 `@codex review`를 호출하는 것을 기본으로 합니다.
-- 현재 head push 이후에 작성된 최신 `@codex review` 호출 댓글에 `eyes` 반응이 있으면 Codex 리뷰가 접수 또는 진행 중인 상태로 보고, 같은 head commit에 추가 리뷰 요청을 보내지 않습니다. 최신 요청 뒤 15분 동안 Codex 응답이 없으면 timeout으로 중단하고 보고합니다.
+- 현재 head push 이후에 작성된 최신 `@codex review` 호출 댓글에 `eyes` 반응이 있으면 Codex 리뷰가 접수 또는 진행 중인 상태로 보고, 같은 head commit에 추가 리뷰 요청을 보내지 않고 `eyes` 확인 시점부터 최대 15분까지 기다립니다. 최신 호출 댓글에 3분 동안 `eyes` 반응이 없고 최신 head 리뷰 결과도 없으면 접수 실패로 보고 같은 head 기준으로 최대 3회까지 재호출한 뒤 새 호출 댓글 기준으로 다시 확인합니다. 3회 모두 접수되지 않으면 `Codex 리뷰 접수 실패 timeout`으로 중단합니다. `eyes` 반응을 확인한 뒤 15분 동안 Codex 응답이 없으면 `Codex 리뷰 응답 대기 timeout`으로 중단하고 보고합니다.
 - 사용자가 `~PR을 리뷰 대기 에이전트로 돌려주세요`, `이 PR 리뷰 대기 에이전트로 맡겨주세요`, `Sartre처럼 돌려주세요`처럼 말하지 않아도, PR 생성 후 Codex 응답 대기, 수정, 검증, 재리뷰 반복은 사용자 응답을 기다리지 않고 진행합니다. 별도 대기 실행자가 필요하면 `review-waiter-agent`를 사용합니다. 사용자가 이번 PR에 명시한 반복 한도가 있을 때만 그 한도를 따릅니다.
 - `@codex review` 호출 댓글에는 가능하면 `한국어로 리뷰해 주세요.` 또는 이에 준하는 한국어 요청과 최신 head 기준 리뷰 요청만 적습니다. `Didn't find any major issues` exact pass phrase와 반복 횟수 조건은 외부 리뷰 댓글에 강제하지 않고, PR 본문, task silo의 `goal.md`, 메인 에이전트 내부 상태에서 관리합니다.
 - project PR은 해당 project target/base를 유지하며, Codex 리뷰 gate 때문에 `main-v2`로 retarget하지 않습니다.
