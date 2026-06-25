@@ -65,7 +65,7 @@ Codex 실제 응답은 `Didn't find any major issues` 또는 그와 동등하게
 9. 최신 head push 이후의 `@codex review` 호출 댓글, `eyes` 반응, Codex 리뷰 결과를 확인합니다.
 10. 최신 head 이후 호출 댓글에 `eyes` 반응이 있고 아직 리뷰 결과가 없으면 중복 호출하지 않고 `eyes` 확인 시점부터 최대 15분까지 대기합니다.
 11. 최신 head 이후 호출 댓글이 있지만 3분 동안 `eyes` 반응이 없고 아직 리뷰 결과도 없으면 리뷰 요청이 접수되지 않은 것으로 보고, 같은 head 기준으로 `@codex review`를 재호출한 뒤 9번으로 돌아갑니다. 같은 head의 no-`eyes` 재호출은 기본 최대 3회로 제한하고, 3회 모두 `eyes` 반응과 리뷰 결과가 없으면 `Codex 리뷰 접수 실패 timeout`으로 중단해 사용자 판단 필요로 보고합니다.
-12. 최신 head에 대한 리뷰 요청이 없으면 PR 댓글로 `@codex review`를 호출하고, 외부 리뷰 댓글 문구만 적습니다.
+12. 최신 head에 대한 리뷰 요청이 없으면 PR 댓글로 `@codex review`를 호출하고, 외부 리뷰 댓글 문구만 적은 뒤 9번으로 돌아갑니다.
 13. `eyes` 반응을 확인한 뒤 15분 동안 Codex 응답이 없으면 루프를 중단하고 PR URL, head SHA, 호출 댓글, 대기 시간을 보고합니다.
 14. Codex 결과가 도착하면 최신 head에 대해 no-major 응답인지 확인합니다.
 15. no-major 응답이 아니면 actionable major/critical/P1/P2 또는 보호 절차 위반 지적의 validity를 판단하고 타당한 항목만 수정합니다.
