@@ -23,9 +23,10 @@ PR 유형별 목표 세팅과 종료 기준은 `codex-pr-review-loop` skill을 �
 - GitHub PR target/base branch가 계층 기준과 맞지 않으면 `@codex review`를 호출하지 않고 계층 기준 브랜치 불일치로 보고합니다.
 - 기존 `@codex review` 호출이 있으면 호출 이력으로 기록하되, 최신 head 이후 호출인지 별도로 확인합니다.
 - 기존 `@codex review` 호출이 0회이거나 최신 head push 이후 호출이 없으면, 리뷰 대기 전에 먼저 `@codex review`를 호출합니다.
-- 현재 head push 이후에 작성된 최신 `@codex review` 호출 댓글에 `eyes` 반응이 있으면 Codex 리뷰가 접수 또는 진행 중인 상태로 보고, 같은 head commit에 추가 리뷰 요청을 보내지 않습니다.
-- 리뷰 대기 중에는 최신 head commit, head push 시각, 마지막 `@codex review` 호출 시각, `eyes` 반응, Codex 리뷰 제출 여부를 함께 확인합니다. 최신 head에 대한 리뷰 제출이 없고 현재 head 이후 호출 댓글에 `eyes`가 있으면 호출 횟수를 늘리지 않고 최대 15분까지 대기합니다.
-- 최신 리뷰 요청 뒤 15분 동안 Codex 응답이 없으면 timeout으로 중단하고 PR URL, head SHA, 호출 댓글, 대기 시간을 보고합니다.
+- 현재 head push 이후에 작성된 최신 `@codex review` 호출 댓글에 `eyes` 반응이 있으면 Codex 리뷰가 접수 또는 진행 중인 상태로 보고, 같은 head commit에 추가 리뷰 요청을 보내지 않고 `eyes` 확인 시점부터 최대 15분까지 기다립니다.
+- 현재 head push 이후에 작성된 최신 `@codex review` 호출 댓글에 3분 동안 `eyes` 반응이 붙지 않고 최신 head 리뷰 결과도 없으면, 리뷰 요청이 접수되지 않은 것으로 보고 같은 head 기준으로 `@codex review`를 재호출합니다.
+- 리뷰 대기 중에는 최신 head commit, head push 시각, 마지막 `@codex review` 호출 시각, `eyes` 반응, Codex 리뷰 제출 여부를 함께 확인합니다. 최신 head에 대한 리뷰 제출이 없고 현재 head 이후 호출 댓글에 `eyes`가 있으면 호출 횟수를 늘리지 않고 `eyes` 확인 시점부터 최대 15분까지 대기합니다.
+- `eyes` 반응을 확인한 뒤 15분 동안 Codex 응답이 없으면 timeout으로 중단하고 PR URL, head SHA, 호출 댓글, 대기 시간을 보고합니다.
 - 기본 중단 기준은 호출 횟수가 아니라 `codex-pr-review-loop`의 no-major 결과입니다. 사용자가 이번 PR에 명시한 반복 한도가 있을 때만 그 한도를 따릅니다.
 - 사용자 지정 반복 한도를 채우면 더 이상 호출하지 않고 남은 이슈와 사용자 판단 필요 항목을 보고합니다.
 - task silo의 `goal.md`가 확인되면 `/goal`을 재사용해 현재 PR의 목표, 남은 리뷰 지적, 검증 결과를 갱신합니다.
@@ -38,7 +39,7 @@ PR 유형별 목표 세팅과 종료 기준은 `codex-pr-review-loop` skill을 �
 - PR 본문 또는 댓글에 수정 내용, 검증 결과, 남은 위험을 한국어로 남깁니다.
 - 최초 리뷰 호출과 재리뷰 호출 댓글에는 `@codex review`, `한국어로 리뷰해 주세요.`, 최신 head 기준 리뷰 요청만 적습니다. `Didn't find any major issues` exact pass phrase와 반복 횟수 조건은 외부 댓글에 강제하지 않고 내부 종료 기준으로만 관리합니다.
 - 재리뷰 호출 전에도 변경 내용의 계층과 GitHub PR target/base branch가 여전히 맞는지 다시 확인합니다. 0계층 PR은 `main-v2`, project 계층 PR은 해당 `project/<project-id>`가 target/base여야 합니다.
-- 재리뷰 호출 전 현재 head push 이후에 작성된 최신 호출 댓글에 `eyes` 반응이 남아 있으면 아직 진행 중인 리뷰로 보고 재호출하지 않습니다.
+- 재리뷰 호출 전 현재 head push 이후에 작성된 최신 호출 댓글에 `eyes` 반응이 남아 있으면 아직 진행 중인 리뷰로 보고 재호출하지 않습니다. 최신 호출 댓글에 3분 동안 `eyes` 반응이 없고 리뷰 결과도 없으면 접수 실패 재호출로 분류합니다.
 - 최신 head에 대한 리뷰가 `Didn't find any major issues` 또는 동등한 no-major 응답을 명시하면 루프를 종료합니다.
 - 종료 시 리뷰 호출 횟수, 수정 커밋, 검증, 남은 위험, 사용자 지정 반복 한도 적용 여부를 보고합니다.
 

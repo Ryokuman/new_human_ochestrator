@@ -22,6 +22,6 @@ PR은 단순히 코드를 머지하는 절차가 아닙니다. 사일로가 발�
 - 제품 repo가 독립 git submodule commit을 pin하는 경우 변경된 submodule repo마다 별도 PR과 Codex no-major 또는 동등 리뷰 gate를 확인합니다. 상위 제품 repo PR은 리뷰 통과 commit의 gitlink pin, host 설정, submodule 선언, 실행 경로 연결만 검증합니다.
 - 새 submodule repo는 빈 기준 또는 최소 후보 기준에서 시작하고, 실제 코드는 PR에서 `patch/evidence`, `runtime`, `service/MSA` 유형과 평가 기준을 명시해 리뷰합니다. 기능 단위 BE/FE 분리는 기본적으로 service/MSA가 아니라 runtime 또는 patch/evidence submodule에서 시작합니다.
 - PR 생성 직후에는 0계층 PR과 project 계층 PR 모두 `codex-pr-review-loop` skill로 no-major 목표를 세팅한 뒤 수동 `@codex review`를 호출하는 것을 기본 리뷰 조건으로 둡니다.
-- Codex 응답은 사용자 응답을 기다리지 않고 확인합니다. 15분 동안 응답이 없으면 timeout으로 중단하고, no-major 응답이 아니면 타당한 지적을 수정, 검증, push한 뒤 재리뷰를 요청합니다.
+- Codex 응답은 사용자 응답을 기다리지 않고 확인합니다. 호출 뒤 3분 동안 `eyes` 반응이 없으면 접수 실패로 보고 같은 head 기준으로 재호출하고, `eyes` 반응을 확인한 뒤 15분 동안 응답이 없으면 timeout으로 중단합니다. no-major 응답이 아니면 타당한 지적을 수정, 검증, push한 뒤 재리뷰를 요청합니다.
 - 별도 대기 실행자가 필요하면 `review-waiter-agent`가 최신 head에 대한 `Didn't find any major issues` 또는 동등한 no-major 명시 응답까지 백그라운드 루프로 관리합니다. task silo의 `goal.md`가 확인되면 no-major 목표를 세팅하고, 그렇지 않으면 PR 본문, 리뷰 thread, 현재 사용자 요청을 컨텍스트로 사용합니다. 반복 한도는 사용자가 이번 PR에 명시한 경우에만 적용합니다.
 - 사일로 발견 사항은 `SSoT 승격 후보`와 `승격하지 않을 항목`으로 분리합니다.
