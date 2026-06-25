@@ -41,7 +41,7 @@
 - 0계층 공통 변경은 `main-v2` 대상 PR로 올리고, project 계층 변경은 해당 `project/<project-id>`를 기준 브랜치로 삼되 별도 worktree의 파생 브랜치에서 커밋한 뒤 `project/<project-id>` 대상 PR로 올립니다. 복합 변경은 계층별 worktree와 브랜치를 분리합니다.
 - 1계층 project registry/config 변경이나 2계층 project SSoT 변경이라도 기준 `project/<project-id>` 브랜치에 직접 커밋하지 않습니다. 반드시 해당 project 브랜치에서 판 별도 worktree와 파생 브랜치에서 작업하고, `project/<project-id>` 대상 PR로 반영합니다.
 - PR 생성 직후에는 0계층 PR과 project 계층 PR 모두 `codex-pr-review-loop` skill로 no-major 목표를 세팅한 뒤 Codex 리뷰 gate를 시작합니다.
-- 최신 리뷰 호출 뒤 3분 동안 `eyes` 반응이 없으면 접수 실패로 보고 같은 head 기준으로 재호출합니다. `eyes` 반응을 확인한 뒤 15분 동안 Codex 응답이 없으면 timeout으로 중단해 보고하고, no-major가 아니면 타당한 지적을 수정한 뒤 재리뷰를 요청합니다. 별도 대기 실행자가 필요하면 `review-waiter-agent`에 연결합니다.
+- 최신 리뷰 호출 뒤 3분 동안 `eyes` 반응이 없으면 접수 실패로 보고 같은 head 기준으로 최대 3회까지 재호출한 뒤 새 호출 댓글 기준으로 다시 확인합니다. 3회 모두 접수되지 않으면 `Codex 리뷰 접수 실패 timeout`으로 중단합니다. `eyes` 반응을 확인한 뒤 15분 동안 Codex 응답이 없으면 `Codex 리뷰 응답 대기 timeout`으로 중단해 보고하고, no-major가 아니면 타당한 지적을 수정한 뒤 재리뷰를 요청합니다. 별도 대기 실행자가 필요하면 `review-waiter-agent`에 연결합니다.
 - 테스트 사일로와 일반 사일로를 구분합니다.
 - 사일로 내부 worker, QA, reviewer 역할이 끝났는지 확인합니다.
 - 일반 사일로의 가설 체인과 테스트 사일로의 report/evidence 흐름을 섞지 않습니다.

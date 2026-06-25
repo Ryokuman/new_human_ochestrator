@@ -25,10 +25,10 @@ PR 유형별 목표 세팅과 종료 기준은 `codex-pr-review-loop` skill을 �
 5. PR 댓글과 리뷰를 읽어 기존 Codex 리뷰 호출 횟수와 최신 리뷰 결과를 확인합니다.
 6. 기존 Codex 리뷰 호출 횟수가 0회이거나 최신 head push 이후 작성된 `@codex review` 호출이 없으면, 리뷰 대기 전에 먼저 `@codex review`를 호출합니다. 댓글에는 `한국어로 리뷰해 주세요.`와 최신 head 기준 리뷰 요청만 포함합니다.
 7. 현재 head push 이후에 작성된 최신 `@codex review` 호출 댓글에 `eyes` 반응이 있고 최신 head commit에 대한 Codex 리뷰 결과가 아직 없으면, Codex 리뷰가 진행 중인 상태로 보고 추가 `@codex review`를 호출하지 않고 `eyes` 확인 시점부터 최대 15분까지 기다립니다.
-8. 현재 head push 이후에 작성된 최신 `@codex review` 호출 댓글에 3분 동안 `eyes` 반응이 없고 최신 head commit에 대한 Codex 리뷰 결과도 없으면, 리뷰 요청이 접수되지 않은 것으로 보고 같은 head 기준으로 `@codex review`를 재호출합니다.
+8. 현재 head push 이후에 작성된 최신 `@codex review` 호출 댓글에 3분 동안 `eyes` 반응이 없고 최신 head commit에 대한 Codex 리뷰 결과도 없으면, 리뷰 요청이 접수되지 않은 것으로 보고 같은 head 기준으로 `@codex review`를 재호출한 뒤 5번으로 돌아가 새 호출 댓글 기준으로 다시 확인합니다. 같은 head의 no-`eyes` 재호출은 기본 최대 3회로 제한하고, 3회 모두 `eyes` 반응과 리뷰 결과가 없으면 `Codex 리뷰 접수 실패 timeout`으로 중단해 사용자 판단 필요로 보고합니다.
 9. 최신 head에 대한 Codex 리뷰 호출이 필요한데 호출할 수 없는 상태라면, 대기하지 않고 사용자 판단 필요로 보고합니다.
 10. `eyes` 반응이 있는 리뷰가 아직 도착하지 않았으면 과도한 polling 없이 `eyes` 확인 시점부터 최대 15분까지 대기합니다.
-11. `eyes` 반응을 확인한 뒤 15분 동안 Codex 응답이 없으면 timeout으로 중단하고 PR URL, head SHA, 호출 댓글, 대기 시간을 보고합니다.
+11. `eyes` 반응을 확인한 뒤 15분 동안 Codex 응답이 없으면 `Codex 리뷰 응답 대기 timeout`으로 중단하고 PR URL, head SHA, 호출 댓글, 대기 시간을 보고합니다.
 12. 최신 head에 대한 리뷰가 `Didn't find any major issues` 또는 동등한 no-major 응답을 명시하면 종료합니다.
 13. no-major 응답이 아니면 actionable 지적의 validity를 먼저 판단합니다.
 14. 타당한 지적은 직접 수정합니다.
@@ -39,7 +39,7 @@ PR 유형별 목표 세팅과 종료 기준은 `codex-pr-review-loop` skill을 �
 19. PR에 한국어로 수정 내용, 검증 결과, 남은 위험을 댓글로 남깁니다.
 20. 재리뷰 호출 전 변경 내용의 계층과 GitHub PR target/base branch가 여전히 맞는지 다시 확인합니다. 계층이나 base가 바뀌었으면 호출하지 않고 사용자 판단 필요로 보고합니다.
 21. 재리뷰 호출 전 현재 head push 이후에 작성된 최신 `@codex review` 호출 댓글의 `eyes` 반응을 확인합니다. 최신 head commit에 대한 리뷰가 아직 없고 현재 head 이후 호출 댓글에 `eyes`가 있으면 `eyes` 확인 시점부터 15분 한도 안에서 대기하며, 22번 호출 분기로 넘어가지 않습니다.
-22. 최신 head 이후 호출 댓글에 3분 동안 `eyes` 반응이 없고 리뷰 결과도 없으면 접수 실패로 보고 사용자 지정 반복 한도 안에서 `@codex review`를 다시 호출합니다.
+22. 최신 head 이후 호출 댓글에 3분 동안 `eyes` 반응이 없고 리뷰 결과도 없으면 접수 실패로 보고 사용자 지정 반복 한도와 같은 head no-`eyes` 기본 상한 3회 안에서 `@codex review`를 다시 호출한 뒤 5번으로 돌아갑니다. 3회 모두 `eyes` 반응과 리뷰 결과가 없으면 `Codex 리뷰 접수 실패 timeout`으로 중단해 사용자 판단 필요로 보고합니다.
 23. 21번의 진행 중 조건이 아니고 22번의 접수 실패 조건도 아닐 때만 사용자 지정 반복 한도가 있는지 확인합니다. 사용자 지정 반복 한도가 없거나 아직 남아 있으면 `@codex review`를 다시 호출합니다. 댓글에는 `한국어로 리뷰해 주세요.`와 최신 head 기준 리뷰 요청만 포함합니다.
 24. 21번의 진행 중 조건이 아니고 사용자 지정 반복 한도를 채웠으면 재호출하지 않고 남은 이슈를 `사용자 판단 필요`로 보고합니다.
 
