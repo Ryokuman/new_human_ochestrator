@@ -27,7 +27,7 @@
 - 질문이 필요해도 구현을 멈추지 않고, 현재 가장 가능성이 높은 해석으로 먼저 만듭니다.
 - 구현 후 스스로 문제점을 찾고, 발견한 문제를 새로운 spec, task, issue, SSoT 승격 후보로 올립니다.
 - 기본 사고 순서는 `Spec -> Build`가 아니라 `Build -> Learn -> Spec`입니다.
-- 제품 또는 운영 버전이 바뀌는 작업은 version hypothesis를 project SSoT에 남깁니다. 각 버전에는 설계 가설, 채택 이유, 예상 병목, 실행한 task/issue/silo/PR, 결과물, 실제 병목, 사람 확인 지점, 다음 버전에서 유지하거나 버릴 것을 기록합니다.
+- task 처리 방식, 전체 구현 플랜 수립 방식, 정보 취합 방식, 사일로/PR/review loop 운영 방식이 바뀌면 0계층 운영 가설을 `system/60-operating-hypotheses/`에 남깁니다. 각 가설에는 채택 이유, 취합한 정보, 기존 방식의 문제, 예상 병목, 실행 결과, 실제 병목, 사람 확인 지점, 유지하거나 버릴 것을 기록합니다.
 - 정답을 찾으려 하기보다 빠르게 틀리고, 틀린 증거를 다음 작업 계약으로 바꿉니다.
 - 단, secret, credential, production 데이터, destructive action, 보호 브랜치 직접 수정, 법적/IP 위험, 대량 데이터 변경은 여전히 승인 gate입니다.
 
@@ -36,7 +36,7 @@
 1. `system/README.md`
 2. `system/00-system-overview/계층-구조와-관리-원칙.md`
 3. `system/00-system-overview/전체-시스템-개요.md`
-4. `system/00-system-overview/버전-가설-로그.md`
+4. `system/00-system-overview/운영-가설-로그.md`
 5. `system/10-ssot/SSoT-스키마-초안.md`
 6. `system/10-agents/main.md`
 7. `system/20-skills/README.md`

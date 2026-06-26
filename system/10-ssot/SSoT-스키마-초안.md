@@ -213,41 +213,41 @@ Task 기본 필드에는 `owner`와 `files_touched`를 두지 않습니다. 담�
 
 `is_failed`는 최신 상태만 의미하는 필드로 쓰지 않습니다. 최신 상태는 기존 `status`를 사용하고, 실패 이력은 `had_failed_run`으로 표현합니다. 이렇게 해야 `status: pass`이면서도 과거 실패가 있었던 대상을 필터링할 수 있습니다.
 
-### Version Hypothesis
+### Operating Hypothesis
 
-제품 또는 운영 버전 단위의 설계 가설입니다.
+0계층 운영 방식에 대한 가설입니다.
 
-Version Hypothesis는 0계층 SSoT가 아니라 project SSoT에 저장합니다. 0계층에는 형식, 승격 기준, 금지선만 둡니다.
+Operating Hypothesis는 project SSoT가 아니라 `system/60-operating-hypotheses/`에 저장합니다. task 처리 방식, 전체 구현 플랜 수립 방식, 정보 취합 방식, 사일로/PR/review loop 운영 방식이 왜 선택됐고 어떤 병목을 만들었는지 추적합니다.
 
-Task 내부 `hypothesis_chain`이 실행 중 실패와 재시도 가설을 다룬다면, Version Hypothesis는 여러 task와 PR을 묶는 상위 설계 가설을 다룹니다.
+Task 내부 `hypothesis_chain`이 실행 중 실패와 재시도 가설을 다룬다면, Operating Hypothesis는 그보다 상위에서 에이전트 운영 방식 자체의 가설을 다룹니다.
 
 필드:
 
-- version_id
-- version_name
+- hypothesis_id
+- hypothesis_name
 - status: `draft`, `active`, `closed`, `discarded`
 - started_at
 - closed_at
-- design_hypothesis
+- operating_hypothesis
 - rationale
+- gathered_information
+- previous_method_problem
 - expected_bottlenecks
-- execution_plan_summary
-- related_tasks
-- related_issues
-- related_silos
-- related_prs
-- outputs
-- evidence
+- applied_workflow
+- applied_scope
+- execution_result
 - observed_bottlenecks
 - human_check_points
-- kept_for_next_version
-- discarded_for_next_version
-- follow_up_task_candidates
-- promoted_spec_candidates
+- keep_next
+- discard_next
+- updated_system_docs
+- updated_skills
+- updated_agent_prompts
+- follow_up_operating_hypotheses
 
-새 version hypothesis는 제품 가치 가정, 완료 경로, 구조 가정, 사일로 운영 방식, 검증 방식, human check 병목 축소 전략이 바뀔 때 작성합니다. 단순 버그 수정, 문구 수정, 단일 PR 리뷰 대응은 새 version hypothesis가 아니라 기존 task, issue, PR 본문, task 내부 `hypothesis_chain`에 기록합니다.
+새 operating hypothesis는 task 처리 순서, task 작성 방식, 사일로 생성 방식, PR review loop 방식, submodule/monorepo/external clone 운영 방식, human check 병목을 줄이기 위한 evidence 수집 방식, 전체 프로젝트 구현 플랜 수립 방식이 바뀔 때 작성합니다.
 
-version hypothesis는 사후 합리화가 아니라 실행 전 가설과 예상 병목을 먼저 쓰고, 실행 후 결과물과 실제 병목을 이어 붙이는 로그입니다. 이 기록으로 각 버전에서 어떤 가설이 병목을 만들었고 다음 버전에서 무엇을 바꿔야 하는지 추적합니다.
+operating hypothesis는 사후 합리화가 아니라 실행 전 가설과 예상 병목을 먼저 쓰고, 실행 후 결과물과 실제 병목을 이어 붙이는 로그입니다. 프로젝트 기능 요구나 개별 task 원문은 여기에 복사하지 않고 project SSoT에 둡니다.
 
 ### Silo
 
