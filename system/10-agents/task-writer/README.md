@@ -7,6 +7,7 @@
 ## 사용할 때
 
 - 구현 요청을 task 문서로 내려야 할 때
+- 기능 구현 task를 사일로 실행 전에 단계별 계획과 pseudo code로 검토해야 할 때
 - 사일로 실행 전에 목표, 금지선, 검증 기준을 정리해야 할 때
 - coverage 개선형 task의 부모/하위 목표를 나눠야 할 때
 - 여러 task를 병렬로 생성하거나 실행하기 위해 sibling task 의존성을 분리해야 할 때
@@ -17,6 +18,8 @@
 - 제목
 - ID
 - Output
+- 단계별 구현 계획: 기능 task인 경우
+- Pseudo Code: 기능 task인 경우
 - Acceptance Criteria
 - Test Plan
 - criteria별 테스트 계약
@@ -38,6 +41,9 @@
 - `owner`와 `files_touched`를 기본 Task 필드로 요구하지 않습니다. 담당 실행 단위는 사일로/브랜치/PR로 추적하고, 실제 변경 파일은 PR 단계에서 기록합니다.
 - 목표 수치나 증거 위치가 없는 coverage task를 만들지 않습니다.
 - 실행 전제가 빠진 task를 정식 사일로 실행 대상으로 넘기지 않습니다.
+- 기능 task를 단계별 구현 계획과 pseudo code 없이 사일로 실행 대상으로 넘기지 않습니다. pseudo code는 실제 코드가 아니라 파일/함수/API/DB mutation/화면 상태 변화가 드러나는 수준으로 씁니다.
+- 기능 task의 pseudo code에서 task 목표 밖 화면, 버튼, endpoint, table mutation, submodule, E2E 범위가 나오면 `범위 drift 후보`로 표시합니다.
+- 비기능 task, coverage task, 문서 task에는 pseudo code를 기계적으로 요구하지 않습니다.
 - 병렬 task의 `Output`, `Acceptance Criteria`, `Test Plan`에 sibling task 완료를 전제로 쓰지 않습니다.
 - `초기 DB 목데이터`와 `테스트 입력`을 섞지 않습니다. 테스트 시작 전에 DB에 seed로 존재해야 하는 상태만 초기 DB 목데이터이며, UI/API/harness/runner가 실행 중 넣는 값과 액션은 테스트 입력입니다.
 - 식단 직접 입력 값, 빠른 체크 선택, API request body, validation 실패용 잘못된 값처럼 사용자 또는 테스트가 실행 중 넣는 payload는 초기 DB 목데이터로 쓰지 않습니다.

@@ -45,6 +45,9 @@ task-xxxx/ 생성
 - 사일로 내부 개발자/QA/리뷰 역할의 책임
 - 금지선: secret 기록, production 데이터 쓰기, 보호 브랜치 직접 push, 승인 없는 data SSoT 수정
 - 검증 기준
+- 기능 task인 경우 단계별 구현 계획
+- 기능 task인 경우 pseudo code: 파일/함수/API/DB mutation/화면 상태 변화
+- 기능 task pseudo code에서 발견한 범위 drift 후보
 - criteria별 테스트 계약
 - 초기 DB 목데이터와 각 데이터가 필요한 이유
 - 테스트 입력과 실행 중 입력되는 액션/payload
@@ -54,6 +57,8 @@ task-xxxx/ 생성
 - PR 본문 필수 항목
 
 `goal.md`는 원본 task의 `Output`과 `Acceptance Criteria`를 완료 기준으로 삼아야 합니다. 각 criteria는 `unit`, `integration`, `runner`, `E2E`, `agent-browser`, `manual` 중 하나 이상의 검증 방법과 연결합니다.
+
+기능 task의 `goal.md`에는 사일로 실행 전에 단계별 구현 계획과 pseudo code를 적습니다. pseudo code는 실제 코드가 아니라 파일, 함수, API, DB mutation, 화면 상태 변화가 드러나는 수준으로 작성합니다. task 목표 밖 화면, 버튼, endpoint, table mutation, submodule, E2E 범위가 보이면 `범위 drift 후보`로 표시하고, 리뷰 전에는 구현을 시작하지 않습니다. 비기능 task, coverage task, 문서 task에는 pseudo code를 기계적으로 요구하지 않습니다.
 
 `초기 DB 목데이터`는 테스트 시작 전에 DB에 미리 seed로 존재해야 하는 상태입니다. 실제 DB schema에서 FK나 조회 조건으로 확인된 테스트 사용자 row, 날짜 컬럼을 가진 기존 기록 row, 참조 테이블 값처럼 테스트 전제 상태를 만드는 데이터만 포함합니다. 각 항목에는 해당 데이터가 왜 시작 전에 필요한지, 어떤 criteria를 가능하게 하는지, 재실행 시 중복 또는 오염을 어떻게 피하는지 적습니다.
 

@@ -33,6 +33,7 @@
 - task 계약이 BE/FE 독립 git submodule을 요구하면 상위 제품 repo를 BE와 FE의 두 gitlink를 둔 submodule host로만 보고, host 연결 외의 BE/FE 구현 변경은 각 독립 submodule repo로 라우팅합니다. BE/FE/page/harness-scenario를 단일 기능 repo로 묶는 것은 task 계약이 그렇게 명시한 경우에만 허용합니다.
 - `vite-harness` 계열 repo는 재사용 하네스 라이브러리로 보고, task별 제품 시나리오, seed, demo, adapter는 task 계약이 지정한 기능 submodule repo 또는 project SSoT로 라우팅합니다.
 - task를 검토하거나 실행할 때는 FE/BE를 별도 소유권으로 나누지 않고 사용자 목적과 완료 경로 기준의 풀스택 단위로 판단합니다.
+- 구현 전 계획 리뷰가 필요한 기능 task는 바로 build하지 않고, task-writer 또는 worker에게 단계별 구현 계획과 pseudo code를 작성하게 한 뒤 파일/함수/API/DB mutation/화면 상태 변화가 task 목표와 맞는지 확인합니다.
 - API, schema, store, route가 아직 없다는 사실만으로 task 위험으로 단정하지 않고, 같은 task 안에서 백엔드 계약을 먼저 만들고 프론트가 소비하는 순서를 worker와 task-writer에게 전달합니다.
 - MVP, QA 수정, 저장 실패, UI 복구, 비즈니스 로직 복구 요청에서는 기능 인벤토리를 만들고 화면, 입력, 저장, 조회, 재진입 복원, validation, empty/error/loading, 실제 사용자 경로 검증을 대조합니다.
 - 특정 기능 실패가 반복되면 단일 버그로만 보지 않고 해당 기능군이 현재 기준선에 존재하는지 확인합니다.

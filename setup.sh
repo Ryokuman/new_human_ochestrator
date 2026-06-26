@@ -895,6 +895,18 @@ TASK-0000
 
 해당 task가 독립적으로 증명할 수 있는 산출물만 적습니다. 병렬 sibling task 완료를 전제로 삼지 않습니다.
 
+## 단계별 구현 계획
+
+기능 task인 경우에만 작성합니다. 비기능 task, coverage task, 문서 task에는 기계적으로 요구하지 않습니다.
+
+## Pseudo Code
+
+기능 task인 경우 파일/함수/API/DB mutation/화면 상태 변화가 드러나는 수준으로 작성합니다. 실제 코드를 쓰지 않습니다.
+
+## 범위 drift 후보
+
+Pseudo Code에서 task 목표 밖 화면, 버튼, endpoint, table mutation, submodule, E2E 범위가 보이면 적습니다.
+
 ## Acceptance Criteria
 
 병렬로 생성하거나 실행할 task라면 sibling task 완료를 완료 조건으로 두지 않습니다.
@@ -981,6 +993,18 @@ TASK-0000
 
 해당 task가 독립적으로 증명할 수 있는 산출물만 적습니다. 병렬 sibling task 완료를 전제로 삼지 않습니다.
 
+## 단계별 구현 계획
+
+기능 task인 경우에만 작성합니다. 비기능 task, coverage task, 문서 task에는 기계적으로 요구하지 않습니다.
+
+## Pseudo Code
+
+기능 task인 경우 파일/함수/API/DB mutation/화면 상태 변화가 드러나는 수준으로 작성합니다. 실제 코드를 쓰지 않습니다.
+
+## 범위 drift 후보
+
+Pseudo Code에서 task 목표 밖 화면, 버튼, endpoint, table mutation, submodule, E2E 범위가 보이면 적습니다.
+
 ## Acceptance Criteria
 
 병렬로 생성하거나 실행할 task라면 sibling task 완료를 완료 조건으로 두지 않습니다.
@@ -1004,6 +1028,18 @@ TASK-0000
 ## 작업 브랜치
 
 ## 금지선
+
+## 단계별 구현 계획
+
+기능 task인 경우에만 작성합니다.
+
+## Pseudo Code
+
+기능 task인 경우 파일/함수/API/DB mutation/화면 상태 변화가 드러나는 수준으로 작성합니다. 실제 코드를 쓰지 않습니다.
+
+## 범위 drift 후보
+
+Pseudo Code에서 task 목표 밖 화면, 버튼, endpoint, table mutation, submodule, E2E 범위가 보이면 적습니다.
 
 ## 검증 기준
 
