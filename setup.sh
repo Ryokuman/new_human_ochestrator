@@ -738,6 +738,7 @@ create_project_ssot() {
     "$target/10-dictionary" \
     "$target/20-issues" \
     "$target/30-tasks" \
+    "$target/40-version-hypotheses" \
     "$target/50-decisions" \
     "$target/70-handoff" \
     "$target/90-coverage" \
@@ -760,6 +761,7 @@ create_project_ssot() {
 - \`10-dictionary/\`: 프로젝트 용어, 고유명사, 내부 약어, 공통 승격 후보
 - \`20-issues/\`: 문제, 원인 가설, 영향, 연결 task
 - \`30-tasks/\`: 실제 수행 가능한 작업 단위
+- \`40-version-hypotheses/\`: 버전별 설계 가설, 결과물, 병목, 다음 버전 후보
 - \`50-decisions/\`: 프로젝트 결정과 ADR
 - \`70-handoff/\`: 세션 종료와 인수인계
 - \`90-coverage/\`: L 기준, runner 계약, report 위치
@@ -824,6 +826,8 @@ create_project_ssot() {
 ## 활성 Issue
 
 ## 활성 Task
+
+## 활성 Version Hypothesis
 
 ## 다음 행동
 "
@@ -928,6 +932,13 @@ Pseudo Code에서 task 목표 밖 화면, 버튼, endpoint, table mutation, subm
 프로젝트 결정과 ADR을 기록합니다.
 "
 
+  write_setup_file "$target/40-version-hypotheses/README.md" "# Version Hypotheses
+
+제품 또는 운영 버전별 설계 가설, 결과물, 병목, 다음 버전 후보를 기록합니다.
+
+각 version hypothesis는 실행 전 설계 가설과 예상 병목을 먼저 적고, 실행 후 결과물과 실제 병목을 이어 붙입니다.
+"
+
   write_setup_file "$target/70-handoff/README.md" "# Handoff
 
 세션 종료, 진행 상태, 다음 작업자를 위한 인수인계를 기록합니다.
@@ -1015,6 +1026,48 @@ Pseudo Code에서 task 목표 밖 화면, 버튼, endpoint, table mutation, subm
 여러 sibling task 완료를 전제로 하는 최종 통합 E2E는 개별 task acceptance가 아니라 별도 QA gate, integration task, 또는 후속 harness 검증으로 분리합니다. 단일 task의 화면 동작 자체가 산출물이면 E2E 또는 agent-browser acceptance를 유지합니다.
 
 ## Coverage Target
+"
+
+  write_setup_file "$target/templates/version-hypothesis.md" "---
+type: version-hypothesis
+version_id: VERSION-0000
+version_name: 버전 이름
+status: draft
+started_at:
+closed_at:
+---
+
+# 버전 이름
+
+## Version ID
+
+VERSION-0000
+
+## 설계 가설
+
+이 버전이 어떤 가설상으로 설계되었는지 적습니다.
+
+## 채택 이유
+
+## 예상 병목
+
+## 실행 계획 요약
+
+## 실행한 Task / Issue / Silo / PR
+
+## 결과물
+
+## 검증 Evidence
+
+## 실제 병목
+
+## 사람 확인 지점
+
+## 다음 버전에서 유지할 것
+
+## 다음 버전에서 버릴 것
+
+## 후속 Task / Spec / SSoT 후보
 "
 
   write_setup_file "$target/templates/silo-goal.md" "# Silo Goal

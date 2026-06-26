@@ -35,14 +35,15 @@ Build -> Learn -> Spec
 
 1. `00-system-overview/계층-구조와-관리-원칙.md`
 2. `00-system-overview/전체-시스템-개요.md`
-3. `10-ssot/SSoT-스키마-초안.md`
-4. `10-agents/main.md`
-5. `20-skills/README.md`
-6. `10-agents/main-orchestrator/main-prompt.md`
-7. `30-silo-system/README.md`
-8. `40-pr-review-loop/README.md`
-9. `50-feedback-personality-loop/README.md`
-10. `50-feedback-personality-loop/06-system-scope-routing-audit.md`
+3. `00-system-overview/버전-가설-로그.md`
+4. `10-ssot/SSoT-스키마-초안.md`
+5. `10-agents/main.md`
+6. `20-skills/README.md`
+7. `10-agents/main-orchestrator/main-prompt.md`
+8. `30-silo-system/README.md`
+9. `40-pr-review-loop/README.md`
+10. `50-feedback-personality-loop/README.md`
+11. `50-feedback-personality-loop/06-system-scope-routing-audit.md`
 
 ## 폴더 역할
 
@@ -161,6 +162,7 @@ git에서 제외할 것은 프로젝트 의존 자료와 시크릿성 자료입�
 - project SSoT 삭제 PR은 삭제 대상 파일을 `이관 확인됨`, `미이관`, `중복`, `폐기 후보`, `사용자 판단 필요`로 먼저 분류한 뒤 만듭니다. `todo`, `in_progress`, active issue, QA evidence, handoff, source doc은 이관 또는 폐기 근거 없이 삭제하지 않습니다.
 - task/issue 사일로를 시작할 때는 사일로 root, `goal.md`, repo clone, 작업 브랜치 중 하나라도 만들기 전에 project SSoT의 원본 task/issue 상태를 `in_progress`로 갱신합니다. 이 상태 갱신도 기준 `project/<project-id>` 브랜치에 직접 커밋하지 않고, 별도 worktree의 파생 브랜치에서 상태 갱신 PR을 먼저 만든 뒤 `project/<project-id>`에 머지된 것을 확인합니다. 상태 갱신 PR이 머지되기 전에는 사일로 준비를 시작하지 않으며, 갱신 PR 생성 또는 머지 확인을 할 수 없으면 사일로 진행을 멈추고 이유를 보고합니다.
 - 기능 task는 사일로 실행 전에 단계별 구현 계획과 pseudo code를 먼저 작성하고 리뷰합니다. pseudo code는 파일/함수/API/DB mutation/화면 상태 변화가 드러나는 수준으로 작성해 목표 밖 범위 drift를 먼저 잡습니다.
+- 제품 또는 운영 버전이 바뀌는 작업은 project SSoT에 version hypothesis를 남깁니다. 각 버전은 설계 가설, 채택 이유, 예상 병목, 실행한 task/PR/silo, 결과물, 실제 병목, 사람 확인 지점, 다음 버전에서 유지하거나 버릴 것을 기록합니다. 0계층에는 형식과 승격 기준만 두고 프로젝트별 실제 원문은 project SSoT에 둡니다.
 - 원본 프롬프트와 과거 초안은 `../sources/`에 둡니다.
 - 이 프롬프트 모음집은 여러 프로젝트에서 쓰는 것이 목표이므로, 프로젝트 의존 자료는 gitignore 대상으로 둡니다.
 - 현재 목표 기준 다음 행동은 코드 수정이 아니라, 분석 초안 검토와 규칙 승격입니다.

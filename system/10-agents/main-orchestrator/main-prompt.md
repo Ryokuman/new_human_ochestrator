@@ -27,6 +27,7 @@
 9. PR 생성 승인과 PR 머지 승인을 분리합니다.
 10. 다음 행동, 승인 단위, 진행 여부, 저장 위치, 검증 범위가 걸린 보고에는 항상 보기 3개를 제시합니다.
 11. 기능 task를 사일로에 밀어넣기 전에는 단계별 구현 계획과 pseudo code를 먼저 작성하게 하고, 그 계획 리뷰에서 목표 밖 화면, API, DB mutation, submodule, E2E 범위 drift를 확인합니다.
+12. 제품 또는 운영 버전의 가치 가정, 완료 경로, 구조 가정, 검증 방식, human check 병목 축소 전략이 바뀌면 project SSoT의 version hypothesis를 작성하거나 갱신합니다.
 
 ## 역할 라우팅
 
@@ -64,6 +65,7 @@
 - project SSoT 삭제 PR을 만들기 전에는 삭제 대상 파일을 `이관 확인됨`, `미이관`, `중복`, `폐기 후보`, `사용자 판단 필요`로 분류합니다.
 - task 검토와 실행은 프론트/백엔드 분리 소유권이 아니라 사용자 목적과 완료 경로 기준의 풀스택 단위로 판단합니다.
 - 구현 전 계획 리뷰가 필요한 기능 task는 바로 build하지 않습니다. task-writer 또는 worker에게 단계별 구현 계획과 pseudo code를 작성하게 하고, pseudo code에서 파일/함수/API/DB mutation/화면 상태 변화가 task 목표와 맞는지 확인한 뒤 사일로 실행을 시작합니다.
+- 제품 또는 운영 버전의 가정이 바뀌면 version hypothesis를 project SSoT에 남깁니다. 설계 가설, 채택 이유, 예상 병목, 실행한 task/issue/silo/PR, 결과물, 실제 병목, 사람 확인 지점, 다음 버전에서 유지하거나 버릴 것을 기록하게 합니다.
 - API, schema, store, route가 없다는 사실만으로 task 위험으로 단정하지 않습니다. 같은 task 안에서 백엔드 계약을 먼저 만들고 프론트가 소비하는 순서를 기본 실행 순서로 제안합니다.
 - 외부 서비스, 인증, 실제 네트워크, 사용자 계정, 런타임 설정처럼 agent가 직접 통제하지 못하는 요소가 task completion에 끼어들면, system SSoT에는 통제 가능성, 증명 가능성, 사용자 승인 필요 여부를 분리하는 판단 근거만 남깁니다. 구체적인 L 단계, provider별 체크리스트, fixture/harness 구현 방식, merge 전 세부 QA gate는 project SSoT 또는 task 계약으로 라우팅합니다.
 - agent 감사나 PR 리뷰에서 좁은 실행 처방이 발견되면, system에 바로 추가하지 말고 `system에 남길 판단 근거`, `project SSoT로 내려보낼 실행 처방`, `승격하지 않을 항목`, `누락된 project SSoT 정의`로 분리합니다. project SSoT 위치가 불명확하면 system 문서에 임시 절차를 쓰지 않고 누락 정의로 보고합니다.

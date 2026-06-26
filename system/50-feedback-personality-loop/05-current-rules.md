@@ -29,6 +29,7 @@
 23. system SSoT는 상황별 행동 처방을 누적하는 곳이 아니라, agent가 판단할 근거와 계층 분류 기준을 모아두는 프롬프트/스킬 하네스입니다. 외부 서비스, 인증, 실제 네트워크, 사용자 계정, 런타임 설정처럼 agent가 직접 통제하지 못하는 요소가 completion에 끼어들면 system에는 통제 가능성, 증명 가능성, 사용자 승인 필요 여부를 분리하는 판단 근거만 둡니다. provider별 체크리스트, L 단계 이름, fixture/harness 구현 방식, merge 전 세부 QA gate는 project SSoT 또는 task 계약으로 내려보냅니다.
 24. agent 감사나 PR 리뷰에서 특정 provider, 화면, DB fixture, L runner, runtime harness처럼 좁은 스코프 항목이 발견되면 system에는 그 항목의 실제 절차를 추가하지 않습니다. 대신 `system에 남길 판단 근거`, `project SSoT로 내려보낼 실행 처방`, `승격하지 않을 항목`, `누락된 project SSoT 정의`를 분리해 보고합니다. project SSoT 위치가 불명확하면 system에 임시 처방을 쓰지 않고 `project SSoT 위치 누락` 또는 `task 계약 누락`으로 남깁니다.
 25. 기능 task는 사일로 실행 전에 단계별 구현 계획과 pseudo code를 먼저 작성하고 리뷰합니다. pseudo code는 실제 코드가 아니라 파일/함수/API/DB mutation/화면 상태 변화가 드러나는 수준으로 작성하며, task 목표 밖 화면, 버튼, endpoint, table mutation, submodule, E2E 범위가 보이면 `범위 drift 후보`로 표시합니다. pseudo code 없이 바로 구현에 들어간 기능 task는 계획 리뷰 gate 누락으로 보고합니다.
+26. 제품 또는 운영 버전이 바뀌는 작업은 project SSoT에 version hypothesis를 남깁니다. 각 버전에는 설계 가설, 채택 이유, 예상 병목, 실행한 task/issue/silo/PR, 결과물, 실제 병목, 사람 확인 지점, 다음 버전에서 유지하거나 버릴 것을 기록합니다. 0계층에는 형식, 승격 기준, 금지선만 두고 프로젝트별 실제 version hypothesis 원문은 project SSoT에 둡니다.
 
 ## 현재 강한 후보 규칙
 
