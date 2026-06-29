@@ -11,7 +11,7 @@ description: 새 프로젝트를 root orchestrator의 projects 구조에 등록�
 
 - `projects/<project-id>/`는 프로젝트 연결 정보와 프로젝트 의존 운영 자료의 입구입니다.
 - `02-project-internal/`은 실제 project SSoT입니다. 이 안의 issue, task, QA, coverage 산출물은 0계층 `system/`으로 복사하지 않습니다.
-- `setup.sh --create-project-ssot`은 최소 project SSoT scaffold를 생성합니다. 작업 대시보드는 DataviewJS와 Obsidian Base를 기본 viewer 계약으로 포함합니다.
+- `setup.sh --create-project-ssot`은 최소 project SSoT scaffold를 생성합니다. 작업 대시보드는 DataviewJS와 Obsidian Base를 기본 viewer 계약으로 포함하고, 기능 task 생성 전 확인할 `00-dashboard/project-contract.md`를 함께 만듭니다.
 - `system/config/silo-projects.yaml`은 로컬 설정입니다. secret 값은 쓰지 않고, repo URL, 보호 브랜치, 사일로 대상 여부, DB 사용 여부, DB schema 정본/요약/적용 경로 같은 운영 값만 기록합니다.
 - DB를 사용하는 프로젝트는 등록/setup 단계에서 DB schema 정본 위치 또는 schema 요약 위치를 project registry/config 또는 project SSoT에 기록합니다. Docker, compose, migration, startup script로 DB가 자동 생성되거나 갱신되면 schema 적용 경로도 함께 기록합니다.
 - 기존 `project-ssot-bootstrap` 역할은 이 스킬에 흡수되었습니다.
@@ -26,6 +26,7 @@ projects/<project-id>/
 ├── 02-project-internal/
 │   ├── README.md
 │   ├── 00-dashboard/
+│   │   ├── project-contract.md
 │   │   ├── project-overview.md
 │   │   ├── work-filter.md
 │   │   ├── work-items.base
@@ -66,7 +67,19 @@ projects/<project-id>/
 
 모든 project SSoT에는 프로젝트 전반 설명과 dictionary가 있어야 합니다.
 
-`00-dashboard/`에는 project overview와 작업 필터 대시보드를 함께 둡니다. `project-overview.md`는 프로젝트 설명이고, 실제 운영 첫 화면은 `work-filter.md` 또는 `work-views.md`처럼 issue/task를 필터링할 수 있는 작업 목록입니다.
+`00-dashboard/`에는 project contract, project overview, 작업 필터 대시보드를 함께 둡니다. `project-contract.md`는 기능 task 생성 전 확인하는 제품 정의, 현재 버전 목표/비목표, 핵심 사용자 플로우, repo 역할, 추정 금지 정보입니다. `project-overview.md`는 프로젝트 상태와 운영 경계 요약이고, 실제 운영 첫 화면은 `work-filter.md` 또는 `work-views.md`처럼 issue/task를 필터링할 수 있는 작업 목록입니다.
+
+`00-dashboard/project-contract.md`에는 최소 아래 항목을 둡니다.
+
+- 제품 정의
+- 현재 버전 목표와 비목표
+- 핵심 사용자 플로우
+- repo 역할과 금지선
+- task 생성 전 필수 참조
+- task 작성 규칙
+- 추정 금지 정보
+
+기능 task 템플릿과 사일로 `goal.md` 템플릿에는 `Project Contract 확인 결과` 섹션을 둡니다. task 작성자가 project contract 위치와 확인한 항목, 누락 항목을 남기지 않으면 기능 task를 사일로 실행 대상으로 넘기지 않습니다.
 
 `00-dashboard/project-overview.md`에는 최소 아래 항목을 둡니다.
 

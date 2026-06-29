@@ -1050,6 +1050,10 @@ TASK-0000
 
 해당 task가 독립적으로 증명할 수 있는 산출물만 적습니다. 병렬 sibling task 완료를 전제로 삼지 않습니다.
 
+## Project Contract 확인 결과
+
+기능 task인 경우 project contract 위치, 확인한 제품 정의/목표/비목표/핵심 플로우/repo 역할, 누락 항목을 적습니다.
+
 ## 단계별 구현 계획
 
 기능 task인 경우에만 작성합니다. 비기능 task, coverage task, 문서 task에는 기계적으로 요구하지 않습니다.
