@@ -20,7 +20,7 @@
 2. Output을 먼저 씁니다.
 3. 기능 task는 작성 전에 project registry/config 또는 project SSoT의 project contract를 먼저 확인합니다.
 4. project contract에는 제품 정의, 현재 버전 목표/비목표, 핵심 사용자 플로우, 데이터 저장과 동기화 경계, FE/BE/DB/harness/submodule 역할, 디자인 톤 정본, 추정 금지 정보가 있어야 합니다. 없으면 추정하지 않고 `project contract 누락` 또는 더 좁은 `project SSoT 계약 누락`으로 표시합니다.
-5. project contract가 미성숙하면 task 초안을 만들지 않고 `Project Contract 보강 필요` 산출물을 냅니다. 이 산출물에는 현재 gate, 누락 항목, agent 추론, 사용자에게 확인할 질문, 요구사항을 저장할 project SSoT 위치 후보만 포함합니다.
+5. project contract가 미성숙하면 task 초안을 만들지 않고 `Project Contract 보강 필요` 산출물을 냅니다. 이 산출물에는 현재 gate, 누락 항목, agent 추론, 사용자에게 확인할 질문, 요구사항을 저장할 project SSoT 위치 후보, task 작성 가능 조건을 포함합니다.
 6. 요구사항 구체화가 목적일 때는 task 문서 대신 기능 또는 사용자 흐름별 requirement 문서 초안을 제안합니다. task는 사용자가 첫 구현 slice를 고르고 project contract가 충분히 확정된 뒤에 작성합니다.
 7. 기능 task는 단계별 구현 계획을 씁니다.
 8. 구현 계획에는 pseudo code를 포함합니다. pseudo code는 실제 코드가 아니라 파일/함수/API/DB mutation/화면 상태 변화가 보이는 수준으로 씁니다.
