@@ -64,7 +64,7 @@ task-xxxx/ 생성
 
 기능 task의 project contract 확인은 task 작성 전에 수행합니다. project contract에는 제품 정의, 현재 버전 목표/비목표, 핵심 사용자 플로우, 데이터 저장과 동기화 경계, FE/BE/DB/harness/submodule 역할, 디자인 톤 정본, 추정 금지 정보가 있어야 합니다. project contract 또는 하위 SSoT 참조가 없으면 해당 정보를 추정하지 않고 `project contract 누락` 또는 더 좁은 `project SSoT 계약 누락`으로 분류합니다.
 
-project contract gate가 아직 진행 중이면 사일로 `goal.md`를 만들지 않습니다. 이 상태에서는 `현재 gate`, `누락된 계약 항목`, `agent 추론`, `사용자 확인 질문`, `요구사항 문서화 위치 후보`만 보고하고, 사용자가 첫 구현 slice를 고른 뒤 task와 사일로 준비로 넘어갑니다.
+project contract gate가 아직 진행 중이면 사일로 `goal.md`를 만들지 않습니다. 이 상태에서는 `현재 gate`, `누락된 계약 항목`, `agent 추론`, `사용자 확인 질문`, `요구사항 문서화 위치 후보`, `task 작성 가능 조건`을 보고하고, project contract가 충분히 성숙한 뒤 사용자가 첫 구현 slice를 고르면 task와 사일로 준비로 넘어갑니다.
 
 project contract gate를 통과한 task라도 `goal.md`는 제품 요구사항 전체를 복사하는 곳이 아닙니다. 기능 또는 사용자 흐름별 project SSoT 요구사항 문서의 경로를 참조하고, 사일로에는 이번 task가 소비할 계약, acceptance, test plan, pseudo code만 둡니다.
 
