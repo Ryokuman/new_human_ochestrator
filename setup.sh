@@ -703,7 +703,7 @@ prompt_project_ssot_args() {
   fi
 
   if [ -z "$PROJECT_SSOT_TARGET" ]; then
-    PROJECT_SSOT_TARGET="$REPO_ROOT/projects/$PROJECT_ID/ssot"
+    PROJECT_SSOT_TARGET="$REPO_ROOT/projects/$PROJECT_ID/02-project-internal"
     if [ "$ASSUME_YES" != "yes" ]; then
       printf 'project SSoT target [%s]: ' "$PROJECT_SSOT_TARGET"
       local answer
@@ -889,6 +889,12 @@ task 고유 구현 계약, seed row, test input, PR 상태는 각 task 문서와
   write_setup_file "$target/10-dictionary/README.md" "# Dictionary
 
 프로젝트 용어, 고유명사, 내부 약어, 공통 승격 후보를 기록합니다.
+"
+
+  write_setup_file "$target/10-dictionary/project-dictionary.md" "# Project Dictionary
+
+| 용어/고유명사/내부 약어 | 뜻 | 사용 맥락 | 예시 | 출처 또는 확인 상태 | 프로젝트 전용/공통 승격 후보 |
+|---|---|---|---|---|---|
 "
 
   write_setup_file "$target/20-issues/ISSUE-template.md" "---
