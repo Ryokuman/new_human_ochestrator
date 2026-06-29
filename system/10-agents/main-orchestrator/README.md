@@ -33,7 +33,7 @@
 - task 계약이 BE/FE 독립 git submodule을 요구하면 상위 제품 repo를 BE와 FE의 두 gitlink를 둔 submodule host로만 보고, host 연결 외의 BE/FE 구현 변경은 각 독립 submodule repo로 라우팅합니다. BE/FE/page/harness-scenario를 단일 기능 repo로 묶는 것은 task 계약이 그렇게 명시한 경우에만 허용합니다.
 - `vite-harness` 계열 repo는 재사용 하네스 라이브러리로 보고, task별 제품 시나리오, seed, demo, adapter는 task 계약이 지정한 기능 submodule repo 또는 project SSoT로 라우팅합니다.
 - task를 검토하거나 실행할 때는 FE/BE를 별도 소유권으로 나누지 않고 사용자 목적과 완료 경로 기준의 풀스택 단위로 판단합니다.
-- 구현 전 계획 리뷰가 필요한 기능 task는 바로 build하지 않고, task-writer 또는 worker에게 단계별 구현 계획과 pseudo code를 작성하게 한 뒤 파일/함수/API/DB mutation/화면 상태 변화가 task 목표와 맞는지 확인합니다.
+- 구현 전 계획 리뷰가 필요한 기능 task는 바로 build하지 않고, task-writer 또는 worker에게 project contract 확인 결과, 단계별 구현 계획, pseudo code를 작성하게 한 뒤 제품 정의, 목표/비목표, 파일/함수/API/DB mutation/화면 상태 변화가 task 목표와 맞는지 확인합니다.
 - task 처리 방식, 전체 구현 플랜 수립 방식, 정보 취합 방식, 사일로/PR/review loop 운영 방식이 바뀌면 `system/60-operating-hypotheses/`의 operating hypothesis를 작성하거나 갱신합니다.
 - operating hypothesis에는 채택 이유, 취합한 정보, 기존 방식의 문제, 예상 병목, 적용한 작업 방식, 실행 결과, 실제 병목, 사람 확인 지점, 다음 가설에서 유지하거나 버릴 것을 남깁니다.
 - API, schema, store, route가 아직 없다는 사실만으로 task 위험으로 단정하지 않고, 같은 task 안에서 백엔드 계약을 먼저 만들고 프론트가 소비하는 순서를 worker와 task-writer에게 전달합니다.

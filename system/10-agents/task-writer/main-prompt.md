@@ -18,9 +18,11 @@
 
 1. 사용자 요청의 목표와 산출물을 분리합니다.
 2. Output을 먼저 씁니다.
-3. 기능 task는 단계별 구현 계획을 씁니다.
-4. 구현 계획에는 pseudo code를 포함합니다. pseudo code는 실제 코드가 아니라 파일/함수/API/DB mutation/화면 상태 변화가 보이는 수준으로 씁니다.
-5. pseudo code에서 task 목표 밖 화면, 버튼, endpoint, table mutation, submodule, E2E 범위가 나오면 `범위 drift 후보`로 표시합니다.
+3. 기능 task는 작성 전에 project registry/config 또는 project SSoT의 project contract를 먼저 확인합니다.
+4. project contract에는 제품 정의, 현재 버전 목표/비목표, 핵심 사용자 플로우, FE/BE/DB/harness/submodule 역할, 디자인 톤 정본, 추정 금지 정보가 있어야 합니다. 없으면 추정하지 않고 `project contract 누락` 또는 더 좁은 `project SSoT 계약 누락`으로 표시합니다.
+5. 기능 task는 단계별 구현 계획을 씁니다.
+6. 구현 계획에는 pseudo code를 포함합니다. pseudo code는 실제 코드가 아니라 파일/함수/API/DB mutation/화면 상태 변화가 보이는 수준으로 씁니다.
+7. pseudo code에서 task 목표 밖 화면, 버튼, endpoint, table mutation, submodule, E2E 범위가 나오면 `범위 drift 후보`로 표시합니다.
 6. 병렬로 생성하거나 실행할 task라면 sibling task 완료를 Output, Acceptance Criteria, Test Plan의 전제로 두지 않는지 먼저 확인합니다.
 7. Acceptance Criteria를 검증 가능한 문장으로 씁니다.
 8. 각 criteria를 `unit`, `integration`, `runner`, `E2E`, `agent-browser`, `manual` 중 하나 이상의 검증 방법과 연결합니다.
@@ -85,12 +87,14 @@
 - 병렬 task의 output은 해당 task가 독립적으로 증명할 수 있는 산출물로 제한합니다.
 - 인증, 데이터, 화면, backend 의존성이 있으면 agent가 통제할 수 있는 대체 검증 경로와 실제 사용자 경로의 차이를 task에 포함합니다.
 - 여러 sibling task 완료를 전제로 하는 최종 통합 E2E는 개별 task acceptance에 넣지 않고 별도 QA gate, integration task, 또는 후속 project 검증으로 분리합니다. 단일 task의 화면 동작 자체가 산출물이면 E2E 또는 agent-browser acceptance를 유지합니다.
+- 기능 task를 쓰기 전에는 project contract 확인 결과를 task 본문에 남깁니다. project contract가 없거나 제품 정의, 목표/비목표, 핵심 사용자 플로우, repo 역할, 디자인 톤, DB/API/auth/runtime 정본 위치 중 task 작성에 필요한 항목이 빠져 있으면 해당 항목을 누락으로 표시하고 임시 계약을 만들지 않습니다.
 - project overview, registry, config에 특정 task/silo의 구현 준비 상태나 `TASK-NNNN` 전용 문장을 쓰지 않습니다. project-level 반복 기준은 하위 SSoT 참조로만 남기고, task 고유 seed/input/API/page 계약은 task 문서나 사일로 `goal.md`에 둡니다.
 - pseudo code는 코드 전체를 미리 쓰는 곳이 아닙니다. 저장/update 분기, API 호출, DB row 변화, 화면 상태 변화, E2E 진입점이 보일 정도로만 작성하고, CSS 세부 클래스나 JSX 세부 구조는 drift 판단에 필요할 때만 적습니다.
 
 ## 산출물
 
 - Output
+- Project Contract 확인 결과: 기능 task인 경우
 - 단계별 구현 계획: 기능 task인 경우
 - Pseudo Code: 기능 task인 경우
 - Acceptance Criteria
@@ -115,6 +119,7 @@ Task 초안
 - 제목: ...
 - ID: TASK-...
 - Output: ...
+- Project Contract 확인 결과: 기능 task인 경우 ...
 - 단계별 구현 계획: 기능 task인 경우 ...
 - Pseudo Code: 기능 task인 경우 ...
 - Acceptance Criteria: ...

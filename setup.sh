@@ -703,7 +703,7 @@ prompt_project_ssot_args() {
   fi
 
   if [ -z "$PROJECT_SSOT_TARGET" ]; then
-    PROJECT_SSOT_TARGET="$REPO_ROOT/projects/$PROJECT_ID/ssot"
+    PROJECT_SSOT_TARGET="$REPO_ROOT/projects/$PROJECT_ID/02-project-internal"
     if [ "$ASSUME_YES" != "yes" ]; then
       printf 'project SSoT target [%s]: ' "$PROJECT_SSOT_TARGET"
       local answer
@@ -797,6 +797,7 @@ create_project_ssot() {
 
 ## 작업 대시보드
 
+- 기능 task 생성 전 계약: [[project-contract|project contract]]
 - 즉석 멀티필터: [[work-filter|작업 멀티필터]]
 - Obsidian Base 뷰: [[work-views|작업 필터]]
 - 대시보드 복제 템플릿: [[../templates/work-filter-dashboard|작업 대시보드 템플릿]]
@@ -828,6 +829,58 @@ create_project_ssot() {
 ## 다음 행동
 "
 
+  write_setup_file "$target/00-dashboard/project-contract.md" "# $PROJECT_NAME project contract
+
+이 문서는 기능 task를 만들기 전에 먼저 확인하는 project-level 계약입니다.
+
+task 고유 구현 계약, seed row, test input, PR 상태는 각 task 문서와 사일로 \`goal.md\`에 둡니다.
+
+## 제품 정의
+
+## 현재 버전 목표
+
+## 현재 버전 비목표
+
+## 핵심 사용자 플로우
+
+## repo 역할
+
+| 대상 | 역할 | 금지 |
+|---|---|---|
+| 제품 repo |  |  |
+| BE/API |  |  |
+| FE/page |  |  |
+| harness/runtime |  |  |
+| project SSoT |  | 제품 소스코드 복사 |
+
+## task 생성 전 필수 참조
+
+| 항목 | 정본 위치 |
+|---|---|
+| project SSoT root |  |
+| 운영 개요 | \`00-dashboard/project-overview.md\` |
+| DB schema 기준 |  |
+| API/auth/session 계약 |  |
+| 디자인 source 또는 style contract |  |
+| runtime/harness 계약 |  |
+
+## task 작성 규칙
+
+1. task를 쓰기 전에 이 project contract를 먼저 확인합니다.
+2. task에는 목표, 비목표, 초기 DB mock data, test input, BE 계약, FE 계약, 검증 계획을 분리해서 씁니다.
+3. 기능 task에는 단계별 구현 계획과 pseudo code를 포함합니다.
+4. pseudo code에서 목표 밖 화면, 버튼, endpoint, table mutation, submodule, E2E 범위가 보이면 \`범위 drift 후보\`로 표시합니다.
+
+## 추정 금지 정보
+
+- 제품 정의, 현재 버전 목표/비목표, 핵심 사용자 플로우
+- 현재 schema에 없는 테이블, 컬럼, FK
+- 정본 위치가 없는 API/auth/session/runtime/design 계약
+- 제품 repo, submodule, harness 역할
+
+위 정보가 필요하지만 정본이 없으면 task 본문에서 임시로 만들지 않고 \`project contract 누락\` 또는 \`project SSoT 계약 누락\`으로 표시합니다.
+"
+
   copy_setup_file "$REPO_ROOT/system/templates/project-ssot/00-dashboard/work-filter.md" "$target/00-dashboard/work-filter.md"
   write_project_work_items_base "$target/00-dashboard/work-items.base" "$project_vault_path"
   copy_setup_file "$REPO_ROOT/system/templates/project-ssot/00-dashboard/work-views.md" "$target/00-dashboard/work-views.md"
@@ -836,6 +889,12 @@ create_project_ssot() {
   write_setup_file "$target/10-dictionary/README.md" "# Dictionary
 
 프로젝트 용어, 고유명사, 내부 약어, 공통 승격 후보를 기록합니다.
+"
+
+  write_setup_file "$target/10-dictionary/project-dictionary.md" "# Project Dictionary
+
+| 용어/고유명사/내부 약어 | 뜻 | 사용 맥락 | 예시 | 출처 또는 확인 상태 | 프로젝트 전용/공통 승격 후보 |
+|---|---|---|---|---|---|
 "
 
   write_setup_file "$target/20-issues/ISSUE-template.md" "---
@@ -894,6 +953,10 @@ TASK-0000
 ## Output
 
 해당 task가 독립적으로 증명할 수 있는 산출물만 적습니다. 병렬 sibling task 완료를 전제로 삼지 않습니다.
+
+## Project Contract 확인 결과
+
+기능 task인 경우 project contract 위치, 확인한 제품 정의/목표/비목표/핵심 플로우/repo 역할, 누락 항목을 적습니다.
 
 ## 단계별 구현 계획
 
@@ -993,6 +1056,10 @@ TASK-0000
 
 해당 task가 독립적으로 증명할 수 있는 산출물만 적습니다. 병렬 sibling task 완료를 전제로 삼지 않습니다.
 
+## Project Contract 확인 결과
+
+기능 task인 경우 project contract 위치, 확인한 제품 정의/목표/비목표/핵심 플로우/repo 역할, 누락 항목을 적습니다.
+
 ## 단계별 구현 계획
 
 기능 task인 경우에만 작성합니다. 비기능 task, coverage task, 문서 task에는 기계적으로 요구하지 않습니다.
@@ -1028,6 +1095,10 @@ Pseudo Code에서 task 목표 밖 화면, 버튼, endpoint, table mutation, subm
 ## 작업 브랜치
 
 ## 금지선
+
+## Project Contract 확인 결과
+
+기능 task인 경우 project contract 위치, 확인한 제품 정의/목표/비목표/핵심 플로우/repo 역할, 누락 항목을 적습니다.
 
 ## 단계별 구현 계획
 
