@@ -46,6 +46,7 @@ task-xxxx/ 생성
 - 금지선: secret 기록, production 데이터 쓰기, 보호 브랜치 직접 push, 승인 없는 data SSoT 수정
 - 검증 기준
 - 기능 task인 경우 task 작성 전 확인한 project contract 위치와 누락 항목
+- 기능 task인 경우 project contract gate 통과 근거: 제품 정의, 핵심 사용자 흐름, MVP/비목표, 데이터 저장/동기화 경계, repo/runtime 정본 위치
 - 기능 task인 경우 단계별 구현 계획
 - 기능 task인 경우 pseudo code: 파일/함수/API/DB mutation/화면 상태 변화
 - 기능 task pseudo code에서 발견한 범위 drift 후보
@@ -61,7 +62,11 @@ task-xxxx/ 생성
 
 기능 task의 `goal.md`에는 사일로 실행 전에 project contract 확인 결과, 단계별 구현 계획, pseudo code를 적습니다. pseudo code는 실제 코드가 아니라 파일, 함수, API, DB mutation, 화면 상태 변화가 드러나는 수준으로 작성합니다. task 목표 밖 화면, 버튼, endpoint, table mutation, submodule, E2E 범위가 보이면 `범위 drift 후보`로 표시하고, 리뷰 전에는 구현을 시작하지 않습니다. 비기능 task, coverage task, 문서 task에는 pseudo code를 기계적으로 요구하지 않습니다.
 
-기능 task의 project contract 확인은 task 작성 전에 수행합니다. project contract에는 제품 정의, 현재 버전 목표/비목표, 핵심 사용자 플로우, FE/BE/DB/harness/submodule 역할, 디자인 톤 정본, 추정 금지 정보가 있어야 합니다. project contract 또는 하위 SSoT 참조가 없으면 해당 정보를 추정하지 않고 `project contract 누락` 또는 더 좁은 `project SSoT 계약 누락`으로 분류합니다.
+기능 task의 project contract 확인은 task 작성 전에 수행합니다. project contract에는 제품 정의, 현재 버전 목표/비목표, 핵심 사용자 플로우, 데이터 저장과 동기화 경계, FE/BE/DB/harness/submodule 역할, 디자인 톤 정본, 추정 금지 정보가 있어야 합니다. project contract 또는 하위 SSoT 참조가 없으면 해당 정보를 추정하지 않고 `project contract 누락` 또는 더 좁은 `project SSoT 계약 누락`으로 분류합니다.
+
+project contract gate가 아직 진행 중이면 사일로 `goal.md`를 만들지 않습니다. 이 상태에서는 `현재 gate`, `누락된 계약 항목`, `agent 추론`, `사용자 확인 질문`, `요구사항 문서화 위치 후보`만 보고하고, 사용자가 첫 구현 slice를 고른 뒤 task와 사일로 준비로 넘어갑니다.
+
+project contract gate를 통과한 task라도 `goal.md`는 제품 요구사항 전체를 복사하는 곳이 아닙니다. 기능 또는 사용자 흐름별 project SSoT 요구사항 문서의 경로를 참조하고, 사일로에는 이번 task가 소비할 계약, acceptance, test plan, pseudo code만 둡니다.
 
 `초기 DB 목데이터`는 테스트 시작 전에 DB에 미리 seed로 존재해야 하는 상태입니다. 실제 DB schema에서 FK나 조회 조건으로 확인된 테스트 사용자 row, 날짜 컬럼을 가진 기존 기록 row, 참조 테이블 값처럼 테스트 전제 상태를 만드는 데이터만 포함합니다. 각 항목에는 해당 데이터가 왜 시작 전에 필요한지, 어떤 criteria를 가능하게 하는지, 재실행 시 중복 또는 오염을 어떻게 피하는지 적습니다.
 
