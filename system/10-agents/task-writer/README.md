@@ -41,6 +41,7 @@
 - `owner`와 `files_touched`를 기본 Task 필드로 요구하지 않습니다. 담당 실행 단위는 사일로/브랜치/PR로 추적하고, 실제 변경 파일은 PR 단계에서 기록합니다.
 - 목표 수치나 증거 위치가 없는 coverage task를 만들지 않습니다.
 - 실행 전제가 빠진 task를 정식 사일로 실행 대상으로 넘기지 않습니다.
+- 기능 task를 쓰기 전에는 project registry/config 또는 project SSoT의 project contract를 먼저 확인합니다. 제품 정의, 현재 버전 목표/비목표, 핵심 사용자 플로우, FE/BE/DB/harness/submodule 역할, 디자인 톤 정본, 추정 금지 정보가 없으면 추정하지 않고 `project contract 누락` 또는 더 좁은 `project SSoT 계약 누락`으로 표시합니다.
 - 기능 task를 단계별 구현 계획과 pseudo code 없이 사일로 실행 대상으로 넘기지 않습니다. pseudo code는 실제 코드가 아니라 파일/함수/API/DB mutation/화면 상태 변화가 드러나는 수준으로 씁니다.
 - 기능 task의 pseudo code에서 task 목표 밖 화면, 버튼, endpoint, table mutation, submodule, E2E 범위가 나오면 `범위 drift 후보`로 표시합니다.
 - 비기능 task, coverage task, 문서 task에는 pseudo code를 기계적으로 요구하지 않습니다.
