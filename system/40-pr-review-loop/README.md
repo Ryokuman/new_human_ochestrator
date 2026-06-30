@@ -18,7 +18,7 @@ PR은 단순히 코드를 머지하는 절차가 아닙니다. 사일로가 발�
 - PR 생성 승인과 PR 머지 승인은 별개입니다.
 - `main`은 레거시 보존 브랜치이며 작업 기준으로 쓰지 않습니다.
 - `main-v2`는 보호 브랜치이며 직접 commit/push하지 않습니다.
-- PR 생성 요청을 받으면 현재 브랜치의 0계층/project 계층을 판정하고, 0계층은 `main-v2`, project 계층은 별도 worktree의 파생 브랜치에서 커밋한 뒤 해당 `project/<project-id>` 대상 PR로 올립니다. 복합 변경은 worktree와 브랜치를 나눠 별도 PR로 올립니다.
+- PR 생성 요청을 받으면 현재 브랜치의 0계층/project 계층을 판정하고, 0계층은 `main-v2`, project 계층은 `project/<project-id>-<branch-name>` 작업 브랜치에서 커밋한 뒤 해당 `project/<project-id>` 대상 PR로 올립니다. 복합 변경은 worktree와 브랜치를 나눠 별도 PR로 올립니다.
 - 제품 repo가 독립 git submodule commit을 pin하는 경우 변경된 submodule repo마다 별도 PR과 Codex no-major 또는 동등 리뷰 gate를 확인합니다. 상위 제품 repo PR은 리뷰 통과 commit의 gitlink pin, host 설정, submodule 선언, 실행 경로 연결만 검증합니다.
 - 새 submodule repo는 빈 기준 또는 최소 후보 기준에서 시작하고, 실제 코드는 PR에서 `patch/evidence`, `runtime`, `service/MSA` 유형과 평가 기준을 명시해 리뷰합니다. 기능 단위 BE/FE 분리는 기본적으로 service/MSA가 아니라 runtime 또는 patch/evidence submodule에서 시작합니다.
 - PR 생성 직후에는 0계층 PR과 project 계층 PR 모두 `codex-pr-review-loop` skill로 no-major 목표를 세팅한 뒤 수동 `@codex review`를 호출하는 것을 기본 리뷰 조건으로 둡니다.

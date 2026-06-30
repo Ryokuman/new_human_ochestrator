@@ -32,7 +32,7 @@ task-xxxx/ 생성
 -> repo별 작업 브랜치 생성
 ```
 
-위 준비 중 하나라도 실제로 시작하기 전에 project SSoT의 원본 task/issue 상태를 `in_progress`로 갱신해야 합니다. 이 상태 갱신도 project 계층 변경이므로 기준 `project/<project-id>` 브랜치에 직접 커밋하지 않고, 별도 worktree의 파생 브랜치에서 상태 갱신 PR을 먼저 만든 뒤 `project/<project-id>`에 머지된 것을 확인합니다. 상태 갱신 PR이 머지되기 전에는 사일로 root 생성, `goal.md` 작성, repo clone, 작업 브랜치 생성을 시작하지 않습니다. SSoT 상태 갱신 PR을 만들거나 머지 상태를 확인할 수 없으면 사일로 진행을 멈추고, 갱신 불가 사유를 보고합니다.
+위 준비 중 하나라도 실제로 시작하기 전에 project SSoT의 원본 task/issue 상태를 `in_progress`로 갱신해야 합니다. 이 상태 갱신도 project 계층 변경이므로 기준 `project/<project-id>` 브랜치에 직접 커밋하지 않고, `project/<project-id>-<branch-name>` 작업 브랜치에서 상태 갱신 PR을 먼저 만든 뒤 `project/<project-id>`에 머지된 것을 확인합니다. 상태 갱신 PR이 머지되기 전에는 사일로 root 생성, `goal.md` 작성, repo clone, 작업 브랜치 생성을 시작하지 않습니다. SSoT 상태 갱신 PR을 만들거나 머지 상태를 확인할 수 없으면 사일로 진행을 멈추고, 갱신 불가 사유를 보고합니다.
 
 ## goal.md 필수 항목
 

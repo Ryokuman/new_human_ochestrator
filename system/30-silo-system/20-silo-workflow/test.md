@@ -4,7 +4,7 @@
 
 ```text
 1. 테스트 요청과 Run Set을 확인한다.
-2. task/issue에서 시작된 테스트 사일로라면 별도 worktree의 파생 브랜치에서 project SSoT 원본 task/issue 상태를 `in_progress`로 바꾸는 상태 갱신 PR을 만들고 머지를 확인한다.
+2. task/issue에서 시작된 테스트 사일로라면 `project/<project-id>-<branch-name>` 작업 브랜치에서 project SSoT 원본 task/issue 상태를 `in_progress`로 바꾸는 상태 갱신 PR을 만들고 머지를 확인한다.
 3. 사일로 유형이 테스트 사일로인지 판정한다.
 4. 사일로 root와 report/evidence 위치를 정한다.
 5. 필요한 runtime set을 확인한다.

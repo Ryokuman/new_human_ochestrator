@@ -5,7 +5,7 @@
 생명주기는 `준비 -> 실행 -> 보고서 승격 -> 정리`를 중심으로 둡니다.
 
 ```text
-1. 시작 gate: task/issue에서 시작된 테스트 사일로라면 별도 worktree의 파생 브랜치에서 project SSoT 원본 task/issue 상태를 `in_progress`로 바꾸는 상태 갱신 PR을 만들고 머지를 확인한다.
+1. 시작 gate: task/issue에서 시작된 테스트 사일로라면 `project/<project-id>-<branch-name>` 작업 브랜치에서 project SSoT 원본 task/issue 상태를 `in_progress`로 바꾸는 상태 갱신 PR을 만들고 머지를 확인한다.
 2. 준비: goal, 대상, runtime 또는 runtime set, 금지선, report 위치를 명시한다.
 3. 실행: lifecycle/E2E/runtime/탐색 검증을 수행하고 evidence를 수집한다.
 4. 종료: 개별 보고서를 작성하고 evidence/보고서가 SSoT 또는 지정 위치로 승격됐는지 확인한다.

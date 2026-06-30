@@ -17,7 +17,7 @@
 
 ```text
 1. 입력 task/issue 읽기
-2. 별도 worktree의 파생 브랜치에서 project SSoT 원본 task/issue 상태를 `in_progress`로 바꾸는 상태 갱신 PR 생성 및 머지 확인
+2. `project/<project-id>-<branch-name>` 작업 브랜치에서 project SSoT 원본 task/issue 상태를 `in_progress`로 바꾸는 상태 갱신 PR 생성 및 머지 확인
 3. 현재 workspace 루트에 `<unit-id>/` 사일로 root 생성
 4. `goal.md` 작성
 5. 필요한 repo만 사일로 root에 clone

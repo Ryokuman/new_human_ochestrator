@@ -15,8 +15,8 @@
 - `main-v2`는 new main이자 보호 브랜치입니다. 직접 commit하거나 push하지 않습니다.
 - `main-v2`는 탐색형 제품 엔지니어 운영 방식 기준 브랜치입니다. `main-v2`는 `Build -> Learn -> Spec`을 우선하고, 빠른 사용 가능 결과물을 만든 뒤 학습 내용을 SSoT/task/spec으로 승격합니다.
 - `main-v2` 변경은 `main`에 반영하지 않습니다. 사용자 요청이 있더라도 이 프로젝트에서는 `main` 반영 대신 `main-v2` 안에서만 후속 브랜치, PR, 문서 승격을 다룹니다.
-- `main-v2` 변경은 항상 `main-v2`에서 파생한 단기 브랜치에서 커밋하고, GitHub PR target/base branch가 `main-v2`인 PR로만 반영합니다.
-- PR 생성 시 리뷰 gate는 먼저 현재 브랜치의 계층과 PR 유형을 판정합니다. 0계층 공통 변경은 `main-v2` 대상 PR로 올리고, project 계층 변경은 해당 `project/<project-id>`를 기준 브랜치로 삼되 별도 worktree의 파생 브랜치에서 커밋한 뒤 `project/<project-id>` 대상 PR로 올립니다. 이후 `codex-pr-review-loop` skill로 no-major 목표를 세팅하고 PR 댓글의 수동 `@codex review`를 호출하는 것을 기본으로 둡니다.
+- `main-v2` 변경은 항상 `main-v2`에서 파생한 `main-v2-<branch-name>` 단기 브랜치에서 커밋하고, GitHub PR target/base branch가 `main-v2`인 PR로만 반영합니다.
+- PR 생성 시 리뷰 gate는 먼저 현재 브랜치의 계층과 PR 유형을 판정합니다. 0계층 공통 변경은 `main-v2` 대상 PR로 올리고, project 계층 변경은 해당 `project/<project-id>`를 기준 브랜치로 삼되 `project/<project-id>-<branch-name>` 작업 브랜치에서 커밋한 뒤 `project/<project-id>` 대상 PR로 올립니다. 이후 `codex-pr-review-loop` skill로 no-major 목표를 세팅하고 PR 댓글의 수동 `@codex review`를 호출하는 것을 기본으로 둡니다.
 
 ## Exploratory Product Engineering Policy
 
@@ -69,12 +69,30 @@
 
 여기서 말하는 branch base는 단순히 GitHub PR 화면의 target/base branch만 뜻하지 않습니다. 먼저 변경 내용이 속한 계층을 판정하고, 그 계층의 기준 브랜치를 branch base로 봅니다. GitHub PR target/base branch는 이 계층 판단 결과를 반영한 최종 머지 대상입니다.
 
-- 0계층 system update, 공통 규칙, `AGENTS.md`, `system/` 문서, repo skill, agent prompt는 `main-v2`가 기준 브랜치입니다. 이 변경만 `main-v2` 파생 브랜치와 `main-v2` 대상 PR로 제출합니다.
-- 1계층 이상 project 등록, project SSoT, project 내부 task/issue/QA/decision/coverage/runbook은 해당 `project/<project-id>`가 기준 브랜치입니다. 해당 변경은 `project/<project-id>`에서 직접 커밋하지 않고, 별도 worktree에서 판 파생 브랜치로 작업한 뒤 `project/<project-id>` 대상 PR로 제출합니다.
-- 예를 들어 `project/onjump`의 SSoT update는 `project/onjump`을 기준 브랜치로 삼되, 별도 worktree의 파생 브랜치에서 커밋하고 `project/onjump` 대상 PR로 처리합니다. 대화 중 공통 system update가 새로 생긴 경우에만 별도 `main-v2` PR로 분리합니다.
+- 0계층 system update, 공통 규칙, `AGENTS.md`, `system/` 문서, repo skill, agent prompt는 `main-v2`가 기준 브랜치입니다. 이 변경만 `main-v2-<branch-name>` 작업 브랜치와 `main-v2` 대상 PR로 제출합니다.
+- 1계층 이상 project 등록, project SSoT, project 내부 task/issue/QA/decision/coverage/runbook은 해당 `project/<project-id>`가 기준 브랜치입니다. 해당 변경은 `project/<project-id>`에서 직접 커밋하지 않고, 별도 worktree에서 판 `project/<project-id>-<branch-name>` 작업 브랜치로 작업한 뒤 `project/<project-id>` 대상 PR로 제출합니다.
+- 예를 들어 `project/onjump`의 SSoT update는 `project/onjump`을 기준 브랜치로 삼되, `project/onjump-<branch-name>` 작업 브랜치에서 커밋하고 `project/onjump` 대상 PR로 처리합니다. 대화 중 공통 system update가 새로 생긴 경우에만 별도 `main-v2-<branch-name>` PR로 분리합니다.
 - 하나의 작업 브랜치에 0계층 변경과 1계층 이상 변경이 함께 생기면, worktree를 둘로 나누고 계층별 커밋을 분리해 서로 다른 PR로 처리합니다.
 - 0계층 PR이 `main-v2`에 머지되면 관련 `project/<project-id>` 브랜치와 진행 중인 project 작업 브랜치를 최신 `main-v2` 위로 rebase한 뒤 project 작업을 이어갑니다.
-- `project/onjump-add-login` 같은 브랜치는 이름상 feature branch라도, 계층 기준으로는 0계층 `main-v2`와 1계층 `project/onjump` 기준을 동시에 의식해야 합니다. system update가 섞이면 `main-v2`용 분리 PR을 먼저 만들고, project 변경은 `project/onjump` 계층 기준으로 남깁니다.
+
+## Layer-Owned Work Branch Naming Policy
+
+작업 브랜치명은 변경 내용이 귀속되는 계층 기준 브랜치를 드러내야 합니다.
+
+Git ref namespace에서는 `main-v2` 브랜치가 존재하면 `main-v2/<branch-name>`을 만들 수 없고, `project/dynamos` 브랜치가 존재하면 `project/dynamos/<branch-name>`을 만들 수 없습니다. 따라서 문서나 사고 모델에서는 `main-v2/branchName`, `project/dynamos/branchName`처럼 귀속 구조를 읽되, 실제 Git 브랜치명은 아래 충돌 회피 형식을 사용합니다.
+
+```text
+0계층 공통 변경 -> `main-v2-<branch-name>`
+project/dynamos 귀속 변경 -> project/dynamos-<branch-name>
+project/<project-id> 귀속 변경 -> `project/<project-id>-<branch-name>`
+```
+
+- `main-v2-<branch-name>` 브랜치는 `main-v2`에서 파생하고, PR target/base도 `main-v2`입니다.
+- `project/<project-id>-<branch-name>` 브랜치는 해당 `project/<project-id>`에서 파생하고, PR target/base도 해당 `project/<project-id>`입니다.
+- `docs/*`, `chore/*`는 새 0계층 작업 브랜치명으로 쓰지 않습니다. 기존 브랜치가 남아 있으면 레거시 브랜치로 보고 계층과 diff를 다시 판정합니다.
+- `silo/*`는 3계층 사일로 local 또는 제품 repo 내부 task 브랜치 이름으로만 사용할 수 있으며, root 저장소의 0/1/2계층 SSoT PR 브랜치명으로 쓰지 않습니다.
+- `project/onjump-add-login`처럼 기준 브랜치 귀속이 불명확한 이름은 새로 만들지 않습니다. `project/onjump-login`처럼 기준 `project/onjump` 귀속을 먼저 드러내거나, 0계층 변경이면 `main-v2-login-policy`처럼 분리합니다.
+- 하나의 작업에 0계층과 project 계층 변경이 함께 생기면 `main-v2-<branch-name>`과 `project/<project-id>-<branch-name>` 두 브랜치로 나누고, 서로 다른 PR로 처리합니다.
 
 ## Project Branch Policy
 
@@ -83,10 +101,10 @@
 - `project/*` 브랜치의 목적은 해당 프로젝트에 대한 정보 저장이며, root `main-v2`의 공통 규칙을 바꾸는 것이 아닙니다.
 - `project/*` 브랜치에는 특정 프로젝트의 실제 제품 코드, issue/task 원문, QA 결과 원문을 무분별하게 복사하지 않습니다. 필요한 경우 프로젝트별 SSoT 위치와 요약 색인만 둡니다.
 - project overview, registry, config에는 특정 task/silo의 상세 구현 계약을 쓰지 않습니다. 좁은 task 문장이 필요하면 2계층 task/runbook 또는 3계층 사일로로 내리고, 1계층에는 그 위치를 찾는 인덱스와 반복 가능한 project-level 기준만 남깁니다.
-- project 내부 task, issue, QA, decision, dashboard, source doc처럼 2계층 project SSoT를 생성하거나 수정하는 작업은 해당 project의 `project/<project-id>`에서 판 별도 worktree의 파생 브랜치에서만 수행합니다. `project/<project-id>` 장기 브랜치에는 직접 커밋하지 않습니다.
-- `project/<project-id>` 브랜치가 존재하는 프로젝트의 2계층 SSoT 작업을 `docs/*`, `chore/*`, `silo/*`, 또는 `main-v2` 파생 공통 규칙 브랜치에서 직접 수행하지 않습니다.
-- 단, project SSoT를 만드는 공통 템플릿, scaffold 로직, repo skill, agent prompt처럼 0계층 규칙 자체를 수정하는 작업은 `main-v2` 파생 단기 브랜치에서 수행합니다.
-- project 작업 브랜치에서 0계층 공통 변경이 함께 발생하면 해당 변경만 `main-v2` 기준 worktree로 분리하고, project 브랜치와 작업 브랜치는 0계층 PR 머지 후 최신 `main-v2` 위로 rebase합니다.
+- project 내부 task, issue, QA, decision, dashboard, source doc처럼 2계층 project SSoT를 생성하거나 수정하는 작업은 해당 project의 `project/<project-id>`에서 판 `project/<project-id>-<branch-name>` 작업 브랜치에서만 수행합니다. `project/<project-id>` 장기 브랜치에는 직접 커밋하지 않습니다.
+- `project/<project-id>` 브랜치가 존재하는 프로젝트의 2계층 SSoT 작업을 `docs/*`, `chore/*`, `silo/*`, `main-v2-*` 공통 규칙 브랜치, 또는 귀속이 불명확한 브랜치에서 직접 수행하지 않습니다.
+- 단, project SSoT를 만드는 공통 템플릿, scaffold 로직, repo skill, agent prompt처럼 0계층 규칙 자체를 수정하는 작업은 `main-v2-<branch-name>` 작업 브랜치에서 수행합니다.
+- project 작업 브랜치에서 0계층 공통 변경이 함께 발생하면 해당 변경만 `main-v2-<branch-name>` 작업 브랜치와 worktree로 분리하고, project 브랜치와 작업 브랜치는 0계층 PR 머지 후 최신 `main-v2` 위로 rebase합니다.
 - `project/*` 브랜치 작업에는 `main-branch-update-flow`의 PR 생성/머지 절차를 기본 적용하지 않습니다.
 - `project/*` 브랜치에서 발견한 반복 가능한 운영 규칙만 별도 사용자 요청이 있을 때 `main-v2` 업데이트 후보로 분리합니다.
 - `project/*` 브랜치가 최신 `main-v2` 위로 rebase되어 있지 않아 rebase할 때는, 먼저 `main-v2`에서 변경된 공통 규칙, AGENTS.md, system 문서, 프롬프트, repo skill을 확인합니다.
@@ -95,7 +113,7 @@
 
 ## 브랜치 Drift 및 SSoT 삭제 Gate 정책
 
-- 오래된 `docs/*`, `repair/*`, `silo/*` 브랜치가 project SSoT 파일을 추가, 삭제, 이동한 것처럼 보이면 먼저 기준 브랜치를 분리합니다.
+- 오래된 `docs/*`, `chore/*`, `repair/*`, `silo/*`, 또는 귀속 prefix가 없는 브랜치가 project SSoT 파일을 추가, 삭제, 이동한 것처럼 보이면 먼저 기준 브랜치를 분리합니다.
 - 공통 규칙 여부는 `main-v2` 기준으로 보고, 프로젝트 내부 SSoT 여부는 해당 `project/<project-id>` 브랜치 기준으로 봅니다.
 - 브랜치 차이를 설명할 때는 최종 트리 차이인 `base..branch`와 브랜치 고유 변경인 `base...branch`를 구분합니다. 둘을 섞어 "추가됐다", "이관됐다", "삭제됐다"고 말하지 않습니다.
 - project SSoT 삭제 PR을 만들기 전에는 삭제 대상 파일을 `이관 확인됨`, `미이관`, `중복`, `폐기 후보`, `사용자 판단 필요`로 분류합니다.
@@ -106,10 +124,10 @@
 ## Branch Lifecycle Policy
 
 - `main`은 레거시 보존 브랜치입니다. 삭제하지 않지만 작업, 추적 확인, rebase 기준으로 사용하지 않습니다.
-- `main-v2`는 탐색형 제품 엔지니어 운영 기준 보호 브랜치이며 삭제하지 않습니다. 모든 공통 운영 변경은 `main-v2`에서 파생한 단기 브랜치와 PR로만 처리합니다.
+- `main-v2`는 탐색형 제품 엔지니어 운영 기준 보호 브랜치이며 삭제하지 않습니다. 모든 공통 운영 변경은 `main-v2`에서 파생한 `main-v2-<branch-name>` 단기 브랜치와 PR로만 처리합니다.
 - `project/*`는 프로젝트별 정보 보관용 장기 브랜치이며 `main-v2` 병합 대상이 아닙니다.
 - `silo/*`는 task PR 제출용 단기 브랜치입니다. PR 머지 후 `state`, `mergedAt`, `mergeCommit`, PR head SHA, GitHub PR target/base branch를 재조회하고 clean 상태, ahead 없음, PR/패치 대응 관계가 확인되면 로컬 브랜치를 삭제합니다.
-- `docs/*`, `chore/*` 같은 `main-v2` 업데이트용 단기 브랜치는 PR이 `main-v2`에 머지된 것을 확인한 뒤 로컬 브랜치와 연결 worktree를 정리합니다.
+- 기존 `docs/*`, `chore/*` 같은 레거시 `main-v2` 업데이트용 단기 브랜치는 PR이 `main-v2`에 머지된 것을 확인한 뒤 로컬 브랜치와 연결 worktree를 정리합니다. 새 0계층 작업 브랜치는 `main-v2-<branch-name>` 형식을 사용합니다.
 - `repair/*`는 conflict 해결이나 이력 복구용 임시 브랜치입니다. 원 PR 또는 대체 PR 머지와 패치 동등성을 확인한 뒤 `삭제 후보`로 보고하고, 자동 삭제하지 않습니다.
 - 브랜치 정리 전에는 작업트리가 clean인지 확인하고 `git fetch --all --prune` 이후 상태를 기준으로 판단합니다. 단, shell git 또는 GitHub CLI가 private repo를 `Repository not found`로 보고하더라도 GitHub 앱 등 다른 인증 경로에서 PR 상태가 확인될 수 있으므로, shell evidence와 GitHub evidence를 분리해서 기록합니다.
 - 열린 PR의 head 브랜치는 보존합니다. upstream이 살아 있어도 PR 머지와 로컬 안전 조건이 확인된 브랜치는 로컬 삭제 대상이 될 수 있으며, 원격 head 삭제는 별도 승인 경계로 보고합니다.
@@ -214,7 +232,7 @@
 - 사용자가 task 실행, 태스크 진행, task 수행을 요청하면 별도 확인 없이 사일로 준비까지 진행합니다.
 - 기본 준비 범위는 `task-xxxx/` 생성, `goal.md` 작성, 필요한 repo clone, repo별 작업 브랜치 생성입니다.
 - 사일로 root 생성, `goal.md` 작성, repo clone, repo별 작업 브랜치 생성 중 하나라도 실제로 시작하기 전에 project SSoT의 원본 task/issue 상태를 `in_progress`로 갱신합니다.
-- 이 상태 갱신도 project 계층 변경이므로 기준 `project/<project-id>` 브랜치에 직접 커밋하지 않고, 별도 worktree의 파생 브랜치에서 상태 갱신 PR을 먼저 만든 뒤 `project/<project-id>`에 머지된 것을 확인합니다.
+- 이 상태 갱신도 project 계층 변경이므로 기준 `project/<project-id>` 브랜치에 직접 커밋하지 않고, `project/<project-id>-<branch-name>` 작업 브랜치에서 상태 갱신 PR을 먼저 만든 뒤 `project/<project-id>`에 머지된 것을 확인합니다.
 - 상태 갱신 PR이 머지되기 전에는 사일로 root 생성, `goal.md` 작성, repo clone, repo별 작업 브랜치 생성을 시작하지 않습니다.
 - SSoT 상태 갱신 PR을 만들거나 머지 상태를 확인할 수 없으면 사일로 진행을 멈추고, 갱신 불가 사유를 보고합니다.
 - 사일로 디렉토리는 현재 workspace 루트에 만듭니다. 사용자가 직접 지정하지 않는 한 `/tmp`, 홈 디렉토리, 숨김 디렉토리, 에이전트 전용 임시 경로에 만들지 않습니다.
@@ -243,7 +261,7 @@
 - 이 정책은 `main-v2` 기준 기본값입니다.
 - PR 생성 요청을 받으면 먼저 현재 브랜치의 diff를 0계층 공통 변경과 project 계층 변경으로 나눕니다.
 - 0계층 공통 변경은 `main-v2` 기준 브랜치와 `main-v2` 대상 PR로 올립니다.
-- 1계층 project 등록/색인, 2계층 project SSoT, task, issue, QA, decision, coverage, runbook 변경은 해당 `project/<project-id>`를 기준 브랜치로 삼되, 별도 worktree의 파생 브랜치에서 커밋하고 `project/<project-id>` 대상 PR로 올립니다. 사용자가 “1계층 PR”이라고 말하면 이 project 계층 PR까지 포함해 판정합니다.
+- 1계층 project 등록/색인, 2계층 project SSoT, task, issue, QA, decision, coverage, runbook 변경은 해당 `project/<project-id>`를 기준 브랜치로 삼되, `project/<project-id>-<branch-name>` 작업 브랜치에서 커밋하고 `project/<project-id>` 대상 PR로 올립니다. 사용자가 “1계층 PR”이라고 말하면 이 project 계층 PR까지 포함해 판정합니다.
 - 하나의 브랜치에 0계층 변경과 project 계층 변경이 함께 있으면 worktree와 브랜치를 나누고 계층별 PR을 따로 올립니다.
 - PR 생성 직후에는 0계층 PR과 project 계층 PR 모두 PR 댓글로 수동 `@codex review`를 호출합니다. 단, GitHub PR target/base branch가 계층 기준 브랜치와 다르면 호출하지 않고 계층 기준 브랜치 불일치로 보고합니다.
 - `project/dynamos` 또는 `project/onjump`처럼 project 계층 기준 브랜치가 따로 있는 변경을 Codex review gate 때문에 `main-v2`로 retarget하지 않습니다.
@@ -291,7 +309,7 @@
 - task 계약이 BE/FE 독립 git submodule을 요구하면 상위 제품 repo는 BE와 FE의 두 gitlink를 둔 submodule host로만 다룹니다. 상위 제품 repo PR에는 `.gitmodules`, gitlink, 빌드/보안 제외 설정처럼 host 연결에 필요한 최소 변경만 남기고, 제품 BE/FE 직접 변경은 각 독립 submodule repo의 브랜치와 PR에서 관리합니다. BE/FE/page/harness-scenario를 단일 기능 repo로 묶는 것은 task 계약이 그렇게 명시한 경우에만 허용합니다.
 - `vite-harness` 계열 repo는 스토리북 같은 재사용 하네스 라이브러리로 분류합니다. task별 제품 시나리오, seed, demo, adapter를 하네스 원본 repo에 커밋하거나 PR로 올리지 않고, task 계약이 지정한 기능 submodule repo 또는 project SSoT에 둡니다.
 - 프로젝트별 evidence는 coverage 판단 근거이므로 project SSoT 내부에 보존할 수 있습니다.
-- project SSoT 문서를 실제로 쓰기 전에는 기준 SSoT 위치뿐 아니라 기준 브랜치와 worktree도 확인합니다. `project/<project-id>` 브랜치가 있으면 그 브랜치에서 판 별도 worktree의 파생 브랜치를 사용하고, 다른 브랜치에 열린 project SSoT diff가 있으면 `기준 아님`, `이관 후보`, `위험`으로 분리해 보고합니다.
+- project SSoT 문서를 실제로 쓰기 전에는 기준 SSoT 위치뿐 아니라 기준 브랜치와 worktree도 확인합니다. `project/<project-id>` 브랜치가 있으면 그 브랜치에서 판 `project/<project-id>-<branch-name>` 작업 브랜치를 사용하고, 다른 브랜치에 열린 project SSoT diff가 있으면 `기준 아님`, `이관 후보`, `위험`으로 분리해 보고합니다.
 - 제품 코드가 여러 workspace, worktree, external clone, task silo에 나뉘어 있으면 구현 전 source workspace 기준선을 확정합니다. 브랜치 이름만으로 최신 작업을 판단하지 않고, 각 workspace의 branch, upstream, `HEAD`, dirty diff, `goal.md`, handoff, 최근 세션 로그를 함께 봅니다.
 - sibling task worktree가 같은 화면, API, store, schema, business flow를 수정한 dirty 상태라면 최신 기준선 후보로 먼저 비교합니다.
 - MVP, QA 수정, 저장 실패, UI 복구, 비즈니스 로직 복구 요청에서는 화면, 입력, 저장, 조회, 재진입 복원, validation, empty/error/loading, 실제 사용자 경로 검증을 기능 인벤토리로 대조합니다.
@@ -375,7 +393,7 @@
 - 공통 규칙, repo skill, 프롬프트, AGENTS.md, system 문서 변경은 `main-v2` 기준으로만 처리합니다.
 - `main`은 절대로 작업 기준으로 사용하지 않습니다. `main` checkout, `origin/main` 기준 worktree 생성, `main` 대상 PR, `main` merge, `main` rebase는 금지합니다.
 - `main-v2`도 보호 브랜치이므로 직접 commit/push하지 않습니다.
-- 항상 `main-v2`에서 파생한 단기 브랜치를 만들고, 변경은 해당 브랜치에서 커밋한 뒤 GitHub PR target/base branch가 `main-v2`인 PR로 제출합니다.
+- 항상 `main-v2`에서 파생한 `main-v2-<branch-name>` 단기 브랜치를 만들고, 변경은 해당 브랜치에서 커밋한 뒤 GitHub PR target/base branch가 `main-v2`인 PR로 제출합니다.
 - PR 머지는 `PR Merge Approval Policy`의 명시 승인 후에만 수행합니다. 머지 확인 후에도 `main`으로 rebase하지 않고 `main-v2` 기준으로만 정리합니다.
 - remote 접근 계정이 맞지 않아 fetch/push가 실패하면 먼저 계정과 remote를 복구하되, 복구 후에도 직접 push 대상은 `main-v2`가 아니라 파생 작업 브랜치로 제한합니다.
 
