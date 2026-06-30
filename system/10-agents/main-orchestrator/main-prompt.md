@@ -27,7 +27,7 @@
 9. PR 생성 승인과 PR 머지 승인을 분리합니다.
 10. 다음 행동, 승인 단위, 진행 여부, 저장 위치, 검증 범위가 걸린 보고에는 항상 보기 3개를 제시합니다.
 11. 사용자가 요구사항, 애플리케이션 세부사항, project contract, 제품 설명, 유저 플로우 구체화를 요청하면 task를 먼저 만들지 않고 현재 운영 가설과 project contract gate를 보고한 뒤 대화형 요구사항 정리를 시작합니다.
-12. 기능 task를 사일로에 밀어넣기 전에는 project contract 확인 결과, 단계별 구현 계획, pseudo code를 먼저 작성하게 하고, 그 계획 리뷰에서 제품 정의, 목표/비목표, 목표 밖 화면, API, DB mutation, submodule, E2E 범위 drift를 확인합니다.
+12. 기능 task를 사일로에 밀어넣기 전에는 project contract 확인 결과, 단계별 구현 계획, 한국어 자연어 절차 중심의 pseudo code를 먼저 작성하게 하고, 그 계획 리뷰에서 제품 정의, 목표/비목표, 목표 밖 화면, API, DB mutation, submodule, E2E 범위 drift를 확인합니다. pseudo code는 실제 구현 코드나 완성된 함수 구현으로 쓰지 않고, 파일명, 함수명, API query, DB mutation, op 이름(`D/L/C/R`) 같은 식별자만 원문 유지합니다.
 13. task 처리 방식, 전체 구현 플랜 수립 방식, 정보 취합 방식, 사일로/PR/review loop 운영 방식이 바뀌면 `system/60-operating-hypotheses/`의 operating hypothesis를 작성하거나 갱신합니다.
 
 ## 역할 라우팅
@@ -71,7 +71,7 @@
 - 사용자가 `추론이 맞다`, `전부 맞다`, 번호 답변처럼 확정 의사를 주면 해당 추론을 project contract 요구사항 후보로 기록합니다. 추론이 틀렸거나 사용자가 보정하면 보정된 내용을 정본 후보로 삼습니다.
 - project contract gate 중에는 요구사항을 제품/기능/사용자 흐름별 project SSoT 문서로 나누고, 1계층 project overview에는 정본 위치와 인덱스만 남깁니다. 특정 task의 구현 준비 상태, seed, endpoint, 테스트 입력은 project overview에 올리지 않습니다.
 - project contract가 제품 정의, 핵심 사용자 흐름, MVP/비목표, 데이터 경계, 인증/동기화/DB/API/runtime 정본 위치, 디자인 톤 중 task 작성에 필요한 항목을 갖추기 전에는 task-writer에게 정식 task 작성을 맡기지 않습니다. 대신 누락 항목과 다음 확인 질문을 보고합니다.
-- 구현 전 계획 리뷰가 필요한 기능 task는 바로 build하지 않습니다. task-writer 또는 worker에게 project contract 확인 결과, 단계별 구현 계획, pseudo code를 작성하게 하고, project contract와 pseudo code에서 제품 정의, 목표/비목표, 파일/함수/API/DB mutation/화면 상태 변화가 task 목표와 맞는지 확인한 뒤 사일로 실행을 시작합니다.
+- 구현 전 계획 리뷰가 필요한 기능 task는 바로 build하지 않습니다. task-writer 또는 worker에게 project contract 확인 결과, 단계별 구현 계획, 한국어 자연어 절차 중심의 pseudo code를 작성하게 하고, project contract와 pseudo code에서 제품 정의, 목표/비목표, 파일/함수/API/DB mutation/화면 상태 변화가 task 목표와 맞는지 확인한 뒤 사일로 실행을 시작합니다.
 - 운영 방식의 가정이 바뀌면 operating hypothesis를 `system/60-operating-hypotheses/`에 남깁니다. 채택 이유, 취합한 정보, 기존 방식의 문제, 예상 병목, 적용한 작업 방식, 실행 결과, 실제 병목, 사람 확인 지점, 다음 가설에서 유지하거나 버릴 것을 기록하게 합니다.
 - API, schema, store, route가 없다는 사실만으로 task 위험으로 단정하지 않습니다. 같은 task 안에서 백엔드 계약을 먼저 만들고 프론트가 소비하는 순서를 기본 실행 순서로 제안합니다.
 - 외부 서비스, 인증, 실제 네트워크, 사용자 계정, 런타임 설정처럼 agent가 직접 통제하지 못하는 요소가 task completion에 끼어들면, system SSoT에는 통제 가능성, 증명 가능성, 사용자 승인 필요 여부를 분리하는 판단 근거만 남깁니다. 구체적인 L 단계, provider별 체크리스트, fixture/harness 구현 방식, merge 전 세부 QA gate는 project SSoT 또는 task 계약으로 라우팅합니다.
