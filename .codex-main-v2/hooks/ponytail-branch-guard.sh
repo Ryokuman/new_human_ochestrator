@@ -6,6 +6,7 @@ cd "$repo_root"
 
 current_branch=$(git branch --show-current 2>/dev/null || true)
 legacy_main_v2_fork_point=b1516c8c3e5b94cd8b413debeedee2ed8e061445
+remote_name=
 
 case "$current_branch" in
   main | develop)
@@ -18,37 +19,58 @@ is_shallow_repository() {
   [ "$(git rev-parse --is-shallow-repository 2>/dev/null || echo false)" = "true" ]
 }
 
+select_remote() {
+  branch_remote=$(git config --get "branch.$current_branch.remote" 2>/dev/null || true)
+
+  if [ -n "$branch_remote" ] && git remote get-url "$branch_remote" >/dev/null 2>&1; then
+    remote_name=$branch_remote
+    return 0
+  fi
+
+  if git remote get-url origin >/dev/null 2>&1; then
+    remote_name=origin
+    return 0
+  fi
+
+  remote_name=$(git remote | sed -n '1p')
+  [ -n "$remote_name" ]
+}
+
+remote_ref() {
+  echo "refs/remotes/$remote_name/$1"
+}
+
 ensure_head_history() {
   is_shallow_repository || return 0
-  git remote get-url origin >/dev/null 2>&1 || return 0
+  [ -n "$remote_name" ] || return 0
 
-  git fetch --quiet --deepen=100000 --no-tags origin >/dev/null 2>&1 ||
-    git fetch --quiet --unshallow --no-tags origin >/dev/null 2>&1 || true
+  git fetch --quiet --deepen=100000 --no-tags "$remote_name" >/dev/null 2>&1 ||
+    git fetch --quiet --unshallow --no-tags "$remote_name" >/dev/null 2>&1 || true
 }
 
 ensure_main_v2_ref() {
-  git remote get-url origin >/dev/null 2>&1 || return 0
+  [ -n "$remote_name" ] || return 0
   if is_shallow_repository; then
-    git fetch --quiet --deepen=100000 --no-tags origin main-v2:refs/remotes/origin/main-v2 >/dev/null 2>&1 ||
-      git fetch --quiet --unshallow --no-tags origin main-v2:refs/remotes/origin/main-v2 >/dev/null 2>&1 || true
+    git fetch --quiet --deepen=100000 --no-tags "$remote_name" "main-v2:$(remote_ref main-v2)" >/dev/null 2>&1 ||
+      git fetch --quiet --unshallow --no-tags "$remote_name" "main-v2:$(remote_ref main-v2)" >/dev/null 2>&1 || true
   else
-    git fetch --quiet --no-tags origin main-v2:refs/remotes/origin/main-v2 >/dev/null 2>&1 || true
+    git fetch --quiet --no-tags "$remote_name" "main-v2:$(remote_ref main-v2)" >/dev/null 2>&1 || true
   fi
 }
 
 ensure_main_ref() {
-  git remote get-url origin >/dev/null 2>&1 || return 0
+  [ -n "$remote_name" ] || return 0
   if is_shallow_repository; then
-    git fetch --quiet --deepen=100000 --no-tags origin main:refs/remotes/origin/main >/dev/null 2>&1 ||
-      git fetch --quiet --unshallow --no-tags origin main:refs/remotes/origin/main >/dev/null 2>&1 || true
+    git fetch --quiet --deepen=100000 --no-tags "$remote_name" "main:$(remote_ref main)" >/dev/null 2>&1 ||
+      git fetch --quiet --unshallow --no-tags "$remote_name" "main:$(remote_ref main)" >/dev/null 2>&1 || true
   else
-    git fetch --quiet --no-tags origin main:refs/remotes/origin/main >/dev/null 2>&1 || true
+    git fetch --quiet --no-tags "$remote_name" "main:$(remote_ref main)" >/dev/null 2>&1 || true
   fi
 }
 
 has_main_ref() {
   git rev-parse --verify main >/dev/null 2>&1 ||
-    git rev-parse --verify refs/remotes/origin/main >/dev/null 2>&1
+    { [ -n "$remote_name" ] && git rev-parse --verify "$(remote_ref main)" >/dev/null 2>&1; }
 }
 
 first_parent_has_main_v2_only_commit() {
@@ -67,8 +89,8 @@ first_parent_has_main_v2_only_commit() {
 is_in_main_lineage() {
   commit=$1
 
-  if git rev-parse --verify refs/remotes/origin/main >/dev/null 2>&1; then
-    git merge-base --is-ancestor "$commit" refs/remotes/origin/main
+  if [ -n "$remote_name" ] && git rev-parse --verify "$(remote_ref main)" >/dev/null 2>&1; then
+    git merge-base --is-ancestor "$commit" "$(remote_ref main)"
     return $?
   fi
 
@@ -104,19 +126,21 @@ is_main_v2_lineage() {
   ! is_in_main_lineage "$shared_base"
 }
 
+select_remote || true
 ensure_head_history
 ensure_main_v2_ref
 ensure_main_ref
 
 if [ "$current_branch" = "main-v2" ] &&
-  git rev-parse --verify refs/remotes/origin/main-v2 >/dev/null 2>&1 &&
-  ! git merge-base --is-ancestor refs/remotes/origin/main-v2 HEAD; then
+  [ -n "$remote_name" ] &&
+  git rev-parse --verify "$(remote_ref main-v2)" >/dev/null 2>&1 &&
+  ! git merge-base --is-ancestor "$(remote_ref main-v2)" HEAD; then
   echo "Ponytail is only enabled on the verified main-v2 branch or branches derived from main-v2." >&2
   exit 1
 fi
 
-if git rev-parse --verify refs/remotes/origin/main-v2 >/dev/null 2>&1; then
-  if is_main_v2_lineage refs/remotes/origin/main-v2; then
+if [ -n "$remote_name" ] && git rev-parse --verify "$(remote_ref main-v2)" >/dev/null 2>&1; then
+  if is_main_v2_lineage "$(remote_ref main-v2)"; then
     exit 0
   fi
 elif is_main_v2_lineage main-v2; then

@@ -22,9 +22,9 @@ codex plugin add ponytail@ponytail
 guard 통과 조건은 아래와 같습니다.
 
 - 현재 브랜치가 `main-v2`
-- 현재 `HEAD`가 최신 `main-v2` 또는 `origin/main-v2`를 포함함
+- 현재 `HEAD`가 최신 `main-v2` 또는 선택된 원격의 `main-v2`를 포함함
 - 오래된 `main-v2` 파생 브랜치처럼 `HEAD`와 `main-v2`의 공통 base가 저장된 legacy fork point와 다르고, legacy `main` 이력에 포함되지 않음
 
-`main`과 `develop`은 lineage 계산 전에 명시적으로 차단합니다. Guard는 stale local `main-v2`/`main` ref보다 갱신한 `origin/main-v2`/`origin/main`을 우선합니다. `main-v2` ref가 없는 single-branch checkout에서는 guard가 현재 브랜치 이력을 deepen/unshallow 한 뒤 `origin main-v2`를 `refs/remotes/origin/main-v2`로 가져와 판정합니다. `main`/`origin/main` ref는 `main` 기반 임시 브랜치를 차단하는 negative guard로만 준비합니다.
+`main`과 `develop`은 lineage 계산 전에 명시적으로 차단합니다. Guard는 현재 브랜치의 upstream remote를 우선 사용하고, 없으면 `origin`, 그마저 없으면 첫 번째 remote를 사용합니다. Guard는 stale local `main-v2`/`main` ref보다 갱신한 `<remote>/main-v2`와 `<remote>/main`을 우선합니다. `main-v2` ref가 없는 single-branch checkout에서는 guard가 현재 브랜치 이력을 deepen/unshallow 한 뒤 선택된 원격의 `main-v2`를 `refs/remotes/<remote>/main-v2`로 가져와 판정합니다. `main`/`<remote>/main` ref는 `main` 기반 임시 브랜치를 차단하는 negative guard로만 준비합니다.
 
 조건을 만족하지 않으면 Ponytail 관련 hook과 wrapper 실행은 중단됩니다.
