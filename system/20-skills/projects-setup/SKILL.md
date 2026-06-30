@@ -59,7 +59,7 @@ projects/<project-id>/
   --yes
 ```
 
-5. `00-dashboard/project-contract.md`를 채웁니다. 최소한 제품 정의, 현재 버전 목표/비목표, 핵심 사용자 플로우, repo 역할, task 생성 전 필수 참조, 추정 금지 정보를 확인된 값으로 적습니다. 확인되지 않은 항목은 빈 heading으로 방치하지 않고 `project contract 누락` 또는 `사용자 확인 필요`로 표시합니다.
+5. `00-dashboard/project-contract.md`를 채웁니다. 최소한 제품 정의, 현재 버전 목표/비목표, 핵심 사용자 플로우, 데이터 저장과 동기화 경계, repo 역할, task 생성 전 필수 참조, 추정 금지 정보를 확인된 값으로 적습니다. 확인되지 않은 항목은 빈 heading으로 방치하지 않고 `project contract 누락` 또는 `사용자 확인 필요`로 표시합니다.
 6. `projects/<project-id>/README.md`, `00-secrets/README.md`, `03-silo-local/README.md`, `03-silo-local/pr-description-template.md`를 생성합니다.
 7. `system/config/silo-projects.yaml`이 없으면 `./setup.sh --init-config --yes`로 local config 초안을 만듭니다. 있으면 기존 구조를 보존하고 `projects:` 항목에 새 프로젝트만 추가합니다.
 8. 변경 후 `git diff --stat`, 생성 파일 목록, config 등록 항목, project contract 작성/누락 항목을 보고합니다.
@@ -68,13 +68,14 @@ projects/<project-id>/
 
 모든 project SSoT에는 프로젝트 전반 설명과 dictionary가 있어야 합니다.
 
-`00-dashboard/`에는 project contract, project overview, 작업 필터 대시보드를 함께 둡니다. `project-contract.md`는 기능 task 생성 전 확인하는 제품 정의, 현재 버전 목표/비목표, 핵심 사용자 플로우, repo 역할, 추정 금지 정보입니다. `project-overview.md`는 프로젝트 상태와 운영 경계 요약이고, 실제 운영 첫 화면은 `work-filter.md` 또는 `work-views.md`처럼 issue/task를 필터링할 수 있는 작업 목록입니다.
+`00-dashboard/`에는 project contract, project overview, 작업 필터 대시보드를 함께 둡니다. `project-contract.md`는 기능 task 생성 전 확인하는 제품 정의, 현재 버전 목표/비목표, 핵심 사용자 플로우, 데이터 저장과 동기화 경계, repo 역할, 추정 금지 정보입니다. `project-overview.md`는 프로젝트 상태와 운영 경계 요약이고, 실제 운영 첫 화면은 `work-filter.md` 또는 `work-views.md`처럼 issue/task를 필터링할 수 있는 작업 목록입니다.
 
 `00-dashboard/project-contract.md`에는 최소 아래 항목을 둡니다.
 
 - 제품 정의
 - 현재 버전 목표와 비목표
 - 핵심 사용자 플로우
+- 데이터 저장과 동기화 경계
 - repo 역할과 금지선
 - task 생성 전 필수 참조
 - task 작성 규칙

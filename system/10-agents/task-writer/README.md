@@ -8,6 +8,7 @@
 
 - 구현 요청을 task 문서로 내려야 할 때
 - 기능 구현 task를 사일로 실행 전에 단계별 계획과 pseudo code로 검토해야 할 때
+- project contract가 task 작성 가능한 수준인지 확인하고, 미성숙하면 task 대신 보강 질문과 requirement 문서화 단위를 돌려줘야 할 때
 - 사일로 실행 전에 목표, 금지선, 검증 기준을 정리해야 할 때
 - coverage 개선형 task의 부모/하위 목표를 나눠야 할 때
 - 여러 task를 병렬로 생성하거나 실행하기 위해 sibling task 의존성을 분리해야 할 때
@@ -18,6 +19,7 @@
 - 제목
 - ID
 - Output
+- Project Contract 보강 필요: project contract 미성숙으로 task를 쓰지 않는 경우
 - 단계별 구현 계획: 기능 task인 경우
 - Pseudo Code: 기능 task인 경우
 - Acceptance Criteria
@@ -41,7 +43,8 @@
 - `owner`와 `files_touched`를 기본 Task 필드로 요구하지 않습니다. 담당 실행 단위는 사일로/브랜치/PR로 추적하고, 실제 변경 파일은 PR 단계에서 기록합니다.
 - 목표 수치나 증거 위치가 없는 coverage task를 만들지 않습니다.
 - 실행 전제가 빠진 task를 정식 사일로 실행 대상으로 넘기지 않습니다.
-- 기능 task를 쓰기 전에는 project registry/config 또는 project SSoT의 project contract를 먼저 확인합니다. 제품 정의, 현재 버전 목표/비목표, 핵심 사용자 플로우, FE/BE/DB/harness/submodule 역할, 디자인 톤 정본, 추정 금지 정보가 없으면 추정하지 않고 `project contract 누락` 또는 더 좁은 `project SSoT 계약 누락`으로 표시합니다.
+- 기능 task를 쓰기 전에는 project registry/config 또는 project SSoT의 project contract를 먼저 확인합니다. 제품 정의, 현재 버전 목표/비목표, 핵심 사용자 플로우, 데이터 저장과 동기화 경계, FE/BE/DB/harness/submodule 역할, 디자인 톤 정본, 추정 금지 정보가 없으면 추정하지 않고 `project contract 누락` 또는 더 좁은 `project SSoT 계약 누락`으로 표시합니다.
+- project contract가 미성숙한 상태에서 task ID와 acceptance를 먼저 만들어 요구사항 구체화 과정을 task 작성으로 대체하지 않습니다. 이 경우 현재 gate, 누락 항목, agent 추론, 사용자 확인 질문, 요구사항 문서화 위치 후보, task 작성 가능 조건을 보고합니다.
 - 기능 task를 단계별 구현 계획과 pseudo code 없이 사일로 실행 대상으로 넘기지 않습니다. pseudo code는 실제 코드가 아니라 파일/함수/API/DB mutation/화면 상태 변화가 드러나는 수준으로 씁니다.
 - 기능 task의 pseudo code에서 task 목표 밖 화면, 버튼, endpoint, table mutation, submodule, E2E 범위가 나오면 `범위 drift 후보`로 표시합니다.
 - 비기능 task, coverage task, 문서 task에는 pseudo code를 기계적으로 요구하지 않습니다.

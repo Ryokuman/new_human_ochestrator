@@ -843,6 +843,14 @@ task 고유 구현 계약, seed row, test input, PR 상태는 각 task 문서와
 
 ## 핵심 사용자 플로우
 
+## 데이터 저장과 동기화 경계
+
+- 로컬 저장:
+- 서버 저장:
+- 외부 서비스 동기화:
+- LLM/API 호출 결과 저장 여부:
+- 오프라인/재시도/충돌 처리 기준:
+
 ## repo 역할
 
 | 대상 | 역할 | 금지 |
@@ -874,6 +882,7 @@ task 고유 구현 계약, seed row, test input, PR 상태는 각 task 문서와
 ## 추정 금지 정보
 
 - 제품 정의, 현재 버전 목표/비목표, 핵심 사용자 플로우
+- 데이터 저장과 동기화 경계
 - 현재 schema에 없는 테이블, 컬럼, FK
 - 정본 위치가 없는 API/auth/session/runtime/design 계약
 - 제품 repo, submodule, harness 역할
@@ -956,7 +965,7 @@ TASK-0000
 
 ## Project Contract 확인 결과
 
-기능 task인 경우 project contract 위치, 확인한 제품 정의/목표/비목표/핵심 플로우/repo 역할, 누락 항목을 적습니다.
+기능 task인 경우 project contract 위치, 확인한 제품 정의/목표/비목표/핵심 플로우/데이터 저장·동기화 경계/repo 역할, 누락 항목을 적습니다.
 
 ## 단계별 구현 계획
 
@@ -1058,7 +1067,7 @@ TASK-0000
 
 ## Project Contract 확인 결과
 
-기능 task인 경우 project contract 위치, 확인한 제품 정의/목표/비목표/핵심 플로우/repo 역할, 누락 항목을 적습니다.
+기능 task인 경우 project contract 위치, 확인한 제품 정의/목표/비목표/핵심 플로우/데이터 저장·동기화 경계/repo 역할, 누락 항목을 적습니다.
 
 ## 단계별 구현 계획
 
@@ -1098,7 +1107,7 @@ Pseudo Code에서 task 목표 밖 화면, 버튼, endpoint, table mutation, subm
 
 ## Project Contract 확인 결과
 
-기능 task인 경우 project contract 위치, 확인한 제품 정의/목표/비목표/핵심 플로우/repo 역할, 누락 항목을 적습니다.
+기능 task인 경우 project contract 위치, 확인한 제품 정의/목표/비목표/핵심 플로우/데이터 저장·동기화 경계/repo 역할, 누락 항목을 적습니다.
 
 ## 단계별 구현 계획
 

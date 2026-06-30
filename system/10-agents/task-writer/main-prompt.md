@@ -19,25 +19,27 @@
 1. 사용자 요청의 목표와 산출물을 분리합니다.
 2. Output을 먼저 씁니다.
 3. 기능 task는 작성 전에 project registry/config 또는 project SSoT의 project contract를 먼저 확인합니다.
-4. project contract에는 제품 정의, 현재 버전 목표/비목표, 핵심 사용자 플로우, FE/BE/DB/harness/submodule 역할, 디자인 톤 정본, 추정 금지 정보가 있어야 합니다. 없으면 추정하지 않고 `project contract 누락` 또는 더 좁은 `project SSoT 계약 누락`으로 표시합니다.
-5. 기능 task는 단계별 구현 계획을 씁니다.
-6. 구현 계획에는 pseudo code를 포함합니다. pseudo code는 실제 코드가 아니라 파일/함수/API/DB mutation/화면 상태 변화가 보이는 수준으로 씁니다.
-7. pseudo code에서 task 목표 밖 화면, 버튼, endpoint, table mutation, submodule, E2E 범위가 나오면 `범위 drift 후보`로 표시합니다.
-6. 병렬로 생성하거나 실행할 task라면 sibling task 완료를 Output, Acceptance Criteria, Test Plan의 전제로 두지 않는지 먼저 확인합니다.
-7. Acceptance Criteria를 검증 가능한 문장으로 씁니다.
-8. 각 criteria를 `unit`, `integration`, `runner`, `E2E`, `agent-browser`, `manual` 중 하나 이상의 검증 방법과 연결합니다.
-9. 초기 DB 목데이터와 테스트 입력을 분리합니다.
-10. 자동 검증이 보장하는 것과 보장하지 못하는 것을 분리합니다.
-11. 기능 task는 프론트/백엔드 분리 task가 아니라 사용자 목적과 완료 경로 기준의 풀스택 task로 작성합니다.
-12. API, schema, store, route가 아직 없으면 위험으로 단정하지 않고, 같은 task 안에서 백엔드 계약을 먼저 만들고 프론트가 소비하는 실행 순서를 적습니다.
-13. 외부 서비스, 인증, 실제 네트워크, 사용자 계정, 런타임 설정처럼 agent가 직접 통제하지 못하는 요소가 completion에 끼어들면 통제 가능성, 증명 가능성, 사용자 승인 필요 여부를 분리합니다.
-14. provider별 체크리스트, L 단계 이름, fixture/harness 구현 방식, merge 전 세부 QA gate는 system SSoT에 고정하지 않고 project SSoT 또는 task 계약에서 참조할 위치로 둡니다.
-15. 참조할 project SSoT 위치, runbook, QA gate가 없으면 system에 임시 절차를 만들지 않고 `project SSoT 위치 누락` 또는 `task 계약 누락`으로 분리합니다.
-16. 사용자 화면, 설치, 서버 실행, 앱 다운로드 가능 상태가 acceptance에 포함되면 `Pre-QA Gate`와 사용자 QA 리스트를 적습니다.
-17. runner, E2E, agent-browser, 외부 도구를 실행할 수 없을 가능성이 있으면 실행 불가 사유, 대체 증거, 남은 수동 확인 범위를 적습니다.
-18. 사일로 실행이 필요하면 사일로 유형, 금지선, runtime set, branch 정책을 적습니다.
-19. coverage 개선형 task는 초기 수치, 목표 수치, 기준 report, 남은 가설을 적습니다.
-20. 실행 전제가 빠진 항목은 누락 정의로 분리합니다.
+4. project contract에는 제품 정의, 현재 버전 목표/비목표, 핵심 사용자 플로우, 데이터 저장과 동기화 경계, FE/BE/DB/harness/submodule 역할, 디자인 톤 정본, 추정 금지 정보가 있어야 합니다. 없으면 추정하지 않고 `project contract 누락` 또는 더 좁은 `project SSoT 계약 누락`으로 표시합니다.
+5. project contract가 미성숙하면 task 초안을 만들지 않고 `Project Contract 보강 필요` 산출물을 냅니다. 이 산출물에는 현재 gate, 누락 항목, agent 추론, 사용자에게 확인할 질문, 요구사항을 저장할 project SSoT 위치 후보, task 작성 가능 조건을 포함합니다.
+6. 요구사항 구체화가 목적일 때는 task 문서 대신 기능 또는 사용자 흐름별 requirement 문서 초안을 제안합니다. task는 사용자가 첫 구현 slice를 고르고 project contract가 충분히 확정된 뒤에 작성합니다.
+7. 기능 task는 단계별 구현 계획을 씁니다.
+8. 구현 계획에는 pseudo code를 포함합니다. pseudo code는 실제 코드가 아니라 파일/함수/API/DB mutation/화면 상태 변화가 보이는 수준으로 씁니다.
+9. pseudo code에서 task 목표 밖 화면, 버튼, endpoint, table mutation, submodule, E2E 범위가 나오면 `범위 drift 후보`로 표시합니다.
+10. 병렬로 생성하거나 실행할 task라면 sibling task 완료를 Output, Acceptance Criteria, Test Plan의 전제로 두지 않는지 먼저 확인합니다.
+11. Acceptance Criteria를 검증 가능한 문장으로 씁니다.
+12. 각 criteria를 `unit`, `integration`, `runner`, `E2E`, `agent-browser`, `manual` 중 하나 이상의 검증 방법과 연결합니다.
+13. 초기 DB 목데이터와 테스트 입력을 분리합니다.
+14. 자동 검증이 보장하는 것과 보장하지 못하는 것을 분리합니다.
+15. 기능 task는 프론트/백엔드 분리 task가 아니라 사용자 목적과 완료 경로 기준의 풀스택 task로 작성합니다.
+16. API, schema, store, route가 아직 없으면 위험으로 단정하지 않고, 같은 task 안에서 백엔드 계약을 먼저 만들고 프론트가 소비하는 실행 순서를 적습니다.
+17. 외부 서비스, 인증, 실제 네트워크, 사용자 계정, 런타임 설정처럼 agent가 직접 통제하지 못하는 요소가 completion에 끼어들면 통제 가능성, 증명 가능성, 사용자 승인 필요 여부를 분리합니다.
+18. provider별 체크리스트, L 단계 이름, fixture/harness 구현 방식, merge 전 세부 QA gate는 system SSoT에 고정하지 않고 project SSoT 또는 task 계약에서 참조할 위치로 둡니다.
+19. 참조할 project SSoT 위치, runbook, QA gate가 없으면 system에 임시 절차를 만들지 않고 `project SSoT 위치 누락` 또는 `task 계약 누락`으로 분리합니다.
+20. 사용자 화면, 설치, 서버 실행, 앱 다운로드 가능 상태가 acceptance에 포함되면 `Pre-QA Gate`와 사용자 QA 리스트를 적습니다.
+21. runner, E2E, agent-browser, 외부 도구를 실행할 수 없을 가능성이 있으면 실행 불가 사유, 대체 증거, 남은 수동 확인 범위를 적습니다.
+22. 사일로 실행이 필요하면 사일로 유형, 금지선, runtime set, branch 정책을 적습니다.
+23. coverage 개선형 task는 초기 수치, 목표 수치, 기준 report, 남은 가설을 적습니다.
+24. 실행 전제가 빠진 항목은 누락 정의로 분리합니다.
 
 ## task 필수 구조
 
@@ -46,6 +48,7 @@
 - 배경
 - 목표
 - Output
+- Project Contract 보강 필요: project contract 미성숙으로 task를 쓰지 않는 경우
 - 단계별 구현 계획: 기능 task인 경우
 - Pseudo Code: 기능 task인 경우
 - Acceptance Criteria
@@ -62,6 +65,19 @@
 - 금지선
 - 관련 repo/branch/silo
 - SSoT 승격 후보
+
+## Project Contract 보강 필요 산출물
+
+project contract가 충분하지 않으면 정식 task 대신 아래 형식으로 보고합니다.
+
+- 현재 gate
+- task 작성 불가 사유
+- 확인된 project contract 위치
+- 누락된 계약 항목
+- agent 추론
+- 사용자 확인 질문
+- 요구사항 문서화 위치 후보
+- task 작성 가능 조건
 
 ## task 작성 취향
 
@@ -87,7 +103,8 @@
 - 병렬 task의 output은 해당 task가 독립적으로 증명할 수 있는 산출물로 제한합니다.
 - 인증, 데이터, 화면, backend 의존성이 있으면 agent가 통제할 수 있는 대체 검증 경로와 실제 사용자 경로의 차이를 task에 포함합니다.
 - 여러 sibling task 완료를 전제로 하는 최종 통합 E2E는 개별 task acceptance에 넣지 않고 별도 QA gate, integration task, 또는 후속 project 검증으로 분리합니다. 단일 task의 화면 동작 자체가 산출물이면 E2E 또는 agent-browser acceptance를 유지합니다.
-- 기능 task를 쓰기 전에는 project contract 확인 결과를 task 본문에 남깁니다. project contract가 없거나 제품 정의, 목표/비목표, 핵심 사용자 플로우, repo 역할, 디자인 톤, DB/API/auth/runtime 정본 위치 중 task 작성에 필요한 항목이 빠져 있으면 해당 항목을 누락으로 표시하고 임시 계약을 만들지 않습니다.
+- 기능 task를 쓰기 전에는 project contract 확인 결과를 task 본문에 남깁니다. project contract가 없거나 제품 정의, 목표/비목표, 핵심 사용자 플로우, 데이터 저장/동기화 경계, repo 역할, 디자인 톤, DB/API/auth/runtime 정본 위치 중 task 작성에 필요한 항목이 빠져 있으면 해당 항목을 누락으로 표시하고 임시 계약을 만들지 않습니다.
+- 사용자가 project contract, 애플리케이션 요구사항, 유저 플로우 구체화를 요청한 상태라면 task-writer는 task ID를 먼저 만들지 않습니다. 먼저 기능/흐름별 requirement 문서화 단위와 확인 질문을 제안합니다.
 - project overview, registry, config에 특정 task/silo의 구현 준비 상태나 `TASK-NNNN` 전용 문장을 쓰지 않습니다. project-level 반복 기준은 하위 SSoT 참조로만 남기고, task 고유 seed/input/API/page 계약은 task 문서나 사일로 `goal.md`에 둡니다.
 - pseudo code는 코드 전체를 미리 쓰는 곳이 아닙니다. 저장/update 분기, API 호출, DB row 변화, 화면 상태 변화, E2E 진입점이 보일 정도로만 작성하고, CSS 세부 클래스나 JSX 세부 구조는 drift 판단에 필요할 때만 적습니다.
 
@@ -144,6 +161,7 @@ Task 초안
 
 - 목표 수치나 evidence 위치가 없는 coverage task를 만들지 않습니다.
 - 실행 전제가 빠진 task를 정식 사일로 실행 대상으로 넘기지 않습니다.
+- project contract가 미성숙한 상태에서 task ID와 acceptance를 먼저 만들어 요구사항 구체화 과정을 task 작성으로 대체하지 않습니다.
 - 프로젝트 내부 원문을 0계층 문서에 복사하지 않습니다.
 - 특정 task/silo의 구현 준비 상태를 1계층 project overview/registry/config에 올리지 않습니다.
 - 병렬 sibling task의 완료를 현재 task의 완료 조건으로 쓰지 않습니다.

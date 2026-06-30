@@ -26,8 +26,9 @@
 8. 일반 사일로의 Hypothesis Chain과 테스트 사일로의 report/evidence 흐름을 섞지 않습니다.
 9. PR 생성 승인과 PR 머지 승인을 분리합니다.
 10. 다음 행동, 승인 단위, 진행 여부, 저장 위치, 검증 범위가 걸린 보고에는 항상 보기 3개를 제시합니다.
-11. 기능 task를 사일로에 밀어넣기 전에는 project contract 확인 결과, 단계별 구현 계획, pseudo code를 먼저 작성하게 하고, 그 계획 리뷰에서 제품 정의, 목표/비목표, 목표 밖 화면, API, DB mutation, submodule, E2E 범위 drift를 확인합니다.
-12. task 처리 방식, 전체 구현 플랜 수립 방식, 정보 취합 방식, 사일로/PR/review loop 운영 방식이 바뀌면 `system/60-operating-hypotheses/`의 operating hypothesis를 작성하거나 갱신합니다.
+11. 사용자가 요구사항, 애플리케이션 세부사항, project contract, 제품 설명, 유저 플로우 구체화를 요청하면 task를 먼저 만들지 않고 현재 운영 가설과 project contract gate를 보고한 뒤 대화형 요구사항 정리를 시작합니다.
+12. 기능 task를 사일로에 밀어넣기 전에는 project contract 확인 결과, 단계별 구현 계획, pseudo code를 먼저 작성하게 하고, 그 계획 리뷰에서 제품 정의, 목표/비목표, 목표 밖 화면, API, DB mutation, submodule, E2E 범위 drift를 확인합니다.
+13. task 처리 방식, 전체 구현 플랜 수립 방식, 정보 취합 방식, 사일로/PR/review loop 운영 방식이 바뀌면 `system/60-operating-hypotheses/`의 operating hypothesis를 작성하거나 갱신합니다.
 
 ## 역할 라우팅
 
@@ -64,6 +65,12 @@
 - 브랜치 차이를 설명할 때는 최종 트리 차이인 `base..branch`와 브랜치 고유 변경인 `base...branch`를 구분합니다.
 - project SSoT 삭제 PR을 만들기 전에는 삭제 대상 파일을 `이관 확인됨`, `미이관`, `중복`, `폐기 후보`, `사용자 판단 필요`로 분류합니다.
 - task 검토와 실행은 프론트/백엔드 분리 소유권이 아니라 사용자 목적과 완료 경로 기준의 풀스택 단위로 판단합니다.
+- project contract gate에서는 현재 위치를 먼저 보고합니다. 보고에는 `현재 가설`, `현재 gate`, `다음 gate`, `그 근거`, `아직 task를 만들지 않는 이유 또는 task 작성 가능 근거`를 포함합니다.
+- project contract gate의 기본 순서는 `제품 한 문장 정의 -> 초기 유저 플로우 -> 핵심 화면과 상태 -> 데이터 저장/동기화 경계 -> 로컬/서버/외부 서비스/LLM 경계 -> MVP/후속 버전/비목표 -> 기능별 요구사항 문서화 -> 첫 task slice 선택`입니다.
+- project contract gate 질문은 사용자가 빈 문서를 채우게 하지 않고, agent가 먼저 추론한 가설을 제시한 뒤 확인받습니다. 예: `제가 추론하기에는 대시보드는 오늘 목표 요약과 주간/월간 달력을 중심으로 보이는데 맞나요? 누락 후보는 ...입니다.`
+- 사용자가 `추론이 맞다`, `전부 맞다`, 번호 답변처럼 확정 의사를 주면 해당 추론을 project contract 요구사항 후보로 기록합니다. 추론이 틀렸거나 사용자가 보정하면 보정된 내용을 정본 후보로 삼습니다.
+- project contract gate 중에는 요구사항을 제품/기능/사용자 흐름별 project SSoT 문서로 나누고, 1계층 project overview에는 정본 위치와 인덱스만 남깁니다. 특정 task의 구현 준비 상태, seed, endpoint, 테스트 입력은 project overview에 올리지 않습니다.
+- project contract가 제품 정의, 핵심 사용자 흐름, MVP/비목표, 데이터 경계, 인증/동기화/DB/API/runtime 정본 위치, 디자인 톤 중 task 작성에 필요한 항목을 갖추기 전에는 task-writer에게 정식 task 작성을 맡기지 않습니다. 대신 누락 항목과 다음 확인 질문을 보고합니다.
 - 구현 전 계획 리뷰가 필요한 기능 task는 바로 build하지 않습니다. task-writer 또는 worker에게 project contract 확인 결과, 단계별 구현 계획, pseudo code를 작성하게 하고, project contract와 pseudo code에서 제품 정의, 목표/비목표, 파일/함수/API/DB mutation/화면 상태 변화가 task 목표와 맞는지 확인한 뒤 사일로 실행을 시작합니다.
 - 운영 방식의 가정이 바뀌면 operating hypothesis를 `system/60-operating-hypotheses/`에 남깁니다. 채택 이유, 취합한 정보, 기존 방식의 문제, 예상 병목, 적용한 작업 방식, 실행 결과, 실제 병목, 사람 확인 지점, 다음 가설에서 유지하거나 버릴 것을 기록하게 합니다.
 - API, schema, store, route가 없다는 사실만으로 task 위험으로 단정하지 않습니다. 같은 task 안에서 백엔드 계약을 먼저 만들고 프론트가 소비하는 순서를 기본 실행 순서로 제안합니다.

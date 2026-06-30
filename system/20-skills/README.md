@@ -38,7 +38,7 @@
 
 `setup.sh --create-project-ssot`으로 만드는 Project SSoT는 `00-dashboard/project-overview.md`만 두지 않습니다. 기본으로 아래 작업 대시보드를 함께 생성합니다.
 
-- `00-dashboard/project-contract.md`: 기능 task 생성 전 확인하는 제품 정의, 현재 버전 목표/비목표, 핵심 사용자 플로우, repo 역할, 추정 금지 정보
+- `00-dashboard/project-contract.md`: 기능 task 생성 전 확인하는 제품 정의, 현재 버전 목표/비목표, 핵심 사용자 플로우, 데이터 저장과 동기화 경계, repo 역할, 추정 금지 정보
 - `00-dashboard/work-filter.md`: 종류, 상태, 레벨, 태그, 날짜, 검색어를 조합하는 즉석 멀티필터
 - `00-dashboard/work-items.base`: Obsidian Base table view와 저장된 view
 - `00-dashboard/work-views.md`: Base 사용법과 embed 안내
@@ -51,7 +51,7 @@ target이 `projects/<project-id>/...` 아래면 setup은 `.gitignore`의 `projec
 
 생성되는 `project-overview.md`에는 repo/source 위치, 상위 제품 repo host 역할, 기능 submodule 소유권, BE/FE submodule 경로, harness library 정책, 제품별 scenario/adapter 위치, DB 사용 여부, DB schema 정본 위치, schema 요약 위치, schema 적용 경로, API/auth/session contract 위치, harness/runtime DB 계약 위치를 적는 정본 참조 섹션을 둡니다. 실제 테이블/컬럼과 제품별 scenario 원문은 project SSoT의 DB 문서, 제품 repo schema 정본, 기능 submodule repo 또는 task 계약이 지정한 위치에 두고, overview에는 참조 위치만 둡니다.
 
-생성되는 task 템플릿은 `Project Contract 확인 결과`와 병렬 task 독립성 계약을 포함합니다. 기능 task는 project contract 위치와 확인한 제품 정의/목표/비목표/핵심 플로우/repo 역할, 누락 항목을 먼저 남깁니다. 병렬 task는 sibling task 완료를 Output, Acceptance Criteria, Test Plan의 전제로 삼지 않고, 개별 output은 해당 task가 독립적으로 증명할 수 있는 산출물로 제한합니다. 인증/데이터/화면/backend 의존성은 agent가 통제할 수 있는 대체 검증 경로와 실제 사용자 경로의 차이를 적고, 여러 sibling task 완료를 전제로 하는 최종 통합 E2E는 별도 QA gate, integration task, 또는 후속 project 검증으로 분리합니다. 단일 task의 화면 동작 자체가 산출물이면 E2E 또는 agent-browser acceptance를 유지합니다.
+생성되는 task 템플릿은 `Project Contract 확인 결과`와 병렬 task 독립성 계약을 포함합니다. 기능 task는 project contract 위치와 확인한 제품 정의/목표/비목표/핵심 플로우/데이터 저장과 동기화 경계/repo 역할, 누락 항목을 먼저 남깁니다. 병렬 task는 sibling task 완료를 Output, Acceptance Criteria, Test Plan의 전제로 삼지 않고, 개별 output은 해당 task가 독립적으로 증명할 수 있는 산출물로 제한합니다. 인증/데이터/화면/backend 의존성은 agent가 통제할 수 있는 대체 검증 경로와 실제 사용자 경로의 차이를 적고, 여러 sibling task 완료를 전제로 하는 최종 통합 E2E는 별도 QA gate, integration task, 또는 후속 project 검증으로 분리합니다. 단일 task의 화면 동작 자체가 산출물이면 E2E 또는 agent-browser acceptance를 유지합니다.
 
 `work-filter.md`는 frontmatter의 `dashboardScope.paths`를 기준으로 수집 경로를 정합니다. 기본값은 `20-issues/`, `30-tasks/`이고, 같은 프로젝트 안에서 BE, FE, ops 대시보드를 나누려면 템플릿을 복제해 `dashboardTitle`과 `dashboardScope.paths`만 바꿉니다. 대시보드는 ID와 제목을 별도 컬럼으로 보여주며, 기존 `id`/`title` 문서도 호환합니다.
 
