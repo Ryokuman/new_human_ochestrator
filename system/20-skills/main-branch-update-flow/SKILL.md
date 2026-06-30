@@ -26,7 +26,8 @@ description: main-v2 업데이트 절차 문서입니다. 이 프로젝트에서
 
 ## 원칙
 
-- 공통 SSoT 수정은 `main-v2`에서 파생한 작업 브랜치에서만 처리합니다.
+- 공통 SSoT 수정은 `main-v2`에서 파생한 `main-v2-<branch-name>` 작업 브랜치에서만 처리합니다.
+- Git ref namespace에서는 `main-v2` 브랜치가 존재하면 `main-v2/<branch-name>` 브랜치를 만들 수 없으므로 실제 Git 브랜치명은 `main-v2-<branch-name>` 형식을 사용합니다.
 - `main` 기준 별도 worktree 또는 clean checkout을 만들지 않습니다.
 - 모든 작성 산출물은 한국어로 작성합니다.
 - PR 제목, PR 본문, 커밋 메시지도 한국어로 작성합니다.
@@ -46,7 +47,7 @@ description: main-v2 업데이트 절차 문서입니다. 이 프로젝트에서
 2. remote 접근 가능 여부를 확인합니다.
 3. remote 계정이 맞지 않으면 `gh auth status`와 `gh auth switch -u <account>`로 복구합니다.
 4. 현재 브랜치가 `main-v2`에서 파생한 작업 브랜치인지 확인합니다.
-5. 필요한 경우 `main-v2`에서 단기 브랜치를 만들고 이동합니다.
+5. 필요한 경우 `main-v2`에서 `main-v2-<branch-name>` 단기 브랜치를 만들고 이동합니다.
 6. `main-v2-pr-scope-gate`로 브랜치명, diff path, 계층 분류, PR 가능 여부를 확인합니다.
 7. 공통 SSoT 파일만 수정합니다.
 8. 문서 변경이면 논리 비약 자가검수를 수행합니다.

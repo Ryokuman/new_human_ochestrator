@@ -66,7 +66,7 @@ project SSoT 원본 task/issue 상태 갱신 PR 생성 및 project/<project-id> 
 기본 규칙:
 
 - 사일로는 현재 workspace 루트에 보이는 `task-xxxx/` 디렉토리로 만듭니다.
-- task/issue 사일로라면 사일로 root, `goal.md`, repo clone, 작업 브랜치 중 하나라도 만들기 전에 project 계층 별도 worktree의 파생 브랜치에서 원본 task/issue 상태를 `in_progress`로 바꾸는 상태 갱신 PR을 만들고 `project/<project-id>`에 머지된 것을 확인합니다.
+- task/issue 사일로라면 사일로 root, `goal.md`, repo clone, 작업 브랜치 중 하나라도 만들기 전에 project 계층 `project/<project-id>-<branch-name>` 작업 브랜치에서 원본 task/issue 상태를 `in_progress`로 바꾸는 상태 갱신 PR을 만들고 `project/<project-id>`에 머지된 것을 확인합니다.
 - 상태 갱신 PR이 머지되기 전에는 사일로 root 생성, `goal.md` 작성, repo clone, 작업 브랜치 생성을 시작하지 않습니다. 상태 갱신 PR 생성 또는 머지 확인을 할 수 없으면 사일로 진행을 멈추고 이유를 보고합니다.
 - 사용자가 직접 지정하지 않으면 `/tmp`, 홈 디렉토리, 숨김 디렉토리, 에이전트 전용 임시 경로를 사일로 위치로 쓰지 않습니다.
 - `goal.md`에는 task 목표, 필요한 repo, 보호 브랜치, 작업 브랜치명, 개발자/QA/리뷰 역할, 금지선, 검증 기준, PR 본문 필수 항목을 적습니다.

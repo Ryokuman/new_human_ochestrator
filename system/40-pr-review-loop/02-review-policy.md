@@ -6,9 +6,9 @@ PR을 올리라는 지시는 먼저 현재 브랜치의 계층과 PR 유형을 �
 
 - PR 전에는 현재 브랜치 diff를 0계층 공통 변경과 project 계층 변경으로 나눕니다.
 - 0계층 공통 규칙, `AGENTS.md`, `system/`, repo skill, agent prompt 변경은 `main-v2` 기준 브랜치와 `main-v2` 대상 PR로 올립니다.
-- 1계층 project 등록/색인, 2계층 project SSoT, task, issue, QA, decision, coverage, runbook 변경은 해당 `project/<project-id>`를 기준 브랜치로 삼되, 별도 worktree의 파생 브랜치에서 커밋하고 `project/<project-id>` 대상 PR로 올립니다. 사용자가 “1계층 PR”이라고 말하면 이 project 계층 PR까지 포함해 판정합니다.
+- 1계층 project 등록/색인, 2계층 project SSoT, task, issue, QA, decision, coverage, runbook 변경은 해당 `project/<project-id>`를 기준 브랜치로 삼되, `project/<project-id>-<branch-name>` 작업 브랜치에서 커밋하고 `project/<project-id>` 대상 PR로 올립니다. 사용자가 “1계층 PR”이라고 말하면 이 project 계층 PR까지 포함해 판정합니다.
 - project 변경을 Codex review gate 때문에 `main-v2`로 retarget하지 않습니다.
-- 하나의 작업 브랜치에 0계층 변경과 1계층 이상 변경이 함께 있으면, 0계층 변경은 별도 `main-v2` worktree/브랜치/PR로 분리하고 project 변경은 `project/<project-id>`에서 판 별도 worktree의 파생 브랜치와 `project/<project-id>` 대상 PR로 분리합니다.
+- 하나의 작업 브랜치에 0계층 변경과 1계층 이상 변경이 함께 있으면, 0계층 변경은 별도 `main-v2` worktree/브랜치/PR로 분리하고 project 변경은 `project/<project-id>`에서 판 `project/<project-id>-<branch-name>` 작업 브랜치와 `project/<project-id>` 대상 PR로 분리합니다.
 - PR 생성 직후에는 0계층 PR과 project 계층 PR 모두 [`codex-pr-review-loop`](../20-skills/codex-pr-review-loop/SKILL.md)로 no-major 목표를 세팅하고, PR 댓글의 수동 `@codex review`를 호출합니다.
 - 제품 소스가 독립 git submodule로 분리된 경우 상위 제품 repo PR에서 submodule gitlink만 리뷰받는 것으로는 충분하지 않습니다. 변경된 각 submodule repo도 보호 브랜치 직접 커밋을 금지하고, submodule repo별 파생 브랜치와 별도 PR, Codex no-major 또는 동등한 리뷰 gate를 거칩니다.
 - 상위 제품 repo PR은 no-major 또는 동등 리뷰가 끝난 submodule commit만 gitlink로 pin합니다. 상위 PR의 리뷰 범위는 submodule commit pin, host repo 설정, submodule 선언, 실행 경로 연결이 의도한 submodule PR 결과를 가리키는지로 제한하고, submodule 내부 코드 품질과 API 동작 평가는 해당 submodule repo PR에서 수행합니다.

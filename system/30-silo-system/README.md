@@ -30,7 +30,7 @@
 - 사일로는 현재 workspace 루트의 보이는 디렉토리에 만듭니다.
 - 사용자가 명시하지 않는 한 `/tmp`, 홈 디렉토리, 숨김 디렉토리, 에이전트 전용 임시 경로를 기본 위치로 쓰지 않습니다.
 - 사일로는 보호 브랜치에서 직접 작업하지 않고 새 작업 브랜치를 만듭니다.
-- task 또는 issue 사일로를 실제로 시작하기 전에 project SSoT의 원본 task/issue 상태를 `in_progress`로 갱신합니다. 상태 갱신도 별도 worktree의 파생 브랜치와 `project/<project-id>` 대상 PR로 처리하며, 해당 PR이 머지된 뒤에만 사일로 root, `goal.md`, repo clone, 작업 브랜치 생성을 시작합니다.
+- task 또는 issue 사일로를 실제로 시작하기 전에 project SSoT의 원본 task/issue 상태를 `in_progress`로 갱신합니다. 상태 갱신도 `project/<project-id>-<branch-name>` 작업 브랜치와 `project/<project-id>` 대상 PR로 처리하며, 해당 PR이 머지된 뒤에만 사일로 root, `goal.md`, repo clone, 작업 브랜치 생성을 시작합니다.
 - 상태 갱신 PR을 만들거나 머지 상태를 확인할 수 없으면 사일로를 계속 진행하지 않고, 갱신 불가 이유를 보고합니다.
 - 격리 clone 내부에서는 문제 해결에 필요한 source code, generated output, test, tooling 수정을 허용합니다.
 - 결과는 PR, report, evidence, handoff, SSoT 승격 후보로 메인 오케스트레이터에게 돌아와야 합니다.
