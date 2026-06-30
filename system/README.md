@@ -102,6 +102,7 @@ fork 또는 clone 이후 실제 Codex 환경에 설치하려면 저장소 루트
 - [`main-branch-update-flow`](20-skills/main-branch-update-flow/SKILL.md)
 - [`main-v2-pr-scope-gate`](20-skills/main-v2-pr-scope-gate/SKILL.md)
 - [`page-lifecycle-runtime-flow`](20-skills/page-lifecycle-runtime-flow/SKILL.md)
+- [`project-contract-gate`](20-skills/project-contract-gate/SKILL.md)
 - [`projects-setup`](20-skills/projects-setup/SKILL.md)
 - [`root-layer-manager`](20-skills/root-layer-manager/SKILL.md)
 - [`shared-runtime-health-check`](20-skills/shared-runtime-health-check/SKILL.md)
