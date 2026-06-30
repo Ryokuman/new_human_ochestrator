@@ -81,7 +81,7 @@ projects/<project-id>/
 - task 작성 규칙
 - 추정 금지 정보
 
-기능 task 템플릿과 사일로 `goal.md` 템플릿에는 `Project Contract 확인 결과` 섹션을 둡니다. task 작성자가 project contract 위치와 확인한 항목, 누락 항목을 남기지 않으면 기능 task를 사일로 실행 대상으로 넘기지 않습니다.
+기능 task 템플릿과 사일로 `goal.md` 템플릿에는 `Project Contract 확인 결과`, `단계별 구현 계획`, `Pseudo Code`, `범위 drift 후보` 섹션을 둡니다. `Pseudo Code`는 TypeScript/JavaScript 같은 실제 구현 코드 블록이 아니라 한국어 자연어 절차 목록으로 쓰게 안내합니다. 파일명, 함수명, API query, DB mutation, op 이름(`D/L/C/R`) 같은 식별자는 원문 그대로 쓸 수 있지만 절차 설명은 한국어로 쓰게 합니다. task 작성자가 project contract 위치와 확인한 항목, 누락 항목을 남기지 않으면 기능 task를 사일로 실행 대상으로 넘기지 않습니다.
 
 `00-dashboard/project-overview.md`에는 최소 아래 항목을 둡니다.
 
