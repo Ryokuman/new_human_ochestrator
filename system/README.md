@@ -106,6 +106,7 @@ fork 또는 clone 이후 실제 Codex 환경에 설치하려면 저장소 루트
 - [`projects-setup`](20-skills/projects-setup/SKILL.md)
 - [`root-layer-manager`](20-skills/root-layer-manager/SKILL.md)
 - [`shared-runtime-health-check`](20-skills/shared-runtime-health-check/SKILL.md)
+- [`silo-runtime-handoff`](20-skills/silo-runtime-handoff/SKILL.md)
 - [`user-personality-adaptive-response`](20-skills/user-personality-adaptive-response/SKILL.md)
 
 ## Git 포함 기준

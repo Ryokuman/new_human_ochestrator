@@ -1,0 +1,4 @@
+interface:
+  display_name: "Silo Runtime Handoff"
+  short_description: "사일로 런타임 QA handoff 댓글 작성"
+  default_prompt: "Use $silo-runtime-handoff to prepare runtime URLs, E2E steps, and a PR handoff comment after a silo PR passes review."
