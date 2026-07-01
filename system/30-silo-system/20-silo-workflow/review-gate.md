@@ -40,4 +40,6 @@ PR 생성 직후에는 [`codex-pr-review-loop`](../../20-skills/codex-pr-review-
 
 Codex PR 리뷰 gate가 종결된 뒤에는 사용자 재리뷰를 다음 gate로 둡니다.
 
+사일로 PR에 runtime, browser, manual QA, E2E, vite-harness, shared BE/API, Docker DB 확인이 남아 있으면 사용자 재리뷰를 호출하기 전에 [`silo-runtime-handoff`](../../20-skills/silo-runtime-handoff/SKILL.md)를 사용해 현재 서버 주소, E2E 확인 방법, 실행 불가 사유를 PR 댓글로 남깁니다.
+
 PR 생성 승인과 PR 머지 승인은 별개입니다.

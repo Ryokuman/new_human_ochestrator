@@ -24,6 +24,7 @@ PR을 올리라는 지시는 먼저 현재 브랜치의 계층과 PR 유형을 �
 - 리뷰는 변경 diff, task 목표, 검증 결과, 남은 위험, SSoT 승격 후보를 기준으로 합니다.
 - Codex 응답이 no-major 통과 응답이 아니면 actionable 지적의 타당성을 판단합니다. 타당한 major/critical/P1/P2 또는 보호 절차 위반 지적은 수정, 검증, 커밋, push 후 새 head 기준으로 `@codex review`를 재호출합니다.
 - PR 생성 후에는 `codex-pr-review-loop` 기준으로 최신 head에 대한 no-major Codex 응답이 나올 때까지 수정, 검증, 재리뷰를 반복합니다. task silo의 `goal.md`가 확인되면 no-major 목표를 `goal.md`에 세팅하고, 그렇지 않으면 PR 본문, 리뷰 thread, 현재 사용자 요청을 재리뷰 컨텍스트로 사용합니다.
+- 사일로 PR이고 runtime, browser, manual QA, E2E 확인이 남아 있으면 no-major 이후 사용자 재리뷰 전에 `silo-runtime-handoff`로 서버 주소, E2E 방법, 실행 불가 사유를 PR 댓글에 남깁니다.
 - 기본 중단 기준은 호출 횟수가 아니라 리뷰 결과입니다.
 - 반복 이후에도 남은 major/critical 또는 보호 절차 P1/P2 항목은 횟수 기준으로 중단하지 않고, 실제 blocker 여부와 사용자 승인 gate 필요 여부를 분리합니다.
 - 사용자가 `~PR을 리뷰 대기 에이전트로 돌려주세요`, `이 PR 리뷰 대기 에이전트로 맡겨주세요`, `Sartre처럼 돌려주세요`처럼 명시하면 `review-waiter-agent`가 별도 루프로 관리합니다. 사용자가 이번 PR에 명시한 상한이 있을 때만 그 상한을 따릅니다.
@@ -38,6 +39,7 @@ PR을 올리라는 지시는 먼저 현재 브랜치의 계층과 PR 유형을 �
 -> 리뷰 결과 확인
 -> actionable comment가 있으면 수정 후 재리뷰 반복
 -> 리뷰 조건 종결
+-> 사일로 runtime handoff 댓글
 -> 사용자 재리뷰 대기
 -> 메인 리뷰
 -> 재작업 요청
