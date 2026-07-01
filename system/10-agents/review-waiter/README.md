@@ -41,7 +41,7 @@ PR 유형별 목표 세팅과 종료 기준은 `codex-pr-review-loop` skill을 �
 - 최초 리뷰 호출과 재리뷰 호출 댓글에는 `@codex review`, `한국어로 리뷰해 주세요.`, 최신 head 기준 리뷰 요청만 적습니다. `Didn't find any major issues` exact pass phrase와 반복 횟수 조건은 외부 댓글에 강제하지 않고 내부 종료 기준으로만 관리합니다.
 - 재리뷰 호출 전에도 변경 내용의 계층과 GitHub PR target/base branch가 여전히 맞는지 다시 확인합니다. 0계층 PR은 `main-v2`, project 계층 PR은 해당 `project/<project-id>`가 target/base여야 합니다.
 - 재리뷰 호출 전 현재 head push 이후에 작성된 최신 호출 댓글에 `eyes` 반응이 남아 있으면 아직 진행 중인 리뷰로 보고 재호출하지 않습니다. 최신 호출 댓글에 3분 동안 `eyes` 반응이 없고 리뷰 결과도 없으면 접수 실패 재호출로 분류하되, 같은 head의 no-`eyes` 재호출 기본 상한 3회를 넘기지 않습니다.
-- 최신 head에 대한 리뷰가 `Didn't find any major issues` 또는 동등한 no-major 응답을 명시하면 루프를 종료합니다.
+- 최신 head에 대한 리뷰가 `Didn't find any major issues` 또는 동등한 no-major 응답을 명시하면 종료 조건을 확인합니다. 사일로 PR이고 runtime, browser, manual QA, E2E 확인이 남아 있으면 `silo-runtime-handoff`를 실행해 서버 주소, E2E 방법, 실행 불가 사유를 PR 댓글로 남긴 뒤 종료합니다.
 - 종료 시 리뷰 호출 횟수, 수정 커밋, 검증, 남은 위험, 사용자 지정 반복 한도 적용 여부를 보고합니다.
 
 ## 메인 대화와의 관계
@@ -68,5 +68,6 @@ PR 유형별 목표 세팅과 종료 기준은 `codex-pr-review-loop` skill을 �
 실행한 검증
 남은 위험
 사용자 지정 반복 한도 적용 여부
+사일로 runtime handoff 실행 여부
 다음 판단 필요 항목
 ```

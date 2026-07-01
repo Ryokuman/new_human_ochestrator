@@ -29,7 +29,7 @@ PR 유형별 목표 세팅과 종료 기준은 `codex-pr-review-loop` skill을 �
 9. 최신 head에 대한 Codex 리뷰 호출이 필요한데 호출할 수 없는 상태라면, 대기하지 않고 사용자 판단 필요로 보고합니다.
 10. `eyes` 반응이 있는 리뷰가 아직 도착하지 않았으면 과도한 polling 없이 `eyes` 확인 시점부터 최대 15분까지 대기합니다.
 11. `eyes` 반응을 확인한 뒤 15분 동안 Codex 응답이 없으면 `Codex 리뷰 응답 대기 timeout`으로 중단하고 PR URL, head SHA, 호출 댓글, 대기 시간을 보고합니다.
-12. 최신 head에 대한 리뷰가 `Didn't find any major issues` 또는 동등한 no-major 응답을 명시하면 종료합니다.
+12. 최신 head에 대한 리뷰가 `Didn't find any major issues` 또는 동등한 no-major 응답을 명시하면 종료 조건을 확인합니다. 사일로 PR이고 runtime, browser, manual QA, E2E 확인이 남아 있으면 `silo-runtime-handoff`를 실행해 서버 주소, E2E 방법, 실행 불가 사유를 PR 댓글로 남긴 뒤 종료합니다.
 13. no-major 응답이 아니면 actionable 지적의 validity를 먼저 판단합니다.
 14. 타당한 지적은 직접 수정합니다.
 15. 수정 후 변경 범위에 맞는 검증을 실행합니다.
@@ -76,6 +76,7 @@ PR 유형별 목표 세팅과 종료 기준은 `codex-pr-review-loop` skill을 �
 남은 위험
 Codex 응답 대기 시간과 timeout 여부
 사용자 지정 반복 한도 적용 여부
+사일로 runtime handoff 실행 여부
 다음 판단 필요 항목
 ```
 
