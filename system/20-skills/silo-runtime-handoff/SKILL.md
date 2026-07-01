@@ -43,7 +43,7 @@ description: 사일로 PR이 Codex no-major를 통과한 뒤 사용자 재리뷰
 - vite-harness 또는 제품 FE dev server
 - task contract에 명시된 추가 서버
 
-이미 실행 중인 서버가 있으면 재사용하기 전에 포트, command, working directory, dirty 상태를 확인한다.
+이미 실행 중인 서버가 있으면 재사용하기 전에 포트, command, working directory, dirty 상태, 실행 프로세스의 최신 head 반영 여부를 확인한다. 최신 head 반영 여부가 불명확하면 재시작한다.
 
 새로 실행할 때는 아래를 기록한다.
 
