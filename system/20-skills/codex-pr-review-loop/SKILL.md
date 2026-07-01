@@ -68,13 +68,15 @@ Codex 실제 응답은 `Didn't find any major issues` 또는 그와 동등하게
 12. 최신 head에 대한 리뷰 요청이 없으면 PR 댓글로 `@codex review`를 호출하고, 외부 리뷰 댓글 문구만 적은 뒤 9번으로 돌아갑니다.
 13. `eyes` 반응을 확인한 뒤 15분 동안 Codex 응답이 없으면 루프를 중단하고 PR URL, head SHA, 호출 댓글, 대기 시간을 보고합니다.
 14. Codex 결과가 도착하면 최신 head에 대해 no-major 응답인지 확인합니다.
-15. no-major 응답이 아니면 actionable major/critical/P1/P2 또는 보호 절차 위반 지적의 validity를 판단하고 타당한 항목만 수정합니다.
-16. 수정 후 변경 범위에 맞는 검증을 실행하고, 한국어 커밋 메시지로 커밋한 뒤 push합니다. project 계층 PR에서는 이 커밋이 `project/<project-id>-<branch-name>` 작업 브랜치에서 발생해야 하며, 기준 `project/<project-id>` 브랜치에는 직접 커밋하지 않습니다.
-17. PR 댓글 또는 본문에 수정 내용, 검증 결과, 남은 위험, 새 head SHA를 기록하고 9번으로 돌아갑니다.
+15. no-major 응답이고 task silo 또는 PR 본문에 runtime, browser, manual QA, E2E, vite-harness, shared BE/API, Docker DB 확인이 남아 있으면 [`silo-runtime-handoff`](../silo-runtime-handoff/SKILL.md)를 실행해 서버 주소, E2E 방법, 실행 불가 사유를 PR 댓글로 남긴 뒤 사용자 재리뷰로 넘깁니다.
+16. no-major 응답이 아니면 actionable major/critical/P1/P2 또는 보호 절차 위반 지적의 validity를 판단하고 타당한 항목만 수정합니다.
+17. 수정 후 변경 범위에 맞는 검증을 실행하고, 한국어 커밋 메시지로 커밋한 뒤 push합니다. project 계층 PR에서는 이 커밋이 `project/<project-id>-<branch-name>` 작업 브랜치에서 발생해야 하며, 기준 `project/<project-id>` 브랜치에는 직접 커밋하지 않습니다.
+18. PR 댓글 또는 본문에 수정 내용, 검증 결과, 남은 위험, 새 head SHA를 기록하고 9번으로 돌아갑니다.
 
 ## 종료 기준
 
 - 최신 head에 대한 Codex 결과가 `Didn't find any major issues` 또는 동등한 no-major 응답을 명시했습니다.
+- 사일로 PR이고 runtime, browser, manual QA, E2E 확인이 남아 있으면 `silo-runtime-handoff` 댓글까지 남긴 뒤 종료합니다.
 - 같은 head에 대해 진행 중인 `eyes` 반응이 있으면 종료가 아니라 `eyes` 확인 시점부터 15분 한도의 대기입니다.
 - 같은 head에 대해 호출했지만 3분 동안 `eyes` 반응이 없고 리뷰 결과도 없으면 접수 실패로 보고 재호출합니다. 같은 head의 no-`eyes` 재호출은 기본 최대 3회이며, 모두 실패하면 `Codex 리뷰 접수 실패 timeout`으로 중단해 사용자 판단 필요로 보고합니다.
 - `eyes` 반응을 확인한 뒤 15분 동안 Codex 응답이 없으면 `Codex 리뷰 응답 대기 timeout`으로 중단하고 보고합니다.
