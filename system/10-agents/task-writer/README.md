@@ -7,7 +7,7 @@
 ## 사용할 때
 
 - 구현 요청을 task 문서로 내려야 할 때
-- 기능 구현 task를 사일로 실행 전에 단계별 계획과 한국어 자연어 절차 중심의 pseudo code로 검토해야 할 때
+- 기능 구현 task를 사일로 실행 전에 단계별 계획과 파일별 대표 함수 골격형 pseudo code로 검토해야 할 때
 - project contract가 task 작성 가능한 수준인지 확인하고, 미성숙하면 task 대신 보강 질문과 requirement 문서화 단위를 돌려줘야 할 때
 - 사일로 실행 전에 목표, 금지선, 검증 기준을 정리해야 할 때
 - coverage 개선형 task의 부모/하위 목표를 나눠야 할 때
@@ -45,7 +45,7 @@
 - 실행 전제가 빠진 task를 정식 사일로 실행 대상으로 넘기지 않습니다.
 - 기능 task를 쓰기 전에는 project registry/config 또는 project SSoT의 project contract를 먼저 확인합니다. 제품 정의, 현재 버전 목표/비목표, 핵심 사용자 플로우, 데이터 저장과 동기화 경계, FE/BE/DB/harness/submodule 역할, 디자인 톤 정본, 추정 금지 정보가 없으면 추정하지 않고 `project contract 누락` 또는 더 좁은 `project SSoT 계약 누락`으로 표시합니다.
 - project contract가 미성숙한 상태에서 task ID와 acceptance를 먼저 만들어 요구사항 구체화 과정을 task 작성으로 대체하지 않습니다. 이 경우 현재 gate, 누락 항목, agent 추론, 사용자 확인 질문, 요구사항 문서화 위치 후보, task 작성 가능 조건을 보고합니다.
-- 기능 task를 단계별 구현 계획과 pseudo code 없이 사일로 실행 대상으로 넘기지 않습니다. pseudo code는 TypeScript/JavaScript 같은 실제 구현 코드 블록이나 완성된 함수 구현이 아니라 한국어 자연어 절차 목록으로 씁니다. 파일명, 함수명, API query, DB mutation, op 이름(`D/L/C/R`) 같은 식별자는 원문 그대로 쓸 수 있지만 절차 설명은 한국어로 쓰며, 파일/함수/API/DB mutation/화면 상태 변화가 드러나야 합니다.
+- 기능 task를 단계별 구현 계획과 pseudo code 없이 사일로 실행 대상으로 넘기지 않습니다. pseudo code는 사용자 흐름 설명이나 구현 계획 문장이 아니라 파일별 대표 함수 골격형으로 씁니다. 실제 컴파일 가능한 코드나 완성된 함수 구현은 아니지만, 각 파일의 대표 함수와 보조 함수가 어떤 입력/의존성을 받고 조회, 검증, 가공, 조건 분기, 반복, 저장, 반환을 어떻게 수행하는지 코드에 가깝게 보여야 합니다. 파일명, 함수명, API query, DB mutation, op 이름(`D/L/C/R`) 같은 식별자는 원문 그대로 쓸 수 있지만 설명 문장은 한국어로 씁니다.
 - 기능 task의 pseudo code에서 task 목표 밖 화면, 버튼, endpoint, table mutation, submodule, E2E 범위가 나오면 `범위 drift 후보`로 표시합니다.
 - 비기능 task, coverage task, 문서 task에는 pseudo code를 기계적으로 요구하지 않습니다.
 - 병렬 task의 `Output`, `Acceptance Criteria`, `Test Plan`에 sibling task 완료를 전제로 쓰지 않습니다.

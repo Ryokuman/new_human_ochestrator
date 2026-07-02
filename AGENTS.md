@@ -236,11 +236,11 @@ project/<project-id> 귀속 변경 -> `project/<project-id>-<branch-name>`
 - 상태 갱신 PR이 머지되기 전에는 사일로 root 생성, `goal.md` 작성, repo clone, repo별 작업 브랜치 생성을 시작하지 않습니다.
 - SSoT 상태 갱신 PR을 만들거나 머지 상태를 확인할 수 없으면 사일로 진행을 멈추고, 갱신 불가 사유를 보고합니다.
 - 사일로 디렉토리는 현재 workspace 루트에 만듭니다. 사용자가 직접 지정하지 않는 한 `/tmp`, 홈 디렉토리, 숨김 디렉토리, 에이전트 전용 임시 경로에 만들지 않습니다.
-- `goal.md`에는 task 목표, 필요한 repo, 보호 브랜치, 금지선, criteria별 테스트 계약, 검증 기준, 리뷰 gate 적용 여부, PR 본문 필수 항목을 적습니다. 기능 task의 `goal.md`에는 task 작성 전 확인한 project contract 위치, 단계별 구현 계획, 한국어 자연어 절차 중심의 pseudo code를 추가로 적습니다. PR 생성 시에는 계층별 target/base를 확인한 뒤 `codex-pr-review-loop` skill로 no-major 목표를 세팅하고 수동 `@codex review`를 호출하는 것을 기본 gate로 둡니다.
+- `goal.md`에는 task 목표, 필요한 repo, 보호 브랜치, 금지선, criteria별 테스트 계약, 검증 기준, 리뷰 gate 적용 여부, PR 본문 필수 항목을 적습니다. 기능 task의 `goal.md`에는 task 작성 전 확인한 project contract 위치, 단계별 구현 계획, 파일별 대표 함수 골격형 pseudo code를 추가로 적습니다. PR 생성 시에는 계층별 target/base를 확인한 뒤 `codex-pr-review-loop` skill로 no-major 목표를 세팅하고 수동 `@codex review`를 호출하는 것을 기본 gate로 둡니다.
 - 사용자가 요구사항, 애플리케이션 세부사항, project contract, 유저 플로우 구체화를 요청하면 task를 먼저 만들지 않습니다. 먼저 현재 운영 가설, 현재 gate, 다음 gate, 그 근거를 보고하고, 제품 정의와 사용자 흐름을 기반으로 agent 추론 질문을 던진 뒤 확정 내용을 기능 또는 사용자 흐름별 project SSoT 요구사항 문서로 나눕니다.
 - 기능 task를 작성하거나 사일로 실행 대상으로 넘기기 전에는 project registry/config 또는 project SSoT의 project contract, project overview, DB/API/auth/design/runtime 정본 위치를 먼저 확인합니다. 확인된 project contract 없이 제품 정의, 목표/비목표, 핵심 사용자 플로우, 데이터 저장/동기화 경계, FE/BE/DB/harness/submodule 역할을 추정해 task 계약을 쓰지 않습니다. 참조가 없으면 `project contract 누락` 또는 더 좁은 `project SSoT 계약 누락`으로 분류합니다.
 - project contract가 미성숙하면 task ID, acceptance, `goal.md`를 먼저 만들지 않고 `Project Contract 보강 필요`로 보고합니다. 보고에는 현재 gate, 누락 항목, agent 추론, 사용자 확인 질문, 요구사항 문서화 위치 후보, task 작성 가능 조건을 포함합니다.
-- 기능 task는 사일로 실행 전에 단계별 구현 계획과 pseudo code를 먼저 작성하고 리뷰합니다. pseudo code는 TypeScript/JavaScript 같은 실제 구현 코드나 완성된 함수 구현이 아니라 한국어 자연어 절차 목록으로 작성합니다. 파일명, 함수명, API query, DB mutation, op 이름(`D/L/C/R`) 같은 코드 식별자는 원문 그대로 쓸 수 있지만, 절차 설명은 한국어로 씁니다. 각 단계에는 파일/함수/API/DB mutation/화면 상태 변화가 드러나야 하며, task 목표 밖 화면, 버튼, endpoint, table mutation, submodule, E2E 범위가 보이면 `범위 drift 후보`로 표시합니다. pseudo code 없이 바로 구현에 들어간 기능 task는 계획 리뷰 gate 누락으로 보고합니다.
+- 기능 task는 사일로 실행 전에 단계별 구현 계획과 pseudo code를 먼저 작성하고 리뷰합니다. pseudo code는 TypeScript/JavaScript 같은 실제 구현 코드나 완성된 함수 구현이 아니라 파일별 대표 함수 골격형으로 작성합니다. 각 파일마다 `대표 함수는 어떤 입력과 의존성이 필요한지`를 먼저 쓰고, 함수 안에는 조회, 검증, 가공, 조건 분기, 반복, 저장, 반환 구조가 코드에 가깝게 보여야 합니다. 파일명, 함수명, API query, DB mutation, op 이름(`D/L/C/R`) 같은 코드 식별자는 원문 그대로 쓸 수 있지만, 설명 문장은 한국어로 씁니다. task 목표 밖 화면, 버튼, endpoint, table mutation, submodule, E2E 범위가 보이면 `범위 drift 후보`로 표시합니다. pseudo code 없이 바로 구현에 들어간 기능 task는 계획 리뷰 gate 누락으로 보고합니다.
 - task와 `goal.md`에서 `초기 DB 목데이터`와 `테스트 입력`은 분리해서 씁니다. `초기 DB 목데이터`는 테스트 시작 전에 DB에 seed로 존재해야 하는 상태입니다. 예: 실제 DB schema에서 FK나 조회 조건으로 요구되는 테스트 사용자 row, 날짜 컬럼을 가진 기존 기록 row, 참조 테이블 값. 각 항목에는 왜 미리 존재해야 하는지와 재실행해도 안전한 기준을 적습니다.
 - `테스트 입력`은 테스트 또는 사용자가 실행 중에 UI, API, harness, runner로 넣는 값과 액션입니다. 예: 식단 직접 입력 폼 값, 빠른 체크 버튼 선택, API request body, validation 실패를 확인하기 위한 잘못된 값. 테스트 중 액션 이후에만 생길 수 있는 값은 초기 DB 목데이터가 아니라 테스트 입력으로 분류합니다.
 - 유닛 테스트 계획을 task에 적을 때도 seed state와 action payload를 섞지 않습니다. 유닛 테스트는 실제 코드를 task에 작성하지 않고, 어떤 초기 상태를 준비하고 어떤 테스트 입력을 넣어 어떤 결과를 검증할지만 설명합니다.
@@ -337,7 +337,7 @@ project/<project-id> 귀속 변경 -> `project/<project-id>-<branch-name>`
 - 각 task는 `Output`, `Acceptance Criteria`, `Test Plan`, `Coverage Target`을 포함해야 합니다.
 - `Output`은 완료 후 사용자, 시스템, 운영자가 확인할 수 있는 결과입니다.
 - `Acceptance Criteria`는 완료로 인정할 검수 기준이며, 각 기준은 `unit`, `integration`, `runner`, `E2E`, `agent-browser`, `manual` 중 하나 이상의 검증 방법과 연결합니다.
-- 기능 task의 `Pseudo Code`는 실제 구현 코드 블록이 아니라 한국어 자연어 절차 목록입니다. 파일명, 함수명, API query, DB mutation, op 이름(`D/L/C/R`)은 원문을 유지할 수 있지만, 절차 설명은 한국어로 쓰고 파일/함수/API/DB mutation/화면 상태 변화가 드러나야 합니다.
+- 기능 task의 `Pseudo Code`는 실제 구현 코드 블록이나 사용자 흐름 설명이 아니라 파일별 대표 함수 골격입니다. 각 파일마다 대표 함수와 보조 함수가 어떤 입력/의존성을 받고 조회, 검증, 가공, 조건 분기, 반복, 저장, 반환을 어떻게 수행하는지 코드에 가깝게 보여야 합니다. 파일명, 함수명, API query, DB mutation, op 이름(`D/L/C/R`)은 원문을 유지할 수 있지만 설명 문장은 한국어로 씁니다.
 - 구현 task는 작업 전에 각 criteria를 테스트 계약으로 바꾸고, 자동 검증이 보장하는 것과 보장하지 못하는 것을 분리합니다.
 - agent가 통제한 대체 검증 경로의 통과를 실제 사용자 설치/로그인/네트워크 경로 통과로 보고하지 않습니다.
 - 기능 task/사일로는 사람에게 직접 확인을 먼저 넘기지 않습니다. 먼저 agent가 실행 가능한 `test command`, `DB query`, `browser evidence`, 실행 URL/명령, 로그, report 위치를 criteria별 evidence 묶음으로 모읍니다.

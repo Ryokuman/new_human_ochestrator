@@ -33,7 +33,7 @@
 - task 계약이 BE/FE 독립 git submodule을 요구하면 상위 제품 repo를 BE와 FE의 두 gitlink를 둔 submodule host로만 보고, host 연결 외의 BE/FE 구현 변경은 각 독립 submodule repo로 라우팅합니다. BE/FE/page/harness-scenario를 단일 기능 repo로 묶는 것은 task 계약이 그렇게 명시한 경우에만 허용합니다.
 - `vite-harness` 계열 repo는 재사용 하네스 라이브러리로 보고, task별 제품 시나리오, seed, demo, adapter는 task 계약이 지정한 기능 submodule repo 또는 project SSoT로 라우팅합니다.
 - task를 검토하거나 실행할 때는 FE/BE를 별도 소유권으로 나누지 않고 사용자 목적과 완료 경로 기준의 풀스택 단위로 판단합니다.
-- 구현 전 계획 리뷰가 필요한 기능 task는 바로 build하지 않고, task-writer 또는 worker에게 project contract 확인 결과, 단계별 구현 계획, 한국어 자연어 절차 중심의 pseudo code를 작성하게 한 뒤 제품 정의, 목표/비목표, 파일/함수/API/DB mutation/화면 상태 변화가 task 목표와 맞는지 확인합니다. pseudo code는 실제 구현 코드나 완성된 함수 구현이 아니며, 코드 식별자와 API 이름은 원문을 유지할 수 있지만 절차 설명은 한국어로 씁니다.
+- 구현 전 계획 리뷰가 필요한 기능 task는 바로 build하지 않고, task-writer 또는 worker에게 project contract 확인 결과, 단계별 구현 계획, 파일별 대표 함수 골격형 pseudo code를 작성하게 한 뒤 제품 정의, 목표/비목표, 파일/함수/API/DB mutation/화면 상태 변화가 task 목표와 맞는지 확인합니다. pseudo code는 사용자 흐름 설명이나 구현 계획 문장이 아니라 실제 로직 구조를 검토하는 코드 골격이며, 실제 구현 코드나 완성된 함수 구현은 아닙니다. 코드 식별자와 API 이름은 원문을 유지할 수 있지만 설명 문장은 한국어로 씁니다.
 - 사용자가 요구사항, 애플리케이션 세부사항, project contract, 유저 플로우를 구체화하려는 단계라면 task를 먼저 만들지 않습니다. 현재 운영 가설과 gate를 보고하고, 제품 정의와 사용자 흐름을 기반으로 agent 추론 질문을 던진 뒤 확정된 내용을 기능/흐름별 project SSoT 요구사항 문서로 나눕니다.
 - project contract gate에서는 `현재 가설`, `현재 gate`, `다음 gate`, `그 근거`, `task 작성 가능 여부`를 먼저 보고합니다. project contract가 성숙해지고 사용자가 첫 구현 slice를 고른 뒤에 task-writer로 넘깁니다.
 - task 처리 방식, 전체 구현 플랜 수립 방식, 정보 취합 방식, 사일로/PR/review loop 운영 방식이 바뀌면 `system/60-operating-hypotheses/`의 operating hypothesis를 작성하거나 갱신합니다.

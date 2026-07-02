@@ -29,6 +29,7 @@ project contract, 계획, pseudo code를 먼저 리뷰하면 실제 코드를 �
 - 사용자 피드백: task를 만들기 이전에 프로젝트가 무엇인지 설명하는 부분도 확실히 필요하며, 이 부분이 충분히 성숙하지 못했다.
 - 사용자 피드백: 현재 가설과 gate를 먼저 보고하고, project contract 부분부터 같이 실행해야 한다. task는 요구사항이 구체화된 뒤 그때 작성해야 한다.
 - 사용자 피드백: agent는 단순 질문보다 `현재 추론은 이러하며 맞는가`, `누락된 것이 있을 수 있는가`처럼 사용자의 검토 부담을 낮추는 질문을 던져야 한다.
+- 사용자 피드백: pseudo code의 목적은 사용자 흐름 설명이나 구현 계획 문장이 아니라 실제 코드 로직 구조를 파악하는 것이다. 파일별 대표 함수와 함수 내부의 조회, 검증, 가공, 분기, 저장, 반환 구조가 코드에 가깝게 보여야 한다.
 - 반복 관찰: 구현 결과물 확인 시점에 목표 밖 화면, 불필요한 기능, 디자인 톤 이탈, human check 병목이 뒤늦게 드러났다.
 - 반복 관찰: project SSoT에는 repo 역할, DB, submodule, design 관련 정보가 있었지만 task 생성자가 먼저 읽을 project-level 계약으로 충분히 압축되어 있지 않았다.
 - PR 리뷰 관찰: 규칙을 agent prompt에만 넣으면 README, goal template, scaffold 같은 다른 진입점에서 누락된다.
@@ -50,7 +51,7 @@ project contract, 계획, pseudo code를 먼저 리뷰하면 실제 코드를 �
 - project contract가 추상적이면 task 생성자가 여전히 제품 정의, 디자인 톤, DB/API 계약을 추정한다.
 - 요구사항 인터뷰가 열린 질문만 반복하면 요구사항 정리가 아니라 사용자에게 설계 부담을 전가하는 병목이 된다.
 - project contract gate에서 모든 미래 기능을 MVP task처럼 상세화하면 task 생성 전 설계가 과해진다.
-- pseudo code 상세도가 너무 낮으면 drift를 잡지 못한다.
+- pseudo code 상세도가 너무 낮거나 사용자 흐름 설명에 머물면 파일별 실제 로직 구조와 drift를 잡지 못한다.
 - pseudo code 상세도가 너무 높거나 실제 구현 코드 블록 중심이 되면 사실상 구현 전 코드 리뷰가 되어 속도가 느려진다.
 - 비기능 task에까지 pseudo code를 강제하면 불필요한 절차가 된다.
 - README, prompt, scaffold, goal template 중 하나라도 빠지면 새 규칙이 우회된다.
@@ -66,7 +67,7 @@ project contract, 계획, pseudo code를 먼저 리뷰하면 실제 코드를 �
 - project contract gate 산출물은 project SSoT에 기능 또는 사용자 흐름별 문서로 나누고, 1계층 project overview에는 정본 위치와 인덱스만 남긴다.
 - task 계약은 project contract에서 확인된 정보만 사용하고, 누락된 정보는 임시 추정으로 채우지 않고 `project contract 누락`으로 표시한다.
 - 기능 task에만 단계별 구현 계획과 pseudo code를 요구한다.
-- pseudo code는 실제 코드가 아니라 한국어 자연어 절차 목록으로 작성한다. 파일명, 함수명, API query, DB mutation, op 이름(`D/L/C/R`) 같은 식별자는 원문 그대로 쓸 수 있지만 절차 설명은 한국어로 쓰고, 파일, 함수, API, DB mutation, 화면 상태 변화가 보이는 수준으로 제한한다.
+- pseudo code는 실제 컴파일 가능한 구현 코드가 아니라 파일별 대표 함수 골격형으로 작성한다. 각 함수의 필요한 입력/의존성, 조회, 검증, 가공, 조건 분기, 반복, 저장, 반환이 코드에 가깝게 보여야 한다.
 - 목표 밖 화면, 버튼, endpoint, table mutation, submodule, E2E 범위가 나오면 `범위 drift 후보`로 표시한다.
 - 역할 README, main-prompt, AGENTS, 사일로 goal spec, project SSoT scaffold를 함께 갱신한다.
 
@@ -102,7 +103,7 @@ project contract, 계획, pseudo code를 먼저 리뷰하면 실제 코드를 �
 - project contract가 task 생성자가 빠르게 확인할 수 있는 수준으로 충분히 압축됐는지 확인해야 한다.
 - 사용자와 함께 진행 중인 gate가 project contract인지, task contract인지, 구현 계획 리뷰인지 먼저 확인해야 한다.
 - agent 추론 질문이 사용자의 human check 병목을 줄이고 있는지, 아니면 답변 부담을 키우고 있는지 확인해야 한다.
-- pseudo code가 리뷰 가능한 충분한 수준인지 판단하는 기준은 아직 사용자 피드백을 더 받아야 한다. 단, 실제 구현 코드 블록이 아니라 한국어 자연어 절차 목록이어야 한다는 형식 기준은 유지한다.
+- pseudo code가 리뷰 가능한 충분한 수준인지에 대해, 자연어 절차 목록보다 파일별 함수 골격형이 더 적합하다는 사용자 피드백을 반영했다. 남은 판단 기준은 어느 정도까지 보조 함수와 화면 상태를 펼칠지다.
 - 기능 task마다 계획 리뷰를 어느 시점에 승인으로 볼지 기준이 더 필요하다.
 
 ## 유지할 것
@@ -113,6 +114,7 @@ project contract, 계획, pseudo code를 먼저 리뷰하면 실제 코드를 �
 - 확정된 요구사항을 기능/흐름별 project SSoT 문서로 나누는 방식
 - 실패 원인을 project contract 누락, task 계약 누락, 계획/pseudo code 누락으로 분리하는 방식
 - 기능 task에 한정한 단계별 구현 계획과 pseudo code gate
+- 파일별 대표 함수 골격형 pseudo code
 - 목표 밖 산출물을 `범위 drift 후보`로 먼저 표시하는 방식
 - prompt, README, template, scaffold를 함께 갱신하는 방식
 
@@ -120,6 +122,7 @@ project contract, 계획, pseudo code를 먼저 리뷰하면 실제 코드를 �
 
 - 비기능 task에 pseudo code를 기계적으로 요구하는 방식
 - 구현 결과를 본 뒤에야 목표 drift를 판단하는 방식
+- pseudo code를 사용자 흐름 설명이나 구현 계획 문장으로 대체하는 방식
 - project SSoT에 정보가 있다는 이유만으로 task 생성자가 충분히 이해했다고 가정하는 방식
 - project contract가 미성숙한데 task 문서부터 만드는 방식
 - 사용자가 빈 화면에서 모든 요구사항을 먼저 작성해야 하는 질문 방식

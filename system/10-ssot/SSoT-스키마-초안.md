@@ -192,7 +192,7 @@ Task 기본 필드에는 `owner`와 `files_touched`를 두지 않습니다. 담�
 
 기능 task와 사일로는 human check를 기본 완료 경로로 삼지 않습니다. 먼저 agent가 criteria별로 `test command`, `DB query`, `browser evidence`, 실행 URL/명령, 로그, report 위치처럼 직접 실행하거나 관찰 가능한 증거를 묶고, 사람이 볼 항목은 최종 승인, UX 판단, 로컬 재현, 실제 계정/기기 접근처럼 agent-verifiable evidence로 대체할 수 없는 범위로 제한합니다. provider별 QA 절차, 특정 fixture 값, task 고유 목데이터와 테스트 입력은 0계층에 쓰지 않고 project SSoT 또는 해당 task 계약에 둡니다.
 
-기능 task의 `Pseudo Code`는 TypeScript/JavaScript 같은 실제 구현 코드 블록이나 완성된 함수 구현이 아니라 한국어 자연어 절차 목록입니다. 각 단계에는 파일, 함수, API, DB mutation, 화면 상태 변화가 드러나야 합니다. 파일명, 함수명, API query, DB mutation, op 이름(`D/L/C/R`) 같은 코드 식별자는 원문 그대로 쓸 수 있지만 절차 설명은 한국어로 씁니다. 이 규칙은 task 본문과 사일로 `goal.md`에 모두 적용합니다.
+기능 task의 `Pseudo Code`는 TypeScript/JavaScript 같은 실제 구현 코드 블록이나 완성된 함수 구현이 아니라 파일별 대표 함수 골격형입니다. 각 파일마다 대표 함수와 보조 함수가 어떤 입력/의존성을 받고 조회, 검증, 가공, 조건 분기, 반복, 저장, 반환을 어떻게 수행하는지 코드에 가깝게 보여야 합니다. 파일명, 함수명, API query, DB mutation, op 이름(`D/L/C/R`) 같은 코드 식별자는 원문 그대로 쓸 수 있지만 설명 문장은 한국어로 씁니다. 이 규칙은 task 본문과 사일로 `goal.md`에 모두 적용합니다.
 
 `hypothesis_chain`은 task 내부 summary 역할을 하며, 사일로 실행으로 검증한 가설을 시간순으로 누적합니다. 실패한 가설은 새 task를 자동 생성하지 않고 먼저 이 체인에 남깁니다. 하나의 task에서 가설 시도는 최대 3회이며, 3회 이후에는 자동 재시도 대신 사용자 판단이 필요합니다.
 

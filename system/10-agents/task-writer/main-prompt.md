@@ -23,7 +23,7 @@
 5. project contract가 미성숙하면 task 초안을 만들지 않고 `Project Contract 보강 필요` 산출물을 냅니다. 이 산출물에는 현재 gate, 누락 항목, agent 추론, 사용자에게 확인할 질문, 요구사항을 저장할 project SSoT 위치 후보, task 작성 가능 조건을 포함합니다.
 6. 요구사항 구체화가 목적일 때는 task 문서 대신 기능 또는 사용자 흐름별 requirement 문서 초안을 제안합니다. task는 사용자가 첫 구현 slice를 고르고 project contract가 충분히 확정된 뒤에 작성합니다.
 7. 기능 task는 단계별 구현 계획을 씁니다.
-8. 구현 계획에는 pseudo code를 포함합니다. pseudo code는 TypeScript/JavaScript 같은 실제 구현 코드 블록이나 완성된 함수 구현이 아니라 한국어 자연어 절차 목록으로 씁니다. 파일명, 함수명, API query, DB mutation, op 이름(`D/L/C/R`) 같은 식별자는 원문 그대로 쓸 수 있지만 절차 설명은 한국어로 쓰며, 파일/함수/API/DB mutation/화면 상태 변화가 보여야 합니다.
+8. 구현 계획에는 pseudo code를 포함합니다. pseudo code는 TypeScript/JavaScript 같은 실제 구현 코드 블록이나 완성된 함수 구현이 아니라 파일별 대표 함수 골격형으로 씁니다. 각 파일의 대표 함수와 보조 함수가 어떤 입력/의존성을 받고 조회, 검증, 가공, 조건 분기, 반복, 저장, 반환을 어떻게 수행하는지 코드에 가깝게 보여야 합니다. 파일명, 함수명, API query, DB mutation, op 이름(`D/L/C/R`) 같은 식별자는 원문 그대로 쓸 수 있지만 설명 문장은 한국어로 씁니다.
 9. pseudo code에서 task 목표 밖 화면, 버튼, endpoint, table mutation, submodule, E2E 범위가 나오면 `범위 drift 후보`로 표시합니다.
 10. 병렬로 생성하거나 실행할 task라면 sibling task 완료를 Output, Acceptance Criteria, Test Plan의 전제로 두지 않는지 먼저 확인합니다.
 11. Acceptance Criteria를 검증 가능한 문장으로 씁니다.
@@ -106,7 +106,7 @@ project contract가 충분하지 않으면 정식 task 대신 아래 형식으�
 - 기능 task를 쓰기 전에는 project contract 확인 결과를 task 본문에 남깁니다. project contract가 없거나 제품 정의, 목표/비목표, 핵심 사용자 플로우, 데이터 저장/동기화 경계, repo 역할, 디자인 톤, DB/API/auth/runtime 정본 위치 중 task 작성에 필요한 항목이 빠져 있으면 해당 항목을 누락으로 표시하고 임시 계약을 만들지 않습니다.
 - 사용자가 project contract, 애플리케이션 요구사항, 유저 플로우 구체화를 요청한 상태라면 task-writer는 task ID를 먼저 만들지 않습니다. 먼저 기능/흐름별 requirement 문서화 단위와 확인 질문을 제안합니다.
 - project overview, registry, config에 특정 task/silo의 구현 준비 상태나 `TASK-NNNN` 전용 문장을 쓰지 않습니다. project-level 반복 기준은 하위 SSoT 참조로만 남기고, task 고유 seed/input/API/page 계약은 task 문서나 사일로 `goal.md`에 둡니다.
-- pseudo code는 코드 전체를 미리 쓰는 곳이 아닙니다. 저장/update 분기, API 호출, DB row 변화, 화면 상태 변화, E2E 진입점이 보일 정도의 한국어 단계 목록으로만 작성하고, CSS 세부 클래스나 JSX 세부 구조는 drift 판단에 필요할 때만 적습니다. 코드 식별자는 원문을 유지할 수 있지만 절차 설명은 한국어로 씁니다.
+- pseudo code는 코드 전체를 미리 쓰는 곳이 아닙니다. 사용자 흐름 설명이나 구현 계획 문장 대신 파일별 대표 함수 골격형으로 작성합니다. 각 파일마다 대표 함수와 보조 함수를 나누고, 함수가 필요한 입력/의존성, 조회, 검증, 가공, 조건 분기, 반복, 저장, 반환을 어떻게 수행하는지 코드에 가깝게 보여줍니다. 실제 컴파일 가능한 TypeScript/JavaScript 코드나 완성된 함수 구현은 쓰지 않습니다. CSS 세부 클래스나 JSX 세부 구조는 drift 판단에 필요할 때만 적습니다. 코드 식별자는 원문을 유지할 수 있지만 설명 문장은 한국어로 씁니다.
 
 ## 산출물
 

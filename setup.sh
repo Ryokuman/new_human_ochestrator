@@ -876,9 +876,9 @@ task 고유 구현 계약, seed row, test input, PR 상태는 각 task 문서와
 
 1. task를 쓰기 전에 이 project contract를 먼저 확인합니다.
 2. task에는 목표, 비목표, 초기 DB mock data, test input, BE 계약, FE 계약, 검증 계획을 분리해서 씁니다.
-3. 기능 task에는 단계별 구현 계획과 한국어 자연어 절차 중심의 pseudo code를 포함합니다.
-4. pseudo code는 TypeScript/JavaScript 같은 실제 구현 코드 블록이나 완성된 함수 구현이 아니라 한국어 단계 목록으로 씁니다.
-5. 파일명, 함수명, API query, DB mutation, op 이름(\`D/L/C/R\`) 같은 식별자는 원문 그대로 쓸 수 있지만 절차 설명은 한국어로 씁니다.
+3. 기능 task에는 단계별 구현 계획과 파일별 대표 함수 골격형 pseudo code를 포함합니다.
+4. pseudo code는 TypeScript/JavaScript 같은 실제 구현 코드 블록이나 완성된 함수 구현이 아니라, 각 파일의 대표 함수와 보조 함수가 어떤 입력/의존성을 받고 조회, 검증, 가공, 조건 분기, 반복, 저장, 반환을 어떻게 수행하는지 코드에 가깝게 씁니다.
+5. 파일명, 함수명, API query, DB mutation, op 이름(\`D/L/C/R\`) 같은 식별자는 원문 그대로 쓸 수 있지만 설명 문장은 한국어로 씁니다.
 6. pseudo code에서 목표 밖 화면, 버튼, endpoint, table mutation, submodule, E2E 범위가 보이면 \`범위 drift 후보\`로 표시합니다.
 
 ## 추정 금지 정보
@@ -975,7 +975,7 @@ TASK-0000
 
 ## Pseudo Code
 
-기능 task인 경우 파일/함수/API/DB mutation/화면 상태 변화가 드러나는 한국어 단계 목록으로 작성합니다. TypeScript/JavaScript 같은 실제 구현 코드 블록이나 완성된 함수 구현을 쓰지 않습니다. 코드 식별자, API query, 파일명, op 이름(\`D/L/C/R\`)은 원문을 유지할 수 있습니다.
+기능 task인 경우 파일별 대표 함수 골격형으로 작성합니다. 각 파일의 대표 함수와 보조 함수가 어떤 입력/의존성을 받고 조회, 검증, 가공, 조건 분기, 반복, 저장, 반환을 어떻게 수행하는지 코드에 가깝게 보여야 합니다. TypeScript/JavaScript 같은 실제 구현 코드 블록이나 완성된 함수 구현을 쓰지 않습니다. 코드 식별자, API query, 파일명, op 이름(\`D/L/C/R\`)은 원문을 유지할 수 있습니다.
 
 ## 범위 drift 후보
 
@@ -1077,7 +1077,7 @@ TASK-0000
 
 ## Pseudo Code
 
-기능 task인 경우 파일/함수/API/DB mutation/화면 상태 변화가 드러나는 한국어 단계 목록으로 작성합니다. TypeScript/JavaScript 같은 실제 구현 코드 블록이나 완성된 함수 구현을 쓰지 않습니다. 코드 식별자, API query, 파일명, op 이름(\`D/L/C/R\`)은 원문을 유지할 수 있습니다.
+기능 task인 경우 파일별 대표 함수 골격형으로 작성합니다. 각 파일의 대표 함수와 보조 함수가 어떤 입력/의존성을 받고 조회, 검증, 가공, 조건 분기, 반복, 저장, 반환을 어떻게 수행하는지 코드에 가깝게 보여야 합니다. TypeScript/JavaScript 같은 실제 구현 코드 블록이나 완성된 함수 구현을 쓰지 않습니다. 코드 식별자, API query, 파일명, op 이름(\`D/L/C/R\`)은 원문을 유지할 수 있습니다.
 
 ## 범위 drift 후보
 
@@ -1117,7 +1117,7 @@ Pseudo Code에서 task 목표 밖 화면, 버튼, endpoint, table mutation, subm
 
 ## Pseudo Code
 
-기능 task인 경우 파일/함수/API/DB mutation/화면 상태 변화가 드러나는 한국어 단계 목록으로 작성합니다. TypeScript/JavaScript 같은 실제 구현 코드 블록이나 완성된 함수 구현을 쓰지 않습니다. 코드 식별자, API query, 파일명, op 이름(\`D/L/C/R\`)은 원문을 유지할 수 있습니다.
+기능 task인 경우 파일별 대표 함수 골격형으로 작성합니다. 각 파일의 대표 함수와 보조 함수가 어떤 입력/의존성을 받고 조회, 검증, 가공, 조건 분기, 반복, 저장, 반환을 어떻게 수행하는지 코드에 가깝게 보여야 합니다. TypeScript/JavaScript 같은 실제 구현 코드 블록이나 완성된 함수 구현을 쓰지 않습니다. 코드 식별자, API query, 파일명, op 이름(\`D/L/C/R\`)은 원문을 유지할 수 있습니다.
 
 ## 범위 drift 후보
 
