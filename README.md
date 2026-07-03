@@ -4,6 +4,53 @@
 
 최종 정의와 재사용 가능한 문서는 `system/`을 기준으로 봅니다.
 
+## Using This Repository as a Project SSoT
+
+This repository can be used as a personal Single Source of Truth for project knowledge, portfolio preparation, and agent-assisted work. It is designed to keep reusable operating rules separate from project-specific evidence, so the same orchestration system can manage many projects without mixing temporary notes, implementation details, and long-term career material.
+
+Use `main-v2` for shared rules and reusable infrastructure:
+
+- agent roles and prompts
+- reusable repo skills
+- project SSoT templates
+- silo execution rules
+- PR review loop policies
+- feedback and personality adaptation rules
+
+Use long-lived `project/<project-id>` branches for project-specific knowledge. For example, a portfolio branch can keep structured evidence about personal projects, including:
+
+- what each project is
+- why it matters
+- architecture decisions
+- issues encountered during development
+- ownership and contribution evidence
+- metrics, screenshots, drafts, and interview material
+
+Project materials should be organized as a layered SSoT rather than as one large document. A portfolio project can use a structure like:
+
+```text
+projects/portfolio/
+  00-project/
+  10-research/
+  10.projects/
+    <project-name>/
+      README.md
+      10.summary/
+      20.images/
+      30.architecture/
+      40.issues/
+      50.ownership/
+      60.metrics/
+      70.drafts/
+  20-issues/
+  30-tasks/
+  40-applications/
+```
+
+The key rule is that `main-v2` describes how the system works, while `project/*` branches store what is known about a specific project. This keeps the root system reusable and lets each project evolve as its own knowledge base.
+
+When using this repository for portfolio work, treat each portfolio project as an evidence package. Start with a short summary, then collect architecture notes, issue history, contribution proof, measurable outcomes, and draft copy in separate folders. This makes it easier for an agent to answer questions such as "what did I build?", "what was technically difficult?", "what did I own?", and "what should be shown in the portfolio?" without rereading every source repository from scratch.
+
 ## 처음 읽는 순서
 
 1. `AGENTS.md`
