@@ -22,11 +22,13 @@ PR 생성 직후에는 [`codex-pr-review-loop`](../../20-skills/codex-pr-review-
 
 `eyes` 반응을 확인한 뒤 15분 동안 Codex 응답이 없으면 `Codex 리뷰 응답 대기 timeout`으로 중단하고 PR URL, head SHA, 호출 댓글, 대기 시간을 보고합니다.
 
-아래 항목이 있으면 `codex-pr-review-loop` 기준으로 수정, 검증, 재호출을 반복합니다. 기본 중단 기준은 호출 횟수가 아니라 최신 head에 대한 `Didn't find any major issues` 또는 동등한 no-major 명시 응답입니다.
+아래 항목이 있으면 `codex-pr-review-loop` 기준으로 수정, 검증, 재호출을 반복합니다. 기본 중단 기준은 호출 횟수가 아니라 최신 head에 대한 `Didn't find any major issues` 또는 동등한 no-major 명시 응답과, 현재 head 대상 남은 지적의 `수정 필요`/`수비 가능`/`사용자 판단 필요` 분류 완료입니다. 이전 head 리뷰가 새 push 이후 늦게 게시되어도 작성 시각만으로 현재 head 지적에 섞지 않습니다.
 
 - actionable major/critical issue
 - 보호 절차를 깨는 P1/P2 지적
 - 보호 브랜치 직접 commit/push 위험
+
+P1/P2처럼 보이는 지적이라도 사용자 결정, project contract, `goal.md`, PR scope, 의도된 동작 근거가 있으면 `수비 가능`으로 분류할 수 있습니다. 이 경우 PR 본문 또는 review thread에 지적, 수비 근거, 남은 위험, 사용자 판단 필요 여부를 기록합니다. 근거가 부족하거나 사용자가 위험을 받아들여야 하는 항목은 `사용자 판단 필요`로 남기고 완료로 보고하지 않습니다.
 
 0계층 PR과 project 계층 PR 모두 반복 재리뷰 대상입니다. branch base는 계층 기준 브랜치이며, project 계층은 기준 브랜치에 직접 커밋하지 않고 `project/<project-id>-<branch-name>` 작업 브랜치에서만 커밋합니다. GitHub PR target/base branch가 계층 기준과 다르거나 두 계층이 섞인 PR은 `@codex review`를 호출하지 않고 계층 분리 필요로 보고한 뒤 종료합니다.
 

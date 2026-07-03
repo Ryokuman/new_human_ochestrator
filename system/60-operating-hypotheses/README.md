@@ -15,3 +15,4 @@
 - [`OH-0001-task-plan-pseudocode-gate.md`](OH-0001-task-plan-pseudocode-gate.md): 기능 task 사전 계획 리뷰 가설
 - [`OH-0002-silo-runtime-handoff.md`](OH-0002-silo-runtime-handoff.md): 사일로 runtime handoff 가설
 - [`OH-0003-sprint-parallel-mock-contract.md`](OH-0003-sprint-parallel-mock-contract.md): 스프린트 병렬 mock 계약 가설
+- [`OH-0004-current-head-review-classification.md`](OH-0004-current-head-review-classification.md): 현재 head 대상 리뷰 분류 가설

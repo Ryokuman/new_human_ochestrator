@@ -28,7 +28,7 @@ PR 유형별 목표 세팅과 종료 기준은 `codex-pr-review-loop` skill을 �
 - 같은 head의 no-`eyes` 재호출은 기본 최대 3회로 제한합니다. 3회 모두 `eyes` 반응과 리뷰 결과가 없으면 `Codex 리뷰 접수 실패 timeout`으로 중단해 사용자 판단 필요로 보고합니다.
 - 리뷰 대기 중에는 최신 head commit, head push 시각, 마지막 `@codex review` 호출 시각, `eyes` 반응, Codex 리뷰 제출 여부를 함께 확인합니다. 최신 head에 대한 리뷰 제출이 없고 현재 head 이후 호출 댓글에 `eyes`가 있으면 호출 횟수를 늘리지 않고 `eyes` 확인 시점부터 최대 15분까지 대기합니다.
 - `eyes` 반응을 확인한 뒤 15분 동안 Codex 응답이 없으면 `Codex 리뷰 응답 대기 timeout`으로 중단하고 PR URL, head SHA, 호출 댓글, 대기 시간을 보고합니다.
-- 기본 중단 기준은 호출 횟수가 아니라 `codex-pr-review-loop`의 no-major 결과입니다. 사용자가 이번 PR에 명시한 반복 한도가 있을 때만 그 한도를 따릅니다.
+- 기본 중단 기준은 호출 횟수가 아니라 `codex-pr-review-loop`의 최신 head no-major 결과와 현재 head 대상 P1/P2/major/critical 지적 분류 상태입니다. 사용자가 이번 PR에 명시한 반복 한도가 있을 때만 그 한도를 따릅니다.
 - 사용자 지정 반복 한도를 채우면 더 이상 호출하지 않고 남은 이슈와 사용자 판단 필요 항목을 보고합니다.
 - task silo의 `goal.md`가 확인되면 `/goal`을 재사용해 현재 PR의 목표, 남은 리뷰 지적, 검증 결과를 갱신합니다.
 - task silo의 `goal.md`가 없는 공통 문서/skill PR은 PR 본문, 리뷰 thread, 현재 사용자 요청을 기준으로 반복합니다.
@@ -37,11 +37,11 @@ PR 유형별 목표 세팅과 종료 기준은 `codex-pr-review-loop` skill을 �
 - 수정 후에는 변경 범위에 맞는 검증을 실행합니다.
 - 기본 검증은 `npm test`, `npm run typecheck`, `npm run build`, `git diff --check`입니다. 프로젝트에 해당 명령이 없으면 실행 가능한 대체 검증과 생략 사유를 남깁니다.
 - 수정한 내용만 커밋하고 push합니다.
-- PR 본문 또는 댓글에 수정 내용, 검증 결과, 남은 위험을 한국어로 남깁니다.
+- PR 본문 또는 댓글에 수정 내용, 검증 결과, 수비 항목, 남은 위험을 한국어로 남깁니다.
 - 최초 리뷰 호출과 재리뷰 호출 댓글에는 `@codex review`, `한국어로 리뷰해 주세요.`, 최신 head 기준 리뷰 요청만 적습니다. `Didn't find any major issues` exact pass phrase와 반복 횟수 조건은 외부 댓글에 강제하지 않고 내부 종료 기준으로만 관리합니다.
 - 재리뷰 호출 전에도 변경 내용의 계층과 GitHub PR target/base branch가 여전히 맞는지 다시 확인합니다. 0계층 PR은 `main-v2`, project 계층 PR은 해당 `project/<project-id>`가 target/base여야 합니다.
 - 재리뷰 호출 전 현재 head push 이후에 작성된 최신 호출 댓글에 `eyes` 반응이 남아 있으면 아직 진행 중인 리뷰로 보고 재호출하지 않습니다. 최신 호출 댓글에 3분 동안 `eyes` 반응이 없고 리뷰 결과도 없으면 접수 실패 재호출로 분류하되, 같은 head의 no-`eyes` 재호출 기본 상한 3회를 넘기지 않습니다.
-- 최신 head에 대한 리뷰가 `Didn't find any major issues` 또는 동등한 no-major 응답을 명시하면 종료 조건을 확인합니다. 사일로 PR이고 runtime, browser, manual QA, E2E 확인이 남아 있으면 `silo-runtime-handoff`를 실행해 서버 주소, E2E 방법, 실행 불가 사유를 PR 댓글로 남긴 뒤 종료합니다.
+- 최신 head에 대한 Codex 결과가 도착하면 no-major 응답인지 확인하고 exact phrase와 동등 no-major를 분리해 기록합니다. no-major 여부와 무관하게 현재 head commit SHA와 일치하는 Codex review body, 부모 review의 대상 commit 또는 `original_commit_id`가 현재 head와 일치하는 inline review comment, 또는 호출 댓글에 적힌 head SHA가 현재 head와 일치하는 Codex 댓글의 P1/P2/major/critical 지적을 모두 수집해 `수정 필요`, `수비 가능`, `사용자 판단 필요`로 분류합니다. inline comment의 현재 `commit_id`는 GitHub가 최신 diff 위치로 재매핑할 수 있으므로 단독 근거로 쓰지 않습니다. 이전 head를 대상으로 한 리뷰가 새 push 이후 늦게 게시된 경우 작성 시각이 최신 head 이후라도 현재 head 지적으로 섞지 않습니다. no-major 응답이 있고 현재 head 대상 지적이 없거나 모두 근거 있는 `수비 가능`으로 기록됐으며, `수정 필요`와 `사용자 판단 필요`가 남아 있지 않을 때만 종료 조건을 충족합니다. 사일로 PR이고 runtime, browser, manual QA, E2E 확인이 남아 있으면 `silo-runtime-handoff`를 실행해 서버 주소, E2E 방법, 실행 불가 사유를 PR 댓글로 남긴 뒤 종료합니다.
 - 종료 시 리뷰 호출 횟수, 수정 커밋, 검증, 남은 위험, 사용자 지정 반복 한도 적용 여부를 보고합니다.
 
 ## 메인 대화와의 관계

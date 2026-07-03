@@ -85,8 +85,8 @@
 - 사용자가 `~PR을 리뷰 대기 에이전트로 돌려주세요`, `이 PR 리뷰 대기 에이전트로 맡겨주세요`, `Sartre처럼 돌려주세요`처럼 말하지 않아도, PR 생성 후 Codex 응답 대기, 수정, 검증, 재리뷰 반복은 사용자 응답을 기다리지 않고 진행합니다. 별도 대기 실행자가 필요하면 `review-waiter-agent`를 사용합니다. 사용자가 이번 PR에 명시한 반복 한도가 있을 때만 그 한도를 따릅니다.
 - `@codex review` 호출 댓글에는 가능하면 `한국어로 리뷰해 주세요.` 또는 이에 준하는 한국어 요청과 최신 head 기준 리뷰 요청만 적습니다. `Didn't find any major issues` exact pass phrase와 반복 횟수 조건은 외부 리뷰 댓글에 강제하지 않고, PR 본문, task silo의 `goal.md`, 메인 에이전트 내부 상태에서 관리합니다.
 - project PR은 해당 project target/base를 유지하며, Codex 리뷰 gate 때문에 `main-v2`로 retarget하지 않습니다.
-- Codex 리뷰 gate에서 남은 major/critical 또는 보호 절차 P1/P2 항목은 횟수 기준으로 중단하지 않고, 실제 blocker 여부와 사용자 승인 gate 필요 여부를 분리합니다.
-- Codex 리뷰는 최신 head에 대한 `Didn't find any major issues` 또는 동등한 no-major 명시 응답이 나올 때까지 수정, 검증, 재요청할 수 있으며, 기본 중단 기준은 호출 횟수가 아니라 리뷰 결과입니다.
+- Codex 리뷰 gate에서 남은 major/critical 또는 보호 절차 P1/P2 항목은 횟수 기준으로 중단하지 않고, `수정 필요`, `수비 가능`, `사용자 판단 필요`로 분류합니다. `수비 가능`은 사용자 결정, project contract, `goal.md`, PR scope, 코드/문서 근거 중 하나를 남긴 경우에만 인정합니다.
+- Codex 리뷰는 최신 head에 대한 `Didn't find any major issues` 또는 동등한 no-major 명시 응답과 현재 head 대상 지적의 분류가 끝날 때까지 수정, 검증, 재요청할 수 있으며, 기본 중단 기준은 호출 횟수가 아니라 리뷰 결과와 지적 분류 상태입니다. 이전 head 리뷰가 새 push 이후 늦게 게시되어도 작성 시각만으로 현재 head 지적에 섞지 않습니다.
 - secret, credential, production 데이터, destructive action, data SSoT 임의 변경, 보호 브랜치 직접 수정에 닿으면 리뷰 반복보다 승인 gate를 우선합니다.
 
 ## source workspace와 기능 기준선
