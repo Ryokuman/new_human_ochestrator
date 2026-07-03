@@ -28,20 +28,26 @@ description: 사일로 PR이 Codex no-major를 통과한 뒤 사용자 재리뷰
 1. 사일로 root와 `goal.md`
 2. PR URL, base/head, 최신 head SHA
 3. no-major 댓글 URL
-4. 필요한 runtime 목록
-5. 테스트 계정, dev session, seed/test input 구분
-6. 금지선: secret, credential, production data, destructive action
+4. `shared-runtime-health-check` 결과 또는 `runtime_set` 정의 위치
+5. 필요한 runtime 목록
+6. 실행할 runtime의 command, working directory, port, URL, health check
+7. 테스트 계정, dev session, seed/test input 구분
+8. 금지선: secret, credential, production data, destructive action
 
 `goal.md`와 task contract가 충돌하면 task contract를 우선하고, 충돌을 PR 댓글의 남은 위험에 적는다.
 
+사일로에 `runtime_set`이 필요한데 `shared-runtime-health-check` 결과가 없으면 먼저 해당 skill을 실행한다. `runtime_set`이 없거나 어떤 set을 써야 하는지 불명확하면 임의로 서버 구성을 추정하지 않고 `runtime_set 정의 누락` 또는 `add-shared-runtime 필요`를 실행 불가 항목에 남긴다.
+
 ## Runtime 준비
 
-필요한 것만 켠다.
+사일로 `goal.md`, task contract, project SSoT 또는 local config의 `runtime_set`에 명시된 것만 켠다.
 
 - Docker DB
 - shared BE/API
 - vite-harness 또는 제품 FE dev server
 - task contract에 명시된 추가 서버
+
+서버형 runtime은 `shared-runtime-health-check`의 health command 또는 URL을 기준으로 확인한다. health check가 실패하면 성공처럼 포장하지 않고 실행 불가 항목에 실패 runtime, 실패 명령 또는 URL, 대체 증거, 남은 확인을 적는다.
 
 이미 실행 중인 서버가 있으면 재사용하기 전에 포트, command, working directory, dirty 상태, 실행 프로세스의 최신 head 반영 여부를 확인한다. 최신 head 반영 여부가 불명확하면 재시작한다.
 
@@ -90,6 +96,12 @@ Codex no-major: <no-major-comment-url>
 | shared BE/API |  |  |  |
 | vite-harness 또는 FE |  |  |  |
 
+### Runtime Set
+
+- runtime_set:
+- source: `goal.md` / task contract / project SSoT / local config
+- health_check:
+
 ### E2E 확인 방법
 
 1. `<step>`
@@ -123,6 +135,7 @@ Codex no-major: <no-major-comment-url>
 
 - runtime이 켜져 있고 PR 댓글에 서버 주소와 E2E 방법이 있다.
 - runtime을 켤 수 없고 PR 댓글에 실행 불가 사유, 대체 증거, 남은 수동 확인이 있다.
+- `runtime_set`이 누락됐고 PR 댓글에 정의 누락, `add-shared-runtime` 또는 project SSoT 보강 필요, 남은 수동 확인이 있다.
 
 댓글 없이 최종 보고만 하고 끝내지 않는다.
 

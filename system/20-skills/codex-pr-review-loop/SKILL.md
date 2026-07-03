@@ -97,7 +97,7 @@ inline review comment는 comment 객체의 현재 `commit_id`만으로 현재 he
 16. 수집한 지적을 `수정 필요`, `수비 가능`, `사용자 판단 필요`로 분류합니다. 수비 가능한 지적은 PR 본문 또는 review thread에 근거를 남깁니다.
 17. `수정 필요`가 있으면 해당 지적을 실제로 수정하고, 변경 범위에 맞는 검증을 실행한 뒤, 한국어 커밋 메시지로 커밋하고 push합니다. project 계층 PR에서는 이 커밋이 `project/<project-id>-<branch-name>` 작업 브랜치에서 발생해야 하며, 기준 `project/<project-id>` 브랜치에는 직접 커밋하지 않습니다.
 18. `사용자 판단 필요`가 있으면 loop를 통과로 종료하지 않고 PR URL, head SHA, 지적, 필요한 사용자 결정을 보고합니다.
-19. no-major 응답이고 모든 남은 지적이 없거나 `수비 가능`으로 근거 기록됐으며, 사일로 PR에 runtime, browser, manual QA, E2E, vite-harness, shared BE/API, Docker DB 확인이 남아 있으면 [`silo-runtime-handoff`](../silo-runtime-handoff/SKILL.md)를 실행해 서버 주소, E2E 방법, 실행 불가 사유를 PR 댓글로 남긴 뒤 사용자 재리뷰로 넘깁니다.
+19. no-major 응답이고 모든 남은 지적이 없거나 `수비 가능`으로 근거 기록됐으며, 사일로 PR에 runtime, browser, manual QA, E2E, vite-harness, shared BE/API, Docker DB 확인이 남아 있으면 사용자 재리뷰로 넘기기 전에 runtime handoff gate를 실행합니다. 먼저 [`shared-runtime-health-check`](../shared-runtime-health-check/SKILL.md)로 사일로 `goal.md`, task contract, project SSoT 또는 local config에 선언된 `runtime_set`과 서버형 runtime 상태를 확인합니다. `runtime_set`이 없거나 어떤 set을 써야 하는지 불명확하면 임의 서버 조합을 만들지 않고 `runtime_set 정의 누락` 또는 `add-shared-runtime 필요`로 분류합니다. health 확인 뒤 [`silo-runtime-handoff`](../silo-runtime-handoff/SKILL.md)를 실행해 실제 실행 중인 서버 주소, E2E 방법, 실행 불가 사유를 PR 댓글로 남긴 뒤 사용자 재리뷰로 넘깁니다.
 20. PR 댓글 또는 본문에 수정 내용, 검증 결과, 수비 항목, 남은 위험, 새 head SHA를 기록하고 필요하면 9번으로 돌아갑니다.
 
 ## 종료 기준
@@ -105,7 +105,7 @@ inline review comment는 comment 객체의 현재 `commit_id`만으로 현재 he
 - 최신 head에 대한 Codex 결과가 `Didn't find any major issues` 또는 동등한 no-major 응답을 명시했습니다.
 - 현재 head commit SHA와 일치하는 Codex review body, 부모 review의 대상 commit 또는 `original_commit_id`가 현재 head와 일치하는 inline review comment, 또는 호출 댓글에 적힌 head SHA가 현재 head와 일치하는 Codex 댓글에 남은 P1/P2/major/critical 지적이 없거나, 모두 `수비 가능`으로 근거가 PR 본문 또는 review thread에 기록됐습니다.
 - `수정 필요` 또는 `사용자 판단 필요`로 분류된 항목이 남아 있으면 종료하지 않습니다.
-- 사일로 PR이고 runtime, browser, manual QA, E2E 확인이 남아 있으면 `silo-runtime-handoff` 댓글까지 남긴 뒤 종료합니다.
+- 사일로 PR이고 runtime, browser, manual QA, E2E 확인이 남아 있으면 `shared-runtime-health-check`로 `runtime_set`과 서버형 runtime 상태를 확인하고, 그 결과를 바탕으로 `silo-runtime-handoff` 댓글까지 남긴 뒤 종료합니다. `runtime_set`이 없거나 서버를 켤 수 없으면 성공으로 종료하지 않고 실행 불가 사유, 대체 증거, 남은 수동 확인을 PR 댓글에 남겨야 합니다.
 - 같은 head에 대해 진행 중인 `eyes` 반응이 있으면 종료가 아니라 `eyes` 확인 시점부터 15분 한도의 대기입니다.
 - 같은 head에 대해 호출했지만 3분 동안 `eyes` 반응이 없고 리뷰 결과도 없으면 접수 실패로 보고 재호출합니다. 같은 head의 no-`eyes` 재호출은 기본 최대 3회이며, 모두 실패하면 `Codex 리뷰 접수 실패 timeout`으로 중단해 사용자 판단 필요로 보고합니다.
 - `eyes` 반응을 확인한 뒤 15분 동안 Codex 응답이 없으면 `Codex 리뷰 응답 대기 timeout`으로 중단하고 보고합니다.

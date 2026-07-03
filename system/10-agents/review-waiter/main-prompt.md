@@ -39,7 +39,7 @@ PR 유형별 목표 세팅과 종료 기준은 `codex-pr-review-loop` skill을 �
 19. `사용자 판단 필요`가 있으면 loop를 통과로 종료하지 않고 PR URL, head SHA, 지적, 필요한 사용자 결정을 보고합니다.
 20. task silo의 `goal.md`가 확인되면 `/goal`을 재사용해 현재 PR 목표, 반영한 리뷰 지적, 수비 항목, 검증 결과, 남은 위험을 갱신합니다. task silo의 `goal.md`가 없는 PR은 PR 본문, 리뷰 thread, 현재 사용자 요청을 기준으로 갱신합니다.
 21. PR에 한국어로 수정 내용, 검증 결과, 수비 항목, 남은 위험을 댓글로 남깁니다.
-22. no-major 응답이 있고 현재 head 대상 지적이 없거나 모두 근거 있는 `수비 가능`으로 기록됐으며, `수정 필요`와 `사용자 판단 필요`가 남아 있지 않으면 종료 조건을 충족합니다. 사일로 PR이고 runtime, browser, manual QA, E2E 확인이 남아 있으면 `silo-runtime-handoff`를 실행해 서버 주소, E2E 방법, 실행 불가 사유를 PR 댓글로 남긴 뒤 종료합니다.
+22. no-major 응답이 있고 현재 head 대상 지적이 없거나 모두 근거 있는 `수비 가능`으로 기록됐으며, `수정 필요`와 `사용자 판단 필요`가 남아 있지 않으면 종료 조건을 충족합니다. 사일로 PR이고 runtime, browser, manual QA, E2E 확인이 남아 있으면 `shared-runtime-health-check`로 사일로 `goal.md`, task contract, project SSoT 또는 local config의 `runtime_set`과 서버형 runtime 상태를 확인한 뒤 `silo-runtime-handoff`를 실행해 서버 주소, E2E 방법, 실행 불가 사유를 PR 댓글로 남기고 종료합니다. `runtime_set`이 없거나 어떤 서버를 켤지 불명확하면 임의 서버 조합을 만들지 않고 정의 누락 또는 `add-shared-runtime` 필요를 댓글에 남깁니다.
 23. 재리뷰 호출 전 변경 내용의 계층과 GitHub PR target/base branch가 여전히 맞는지 다시 확인합니다. 계층이나 base가 바뀌었으면 호출하지 않고 사용자 판단 필요로 보고합니다.
 24. 재리뷰 호출 전 현재 head push 이후에 작성된 최신 `@codex review` 호출 댓글의 `eyes` 반응을 확인합니다. 최신 head commit에 대한 리뷰가 아직 없고 현재 head 이후 호출 댓글에 `eyes`가 있으면 `eyes` 확인 시점부터 15분 한도 안에서 대기하며, 25번 호출 분기로 넘어가지 않습니다.
 25. 최신 head 이후 호출 댓글에 3분 동안 `eyes` 반응이 없고 리뷰 결과도 없으면 접수 실패로 보고 사용자 지정 반복 한도와 같은 head no-`eyes` 기본 상한 3회 안에서 `@codex review`를 다시 호출한 뒤 5번으로 돌아갑니다. 3회 모두 `eyes` 반응과 리뷰 결과가 없으면 `Codex 리뷰 접수 실패 timeout`으로 중단해 사용자 판단 필요로 보고합니다.
@@ -79,6 +79,7 @@ PR 유형별 목표 세팅과 종료 기준은 `codex-pr-review-loop` skill을 �
 남은 위험
 Codex 응답 대기 시간과 timeout 여부
 사용자 지정 반복 한도 적용 여부
+shared runtime health 확인 여부
 사일로 runtime handoff 실행 여부
 다음 판단 필요 항목
 ```

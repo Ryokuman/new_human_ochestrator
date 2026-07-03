@@ -42,6 +42,6 @@ P1/P2처럼 보이는 지적이라도 사용자 결정, project contract, `goal.
 
 Codex PR 리뷰 gate가 종결된 뒤에는 사용자 재리뷰를 다음 gate로 둡니다.
 
-사일로 PR에 runtime, browser, manual QA, E2E, vite-harness, shared BE/API, Docker DB 확인이 남아 있으면 사용자 재리뷰를 호출하기 전에 [`silo-runtime-handoff`](../../20-skills/silo-runtime-handoff/SKILL.md)를 사용해 현재 서버 주소, E2E 확인 방법, 실행 불가 사유를 PR 댓글로 남깁니다.
+사일로 PR에 runtime, browser, manual QA, E2E, vite-harness, shared BE/API, Docker DB 확인이 남아 있으면 사용자 재리뷰를 호출하기 전에 [`shared-runtime-health-check`](../../20-skills/shared-runtime-health-check/SKILL.md)로 사일로 `goal.md`, task contract, project SSoT 또는 local config의 `runtime_set`과 서버형 runtime 상태를 확인합니다. 그 결과를 바탕으로 [`silo-runtime-handoff`](../../20-skills/silo-runtime-handoff/SKILL.md)를 사용해 현재 서버 주소, E2E 확인 방법, 실행 불가 사유를 PR 댓글로 남깁니다. `runtime_set`이 없거나 어떤 서버를 켤지 불명확하면 임의 서버 조합을 만들지 않고 정의 누락 또는 `add-shared-runtime` 필요를 댓글에 남깁니다.
 
 PR 생성 승인과 PR 머지 승인은 별개입니다.
