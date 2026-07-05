@@ -18,7 +18,7 @@
 - 리뷰 gate 적용 여부
 - 사용자 취향 규칙
 - 승인 경계
-- 관련 QA 증거
+- 관련 test evidence
 - execution mode, 기본값은 `yolo`
 
 ## 자동 준비 범위

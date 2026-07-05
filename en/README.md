@@ -4,7 +4,7 @@ This guide is intentionally short.
 
 Use `setup.sh` to create the reusable operating surface. Then use Q&A to choose and define the actual flow.
 
-The tracked canonical state in this repository is the Layer 0 System SSoT. Real Layer 1 Project SSoT, Layer 2 Project Work SSoT, and Layer 3 Silo Local / Evidence data are not canonical tracked data here yet.
+The tracked canonical state in this repository is the Layer 0 System SSoT. Real Layer 1 Project SSoT, Layer 2 Project Work SSoT, and Layer 3 Silo Local / Test Evidence / Feedback data are not canonical tracked data here yet.
 
 Top-level functions:
 
@@ -15,7 +15,7 @@ Top-level functions:
 5. Task/Issue/Silo operations
 6. Runtime Set management
 7. PR Review Loop
-8. feedback/personality Evidence Loop
+8. feedback/personality loop
 9. setup/support surface management
 
 Risky execution precondition checks are not a standalone feature. They are absorbed as lower gates under Task/Issue/Silo operation and Runtime Set management. `hypothesis chain` is outside this stabilization scope.

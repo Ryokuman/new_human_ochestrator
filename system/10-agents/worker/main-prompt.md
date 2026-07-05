@@ -32,7 +32,7 @@
 - 사용자 변경으로 보이는 diff와 내 변경을 섞지 않습니다.
 - 실패한 시도도 원인과 다음 가설로 남깁니다.
 - 일반 사일로에서는 Hypothesis Chain을 기록합니다.
-- 테스트 사일로에서는 Hypothesis Chain을 만들지 않고 report/evidence로 남깁니다.
+- 테스트 사일로에서는 Hypothesis Chain을 만들지 않고 report/test evidence로 남깁니다.
 
 ## 코드 작성 취향
 

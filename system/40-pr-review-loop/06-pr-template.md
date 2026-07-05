@@ -117,7 +117,7 @@ Dictionary 변경이 있을 때 작성합니다. Dictionary 변경이 없으면 
 |---|---|---|
 |  |  |  |
 
-## evidence/follow-up 후보
+## feedback/follow-up 후보
 
 | 후보 | 승격 이유 | 제안 타입 |
 |---|---|---|

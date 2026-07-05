@@ -9,7 +9,7 @@ Reusable agent operating rules, project SSoT templates, silo execution flows, PR
 
 The canonical reusable system definitions live under `system/`.
 
-현재 이 저장소의 추적 정본은 0계층 System SSoT입니다. 1~3계층의 실제 Project SSoT, Project Work SSoT, Silo Local / Evidence 실데이터는 아직 이 repo 정본에 있다고 보지 않습니다.
+현재 이 저장소의 추적 정본은 0계층 System SSoT입니다. 1~3계층의 실제 Project SSoT, Project Work SSoT, Silo Local / Test Evidence / Feedback 실데이터는 아직 이 repo 정본에 있다고 보지 않습니다.
 
 브랜치 모델:
 
@@ -29,7 +29,7 @@ The canonical reusable system definitions live under `system/`.
 5. Task/Issue/Silo 운영
 6. Runtime Set 관리
 7. PR Review Loop
-8. 피드백/퍼스널리티 Evidence Loop
+8. Feedback/퍼스널리티 Loop
 9. 셋업/지원 표면 관리
 
 위험 실행 전제 확인은 독립 기능으로 두지 않고 Task/Issue/Silo 운영과 Runtime Set 관리의 하위 gate로 흡수합니다. `hypothesis chain`은 이번 안정화 범위 밖입니다.
@@ -38,7 +38,7 @@ The canonical reusable system definitions live under `system/`.
 
 이 저장소의 내부 원본 기준 브랜치는 `main-v3/main`입니다.
 
-오픈소스 배포본은 `Ryokuman/new_human_ochestrator`의 `main-v3/main`로 동기화합니다. 배포는 전체 mirror가 아니라 allowlist export 방식이며, project SSoT, task silo, local evidence, secret 가능 설정은 공개 배포 대상이 아닙니다.
+오픈소스 배포본은 `Ryokuman/new_human_ochestrator`의 `main-v3/main`로 동기화합니다. 배포는 전체 mirror가 아니라 allowlist export 방식이며, project SSoT, task silo, local feedback, secret 가능 설정은 공개 배포 대상이 아닙니다.
 
 공개 export 정책 예시는 `system/config/public-export-manifest.example.yaml`에서 확인합니다.
 

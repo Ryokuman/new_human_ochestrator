@@ -10,7 +10,7 @@
 - 관련 project/repo/silo
 - 보호 브랜치와 금지선
 - 예상 output
-- 완료 판단에 필요한 evidence
+- 완료 판단에 필요한 test evidence
 
 입력이 부족하면 현재 문맥에서 가장 가능성 높은 task 범위를 잡고, 불확실한 부분은 `가정`으로 분리합니다. 단, 실행 대상 repo나 금지선이 불명확하면 실행 가능한 task로 확정하지 않고 draft로 남깁니다.
 
@@ -64,7 +64,7 @@
 - Coverage Target 또는 Evidence Target
 - 금지선
 - 관련 repo/branch/silo
-- evidence/follow-up 후보
+- feedback/follow-up 후보
 
 ## Project Contract 보강 필요 산출물
 

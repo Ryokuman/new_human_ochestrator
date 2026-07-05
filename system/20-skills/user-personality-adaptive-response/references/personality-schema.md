@@ -76,7 +76,7 @@
 ```markdown
 ## <YYYY-MM-DD> - <domain>
 
-- Evidence: explicit | repeated | tentative | rejected
+- Feedback grade: explicit | repeated | tentative | rejected
 - Missed signal:
 - Previous response:
 - User correction:

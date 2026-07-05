@@ -18,7 +18,7 @@
 - PR 리뷰나 QA 루프에서 계속 같은 문제가 발생함
 - 적용해도 위험이 낮고 사용자 목표와 일치함
 
-실제 전역 규칙 반영은 사용자가 원하는 주기로 여는 퍼스널리티 검토 세션에서 `active/` evidence를 분석한 뒤, 사용자 승인을 받은 경우에만 수행합니다. 반영된 evidence는 `applied/`로 옮기고, 반영하지 않기로 한 evidence는 `closed/`로 옮깁니다.
+실제 전역 규칙 반영은 사용자가 원하는 주기로 여는 퍼스널리티 검토 세션에서 `active/` feedback을 분석한 뒤, 사용자 승인을 받은 경우에만 수행합니다. 반영된 feedback은 `applied/`로 옮기고, 반영하지 않기로 한 feedback은 `closed/`로 옮깁니다.
 
 ## 사일로 전용으로 둘 경우
 
@@ -29,9 +29,9 @@
 - 사일로가 context를 잘못 읽어서 생긴 문제
 - 전역화하면 다른 작업에 방해될 수 있음
 
-보류가 필요한 evidence는 `active/`에 유지하고 `status: hold`, `hold_reason`, `review_after` metadata를 채웁니다. 보류는 종료가 아니므로 `closed/`로 옮기지 않습니다.
+보류가 필요한 feedback은 `active/`에 유지하고 `status: hold`, `hold_reason`, `review_after` metadata를 채웁니다. 보류는 종료가 아니므로 `closed/`로 옮기지 않습니다.
 
-## 피드백 evidence 템플릿
+## Feedback 템플릿
 
 ```markdown
 # 피드백 기록

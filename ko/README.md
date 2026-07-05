@@ -4,7 +4,7 @@
 
 `setup.sh`로 반복 가능한 운영 표면을 만들고, 질의응답으로 실제 플로우를 선택하고 정의합니다.
 
-현재 이 저장소의 추적 정본은 0계층 System SSoT입니다. 1계층 Project SSoT, 2계층 Project Work SSoT, 3계층 Silo Local / Evidence 실데이터는 아직 이 repo 정본에 있다고 보지 않습니다.
+현재 이 저장소의 추적 정본은 0계층 System SSoT입니다. 1계층 Project SSoT, 2계층 Project Work SSoT, 3계층 Silo Local / Test Evidence / Feedback 실데이터는 아직 이 repo 정본에 있다고 보지 않습니다.
 
 상위 기능은 9개입니다.
 
@@ -15,7 +15,7 @@
 5. Task/Issue/Silo 운영
 6. Runtime Set 관리
 7. PR Review Loop
-8. 피드백/퍼스널리티 Evidence Loop
+8. Feedback/퍼스널리티 Loop
 9. 셋업/지원 표면 관리
 
 위험 실행 전제 확인은 독립 기능으로 두지 않고 Task/Issue/Silo 운영과 Runtime Set 관리의 하위 gate로 흡수합니다. `hypothesis chain`은 이번 안정화 범위 밖입니다.

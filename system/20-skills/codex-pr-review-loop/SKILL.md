@@ -65,6 +65,26 @@ inline review comment는 comment 객체의 현재 `commit_id`만으로 현재 he
 
 수비 근거가 사용자 결정, project contract, `goal.md`, PR scope, 코드/문서 링크 중 하나로 확인되지 않으면 agent 추론만으로 `수비 가능` 처리하지 않습니다.
 
+## Review Thread 정리
+
+GitHub는 오래된 inline comment를 최신 diff 위치에 재매핑할 수 있습니다. 따라서 `isOutdated=false`인 thread가 항상 "아직 미해결 지적"이라는 뜻은 아닙니다. 반대로 `isResolved=false`이면 PR 화면에는 계속 열린 thread로 남습니다.
+
+`isOutdated=false`이고 `isResolved=false`인 review thread를 발견하면 아래 순서로 처리합니다.
+
+1. 현재 파일 내용과 지적 본문을 대조합니다.
+2. 지적 내용이 최신 head에서 실제로 해결되어 있으면 해당 thread에 댓글로 해결 근거를 남깁니다.
+3. 댓글에는 최신 head 기준 파일/라인 또는 변경 내용을 짧게 씁니다.
+4. 댓글을 남긴 뒤 thread를 resolve합니다.
+5. 지적 내용이 아직 해결되지 않았으면 수정, 검증, 커밋, push 후 같은 방식으로 해결 댓글을 남기고 resolve합니다.
+
+기본 댓글 형식:
+
+```text
+확인했습니다. 이 지적은 최신 head 기준으로 <파일/라인 또는 변경 내용>에 반영되어 있습니다. thread 정리하겠습니다.
+```
+
+댓글 없이 조용히 resolve하지 않습니다. 단, 명백한 duplicate thread를 같은 근거로 여러 개 닫는 경우에는 첫 thread에 대표 근거를 남기고 나머지는 동일 근거로 정리했다고 보고할 수 있습니다.
+
 ## 외부 리뷰 댓글 문구
 
 `@codex review` 호출 댓글은 리뷰어에게 전달할 요청만 담습니다.
@@ -118,7 +138,7 @@ Codex review 설정이 명시적으로 없거나 권한 없음이 확인되면 �
 15. `eyes` 반응을 확인한 뒤 15분 동안 Codex 응답이 없으면 루프를 중단하고 PR URL, head SHA, 호출 댓글, 대기 시간을 보고합니다.
 16. Codex 결과가 도착하면 최신 head에 대한 `codex-review pass` 응답인지 확인하고, exact phrase와 동등 pass를 분리해 기록합니다.
 17. 현재 head commit SHA와 일치하는 Codex review body, 부모 review의 대상 commit 또는 `original_commit_id`가 현재 head와 일치하는 inline review comment, 또는 호출 댓글에 적힌 head SHA가 현재 head와 일치하는 Codex 댓글만 다시 훑어 P2/P1/major/critical 또는 보호 절차 위반 지적을 모두 수집합니다. inline comment의 현재 `commit_id`는 GitHub가 최신 diff 위치로 재매핑할 수 있으므로 단독 근거로 쓰지 않습니다. 이전 head를 대상으로 한 리뷰가 새 push 이후 늦게 게시된 경우 작성 시각이 최신 head 이후라도 현재 head 지적으로 섞지 않습니다.
-18. 수집한 지적을 `수정 필요`, `수비 가능`, `사용자 판단 필요`로 분류합니다. 수비 가능한 지적은 PR 본문 또는 review thread에 근거를 남깁니다.
+18. 수집한 지적을 `수정 필요`, `수비 가능`, `사용자 판단 필요`로 분류합니다. 수비 가능한 지적은 PR 본문 또는 review thread에 근거를 남깁니다. `isOutdated=false`이지만 최신 head에서 이미 해결된 thread는 해당 thread에 해결 근거 댓글을 남긴 뒤 resolve합니다.
 19. `수정 필요`가 있으면 해당 지적을 실제로 수정하고, 변경 범위에 맞는 검증을 실행한 뒤, 한국어 커밋 메시지로 커밋하고 push합니다. project 계층 PR에서는 이 커밋이 project 작업 브랜치에서 발생해야 하며, project 계층 메인 브랜치에는 직접 커밋하지 않습니다. 목표 모델에서는 `project-{projectName}/{taskname}`, 현재 호환 상태에서는 `project-{projectName}-{taskname}`을 사용합니다.
 20. `사용자 판단 필요`가 있으면 loop를 통과로 종료하지 않고 PR URL, head SHA, 지적, 필요한 사용자 결정을 보고합니다.
 21. `codex-review pass` 응답이고 모든 남은 P2 이상 지적이 없거나 `수비 가능`으로 근거 기록됐으며, 사일로 PR이 task 실행 결과이고 `.ts`, `.tsx`, `.js`, `.jsx`, `.java`, `.kt`, `.swift`, `.go`, `.py`, `.rb`, `.rs`, `.cs`, `.php` 같은 실제 제품 코드 파일을 바꿨고, runtime, browser, manual QA, E2E, vite-harness, shared BE/API, Docker DB 확인이 남아 있으면 사용자 재리뷰로 넘기기 전에 runtime handoff gate를 실행합니다. 문서, skill, project SSoT, config example, PR 본문 템플릿만 바꾼 PR에는 이 gate를 붙이지 않습니다. gate가 필요한 경우 먼저 [`shared-runtime-health-check`](../shared-runtime-health-check/SKILL.md)로 `run_set.required_runtime_set`, `task.runtime_set`, `qa_or_runbook.runtime_set`, `project.common_runtime_set` 순서의 Runtime Set과 서버형 runtime 상태를 확인합니다. `runtime_set`이 없거나 어떤 set을 써야 하는지 불명확하면 임의 서버 조합을 만들지 않고 `runtime 정의 누락`, `runtime_set 정의 누락` 또는 `add-shared-runtime 필요`로 분류합니다. health 확인 뒤 [`silo-runtime-handoff`](../silo-runtime-handoff/SKILL.md)를 실행해 실제 실행 중인 서버 주소, E2E 방법, 실행 불가 사유를 PR 댓글로 남긴 뒤 사용자 재리뷰로 넘깁니다.
@@ -142,6 +162,7 @@ Codex review 설정이 명시적으로 없거나 권한 없음이 확인되면 �
 - 이전 head의 pass 결과를 현재 head의 승인으로 재사용하지 않습니다.
 - pass 문구가 있다는 이유만으로 현재 head 대상 P2/P1/major/critical inline comment를 무시하지 않습니다.
 - 이전 head를 대상으로 한 stale review/comment를 작성 시각만으로 현재 head 지적에 섞지 않습니다.
+- `isOutdated=false`인 thread를 파일 대조 없이 미해결로 단정하지 않고, 해결된 thread를 댓글 없이 조용히 resolve하지 않습니다.
 - agent 추론만으로 P2 이상 지적을 수비 가능 처리하지 않습니다. 사용자 결정, project contract, goal.md, PR scope, 코드/문서 근거 중 하나가 필요합니다.
 - 최신 head 이후 `eyes` 반응이 붙은 호출이 있는데 같은 head에 중복 호출하지 않습니다. 단, 최신 head 이후 호출 댓글에 3분 동안 `eyes` 반응이 없고 리뷰 결과도 없으면 접수 실패 재호출로 분류하고, 재호출 뒤 최신 호출 댓글 기준으로 다시 확인합니다.
 - PR을 머지하지 않습니다. 머지는 별도 명시 승인 뒤 메인 오케스트레이터가 처리합니다.

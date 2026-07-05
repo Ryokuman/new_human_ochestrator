@@ -35,5 +35,5 @@
 - task 또는 issue 사일로를 실제로 시작하기 전에 project SSoT의 원본 task/issue 상태를 `in_progress`로 갱신합니다. 상태 갱신도 project 작업 브랜치와 project 계층 메인 브랜치 대상 PR로 처리합니다. 목표 모델에서는 `project-{projectName}/{taskname}`와 `project-{projectName}/main`, 현재 호환 상태에서는 `project-{projectName}-{taskname}`와 `project-{projectName}`을 사용합니다. 해당 PR이 머지된 뒤에만 사일로 root, `goal.md`, repo clone, 작업 브랜치 생성을 시작합니다.
 - 상태 갱신 PR을 만들거나 머지 상태를 확인할 수 없으면 사일로를 계속 진행하지 않고, 갱신 불가 이유를 보고합니다.
 - 격리 clone 내부에서는 문제 해결에 필요한 source code, generated output, test, tooling 수정을 허용합니다.
-- 결과는 PR, report, evidence, handoff, evidence/follow-up 후보로 메인 오케스트레이터에게 돌아와야 합니다.
+- 결과는 PR, report, test evidence, handoff, feedback/follow-up 후보로 메인 오케스트레이터에게 돌아와야 합니다.
 - secret, credential, production 데이터, destructive action, 보호 브랜치 직접 수정, data SSoT 임의 변경은 사일로에서도 승인 gate입니다.

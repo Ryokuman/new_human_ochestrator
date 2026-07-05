@@ -9,7 +9,7 @@
 | 테스트 작성 에이전트 | acceptance criteria를 criteria별 테스트 계약, 자동 검증 범위, Pre-QA Gate, 실행 불가 대체 증거 기준으로 바꾼다. |
 | 개발자 에이전트 | task/issue를 구현하고 필요한 repo branch와 diff를 만든다. |
 | QA 에이전트 | acceptance criteria 기준으로 unit, integration, runner, E2E, agent-browser, manual, report, 회귀 여부를 검증한다. |
-| 리뷰 에이전트 | scope, branch safety, secret/protected branch 위반, PR 본문, evidence/follow-up 후보를 검토한다. |
+| 리뷰 에이전트 | scope, branch safety, secret/protected branch 위반, PR 본문, feedback/follow-up 후보를 검토한다. |
 
 네 역할은 별도 사일로가 아닙니다. 같은 task 사일로 안에서 순차 또는 병렬 worker로 호출됩니다.
 
@@ -25,7 +25,7 @@
 7. 각 repo에서 기준 브랜치 확인 후 작업 브랜치 생성
 8. 테스트 작성 에이전트가 criteria별 테스트 계약과 검증 범위를 작성하고 `goal.md`에 반영
 9. 개발 세션에 `/goal`로 `goal.md 달성 부탁해` 전달
-10. 개발자 에이전트가 관련 코드와 QA 증거를 확인하고 수정 수행
+10. 개발자 에이전트가 관련 코드와 test evidence를 확인하고 수정 수행
 11. QA 에이전트가 테스트, agent-browser 검증, report 실행
 12. 리뷰 에이전트가 diff, scope, branch safety, secret policy, SSoT 후보 검토
 13. PR 필요 시 base branch와 리뷰 gate 확인

@@ -108,7 +108,7 @@ task 계약이 BE/FE 독립 git submodule을 요구하면 상위 제품 repo를 
 
 여러 task silo가 함께 참조하는 runtime checkout은 shared runtime으로 분리할 수 있습니다. shared runtime은 workspace root 아래 공용 실행 repo 묶음이며, task silo가 직접 소유하지 않고 참조합니다. 기본 경로 후보는 `shared-runtime/<project-id>/<runtime-name>/`입니다. 프로젝트별 실제 runtime 구성과 registry/status는 Project SSoT, project registry/config, Project Work SSoT 참조, 또는 gitignore된 local config에 둡니다.
 
-프로젝트별 evidence는 coverage 판단 근거이므로 Project Work SSoT 내부에 보존할 수 있습니다. 단, evidence 원본이 대용량 영상, trace, runner output, 제품 소스코드인 경우에는 Project Work SSoT에 위치와 요약을 남기고 원본은 프로젝트 정책에 맞는 외부/로컬 저장 위치에 둡니다.
+프로젝트별 test evidence는 coverage 판단 근거이므로 Project Work SSoT 내부에 보존할 수 있습니다. 단, test evidence 원본이 대용량 영상, trace, runner output, 제품 소스코드인 경우에는 Project Work SSoT에 위치와 요약을 남기고 원본은 프로젝트 정책에 맞는 외부/로컬 저장 위치에 둡니다.
 
 ## 주요 엔티티
 
@@ -229,7 +229,7 @@ Task 기본 필드에는 `owner`와 `files_touched`를 두지 않습니다. 담�
 
 병렬로 생성하거나 실행할 task는 sibling task 완료를 `output`, `acceptance_criteria`, `test_plan`의 전제로 삼지 않습니다. 개별 task output은 해당 task가 독립적으로 증명할 수 있는 산출물로 제한합니다. 인증, 데이터, 화면, backend 의존성이 있으면 agent가 통제할 수 있는 대체 검증 경로와 실제 사용자 경로의 차이를 `verification_plan` 또는 `test_plan`에 명시합니다. 여러 sibling task 완료를 전제로 하는 최종 통합 E2E는 개별 task acceptance가 아니라 별도 QA gate, integration task, 또는 후속 project 검증으로 분리합니다. 단일 task의 화면 동작 자체가 산출물이면 E2E 또는 agent-browser acceptance를 유지합니다.
 
-기능 task와 사일로는 human check를 기본 완료 경로로 삼지 않습니다. 먼저 agent가 criteria별로 `test command`, `DB query`, `browser evidence`, 실행 URL/명령, 로그, report 위치처럼 직접 실행하거나 관찰 가능한 증거를 묶고, 사람이 볼 항목은 최종 승인, UX 판단, 로컬 재현, 실제 계정/기기 접근처럼 agent-verifiable evidence로 대체할 수 없는 범위로 제한합니다. provider별 QA 절차, 특정 fixture 값, task 고유 목데이터와 테스트 입력은 0계층이나 1계층 Project SSoT에 쓰지 않고 2계층 Project Work SSoT 또는 해당 task 계약에 둡니다.
+기능 task와 사일로는 human check를 기본 완료 경로로 삼지 않습니다. 먼저 agent가 criteria별로 `test command`, `DB query`, `browser test evidence`, 실행 URL/명령, 로그, report 위치처럼 직접 실행하거나 관찰 가능한 test evidence를 묶고, 사람이 볼 항목은 최종 승인, UX 판단, 로컬 재현, 실제 계정/기기 접근처럼 agent-verifiable test evidence로 대체할 수 없는 범위로 제한합니다. provider별 QA 절차, 특정 fixture 값, task 고유 목데이터와 테스트 입력은 0계층이나 1계층 Project SSoT에 쓰지 않고 2계층 Project Work SSoT 또는 해당 task 계약에 둡니다.
 
 기능 task의 `Pseudo Code`는 TypeScript/JavaScript 같은 실제 구현 코드 블록이나 완성된 함수 구현이 아니라 파일별 대표 함수 골격형입니다. 각 파일마다 대표 함수와 보조 함수가 어떤 입력/의존성을 받고 조회, 검증, 가공, 조건 분기, 반복, 저장, 반환을 어떻게 수행하는지 코드에 가깝게 보여야 합니다. 파일명, 함수명, API query, DB mutation, op 이름(`D/L/C/R`) 같은 코드 식별자는 원문 그대로 쓸 수 있지만 설명 문장은 한국어로 씁니다. 이 규칙은 task 본문과 사일로 `goal.md`에 모두 적용합니다.
 
@@ -286,7 +286,7 @@ Task 내부 `hypothesis_chain`이 실행 중 실패와 재시도 가설을 다�
 - updated_agent_prompts
 - follow_up_operating_hypotheses
 
-새 operating hypothesis는 task 처리 순서, task 작성 방식, 사일로 생성 방식, PR review loop 방식, submodule/monorepo/external clone 운영 방식, human check 병목을 줄이기 위한 evidence 수집 방식, 전체 프로젝트 구현 플랜 수립 방식이 바뀔 때 작성합니다.
+새 operating hypothesis는 task 처리 순서, task 작성 방식, 사일로 생성 방식, PR review loop 방식, submodule/monorepo/external clone 운영 방식, human check 병목을 줄이기 위한 test evidence 수집 방식, 전체 프로젝트 구현 플랜 수립 방식이 바뀔 때 작성합니다.
 
 operating hypothesis는 사후 합리화가 아니라 실행 전 가설과 예상 병목을 먼저 쓰고, 실행 후 결과물과 실제 병목을 이어 붙이는 로그입니다. 프로젝트 기능 요구나 개별 task 원문은 여기에 복사하지 않고 Project Work SSoT에 둡니다.
 
@@ -415,7 +415,7 @@ execution window가 끝났을 때 `100개 중 3개 실패 후 가설 해결, 최
 - L별 evidence 기준
 - 제외 기준
 - destructive boundary
-- 실행 후 report/evidence 승격 위치
+- 실행 후 report/test evidence 승격 위치
 
 누락 시 중단 규칙은 lifecycle, run, E2E, 다건 테스트, production/data/destructive 위험 실행에만 강제합니다. 이 경우 정식 실행을 시작하지 않고 `누락된 정의`, `실행하면 위험한 이유`, `사용자에게 물어볼 항목`을 보고합니다.
 
@@ -475,7 +475,7 @@ Shared Runtime은 0계층 SSoT가 아니라 1계층 Project SSoT의 registry/sta
 | 상태 | 의미 |
 |---|---|
 | `local-only` | 사일로 내부에서만 처리하거나 폐기 |
-| `candidate` | evidence/follow-up 후보 |
+| `candidate` | feedback/follow-up 후보 |
 | `promoted` | 메인 이슈/태스크로 승격됨 |
 | `rejected` | 승격하지 않기로 결정 |
 | `merged-as-fix` | 별도 메인 태스크 없이 PR 수정으로 해결 |

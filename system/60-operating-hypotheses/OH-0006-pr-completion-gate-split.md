@@ -88,7 +88,7 @@ PR 완료 루프를 하나의 `codex-pr-review-loop`로 계속 확장하지 않�
 - 작성 주체와 검증 주체를 분리하는 방식
 - 새 commit 이후 이전 review/E2E/handoff 결과를 stale 처리하는 방식
 - Codex 리뷰 실패와 browser E2E 실패 모두 작성 프로세스로 되돌리는 방식
-- handoff는 검증 성공을 새로 판단하지 않고 이미 통과한 evidence를 사용자에게 넘기는 방식
+- handoff는 검증 성공을 새로 판단하지 않고 이미 통과한 test evidence를 사용자에게 넘기는 방식
 
 ## 버릴 것
 

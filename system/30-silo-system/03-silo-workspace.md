@@ -65,6 +65,6 @@ MVP, QA, 복구, 저장 실패, 화면 누락처럼 기능 완성도가 걸린 �
 
 - clone된 작업 공간은 폐기 가능해야 합니다.
 - 코드가 크게 망가져도 해당 clone/branch를 폐기하면 됩니다.
-- 최종 결과는 PR, report, evidence, handoff로만 메인 오케스트레이터에게 제출합니다.
+- 최종 결과는 PR, report, test evidence 또는 feedback, handoff로만 메인 오케스트레이터에게 제출합니다.
 
 이 구조에서 안전 장치는 수정 제한이 아니라 격리, 브랜치, PR 리뷰, 폐기 가능성입니다.

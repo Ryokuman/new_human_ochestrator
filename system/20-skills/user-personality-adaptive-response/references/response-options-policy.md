@@ -129,8 +129,8 @@ production, payment, auth, DB, infra, generated output이 관련되면 영향과
 처리:
 
 1. 사용자의 직접 답변을 현재 작업 지시로 우선 적용합니다.
-2. 답변 뒤 `user-personality-adaptive-response` 스킬 기준으로 보기 밖 선택 evidence를 남겼다고 보고합니다.
-3. evidence에는 기존 보기, 사용자의 실제 답변, 보기 설계가 놓친 기준, 업데이트 후보 규칙, 적용 범위, 증거 등급을 기록합니다.
+2. 답변 뒤 `user-personality-adaptive-response` 스킬 기준으로 보기 밖 선택 feedback을 남겼다고 보고합니다.
+3. feedback에는 기존 보기, 사용자의 실제 답변, 보기 설계가 놓친 기준, 업데이트 후보 규칙, 적용 범위, 증거 등급을 기록합니다.
 4. 보고서 후보는 즉시 자동 작성하지 않고, 사용자가 원하는 주기로 여는 퍼스널리티 검토 세션에서 작성합니다.
 5. 실제 업데이트는 사용자 승인 전까지 실행하지 않습니다.
 
@@ -149,6 +149,6 @@ production, payment, auth, DB, infra, generated output이 관련되면 영향과
    - 경로, 브랜치, dirty 여부, upstream 대비 ahead/behind 요약을 적습니다.
    - 새 worktree를 생성하거나 기준 worktree를 전환했다면 중간 보고에도 새 경로와 브랜치를 즉시 적습니다.
 4. 보기 밖 답변 또는 응답 방식 피드백이 있었는가?
-   - 있었다면 evidence를 남기고 경로를 보고합니다.
+   - 있었다면 feedback을 남기고 경로를 보고합니다.
 
 이 체크를 누락했을 때는 `규칙 적용 실패`라고만 쓰지 않고, 탐지/상황 분류/최종 체크/기록 실행 중 어느 단계가 실패했는지 분리합니다.

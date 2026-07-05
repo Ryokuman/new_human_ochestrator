@@ -103,7 +103,7 @@ main 또는 0계층 업데이트가 다음 행동 후보로 떠오른 경우, �
 완료된 것
 아직 안 된 것
 목표 밖 산출물
-evidence/follow-up 후보
+feedback/follow-up 후보
 처리하지 않고 남긴 항목
 다음 행동
 ```

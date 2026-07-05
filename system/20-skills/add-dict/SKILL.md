@@ -67,14 +67,14 @@ projects/<project-id>/02-project-internal/10-dictionary/project-dictionary.md
 
 5. dictionary에 반영합니다.
    - 프로젝트 내부 용어는 project dictionary에 추가/수정/삭제합니다.
-   - 공통 후보는 실제 반영이 아니라 `evidence/follow-up 후보` 또는 PR 본문에 후보로만 남깁니다.
+   - 공통 후보는 실제 반영이 아니라 `feedback/follow-up 후보` 또는 PR 본문에 후보로만 남깁니다.
    - secret, credential, 내부 원문, 프로젝트별 민감 자료는 dictionary에 기록하지 않습니다.
 
 6. PR 관련 작업이면 PR 본문을 갱신합니다.
    - `명사 설명`에는 해당 PR을 이해하기 위한 즉시 설명을 둡니다.
    - `새로 추가된 단어`에는 dictionary SSoT에 실제 추가/수정/삭제된 항목만 적습니다.
    - dictionary 변경이 없으면 `새로 추가된 단어`에는 `해당 없음`으로 적습니다.
-   - 새 용어가 공통 규칙 후보라면 `evidence/follow-up 후보`에 별도로 적고, root `main-v3/main` 반영은 별도 승인 대상으로 둡니다.
+   - 새 용어가 공통 규칙 후보라면 `feedback/follow-up 후보`에 별도로 적고, root `main-v3/main` 반영은 별도 승인 대상으로 둡니다.
 
 ## 판단 기준
 

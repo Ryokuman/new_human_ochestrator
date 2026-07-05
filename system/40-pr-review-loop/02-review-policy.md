@@ -21,9 +21,10 @@ PR을 올리라는 지시는 먼저 현재 브랜치의 계층과 PR 유형을 �
 - 같은 head의 no-`eyes` 재호출은 기본 최대 3회로 제한합니다. 3회 모두 `eyes` 반응과 리뷰 결과가 없으면 `Codex 리뷰 접수 실패 timeout`으로 중단하고 사용자 판단 필요로 보고합니다.
 - `eyes` 반응을 확인한 뒤 15분 동안 Codex 응답이 없으면 루프를 중단하고 `Codex 리뷰 응답 대기 timeout`으로 보고합니다. 이 경우 중복 호출이나 임의 수정 없이 PR URL, head SHA, 호출 댓글, 대기 시간을 남깁니다.
 - 재호출 전에는 PR 댓글, 리뷰 제출, 최신 head commit, 최신 head push 이후 작성된 리뷰 요청 여부를 함께 확인합니다. 최신 head에 대한 리뷰 결과가 아직 없고 현재 head 이후 호출 댓글에 `eyes`가 있으면 중복 호출이 아니라 대기 상태로 기록합니다.
-- 리뷰는 변경 diff, task 목표, 검증 결과, 남은 위험, evidence/follow-up 후보를 기준으로 합니다.
+- 리뷰는 변경 diff, task 목표, 검증 결과, 남은 위험, feedback/follow-up 후보를 기준으로 합니다.
 - Codex 응답이 codex-review pass 통과 응답이 아니거나 현재 head 대상 P1/P2/major/critical 지적이 남아 있으면 actionable 지적의 타당성을 판단합니다. 타당한 major/critical/P1/P2 또는 보호 절차 위반 지적은 `수정 필요`로 보고 수정, 검증, 커밋, push 후 새 head 기준으로 `@codex review`를 재호출합니다.
 - P1/P2처럼 보이지만 현재 PR의 명시 목표, 사용자 결정, project contract, repo별 예외, 의도된 동작, PR scope 밖이라는 근거가 있으면 `수비 가능`으로 분류할 수 있습니다. 이때 PR 본문 `Codex PR 리뷰` 항목 또는 해당 review thread에 지적, 수비 근거, 남은 위험, 사용자 판단 필요 여부를 기록합니다.
+- GitHub가 오래된 inline comment를 최신 diff 위치로 재매핑하면 `isOutdated=false`인데도 실제 지적 내용은 이미 해결된 thread가 생길 수 있습니다. 이런 thread는 현재 파일과 지적 본문을 대조하고, 해결되어 있으면 해당 thread에 "최신 head 기준으로 무엇이 반영됐는지"를 댓글로 남긴 뒤 resolve합니다. 댓글 없이 조용히 resolve하지 않습니다.
 - 수비 근거가 부족하거나 수비하면 제품·운영 위험을 사용자가 받아들여야 하는 항목은 `사용자 판단 필요`로 분류하고, codex-review pass 문구가 있어도 loop를 통과로 종료하지 않습니다.
 - PR 생성 후에는 `codex-pr-review-loop` 기준으로 최신 head에 대한 codex-review pass Codex 응답과 현재 head 대상 모든 지적의 `수정 필요`/`수비 가능`/`사용자 판단 필요` 분류가 끝날 때까지 수정, 검증, 재리뷰를 반복합니다. task silo의 `goal.md`가 확인되면 codex-review pass 목표를 `goal.md`에 세팅하고, 그렇지 않으면 PR 본문, 리뷰 thread, 현재 사용자 요청을 재리뷰 컨텍스트로 사용합니다.
 - task 실행 결과인 사일로 PR이 `.ts`, `.java` 같은 실제 제품 코드 파일을 바꾸고 runtime, browser, manual QA, E2E 확인이 남아 있으면 codex-review pass 이후 또는 Codex review 미설정 fallback 기록 이후 사용자 재리뷰 전에 `shared-runtime-health-check`로 사일로 설정의 `runtime_set`과 서버형 runtime 상태를 확인하고, 그 결과를 바탕으로 `silo-runtime-handoff`로 서버 주소, E2E 방법, 실행 불가 사유를 PR 댓글에 남깁니다. 문서, skill, project SSoT, config example만 바꾼 PR에는 runtime handoff를 붙이지 않습니다. `runtime_set`이 없거나 어떤 서버를 켤지 불명확하면 임의로 서버 조합을 만들지 않고 정의 누락 또는 `add-shared-runtime` 필요를 남깁니다.

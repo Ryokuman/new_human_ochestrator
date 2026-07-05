@@ -41,25 +41,25 @@ repo-local skill이 있으면 해당 지침을 읽고 적용합니다. 외부 �
 
 감정 해석은 기록하지 않습니다.
 
-## 보기 밖 선택 Evidence
+## 보기 밖 선택 Feedback
 
-사용자가 보기 1~3 대신 직접 답변하면, 답변 직후 로컬 evidence를 반드시 남깁니다.
+사용자가 보기 1~3 대신 직접 답변하면, 답변 직후 로컬 feedback을 반드시 남깁니다.
 
 보고 전 사용자에게 알릴 문구:
 
 ```text
-`user-personality-adaptive-response` 스킬 기준으로 보기 밖 선택 evidence를 남겼습니다.
+`user-personality-adaptive-response` 스킬 기준으로 보기 밖 선택 feedback을 남겼습니다.
 ```
 
-evidence 저장 위치:
+feedback 저장 위치:
 
 ```text
-local/personality-feedback-log/evidence/YYYY-MM-DD-<short-topic>.md
+local/personality-feedback-log/feedback/active/YYYY-MM-DD-<short-topic>.md
 ```
 
-evidence는 gitignore된 로컬 자료입니다. 승격이 될지 아닐지는 evidence 작성 시점에 확정하지 않습니다.
+feedback은 gitignore된 로컬 자료입니다. 승격이 될지 아닐지는 feedback 작성 시점에 확정하지 않습니다.
 
-보고서 후보는 사용자가 원하는 주기로 퍼스널리티 검토 세션을 열 때 여러 evidence를 묶어 작성합니다.
+보고서 후보는 사용자가 원하는 주기로 퍼스널리티 검토 세션을 열 때 여러 feedback을 묶어 작성합니다.
 
 보고서 후보 저장 위치:
 
@@ -81,7 +81,7 @@ local/personality-feedback-log/reports/YYYY-MM-DD-personality-update-report.md
 
 ### Tier 1: 현재 thread
 
-현재 답변부터 즉시 적용합니다. 단, 응답 계약에 영향을 주는 사건이면 로컬 evidence도 남깁니다.
+현재 답변부터 즉시 적용합니다. 단, 응답 계약에 영향을 주는 사건이면 로컬 feedback도 남깁니다.
 
 ```text
 Current-thread rule: 이 작업에서는 파일 수정 전에 승인 단위를 먼저 제시합니다.
@@ -94,7 +94,7 @@ Current-thread rule: 이 작업에서는 파일 수정 전에 승인 단위를 �
 ```markdown
 Title: 응답 miss - 승인 민감 편집 전에 선택지 누락
 Scope: response-adaptation
-Evidence: tentative
+Feedback grade: tentative
 Missed signal: 사용자가 prompt/review 동작 비교를 요청함
 Previous response: 선택지 없이 결론부터 제시
 User correction: 선택지와 적응형 성향 루프를 원함

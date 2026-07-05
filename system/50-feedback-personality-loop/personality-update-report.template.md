@@ -5,10 +5,10 @@
 - 작성일:
 - 작성 주체:
 - 사용한 스킬: `user-personality-adaptive-response`
-- 연결 evidence:
+- 연결 feedback:
 - 증거 등급: `explicit` | `repeated` | `tentative` | `rejected`
 - 적용 범위:
-- evidence 상태 디렉토리: `active` | `applied` | `closed`
+- feedback 상태 디렉토리: `active` | `applied` | `closed`
 - 검토 상태: `pending` | `hold` | `revise`
 - hold_reason:
 - review_after:
@@ -52,4 +52,4 @@
 - 수정 파일:
 - 적용된 규칙:
 - 적용하지 않은 항목과 이유:
-- evidence 이동 결과: `active/` | `applied/` | `closed/`
+- feedback 이동 결과: `active/` | `applied/` | `closed/`

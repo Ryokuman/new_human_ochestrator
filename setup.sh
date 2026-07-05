@@ -717,9 +717,9 @@ ensure_project_ssot_surface_dirs() {
     "$target/30-work-items/silo-template/evidence" \
     "$target/40-runtime-sets" \
     "$target/50-pr-review" \
-    "$target/60-evidence-update/evidence/active" \
-    "$target/60-evidence-update/evidence/applied" \
-    "$target/60-evidence-update/evidence/closed"
+    "$target/60-feedback-update/feedback/active" \
+    "$target/60-feedback-update/feedback/applied" \
+    "$target/60-feedback-update/feedback/closed"
 }
 
 write_project_ssot_surface_templates() {
@@ -1120,19 +1120,19 @@ run_set.required_runtime_set:
 
 - 무엇을 했는가
 - 검증
-- evidence/follow-up 후보
+- feedback/follow-up 후보
 - 남은 위험
 "
 
-  write_setup_file "$target/60-evidence-update/README.md" "# Evidence Update
+  write_setup_file "$target/60-feedback-update/README.md" "# Feedback Update
 
-운영 중 발견한 evidence의 상태별 빈 구조입니다.
+운영 중 발견한 feedback의 상태별 빈 구조입니다.
 
 ## 상태
 
-- \`evidence/active/\`: 아직 판단 중인 evidence
-- \`evidence/applied/\`: task/spec/rule에 반영된 evidence
-- \`evidence/closed/\`: 폐기 또는 종료된 evidence
+- \`feedback/active/\`: 아직 판단 중인 feedback
+- \`feedback/applied/\`: task/spec/rule에 반영된 feedback
+- \`feedback/closed/\`: 폐기 또는 종료된 feedback
 "
 }
 
@@ -1236,8 +1236,8 @@ create_project_ssot() {
 - \`30-work-items/\`: task/issue/runbook/handoff/coverage/silo template
 - \`40-runtime-sets/\`: runtime set 정의와 선택 우선순위
 - \`$layer1_from_work_path/50-decisions/\`: 1계층 프로젝트 결정과 ADR
-- \`50-pr-review/\`: PR review gate와 evidence
-- \`60-evidence-update/\`: evidence active/applied/closed 상태 관리
+- \`50-pr-review/\`: PR review gate와 test evidence
+- \`60-feedback-update/\`: feedback active/applied/closed 상태 관리
 - \`templates/\`: 반복 문서 양식
 "
 
@@ -1448,7 +1448,7 @@ Pseudo Code에서 task 목표 밖 화면, 버튼, endpoint, table mutation, subm
 
 ## 리뷰 gate
 
-## evidence/follow-up 후보
+## feedback/follow-up 후보
 
 ## 처리하지 않고 남긴 항목
 

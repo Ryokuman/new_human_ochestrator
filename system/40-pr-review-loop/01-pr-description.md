@@ -33,7 +33,7 @@
 
 ## 사일로에서 새로 발견한 항목
 
-## evidence/follow-up 후보
+## feedback/follow-up 후보
 
 ## 처리하지 않고 남긴 항목
 

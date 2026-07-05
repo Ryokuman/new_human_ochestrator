@@ -29,7 +29,7 @@
 PR 본문과 완료 보고에는 아래를 분리합니다.
 
 ```text
-evidence/follow-up 후보
+feedback/follow-up 후보
 - 후보:
 - 근거:
 - 제안 타입: issue/task/rule
