@@ -34,6 +34,10 @@ The canonical reusable system definitions live under `system/`.
 
 위험 실행 전제 확인은 독립 기능으로 두지 않고 Task/Issue/Silo 운영과 Runtime Set 관리의 하위 gate로 흡수합니다. `hypothesis chain`은 이번 안정화 범위 밖입니다.
 
+운영 가설 관리는 0계층 System SSoT의 별도 메타 기록입니다. 운영 가설은 제품 기능 가설이 아니라 task 처리 방식, 정보 취합 방식, 구현 플랜, 사일로/PR/review loop 운영 방식이 왜 선택됐고 어떤 병목을 만들었는지 추적합니다.
+
+정본은 `system/60-operating-hypotheses/`에 두며, 현재 가설 목록, `draft`/`active`/`closed`/`discarded` 상태, 템플릿과 승격 기준은 해당 README를 기준으로 봅니다. task 내부 실행 실패와 재시도를 다루는 `hypothesis chain`과 0계층 운영 방식 자체를 다루는 운영 가설은 서로 다른 기록 단위입니다.
+
 ## 공개 배포
 
 이 저장소의 내부 원본 기준 브랜치는 `main-v3/main`입니다.
