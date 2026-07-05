@@ -8,7 +8,10 @@
 - 연결 evidence:
 - 증거 등급: `explicit` | `repeated` | `tentative` | `rejected`
 - 적용 범위:
-- 승인 상태: `pending` | `approved` | `rejected` | `revise`
+- evidence 상태 디렉토리: `active` | `applied` | `closed`
+- 검토 상태: `pending` | `hold` | `revise`
+- hold_reason:
+- review_after:
 
 ## 원래 제시한 보기
 
@@ -25,7 +28,7 @@
 ## 놓친 신호
 
 
-## 업데이트 후보 규칙
+## follow-up 규칙
 
 
 ## 반영 후보 위치
@@ -49,3 +52,4 @@
 - 수정 파일:
 - 적용된 규칙:
 - 적용하지 않은 항목과 이유:
+- evidence 이동 결과: `active/` | `applied/` | `closed/`

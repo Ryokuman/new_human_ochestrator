@@ -84,7 +84,7 @@ project contract, 계획, pseudo code를 먼저 리뷰하면 실제 코드를 �
 
 - 0계층 규칙에 기능 task 사전 계획 리뷰 gate가 추가됐다.
 - Codex PR 리뷰에서 누락된 README와 goal template 연결이 지적됐고, 이를 반영했다.
-- 최신 head 기준 no-major 리뷰를 통과한 뒤 main-v2에 반영됐다.
+- 최신 head 기준 no-major 리뷰를 통과한 뒤 main-v3/main에 반영됐다.
 - 후속 검토에서 task 생성 이전의 project contract 압축 부족이 추가 병목으로 확인됐다.
 - ONJUMP 요구사항 정리 실험에서 project contract gate는 한 번에 task를 만드는 방식보다 대화형 인터뷰에 더 적합했다.
 - 제품 정의, 로그인/대시보드/목표/LLM/식단/운동/동기화/공유/구독 같은 흐름을 agent 추론과 사용자 확인으로 나누자 요구사항 누락과 MVP/후속 버전 경계가 더 빨리 드러났다.

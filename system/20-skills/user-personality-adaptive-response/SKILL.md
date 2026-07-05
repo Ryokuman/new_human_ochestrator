@@ -11,12 +11,12 @@ description: 사용자의 작업 방식, 응답 선호, 승인 경계, 피드백
 
 1. 사용자가 명시한 피드백과 반복 행동에서 업무 관련 선호만 추론합니다.
 2. 다음 행동, 승인 단위, 진행 여부, 저장 위치, 범위, 검증 범위가 걸리면 보기 3개를 제공합니다.
-   - `main-v2`의 저위험 build 흐름에서는 보기 3개가 구현을 막는 gate가 되지 않게 합니다.
+   - `main-v3/main`의 저위험 build 흐름에서는 보기 3개가 구현을 막는 gate가 되지 않게 합니다.
    - 사용자가 이미 진행을 선택했거나 빠른 실행을 요구하면, 먼저 만들고 결과 보고에서 다음 선택지를 제시합니다.
 3. 응답이 빗나간 경우, 변명보다 놓친 신호와 수정된 규칙을 짧게 정리합니다.
-4. 응답 계약에 영향을 주는 피드백 사건은 승격 여부와 무관하게 로컬 evidence로 반드시 남깁니다.
-5. 안정적인 패턴만 장기 규칙으로 승격합니다.
-6. 장기 규칙 갱신은 대상 브랜치 정책을 따릅니다. 이 프로젝트에서는 `main` 기준 별도 worktree를 만들지 않고 `main-v2` 기준으로 처리합니다.
+4. 응답 계약에 영향을 주는 피드백 사건은 장기 반영 여부와 무관하게 로컬 evidence로 반드시 남깁니다.
+5. 안정적인 패턴만 사용자 승인 후 장기 규칙으로 반영합니다.
+6. 장기 규칙 갱신은 대상 브랜치 정책을 따릅니다. 이 프로젝트에서는 `main` 기준 별도 worktree를 만들지 않고 `main-v3/main` 기준으로 처리합니다.
 7. 사용자가 보기 밖 답변을 하면 먼저 evidence를 남기고, 보고서 작성과 장기 반영은 사용자 주도 검토 세션에서 판단합니다.
 8. 실제 퍼스널리티 업데이트는 사용자 승인 후에만 실행합니다.
 
@@ -26,7 +26,7 @@ description: 사용자의 작업 방식, 응답 선호, 승인 경계, 피드백
 
 1. 현재 사용자의 실제 목표가 무엇인지 먼저 복원합니다.
 2. 지금 필요한 것이 직접 실행인지, 추천인지, 선택지인지 판단합니다.
-3. 다음 행동이나 승인 경계가 있으면 보기 3개를 제시하고 추천안을 표시합니다. `main-v2`에서는 secret/production/destructive/data/protected branch 위험이 없으면 실행을 멈추지 않습니다.
+3. 다음 행동이나 승인 경계가 있으면 보기 3개를 제시하고 추천안을 표시합니다. `main-v3/main`에서는 secret/production/destructive/data/protected branch 위험이 없으면 실행을 멈추지 않습니다.
 4. 사용자가 중요하게 보는 기준으로 절충점을 설명합니다.
    - 영향 범위
    - 검증 부담
@@ -56,7 +56,7 @@ repo-local skill이 있으면 해당 `SKILL.md`와 직접 연결된 references�
 별도 확인 없이 아래까지 한 번에 수행합니다.
 
 ```text
-project SSoT 원본 task/issue 상태 갱신 PR 생성 및 project/<project-id> 머지 확인
+project SSoT 원본 task/issue 상태 갱신 PR 생성 및 project-{projectName} 머지 확인
 -> task-xxxx/ 생성
 -> goal.md 작성
 -> 필요한 repo clone
@@ -66,7 +66,7 @@ project SSoT 원본 task/issue 상태 갱신 PR 생성 및 project/<project-id> 
 기본 규칙:
 
 - 사일로는 현재 workspace 루트에 보이는 `task-xxxx/` 디렉토리로 만듭니다.
-- task/issue 사일로라면 사일로 root, `goal.md`, repo clone, 작업 브랜치 중 하나라도 만들기 전에 project 계층 `project/<project-id>-<branch-name>` 작업 브랜치에서 원본 task/issue 상태를 `in_progress`로 바꾸는 상태 갱신 PR을 만들고 `project/<project-id>`에 머지된 것을 확인합니다.
+- task/issue 사일로라면 사일로 root, `goal.md`, repo clone, 작업 브랜치 중 하나라도 만들기 전에 project 계층 작업 브랜치에서 원본 task/issue 상태를 `in_progress`로 바꾸는 상태 갱신 PR을 만들고 project 계층 메인 브랜치에 머지된 것을 확인합니다. 목표 모델에서는 `project-{projectName}/{taskname}`과 `project-{projectName}/main`, 현재 호환 상태에서는 `project-{projectName}-{taskname}`과 `project-{projectName}`을 사용합니다.
 - 상태 갱신 PR이 머지되기 전에는 사일로 root 생성, `goal.md` 작성, repo clone, 작업 브랜치 생성을 시작하지 않습니다. 상태 갱신 PR 생성 또는 머지 확인을 할 수 없으면 사일로 진행을 멈추고 이유를 보고합니다.
 - 사용자가 직접 지정하지 않으면 `/tmp`, 홈 디렉토리, 숨김 디렉토리, 에이전트 전용 임시 경로를 사일로 위치로 쓰지 않습니다.
 - `goal.md`에는 task 목표, 필요한 repo, 보호 브랜치, 작업 브랜치명, 개발자/QA/리뷰 역할, 금지선, 검증 기준, PR 본문 필수 항목을 적습니다.
@@ -74,10 +74,10 @@ project SSoT 원본 task/issue 상태 갱신 PR 생성 및 project/<project-id> 
 - 소비 API, schema, store method, route가 아직 없다는 사실은 단독 위험으로 단정하지 않고, 같은 task 안에서 백엔드 계약을 먼저 만들고 프론트가 소비하는 순서로 `goal.md`에 적습니다.
 - 사용자가 좁은 스코프의 처방과 판단 근거의 위치를 지적하면, 먼저 system SSoT가 상황별 행동표가 아니라 판단 근거와 계층 분류 기준을 담는 하네스라는 점을 기준으로 재분류합니다.
 - 외부 서비스, 인증, 실제 네트워크, 사용자 계정, 런타임 설정처럼 agent가 직접 통제하지 못하는 요소가 completion에 끼어드는 task는 통제 가능성, 증명 가능성, 사용자 승인 필요 여부를 분리해 기록합니다. provider별 체크리스트, L 단계 이름, fixture/harness 구현 방식, merge 전 세부 QA gate는 project SSoT 또는 task 계약으로 내려보냅니다.
-- PR 생성 후에는 계층별 target/base를 확인한 뒤 `codex-pr-review-loop` skill로 no-major 목표를 세팅하고, 최신 head에 대한 `Didn't find any major issues` 또는 동등한 no-major 명시 응답과 현재 head 대상 지적의 `수정 필요`/`수비 가능`/`사용자 판단 필요` 분류가 끝날 때까지 수정, 검증, 재리뷰를 반복합니다. 이전 head 리뷰가 새 push 이후 늦게 게시되어도 작성 시각만으로 현재 head 지적에 섞지 않습니다. 최신 호출 댓글에 3분 동안 `eyes` 반응이 없고 최신 head 리뷰 결과도 없으면 접수 실패로 보고 같은 head 기준으로 최대 3회까지 재호출한 뒤 새 호출 댓글 기준으로 다시 확인하며, 3회 모두 접수되지 않으면 `Codex 리뷰 접수 실패 timeout`으로 중단합니다. `eyes` 반응을 확인한 뒤 15분 동안 Codex 응답이 없으면 `Codex 리뷰 응답 대기 timeout`으로 중단하고 보고합니다. task silo의 `goal.md`가 확인되면 no-major 목표를 `goal.md`에 세팅하고, 그렇지 않은 PR은 PR 본문, 리뷰 thread, 현재 사용자 요청을 재리뷰 컨텍스트로 사용합니다. no-major 반복은 기본 상한을 두지 않지만, no-`eyes` 접수 실패 재호출은 같은 head 기준 기본 3회로 제한합니다.
+- PR 생성 후에는 계층별 target/base를 확인한 뒤 `codex-pr-review-loop` skill로 codex-review pass 목표를 세팅하고, 최신 head에 대한 `Didn't find any major issues` 또는 동등한 codex-review pass 명시 응답과 현재 head 대상 지적의 `수정 필요`/`수비 가능`/`사용자 판단 필요` 분류가 끝날 때까지 수정, 검증, 재리뷰를 반복합니다. 이전 head 리뷰가 새 push 이후 늦게 게시되어도 작성 시각만으로 현재 head 지적에 섞지 않습니다. 최신 호출 댓글에 3분 동안 `eyes` 반응이 없고 최신 head 리뷰 결과도 없으면 접수 실패로 보고 같은 head 기준으로 최대 3회까지 재호출한 뒤 새 호출 댓글 기준으로 다시 확인하며, 3회 모두 접수되지 않으면 `Codex 리뷰 접수 실패 timeout`으로 중단합니다. `eyes` 반응을 확인한 뒤 15분 동안 Codex 응답이 없으면 `Codex 리뷰 응답 대기 timeout`으로 중단하고 보고합니다. task silo의 `goal.md`가 확인되면 codex-review pass 목표를 `goal.md`에 세팅하고, 그렇지 않은 PR은 PR 본문, 리뷰 thread, 현재 사용자 요청을 재리뷰 컨텍스트로 사용합니다. codex-review pass 반복은 기본 상한을 두지 않지만, no-`eyes` 접수 실패 재호출은 같은 head 기준 기본 3회로 제한합니다.
 - Dynamos 사일로에서 브라우저로 화면이나 동작을 확인해야 하면 `agent-browser`로만 확인한다고 적습니다.
 - 개발 세션에는 상세 지시를 길게 전달하지 않고, 해당 사일로에서 `/goal`로 `goal.md 달성 부탁해` 수준의 짧은 요청만 전달합니다.
-- source/data/secret/production 금지선에 닿으면 자동 진행하지 않고 사용자 판단 또는 SSoT 승격 후보로 보고합니다.
+- source/data/secret/production 금지선에 닿으면 자동 진행하지 않고 사용자 판단 또는 evidence/follow-up으로 보고합니다.
 
 ## 용어와 근거 지칭
 
@@ -94,7 +94,7 @@ project SSoT 원본 task/issue 상태 갱신 PR 생성 및 project/<project-id> 
 
 다음 행동, 승인 단위, 진행 여부가 걸린 응답은 보기 3개를 포함합니다.
 
-`main-v2` 예외:
+`main-v3/main` 예외:
 
 - 사용자가 이미 `1`, `진행`, `바로 해`, `일단 만들어`처럼 실행을 선택했습니다.
 - 변경이 저위험 prototype, 문서 보강, 로컬 fixture, source/test/tooling 수정에 머뭅니다.
@@ -150,7 +150,7 @@ project SSoT 원본 task/issue 상태 갱신 PR 생성 및 project/<project-id> 
 
 1. 우선 사용자의 직접 답변을 현재 작업 지시로 따릅니다.
 2. 답변이 끝난 뒤 로컬 evidence를 남깁니다.
-3. evidence에는 보기 3개, 사용자의 실제 답변, 놓친 신호, 업데이트 후보 규칙, 적용 범위, 증거 등급을 정리합니다.
+3. evidence에는 보기 3개, 사용자의 실제 답변, 놓친 신호, follow-up 규칙, 적용 범위, 증거 등급을 정리합니다.
 4. evidence 저장 뒤 아래 문구로 보고합니다.
 
 ```text
@@ -159,9 +159,9 @@ project SSoT 원본 task/issue 상태 갱신 PR 생성 및 project/<project-id> 
 
 5. 보고서는 매번 자동 작성하지 않고, 사용자가 원하는 주기로 여는 퍼스널리티 검토 세션에서 여러 evidence를 묶어 작성합니다.
 6. 실제 공통 규칙, 역할별 agent 프롬프트, 스킬 초안 업데이트는 사용자에게 `1. 승인`, `2. 거절`, `3. 수정 후 재검토` 보기를 제시해 승인받은 뒤에만 실행합니다.
-7. 승인 전 evidence와 보고서는 후보 자료이며 장기 퍼스널리티 규칙으로 확정하지 않습니다.
+7. 승인 전 evidence와 보고서는 follow-up 자료이며 장기 퍼스널리티 규칙으로 확정하지 않습니다.
 
-evidence 저장 위치는 `local/personality-feedback-log/evidence/`입니다. 보고서 형식은 `system/50-feedback-personality-loop/personality-update-report.template.md`를 따르고, 보고서 후보는 `local/personality-feedback-log/reports/`에 저장합니다.
+evidence 저장 위치는 `local/personality-feedback-log/evidence/active/`입니다. 반영된 evidence는 `local/personality-feedback-log/evidence/applied/`, 종료한 evidence는 `local/personality-feedback-log/evidence/closed/`로 옮깁니다. evidence update 때 `applied/`와 `closed/`는 기본 제외하고, 사용자가 명시적으로 재검토를 요청할 때만 포함합니다. 보류 evidence는 `active/`에 남기고 `status: hold`, `hold_reason`, `review_after` metadata를 기록합니다. 보고서 형식은 `system/50-feedback-personality-loop/personality-update-report.template.md`를 따르고, 보고서 후보는 `local/personality-feedback-log/reports/`에 저장합니다.
 
 ## 응답 계약 누락 원인 제거
 
@@ -216,7 +216,7 @@ evidence 저장 위치는 `local/personality-feedback-log/evidence/`입니다. �
 2. 필요한 경우에만 작은 질문 하나를 합니다.
 3. 선호 인터뷰로 빠지지 말고 원래 작업을 계속합니다.
 4. 응답 계약에 영향을 주는 사건이면 로컬 evidence를 반드시 남깁니다.
-5. 명시 지시 또는 반복 증거가 있을 때만 장기 규칙 승격 후보로 봅니다.
+5. 명시 지시 또는 반복 증거가 있을 때만 장기 규칙 반영 follow-up으로 봅니다.
 
 사용자가 이유를 아직 말하지 않았고, 응답이 빗나간 것이 명확하면 아래 문구를 씁니다.
 
@@ -256,6 +256,6 @@ evidence 저장 위치는 `local/personality-feedback-log/evidence/`입니다. �
 - 퍼스널리티 업데이트 evidence와 보고서는 실제 사용자 성향 데이터이므로 기본적으로 gitignore된 로컬 자료로 취급합니다.
 - evidence는 응답 계약에 영향을 준 사건을 남기는 것이며 모든 답변 원문을 장기 저장하는 장치가 아닙니다.
 - 약한 추론은 반드시 tentative로 표시합니다.
-- 한 번의 짜증이나 일회성 피드백을 영구 규칙으로 승격하지 않습니다.
+- 한 번의 짜증이나 일회성 피드백을 영구 규칙으로 반영하지 않습니다.
 - 사용자가 실행을 원할 때 반복적인 선호 질문으로 흐름을 막지 않습니다.
 - 직접 지시와 학습된 규칙이 충돌하면 직접 지시를 따르고, 필요하면 교정 내용을 기록합니다.

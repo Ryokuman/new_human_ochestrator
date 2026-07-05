@@ -94,7 +94,7 @@ task를 만들기 전에 제품 계약을 구체화하는 skill입니다. 목적
 
 gate가 충분히 닫히면 project SSoT에 기능 또는 사용자 흐름별 요구사항 문서로 나눕니다.
 
-쓰기 전에는 실제 SSoT 위치, 기준 브랜치 `project/<project-id>`, 작업 브랜치 `project/<project-id>-<branch-name>`을 확인합니다. 요구사항 원문은 `main-v2`나 임의 브랜치에 섞지 않습니다.
+쓰기 전에는 실제 SSoT 위치, 목표 기준 브랜치 `project-{projectName}/main`, 목표 작업 브랜치 `project-{projectName}/{taskname}`을 확인합니다. 현재 호환 상태에서는 `project-{projectName}` 기준 브랜치와 `project-{projectName}-{taskname}` 작업 브랜치를 확인합니다. 요구사항 원문은 0계층이나 임의 브랜치에 섞지 않습니다.
 
 예:
 

@@ -4,7 +4,7 @@
 
 이 문서는 system SSoT에 들어온 피드백이나 agent 감사 결과가 너무 좁은 스코프인지 판정하고, 올바른 저장 계층으로 내리는 기준을 정합니다.
 
-`system/`은 상황별 실행 처방을 모으는 곳이 아니라 판단 근거, 계층 분류, 승격 기준을 모으는 하네스입니다. 따라서 특정 프로젝트, provider, 화면, 테스트 데이터, 실행 harness의 실제 방법은 system SSoT에 고정하지 않습니다.
+`system/`은 상황별 실행 처방을 모으는 곳이 아니라 판단 근거, 계층 분류, 반영 검토 기준을 모으는 하네스입니다. 따라서 특정 프로젝트, provider, 화면, 테스트 데이터, 실행 harness의 실제 방법은 system SSoT에 고정하지 않습니다.
 
 ## 좁은 스코프 신호
 
@@ -36,18 +36,18 @@ DB를 사용하는 프로젝트는 등록/setup 시 DB schema 정본 위치 또�
 | DB 사용 프로젝트의 등록/setup | schema 정본 위치, schema 요약 위치, schema 적용 경로를 setup 때 기록해야 한다는 기준 | project registry/config, project SSoT, setup 문서 |
 | seed, fixture, mock, 개발용 인증, 컨테이너 DB | 통제된 대체 검증과 실제 사용자 경로를 섞지 않는 기준 | project test contract, runtime/runbook, task Test Plan |
 | L 단계, runner, coverage gate | system에 고정하지 않는다는 원칙 | project SSoT의 L 기준, run set, QA gate |
-| 특정 task에서 반복 발견된 문제 | 승격 판단 기준 | project issue/task 또는 silo PR 본문 |
+| 특정 task에서 반복 발견된 문제 | evidence/follow-up 판단 기준 | project issue/task 또는 silo PR 본문 |
 
 ## 처리 절차
 
 1. 피드백이나 agent 감사 결과에서 실제 값, 구현 수단, 프로젝트 고유 명사를 분리합니다.
 2. 해당 내용이 여러 프로젝트에서 반복 가능한 판단 근거인지, 특정 프로젝트의 실행 처방인지 판정합니다.
-3. 반복 가능한 판단 근거만 system SSoT 후보로 남깁니다.
+3. 반복 가능한 판단 근거만 system 반영 follow-up으로 남깁니다.
 4. 실제 실행 처방은 project SSoT, task 계약, runbook, QA checklist 중 하나로 내려보냅니다.
 5. DB를 사용하는 프로젝트의 setup 기록에 schema 정본 위치, schema 요약 위치, schema 적용 경로가 없으면 task 계약으로 진행하기 전에 `project setup schema 계약 누락`으로 보고합니다.
 6. DB schema, API contract, auth/session contract처럼 task 작성의 입력이 되는 중요 제품 정보가 project registry/config와 project SSoT 어디에도 없으면 system에 임시 처방을 쓰지 않고 `project SSoT schema 계약 누락`, `project SSoT API 계약 누락`, `project SSoT auth/session 계약 누락`처럼 누락 정의로 보고합니다.
 7. project SSoT 위치나 기준 브랜치가 불명확하면 system에 임시 처방을 쓰지 않고 `project SSoT 위치 누락` 또는 `task 계약 누락`으로 보고합니다.
-8. PR 본문에는 `SSoT 승격 후보`와 `승격하지 않을 항목`을 분리해, 좁은 스코프 항목이 system으로 들어오지 않은 이유를 적습니다.
+8. PR 본문에는 `evidence/follow-up`, `현재 PR에서 처리한 항목`, `처리하지 않고 남긴 항목`을 분리해, 좁은 스코프 항목이 system으로 들어오지 않은 이유를 적습니다.
 
 ## 보고 기준
 
@@ -60,7 +60,7 @@ system에 남길 판단 근거
 project SSoT로 내려보낼 실행 처방
 - ...
 
-현재 PR에서 승격하지 않을 항목
+현재 PR에서 처리하지 않고 evidence/follow-up으로 남길 항목
 - ...
 
 누락된 project SSoT 정의

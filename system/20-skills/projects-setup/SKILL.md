@@ -1,19 +1,24 @@
 ---
 name: projects-setup
-description: 새 프로젝트를 root orchestrator의 projects 구조에 등록하거나 기존 프로젝트에 프로젝트 SSoT scaffold, 사일로 로컬 공간, silo project config를 셋업해야 할 때 사용합니다.
+description: 새 프로젝트를 root orchestrator의 projects 구조에 등록하거나 기존 프로젝트에 Project SSoT/Project Work SSoT scaffold, 사일로 로컬 공간, silo project config를 셋업해야 할 때 사용합니다.
 ---
 
 # Projects Setup
 
-이 스킬은 새 프로젝트를 1계층 `projects/<project-id>/`에 등록하고, 2계층 Project Internal SSoT와 3계층 Silo Local 공간을 한 번에 준비합니다.
+이 스킬은 실제 프로젝트가 시작될 때 1계층 Project SSoT를 `projects/<project-id>/` 또는 외부 SSoT 위치에 등록하고, 2계층 Project Work SSoT와 3계층 Silo Local 공간을 준비합니다.
+
+현재 `my_ochestrator`의 `main-v3/main`에는 실제 프로젝트 실데이터가 없으며, 이 스킬은 생성 규칙과 절차만 정의합니다.
 
 ## 원칙
 
-- `projects/<project-id>/`는 프로젝트 연결 정보와 프로젝트 의존 운영 자료의 입구입니다.
-- `02-project-internal/`은 실제 project SSoT입니다. 이 안의 issue, task, QA, coverage 산출물은 0계층 `system/`으로 복사하지 않습니다.
-- `setup.sh --create-project-ssot`은 최소 project SSoT scaffold를 생성합니다. 작업 대시보드는 DataviewJS와 Obsidian Base를 기본 viewer 계약으로 포함하고, 기능 task 생성 전 확인할 `00-dashboard/project-contract.md`를 함께 만듭니다.
+- `projects/<project-id>/`는 프로젝트 연결 정보와 Project SSoT 기준 자료의 입구입니다.
+- 1계층 Project SSoT에는 project registry, repo/source 위치, project contract, decision/ADR, runtime/DB/API/auth 참조, project-level 운영 기준, 2계층 위치 index를 둡니다.
+- 2계층 Project Work SSoT에는 issue, task, QA, runbook, coverage, handoff 같은 실제 작업 운영 산출물을 둡니다.
+- task/issue/QA 원문, silo local 로그, 단일 task mock data/test input, 단일 PR 임시 판단은 1계층에 두지 않습니다.
+- `02-project-internal/`은 호환 경로 이름으로 남아 있을 수 있으나 의미상 2계층 Project Work SSoT입니다. 이 안의 issue, task, QA, coverage 산출물은 0계층 `system/`이나 1계층 기준 정보로 복사하지 않습니다.
+- `setup.sh --create-project-ssot`은 최소 Project SSoT/Project Work SSoT scaffold를 생성합니다. 작업 대시보드는 DataviewJS와 Obsidian Base를 기본 viewer 계약으로 포함하고, 기능 task 생성 전 확인할 1계층 `project-contract.md`를 함께 만듭니다.
 - `system/config/silo-projects.yaml`은 로컬 설정입니다. secret 값은 쓰지 않고, repo URL, 보호 브랜치, 사일로 대상 여부, DB 사용 여부, DB schema 정본/요약/적용 경로 같은 운영 값만 기록합니다.
-- DB를 사용하는 프로젝트는 등록/setup 단계에서 DB schema 정본 위치 또는 schema 요약 위치를 project registry/config 또는 project SSoT에 기록합니다. Docker, compose, migration, startup script로 DB가 자동 생성되거나 갱신되면 schema 적용 경로도 함께 기록합니다.
+- DB를 사용하는 프로젝트는 등록/setup 단계에서 DB schema 정본 위치 또는 schema 요약 위치를 project registry/config 또는 Project SSoT에 기록합니다. Docker, compose, migration, startup script로 DB가 자동 생성되거나 갱신되면 schema 적용 경로도 함께 기록합니다.
 - 기존 `project-ssot-bootstrap` 역할은 이 스킬에 흡수되었습니다.
 
 ## 기본 구조
@@ -23,21 +28,31 @@ projects/<project-id>/
 ├── README.md
 ├── 00-secrets/
 │   └── README.md
+├── 01-project-ssot/
+│   ├── project-registry.md
+│   ├── project-contract.md
+│   ├── work-ssot-index.md
+│   ├── references/
+│   │   ├── runtime.md
+│   │   ├── db.md
+│   │   ├── api.md
+│   │   └── auth.md
+│   └── 50-decisions/
 ├── 02-project-internal/
 │   ├── README.md
 │   ├── 00-dashboard/
-│   │   ├── project-contract.md
 │   │   ├── project-overview.md
 │   │   ├── work-filter.md
 │   │   ├── work-items.base
 │   │   └── work-views.md
 │   ├── 10-dictionary/
 │   │   └── project-dictionary.md
-│   ├── 20-issues/
-│   ├── 30-tasks/
-│   ├── 50-decisions/
-│   ├── 70-handoff/
-│   └── 90-coverage/
+│   ├── 30-work-items/
+│   │   ├── issues/
+│   │   ├── tasks/
+│   │   ├── runbooks/
+│   │   ├── handoff/
+│   │   └── coverage/
 └── 03-silo-local/
     ├── README.md
     └── pr-description-template.md
@@ -45,11 +60,12 @@ projects/<project-id>/
 
 ## 절차
 
-1. 계층을 판정합니다. 공통 규칙 변경이면 `main-branch-update-flow`, 특정 프로젝트 자료면 프로젝트 SSoT 또는 project 브랜치에서 처리합니다.
-2. `project-id`, 표시 이름, repo URL, default branch, 보호 브랜치, `allowed_for_silo`, `role`, 상위 제품 repo host 역할, 기능 submodule 소유권, BE/FE submodule 경로, harness library 정책, 제품별 scenario/adapter 위치, DB 사용 여부, DB schema 정본/요약/적용 경로를 확인합니다.
-3. `projects/<project-id>/`가 이미 있거나 `silo-projects.yaml`에 같은 id가 있으면 중단하고 병합/갱신 여부를 확인합니다.
-4. `02-project-internal` scaffold는 `setup.sh`로 생성합니다.
-   `projects/<project-id>/` 아래 target을 쓰면 `setup.sh`가 해당 project SSoT 경로만 git 추적 가능하도록 `.gitignore` 예외를 함께 보정합니다.
+1. 계층을 판정합니다. 공통 규칙 변경이면 `main-branch-update-flow`, 특정 프로젝트 자료면 Project SSoT, Project Work SSoT, 또는 project 브랜치에서 처리합니다.
+2. project 기준 브랜치는 목표 모델인 `project-{projectName}/main`을 우선 사용합니다. `project-{projectName}` 자체는 namespace이며 브랜치로 만들지 않습니다. 마이그레이션 전 호환 `project-{projectName}` 또는 기존 slash 기반 `project/<project-id>` 브랜치가 있으면 전환/호환 필요 항목으로 표시하고, 어느 브랜치가 현재 기준인지 확인합니다.
+3. `project-id`, 표시 이름, repo URL, default branch, 보호 브랜치, `allowed_for_silo`, `role`, 상위 제품 repo host 역할, 기능 submodule 소유권, BE/FE submodule 경로, harness library 정책, 제품별 scenario/adapter 위치, DB 사용 여부, DB schema 정본/요약/적용 경로를 확인합니다.
+4. `projects/<project-id>/`가 이미 있거나 `silo-projects.yaml`에 같은 id가 있으면 중단하고 병합/갱신 여부를 확인합니다.
+5. `02-project-internal` scaffold는 호환 경로로 `setup.sh`로 생성합니다. 새 문서에서는 의미상 Project Work SSoT임을 명시합니다.
+   `projects/<project-id>/` 아래 target을 쓰면 `setup.sh`가 해당 Project Work SSoT 경로만 git 추적 가능하도록 `.gitignore` 예외를 함께 보정합니다.
 
 ```bash
 ./setup.sh --create-project-ssot \
@@ -59,18 +75,19 @@ projects/<project-id>/
   --yes
 ```
 
-5. `00-dashboard/project-contract.md`를 채웁니다. 최소한 제품 정의, 현재 버전 목표/비목표, 핵심 사용자 플로우, 데이터 저장과 동기화 경계, repo 역할, task 생성 전 필수 참조, 추정 금지 정보를 확인된 값으로 적습니다. 확인되지 않은 항목은 빈 heading으로 방치하지 않고 `project contract 누락` 또는 `사용자 확인 필요`로 표시합니다.
-6. `projects/<project-id>/README.md`, `00-secrets/README.md`, `03-silo-local/README.md`, `03-silo-local/pr-description-template.md`를 생성합니다.
-7. `system/config/silo-projects.yaml`이 없으면 `./setup.sh --init-config --yes`로 local config 초안을 만듭니다. 있으면 기존 구조를 보존하고 `projects:` 항목에 새 프로젝트만 추가합니다.
-8. 변경 후 `git diff --stat`, 생성 파일 목록, config 등록 항목, project contract 작성/누락 항목을 보고합니다.
+6. 1계층 `project-contract.md`를 채웁니다. 최소한 제품 정의, 현재 버전 목표/비목표, 핵심 사용자 플로우, 데이터 저장과 동기화 경계, repo 역할, task 생성 전 필수 참조, 추정 금지 정보를 확인된 값으로 적습니다. 확인되지 않은 항목은 빈 heading으로 방치하지 않고 `project contract 누락` 또는 `사용자 확인 필요`로 표시합니다.
+7. decision/ADR 위치와 2계층 Project Work SSoT 위치 index를 생성하거나 참조합니다.
+8. `projects/<project-id>/README.md`, `00-secrets/README.md`, `03-silo-local/README.md`, `03-silo-local/pr-description-template.md`를 생성합니다.
+9. `system/config/silo-projects.yaml`이 없으면 `./setup.sh --init-config --yes`로 local config 초안을 만듭니다. 있으면 기존 구조를 보존하고 `projects:` 항목에 새 프로젝트만 추가합니다.
+10. 변경 후 `git diff --stat`, 생성 파일 목록, config 등록 항목, project contract 작성/누락 항목, decision/ADR 위치, Project Work SSoT 위치 index를 보고합니다.
 
 ## 필수 프로젝트 설명 산출물
 
-모든 project SSoT에는 프로젝트 전반 설명과 dictionary가 있어야 합니다.
+모든 Project SSoT에는 프로젝트 전반 설명, project contract, decision/ADR 위치, 2계층 Project Work SSoT 위치 index가 있어야 합니다. Project Work SSoT에는 dictionary와 작업 대시보드가 있어야 합니다.
 
-`00-dashboard/`에는 project contract, project overview, 작업 필터 대시보드를 함께 둡니다. `project-contract.md`는 기능 task 생성 전 확인하는 제품 정의, 현재 버전 목표/비목표, 핵심 사용자 플로우, 데이터 저장과 동기화 경계, repo 역할, 추정 금지 정보입니다. `project-overview.md`는 프로젝트 상태와 운영 경계 요약이고, 실제 운영 첫 화면은 `work-filter.md` 또는 `work-views.md`처럼 issue/task를 필터링할 수 있는 작업 목록입니다.
+`project-contract.md`는 기능 task 생성 전 확인하는 1계층 Project SSoT 기준 정보이며, 제품 정의, 현재 버전 목표/비목표, 핵심 사용자 플로우, 데이터 저장과 동기화 경계, repo 역할, 추정 금지 정보를 담습니다. `project-overview.md`는 프로젝트 상태와 운영 경계 요약이고, 실제 운영 첫 화면은 `work-filter.md` 또는 `work-views.md`처럼 issue/task를 필터링할 수 있는 2계층 Project Work SSoT 작업 목록입니다.
 
-`00-dashboard/project-contract.md`에는 최소 아래 항목을 둡니다.
+`project-contract.md`에는 최소 아래 항목을 둡니다.
 
 - 제품 정의
 - 현재 버전 목표와 비목표
@@ -107,11 +124,11 @@ projects/<project-id>/
 - 날짜: `updated`, `created`, `closed`, `file.mtime`
 - 검색어
 
-`work-filter.md`는 `dashboardScope.paths`를 읽습니다. 기본값은 `20-issues/`, `30-tasks/`이고, 파일을 복제해 `ops/20-issues/`, `ops/30-tasks/`, `be/30-tasks/`, `fe/30-tasks/`처럼 경로를 바꾸면 프로젝트 안에 여러 작업 대시보드를 둘 수 있습니다.
+`work-filter.md`는 `dashboardScope.paths`를 읽습니다. 기본값은 `30-work-items/issues/`, `30-work-items/tasks/`이고, 파일을 복제해 `ops/30-work-items/issues/`, `ops/30-work-items/tasks/`, `be/30-work-items/tasks/`, `fe/30-work-items/tasks/`처럼 경로를 바꾸면 프로젝트 안에 여러 작업 대시보드를 둘 수 있습니다.
 
-`00-dashboard/work-items.base`와 `00-dashboard/work-views.md`는 Obsidian 기본 Base view/filter를 쓰는 사용자를 위한 대체 화면입니다. Base에는 전체 즉석 필터, 진행 중 Task, 완료 Task, 열린 Issue view를 기본으로 둡니다. setup은 target이 현재 repo/vault 아래에 있으면 해당 Project SSoT 경로로 Base 필터를 제한하고, 외부 target이면 해당 SSoT를 vault root로 여는 전제의 로컬 `20-issues/`, `30-tasks/` 필터를 생성합니다.
+`00-dashboard/work-items.base`와 `00-dashboard/work-views.md`는 Obsidian 기본 Base view/filter를 쓰는 사용자를 위한 대체 화면입니다. Base에는 전체 즉석 필터, 진행 중 Task, 완료 Task, 열린 Issue view를 기본으로 둡니다. setup은 target이 현재 repo/vault 아래에 있으면 해당 Project SSoT 경로로 Base 필터를 제한하고, 외부 target이면 해당 SSoT를 vault root로 여는 전제의 로컬 `30-work-items/issues/`, `30-work-items/tasks/` 필터를 생성합니다.
 
-작업 대시보드는 실제 issue/task만 보여야 하므로 `20-issues/ISSUE-template.md`, `30-tasks/TASK-template.md` 같은 live 폴더 안 템플릿 파일은 필터 결과에서 제외합니다.
+작업 대시보드는 실제 issue/task만 보여야 하므로 `30-work-items/issues/ISSUE-template.md`, `30-work-items/tasks/TASK-template.md` 같은 live 폴더 안 템플릿 파일은 필터 결과에서 제외합니다.
 
 작업 대시보드가 비지 않으려면 setup scaffold가 만드는 issue/task 템플릿에 최소 frontmatter가 있어야 합니다.
 
@@ -133,9 +150,9 @@ DataviewJS 대시보드를 쓰려면 Obsidian community plugin `dataview`를 설
 | 사용 맥락 | 어느 workflow, repo, runner, 화면, 문서에서 쓰는지 |
 | 예시 | 실제 표현이나 page/item 예시 |
 | 출처 또는 확인 상태 | source 문서, PR, 사용자 확인, 추정 여부 |
-| 프로젝트 전용인지 공통 승격 후보인지 | project-local 용어인지, root `main-v2` 공통 규칙 후보인지 |
+| 프로젝트 전용인지 공통 승격 후보인지 | project-local 용어인지, root `main-v3/main` 공통 규칙 후보인지 |
 
-PR 본문 `명사 설명`에 반복해서 등장한 용어는 project dictionary 승격 후보로 남깁니다. 여러 프로젝트에서 반복되거나 에이전트 공통 행동 규칙에 영향을 주는 용어만 root `main-v2` 공통 dictionary 또는 관련 system 문서 승격 후보로 분리합니다.
+PR 본문 `명사 설명`에 반복해서 등장한 용어는 project dictionary 승격 후보로 남깁니다. 여러 프로젝트에서 반복되거나 에이전트 공통 행동 규칙에 영향을 주는 용어만 root `main-v3/main` 공통 dictionary 또는 관련 system 문서 승격 후보로 분리합니다.
 
 Project dictionary 파일을 새로 만들거나 기존 dictionary에 용어를 추가/수정/삭제하는 PR은 PR 본문에 `새로 추가된 단어` 섹션을 둡니다.
 
@@ -206,7 +223,7 @@ test -f "$tmp/sample-ssot/README.md"
 
 ## 금지
 
-- project issue, task, QA, coverage run/report 원문을 0계층 `system/`에 복사하지 않습니다.
+- project issue, task, QA, coverage run/report 원문을 0계층 `system/`이나 1계층 Project SSoT 기준 정보에 복사하지 않습니다.
 - secret, token, password, credential 값을 문서나 config에 기록하지 않습니다.
 - 보호 브랜치에서 직접 제품 코드 작업을 시작하지 않습니다.
 - setup scaffold 생성 실패를 무시하고 완료로 보고하지 않습니다. 실패하면 경로/권한/기존 파일 충돌을 분리해 보고합니다.

@@ -23,7 +23,7 @@ description: 프로젝트별 shared runtime registry/status 정리, archived 표
 - destructive 삭제는 사용자 명시 요청 또는 승인된 작업 범위가 있을 때만 수행합니다.
 - 참조 중인 task, agent, server, process, port, PR, handoff가 있으면 삭제하지 않고 보존 또는 archived 후보로 보고합니다.
 - secret, token, password, credential 값은 읽거나 기록하지 않습니다.
-- project SSoT나 local config에 있는 실제 runtime 구성값을 root `main-v2`에 복사하지 않습니다.
+- project SSoT나 local config에 있는 실제 runtime 구성값을 root `main-v3/main`에 복사하지 않습니다.
 
 ## 절차
 
@@ -75,7 +75,7 @@ delete_after: <optional date or condition>
 - dirty state, ahead commit, 미확인 local patch가 있는 checkout을 삭제하지 않습니다.
 - 열린 PR head나 review 중인 branch에 연결된 runtime checkout을 삭제하지 않습니다.
 - secret 파일 내용 확인을 삭제 조건으로 삼지 않습니다.
-- root `main-v2`에 프로젝트별 실제 runtime registry 원문을 복사하지 않습니다.
+- root `main-v3/main`에 프로젝트별 실제 runtime registry 원문을 복사하지 않습니다.
 
 ## 보고 형식
 

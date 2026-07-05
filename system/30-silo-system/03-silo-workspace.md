@@ -24,6 +24,10 @@ task-0055/
 - 같은 task 사일로에 들어온 여러 repo는 같은 task id를 포함한 브랜치 이름을 쓰되, PR 필요 여부는 repo별 diff와 완료 결과로 판단합니다.
 - 공용 backend처럼 메인 오케스트레이터가 세션 동안 하나만 관리하는 서비스는 기본 clone 대상에서 제외합니다.
 
+2계층 `Project Work SSoT` 작업은 별도 독립 merge target을 갖지 않습니다. task, issue, QA, runbook, coverage, work dashboard, Run Set 변경은 해당 project의 project 계층 메인 브랜치에서 파생한 작업 브랜치로 수행합니다. 목표 모델에서는 `project-{projectName}/main`에서 파생한 `project-{projectName}/{taskname}` 작업 브랜치를 쓰고, PR target/base도 `project-{projectName}/main`로 둡니다. 현재 호환 상태에서는 `project-{projectName}`와 `project-{projectName}-{taskname}`을 사용합니다.
+
+root `main-v3/main`에는 project work 실데이터가 없을 수 있습니다. 사일로 workspace를 준비할 때는 root `system/`에서 task 원문을 찾으려 하지 말고 project registry/config 또는 project SSoT가 가리키는 2계층 위치를 기준으로 clone, branch, `goal.md` 참조 경로를 정합니다.
+
 ## source workspace 기준선 확인
 
 사일로와 제품 source workspace가 여러 개 있을 때는 브랜치 이름만으로 최신 기준선을 판단하지 않습니다.
