@@ -20,7 +20,7 @@ branch base는 먼저 계층으로 판단합니다. 목표 모델에서 0계층 
 5. 제품 repo PR이 독립 git submodule의 gitlink를 pin한다면 변경된 submodule repo마다 별도 PR과 `codex-review pass` 또는 동등 리뷰 gate가 있는지 확인합니다. submodule repo 자체 리뷰가 없으면 상위 제품 repo PR의 pass만으로 완료 처리하지 않습니다.
 6. 새 submodule repo PR이면 repo 생성 의의, submodule 유형, 제품 적용 기준, 평가 기준, 검증 한계, pin 조건이 PR 본문에 있는지 확인합니다. 기본 브랜치에는 빈 기준 또는 최소 후보만 두고 실제 코드는 PR에서 평가하는 흐름을 우선합니다.
 7. PR을 만든 뒤 해당 PR의 target/base branch가 계층 판단과 맞는지 확인하고 Codex review 설정 여부를 확인합니다.
-8. Codex review 설정이 동작하는 저장소라면 `@codex review`를 호출하고 사용자 응답을 기다리지 않고 이 skill의 대기/수정/재요청 루프를 수행합니다.
+8. Codex review 설정이 동작하는 저장소라면 `@codex review`를 호출하고 사용자 응답을 기다리지 않고 이 skill의 대기/수정/재요청 루프를 수행합니다. 최신 head 리뷰 결과가 아직 없으면 메인 에이전트가 같은 턴에서 직접 polling을 끝낼 수 있는 경우를 제외하고 기본적으로 `review-waiter-agent`에 연결해 대기, timeout, 수정, 재리뷰 상태를 맡깁니다.
 9. Codex review 설정 없음, 호출 권한 없음, GitHub App 미설치, repo 정책상 비활성화가 명시적으로 확인되면 PR review loop를 돌리지 않습니다. 아직 확인 전인 repo는 먼저 `@codex review`를 호출해 `eyes` 반응 또는 Codex 응답을 확인합니다. review loop를 생략하는 경우 PR head, 검증 결과, 남은 위험을 기록한 뒤 사일로 PR이면 `silo-runtime-handoff`만 수행합니다.
 
 ## 실패 압력
@@ -31,6 +31,7 @@ branch base는 먼저 계층으로 판단합니다. 목표 모델에서 0계층 
 - Codex review 미설정 또는 권한 없음이 명시된 PR에서는 pass 목표 대신 fallback 상태와 확인 근거가 기록됨
 - PR 댓글에 외부 리뷰 요청문으로 `@codex review`가 호출됨
 - PR 본문 `Codex PR 리뷰` 항목에 최신 head 기준 리뷰 상태가 기록됨
+- 최신 head 리뷰 결과가 없는 `eyes` 진행 중 상태에서는 `review-waiter-agent` 연결 또는 같은 턴의 polling/timeout 확인 흔적이 남음
 
 ## 내부 목표 문구
 
@@ -132,9 +133,9 @@ Codex review 설정이 명시적으로 없거나 권한 없음이 확인되면 �
 9. Codex review 설정이 동작 가능하거나 아직 확인 전이면 task silo의 `goal.md`에 `codex-review pass` 내부 목표 문구와 PR URL, head SHA, 검증 기준을 추가합니다. `goal.md`가 없으면 PR 본문 `Codex PR 리뷰` 항목에 내부 목표와 현재 상태를 남깁니다. 명시적 미설정 또는 권한 없음 fallback에서는 이 pass 목표를 쓰지 않고, PR 본문 또는 보고에 fallback 상태, 확인 근거, head SHA, 검증 결과, 남은 수동 리뷰 필요를 기록합니다.
 10. 명시적 미설정 또는 권한 없음 fallback에서 task 실행 결과인 사일로 PR이 실제 제품 코드 파일을 바꾸고 runtime, browser, manual QA, E2E 확인이 남아 있으면 [`shared-runtime-health-check`](../shared-runtime-health-check/SKILL.md)와 [`silo-runtime-handoff`](../silo-runtime-handoff/SKILL.md)를 실행합니다. 문서, skill, project SSoT, config example, PR 본문 템플릿만 바꾼 PR이면 PR URL, head SHA, 검증 결과, 남은 수동 리뷰 필요를 handoff로 보고합니다.
 11. 최신 head push 이후의 `@codex review` 호출 댓글, `eyes` 반응, Codex 리뷰 결과를 확인합니다.
-12. 최신 head 이후 호출 댓글에 `eyes` 반응이 있고 아직 리뷰 결과가 없으면 중복 호출하지 않고 `eyes` 확인 시점부터 최대 15분까지 대기합니다.
+12. 최신 head 이후 호출 댓글에 `eyes` 반응이 있고 아직 리뷰 결과가 없으면 중복 호출하지 않고 `eyes` 확인 시점부터 최대 15분까지 대기합니다. 이 상태는 최종 보고로 종료할 수 없으며, 메인 에이전트가 같은 턴에서 대기할 수 없으면 `review-waiter-agent`에 연결해 이후 결과, timeout, 수정, 재호출을 맡깁니다.
 13. 최신 head 이후 호출 댓글이 있지만 3분 동안 `eyes` 반응이 없고 아직 리뷰 결과도 없으면 리뷰 요청이 접수되지 않은 것으로 보고, 같은 head 기준으로 `@codex review`를 재호출한 뒤 11번으로 돌아갑니다. 같은 head의 no-`eyes` 재호출은 기본 최대 3회로 제한하고, 3회 모두 `eyes` 반응과 리뷰 결과가 없으면 `Codex 리뷰 접수 실패 timeout`으로 중단해 사용자 판단 필요로 보고합니다.
-14. 최신 head에 대한 리뷰 요청이 없으면 PR 댓글로 `@codex review`를 호출하고, 외부 리뷰 댓글 문구만 적은 뒤 11번으로 돌아갑니다.
+14. 최신 head에 대한 리뷰 요청이 없으면 PR 댓글로 `@codex review`를 호출하고, 외부 리뷰 댓글 문구만 적은 뒤 11번으로 돌아갑니다. 호출 직후 아직 접수 여부나 최신 head 리뷰 결과가 확인되지 않았으면 종료하지 않고, 같은 턴 polling 또는 `review-waiter-agent` 연결 중 하나를 수행합니다.
 15. `eyes` 반응을 확인한 뒤 15분 동안 Codex 응답이 없으면 루프를 중단하고 PR URL, head SHA, 호출 댓글, 대기 시간을 보고합니다.
 16. Codex 결과가 도착하면 최신 head에 대한 `codex-review pass` 응답인지 확인하고, exact phrase와 동등 pass를 분리해 기록합니다.
 17. 현재 head commit SHA와 일치하는 Codex review body, 부모 review의 대상 commit 또는 `original_commit_id`가 현재 head와 일치하는 inline review comment, 또는 호출 댓글에 적힌 head SHA가 현재 head와 일치하는 Codex 댓글만 다시 훑어 P2/P1/major/critical 또는 보호 절차 위반 지적을 모두 수집합니다. inline comment의 현재 `commit_id`는 GitHub가 최신 diff 위치로 재매핑할 수 있으므로 단독 근거로 쓰지 않습니다. 이전 head를 대상으로 한 리뷰가 새 push 이후 늦게 게시된 경우 작성 시각이 최신 head 이후라도 현재 head 지적으로 섞지 않습니다.
@@ -152,6 +153,7 @@ Codex review 설정이 명시적으로 없거나 권한 없음이 확인되면 �
 - `수정 필요` 또는 `사용자 판단 필요`로 분류된 항목이 남아 있으면 종료하지 않습니다.
 - 사일로 PR이 task 실행 결과이고 실제 제품 코드 파일을 바꿨으며 runtime, browser, manual QA, E2E 확인이 남아 있으면 `shared-runtime-health-check`로 Runtime Set 우선순위와 서버형 runtime 상태를 확인하고, 그 결과를 바탕으로 `silo-runtime-handoff` 댓글까지 남긴 뒤 종료합니다. 문서, skill, project SSoT, config example만 바꾼 PR은 runtime handoff 대상이 아닙니다. `runtime_set`이 없거나 서버를 켤 수 없으면 성공으로 종료하지 않고 실행 불가 사유, 대체 증거, 남은 수동 확인을 PR 댓글에 남겨야 합니다.
 - 같은 head에 대해 진행 중인 `eyes` 반응이 있으면 종료가 아니라 `eyes` 확인 시점부터 15분 한도의 대기입니다.
+- `@codex review` 호출 후 접수 여부를 확인하기 전이거나, 수정 후 push한 최신 head에 대한 재리뷰 결과가 없거나, `eyes` 반응만 있고 최신 head 리뷰 결과가 없으면 종료하지 않습니다. 메인 에이전트가 같은 턴에서 polling/timeout 확인을 끝낼 수 없으면 기본적으로 `review-waiter-agent`가 계속 관리합니다.
 - 같은 head에 대해 호출했지만 3분 동안 `eyes` 반응이 없고 리뷰 결과도 없으면 접수 실패로 보고 재호출합니다. 같은 head의 no-`eyes` 재호출은 기본 최대 3회이며, 모두 실패하면 `Codex 리뷰 접수 실패 timeout`으로 중단해 사용자 판단 필요로 보고합니다.
 - `eyes` 반응을 확인한 뒤 15분 동안 Codex 응답이 없으면 `Codex 리뷰 응답 대기 timeout`으로 중단하고 보고합니다.
 - 사용자가 명시한 반복 한도가 없으면 횟수 제한으로 중단하지 않습니다.

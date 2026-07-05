@@ -30,7 +30,7 @@ PR을 올리라는 지시는 먼저 현재 브랜치의 계층과 PR 유형을 �
 - task 실행 결과인 사일로 PR이 `.ts`, `.java` 같은 실제 제품 코드 파일을 바꾸고 runtime, browser, manual QA, E2E 확인이 남아 있으면 codex-review pass 이후 또는 Codex review 미설정 fallback 기록 이후 사용자 재리뷰 전에 `shared-runtime-health-check`로 사일로 설정의 `runtime_set`과 서버형 runtime 상태를 확인하고, 그 결과를 바탕으로 `silo-runtime-handoff`로 서버 주소, E2E 방법, 실행 불가 사유를 PR 댓글에 남깁니다. 문서, skill, project SSoT, config example만 바꾼 PR에는 runtime handoff를 붙이지 않습니다. `runtime_set`이 없거나 어떤 서버를 켤지 불명확하면 임의로 서버 조합을 만들지 않고 정의 누락 또는 `add-shared-runtime` 필요를 남깁니다.
 - 기본 중단 기준은 호출 횟수가 아니라 리뷰 결과입니다.
 - 반복 이후에도 남은 major/critical 또는 보호 절차 P1/P2 항목은 횟수 기준으로 중단하지 않고, 실제 blocker 여부와 사용자 승인 gate 필요 여부를 분리합니다.
-- 사용자가 `~PR을 리뷰 대기 에이전트로 돌려주세요`, `이 PR 리뷰 대기 에이전트로 맡겨주세요`, `Sartre처럼 돌려주세요`처럼 명시하면 `review-waiter-agent`가 별도 루프로 관리합니다. 사용자가 이번 PR에 명시한 상한이 있을 때만 그 상한을 따릅니다.
+- 최신 head 리뷰 결과가 없는 `eyes` 진행 중 상태, 리뷰 호출 직후 접수 확인 전 상태, 수정 후 push했지만 재리뷰 결과가 없는 상태는 PR loop 종료 상태가 아닙니다. 메인 에이전트가 같은 턴에서 polling/timeout 확인을 끝낼 수 없으면 기본적으로 `review-waiter-agent`가 별도 루프로 관리합니다. 사용자가 이번 PR에 명시한 상한이 있을 때만 그 상한을 따릅니다.
 - 도구 실행 실패 또는 생략 시 실패 원인과 대체 검토 범위를 분리합니다.
 
 ## 리뷰 라운드

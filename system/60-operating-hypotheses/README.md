@@ -15,7 +15,7 @@
 원문 상태 기준:
 
 - `active`: 2개
-- `draft`: 4개
+- `draft`: 5개
 - `closed`: 0개
 - `discarded`: 0개
 
@@ -27,6 +27,7 @@
 | [`OH-0003`](OH-0003-sprint-parallel-mock-contract.md) | `draft` | 실행 전 | 스프린트 병렬 mock 계약 가설 | project contract가 성숙한 병렬 스프린트에서 실제 적용 전까지 draft로 둡니다. |
 | [`OH-0004`](OH-0004-current-head-review-classification.md) | `draft` | PR loop 실험 중 | 현재 head 대상 리뷰 분류 가설 | current-head review/comment 분리 방식은 적용 중이지만, 반복 PR에서 더 검증한 뒤 active 승격 여부를 판단합니다. |
 | [`OH-0006`](OH-0006-pr-completion-gate-split.md) | `draft` | 실행 전 | PR completion gate 분리 가설 | 다음 PR loop 개편에서 작성, Codex review, agent-browser E2E, runtime handoff gate를 분리해 검증한 뒤 active 승격 여부를 판단합니다. |
+| [`OH-0007`](OH-0007-review-waiter-default.md) | `draft` | PR loop 실험 중 | PR 리뷰 대기 실행자 기본 연결 가설 | 호출 또는 `eyes` 확인만으로 loop가 끊기는 문제를 줄이기 위해 pending 상태를 `review-waiter-agent` 기본 연결 대상으로 둡니다. |
 
 ## 관리 기준
 
