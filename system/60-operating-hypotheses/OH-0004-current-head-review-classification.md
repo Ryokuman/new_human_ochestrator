@@ -53,7 +53,7 @@ PR 리뷰 봇은 review body에 no-major 또는 그와 유사한 요약을 남�
 
 ## 적용 범위
 
-- 0계층 `main-v2` 대상 PR
+- 0계층 `main-v3/main` 대상 PR
 - project 계층 PR
 - task silo PR
 - `review-waiter-agent`가 관리하는 PR 리뷰 대기 루프

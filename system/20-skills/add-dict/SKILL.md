@@ -33,7 +33,7 @@ PR 작성/수정 흐름에서는 PR 내부 용어를 기준으로 이 스킬을 
 projects/<project-id>/02-project-internal/10-dictionary/project-dictionary.md
 ```
 
-0계층 `system/`에는 특정 프로젝트의 실제 용어 원문을 복사하지 않습니다. 여러 프로젝트에서 반복되거나 에이전트 공통 행동 규칙에 영향을 주는 용어만 공통 규칙 승격 후보로 보고합니다. 별도 승인 없이 프로젝트별 원문을 root `main-v2`에 반영하지 않습니다.
+0계층 `system/`에는 특정 프로젝트의 실제 용어 원문을 복사하지 않습니다. 여러 프로젝트에서 반복되거나 에이전트 공통 행동 규칙에 영향을 주는 용어만 공통 규칙 승격 후보로 보고합니다. 별도 승인 없이 프로젝트별 원문을 root `main-v3/main`에 반영하지 않습니다.
 
 ## 절차
 
@@ -62,19 +62,19 @@ projects/<project-id>/02-project-internal/10-dictionary/project-dictionary.md
 | 사용 맥락 | 어느 workflow, repo, runner, 화면, 문서에서 쓰는지 |
 | 예시 | 실제 표현이나 일반화된 예시 |
 | 출처 또는 확인 상태 | source 문서, PR, 사용자 확인, 추정 여부 |
-| 프로젝트 전용/공통 후보 | project-local 용어인지, root `main-v2` 공통 규칙 후보인지 |
+| 프로젝트 전용/공통 후보 | project-local 용어인지, root `main-v3/main` 공통 규칙 후보인지 |
 | dictionary 위치 | 실제 저장 파일 경로 |
 
 5. dictionary에 반영합니다.
    - 프로젝트 내부 용어는 project dictionary에 추가/수정/삭제합니다.
-   - 공통 후보는 실제 반영이 아니라 `SSoT 승격 후보` 또는 PR 본문에 후보로만 남깁니다.
+   - 공통 후보는 실제 반영이 아니라 `evidence/follow-up 후보` 또는 PR 본문에 후보로만 남깁니다.
    - secret, credential, 내부 원문, 프로젝트별 민감 자료는 dictionary에 기록하지 않습니다.
 
 6. PR 관련 작업이면 PR 본문을 갱신합니다.
    - `명사 설명`에는 해당 PR을 이해하기 위한 즉시 설명을 둡니다.
    - `새로 추가된 단어`에는 dictionary SSoT에 실제 추가/수정/삭제된 항목만 적습니다.
    - dictionary 변경이 없으면 `새로 추가된 단어`에는 `해당 없음`으로 적습니다.
-   - 새 용어가 공통 규칙 후보라면 `SSoT 승격 후보`에 별도로 적고, root `main-v2` 반영은 별도 승인 대상으로 둡니다.
+   - 새 용어가 공통 규칙 후보라면 `evidence/follow-up 후보`에 별도로 적고, root `main-v3/main` 반영은 별도 승인 대상으로 둡니다.
 
 ## 판단 기준
 
@@ -121,13 +121,13 @@ Dictionary 변경이 없으면 아래처럼 적습니다.
 dictionary 위치:
 PR 본문 반영 여부:
 공통 규칙 승격 후보:
-승격하지 않을 항목:
+처리하지 않고 남긴 항목:
 ```
 
 ## 금지
 
 - 기존 dictionary 유사 단어 점검 없이 새 단어를 추가하지 않습니다.
 - 프로젝트 내부 용어 원문을 0계층 `system/`에 복사하지 않습니다.
-- 공통 후보를 사용자 승인 없이 root `main-v2` 규칙으로 확정하지 않습니다.
+- 공통 후보를 사용자 승인 없이 root `main-v3/main` 규칙으로 확정하지 않습니다.
 - `명사 설명`과 `새로 추가된 단어`의 역할을 섞지 않습니다.
 - secret, token, password, credential 값이나 민감한 운영 원문을 dictionary에 기록하지 않습니다.

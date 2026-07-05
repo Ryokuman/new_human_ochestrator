@@ -9,7 +9,7 @@
 | 테스트 작성 에이전트 | acceptance criteria를 criteria별 테스트 계약, 자동 검증 범위, Pre-QA Gate, 실행 불가 대체 증거 기준으로 바꾼다. |
 | 개발자 에이전트 | task/issue를 구현하고 필요한 repo branch와 diff를 만든다. |
 | QA 에이전트 | acceptance criteria 기준으로 unit, integration, runner, E2E, agent-browser, manual, report, 회귀 여부를 검증한다. |
-| 리뷰 에이전트 | scope, branch safety, secret/protected branch 위반, PR 본문, SSoT 승격 후보를 검토한다. |
+| 리뷰 에이전트 | scope, branch safety, secret/protected branch 위반, PR 본문, evidence/follow-up 후보를 검토한다. |
 
 네 역할은 별도 사일로가 아닙니다. 같은 task 사일로 안에서 순차 또는 병렬 worker로 호출됩니다.
 
@@ -17,7 +17,7 @@
 
 ```text
 1. 입력 task/issue 읽기
-2. `project/<project-id>-<branch-name>` 작업 브랜치에서 project SSoT 원본 task/issue 상태를 `in_progress`로 바꾸는 상태 갱신 PR 생성 및 머지 확인
+2. project 계층 작업 브랜치에서 project SSoT 원본 task/issue 상태를 `in_progress`로 바꾸는 상태 갱신 PR 생성 및 머지 확인. 목표 모델에서는 `project-{projectName}/{taskname}`와 `project-{projectName}/main`, 현재 호환 상태에서는 `project-{projectName}-{taskname}`와 `project-{projectName}`을 사용
 3. 현재 workspace 루트에 `<unit-id>/` 사일로 root 생성
 4. `goal.md` 작성
 5. 필요한 repo만 사일로 root에 clone
@@ -37,7 +37,7 @@
 19. 메인 오케스트레이터에게 최종 보고
 ```
 
-2번 상태 갱신은 준비 단계의 일부가 아니라 시작 gate입니다. 상태 갱신 PR이 `project/<project-id>`에 머지되기 전에는 사일로 root, `goal.md`, repo clone, 작업 브랜치를 만들지 않습니다. 상태 갱신 PR을 만들거나 머지 상태를 확인할 수 없으면 사일로를 계속 진행하지 않고 갱신 불가 사유를 보고합니다.
+2번 상태 갱신은 준비 단계의 일부가 아니라 시작 gate입니다. 상태 갱신 PR이 project 계층 메인 브랜치에 머지되기 전에는 사일로 root, `goal.md`, repo clone, 작업 브랜치를 만들지 않습니다. 목표 모델에서는 `project-{projectName}/main`, 현재 호환 상태에서는 `project-{projectName}`을 확인합니다. 상태 갱신 PR을 만들거나 머지 상태를 확인할 수 없으면 사일로를 계속 진행하지 않고 갱신 불가 사유를 보고합니다.
 
 외부 서비스, 인증, 실제 네트워크, 사용자 계정, 런타임 설정처럼 agent가 직접 통제하지 못하는 요소가 task completion에 끼어들면 8번에서 통제 가능성, 증명 가능성, 사용자 승인 필요 여부를 먼저 분리합니다. 구체적인 L 단계, provider별 checklist, fixture/harness 구현 방식, merge 전 세부 QA gate는 project SSoT 또는 task 계약을 참조하게 하고, system SSoT에 일반 규칙처럼 고정하지 않습니다.
 

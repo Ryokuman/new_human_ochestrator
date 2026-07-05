@@ -64,7 +64,7 @@
 - Coverage Target 또는 Evidence Target
 - 금지선
 - 관련 repo/branch/silo
-- SSoT 승격 후보
+- evidence/follow-up 후보
 
 ## Project Contract 보강 필요 산출물
 

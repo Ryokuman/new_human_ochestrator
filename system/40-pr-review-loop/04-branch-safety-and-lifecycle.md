@@ -5,10 +5,10 @@
 사일로 PR은 아래 조건을 만족해야 리뷰 대상으로 봅니다.
 
 - 필요한 레포지토리만 새로 clone한 격리 작업 공간에서 작업했음
-- `main`, `main-v2`, `dev`, `develop`, `master` 같은 보호 브랜치에서 직접 작업하지 않았음
+- `main`, `main-v3/main`, `dev`, `develop`, `master` 같은 보호 브랜치에서 직접 작업하지 않았음
 - 새 작업 브랜치에서 수정했음
 - 보호 브랜치에 직접 commit 또는 push하지 않았음
-- 0계층 `main-v2` PR과 project 계층 `project/<project-id>` PR에서는 PR 생성 직후 수동 `@codex review`를 호출했거나, 생략 또는 실패 사유를 PR 본문에 남겼음
+- 0계층 PR과 project 계층 PR에서는 PR 생성 직후 수동 `@codex review`를 호출했거나, 생략 또는 실패 사유를 PR 본문에 남겼음. 목표 대상은 `main-v3/main`과 `project-{projectName}/main`이고, 현재 호환 대상은 `main-v3/main`와 `project-{projectName}`입니다.
 - 리뷰 조건 종결 전에는 task, 사일로, PR 작업을 완료로 보고하지 않았음
 - 브랜치별 리뷰 조건 종결 후 사용자 재리뷰 대기 상태로 넘겼음
 - 결과를 PR로 제출했음
@@ -20,10 +20,13 @@
 | 브랜치 종류 | 목적 | 종료 기준 | 종료 처리 |
 |---|---|---|---|
 | `main` | 레거시 보존 | 없음 | 삭제하지 않지만 작업, PR, merge, rebase, worktree 기준으로 사용하지 않습니다. |
-| `main-v2` | 탐색형 제품 엔지니어 운영 기준 | 없음 | 삭제하지 않고 직접 commit/push하지 않습니다. |
-| `project/<project-id>` | 프로젝트별 정보, SSoT 색인, repo 연결 상태를 보관하는 장기 브랜치 | 프로젝트 연결 자체를 폐기할 때 | `main-v2` 병합 대상으로 보지 않고 별도 판단합니다. |
-| `main-v2-*` | 0계층 `main-v2` 업데이트용 단기 작업 브랜치 | PR이 `main-v2`에 머지되고 머지 확인이 끝났을 때 | 로컬 브랜치와 연결 worktree를 삭제합니다. |
-| `project/<project-id>-*` | 해당 `project/<project-id>`에 귀속된 1/2계층 작업 브랜치 | PR이 해당 `project/<project-id>`에 머지되고 머지 확인이 끝났을 때 | 로컬 브랜치와 연결 worktree를 삭제합니다. |
+| `main-v3/main` | 탐색형 제품 엔지니어 운영 기준 | 없음 | 삭제하지 않고 직접 commit/push하지 않습니다. |
+| `project-{projectName}/main` | 프로젝트별 정보, SSoT 색인, repo 연결 상태를 보관하는 목표 장기 계층 메인 브랜치 | 프로젝트 연결 자체를 폐기할 때 | 0계층 병합 대상으로 보지 않고 별도 판단합니다. |
+| `project-{projectName}` | 마이그레이션 전 호환 project 장기 브랜치 | `project-{projectName}/main` 전환 또는 프로젝트 연결 자체를 폐기할 때 | 0계층 병합 대상으로 보지 않고 별도 판단합니다. |
+| `main-v3/*` | 0계층 `main-v3/main` 업데이트용 단기 작업 브랜치 | PR이 `main-v3/main`에 머지되고 머지 확인이 끝났을 때 | 로컬 브랜치와 연결 worktree를 삭제합니다. |
+| `main-v3/*` | 목표 0계층 namespace 아래 작업 브랜치 | PR이 `main-v3/main`에 머지되고 머지 확인이 끝났을 때 | `main-v3/main`은 보존하고 작업 브랜치만 정리합니다. |
+| `project-{projectName}/*` | 목표 project namespace 아래 1/2계층 작업 브랜치 | PR이 해당 `project-{projectName}/main`에 머지되고 머지 확인이 끝났을 때 | `project-{projectName}/main`은 보존하고 작업 브랜치만 정리합니다. |
+| `project-{projectName}-*` | 현재 호환 `project-{projectName}`에 귀속된 1/2계층 작업 브랜치 | PR이 해당 `project-{projectName}`에 머지되고 머지 확인이 끝났을 때 | 로컬 브랜치와 연결 worktree를 삭제합니다. |
 | `silo/<task-id>-*` | task 실행 결과를 PR로 제출하는 단기 작업 브랜치 | PR 머지 확인과 로컬 안전 조건 확인이 끝났을 때 | clean 상태, ahead 없음, PR/패치 대응 관계가 확인되면 로컬 브랜치를 삭제합니다. |
 | `repair/<pr-id>-*` | conflict 해결, 잘못된 PR 이력 복구 같은 임시 보정 브랜치 | 원 PR 또는 대체 PR이 머지되고 패치 동등성이 확인됐을 때 | 자동 삭제하지 않고 `삭제 후보`로 보고합니다. |
 | `docs/*`, `chore/*` | 레거시 0계층 단기 브랜치명 | 기존 PR 머지 여부와 diff 계층 재판정이 끝났을 때 | 새 브랜치로 만들지 않고, 남아 있는 브랜치는 레거시로 보고 정리합니다. |
@@ -53,7 +56,7 @@
 - 실제 삭제한 로컬 브랜치와 worktree
 
 보존:
-- main, main-v2, project/*, 열린 PR head, 판단 보류 브랜치
+- main, main-v3/main, project/*, 열린 PR head, 판단 보류 브랜치
 
 삭제 후보:
 - gone 상태이며 ahead 커밋이 없고 PR/패치 대응 관계가 확인된 브랜치

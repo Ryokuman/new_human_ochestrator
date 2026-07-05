@@ -32,14 +32,15 @@ task-xxxx/ 생성
 -> repo별 작업 브랜치 생성
 ```
 
-위 준비 중 하나라도 실제로 시작하기 전에 project SSoT의 원본 task/issue 상태를 `in_progress`로 갱신해야 합니다. 이 상태 갱신도 project 계층 변경이므로 기준 `project/<project-id>` 브랜치에 직접 커밋하지 않고, `project/<project-id>-<branch-name>` 작업 브랜치에서 상태 갱신 PR을 먼저 만든 뒤 `project/<project-id>`에 머지된 것을 확인합니다. 상태 갱신 PR이 머지되기 전에는 사일로 root 생성, `goal.md` 작성, repo clone, 작업 브랜치 생성을 시작하지 않습니다. SSoT 상태 갱신 PR을 만들거나 머지 상태를 확인할 수 없으면 사일로 진행을 멈추고, 갱신 불가 사유를 보고합니다.
+위 준비 중 하나라도 실제로 시작하기 전에 project SSoT의 원본 task/issue 상태를 `in_progress`로 갱신해야 합니다. 이 상태 갱신도 project 계층 변경이므로 project 계층 메인 브랜치에 직접 커밋하지 않습니다. 목표 모델에서는 `project-{projectName}/{taskname}` 작업 브랜치에서 상태 갱신 PR을 먼저 만든 뒤 `project-{projectName}/main`에 머지된 것을 확인합니다. 현재 호환 상태에서는 `project-{projectName}-{taskname}` 작업 브랜치와 `project-{projectName}` 대상 PR을 사용합니다. 상태 갱신 PR이 머지되기 전에는 사일로 root 생성, `goal.md` 작성, repo clone, 작업 브랜치 생성을 시작하지 않습니다. SSoT 상태 갱신 PR을 만들거나 머지 상태를 확인할 수 없으면 사일로 진행을 멈추고, 갱신 불가 사유를 보고합니다.
 
 ## goal.md 필수 항목
 
 - 원래 task/issue 목표와 SSoT 경로
+- 원래 task/issue가 속한 2계층 `Project Work SSoT` 경로. root `main-v3/main`에 실데이터가 없으면 해당 project SSoT 위치를 참조하고, task, issue, QA, runbook, coverage, work dashboard, Run Set 중 어떤 work data를 소비하는지 적습니다.
 - 사일로 유형: 테스트 사일로 또는 일반 사일로
 - 필요한 repo 목록
-- 참조한 runtime set, branch, commit, port, health check 결과
+- 참조한 Runtime Set 결정 근거, runtime set id, branch, commit, port, health check 결과
 - 테스트 사일로인 경우 report 위치와 execution window 또는 scheduler 기준
 - 보호 브랜치와 권장 작업 브랜치명
 - 사일로 내부 개발자/QA/리뷰 역할의 책임
@@ -57,6 +58,16 @@ task-xxxx/ 생성
 - PR 생성 직후 수동 `@codex review` 호출 여부 또는 생략 사유
 - 브라우저 확인이 필요한 경우 `agent-browser` 사용 기준
 - PR 본문 필수 항목
+
+Runtime Set은 아래 우선순위로 결정합니다.
+
+1. `run_set.required_runtime_set`
+2. `task.runtime_set`
+3. `qa_or_runbook.runtime_set`
+4. `project.common_runtime_set`
+5. 없으면 `runtime 정의 누락`
+
+`goal.md`에는 어느 위치에서 runtime set을 찾았는지와 더 높은 우선순위가 없다는 확인 결과를 적습니다. runtime 정의가 없으면 임의 서버 조합을 만들지 않고 `runtime 정의 누락`으로 보고합니다.
 
 `goal.md`는 원본 task의 `Output`과 `Acceptance Criteria`를 완료 기준으로 삼아야 합니다. 각 criteria는 `unit`, `integration`, `runner`, `E2E`, `agent-browser`, `manual` 중 하나 이상의 검증 방법과 연결합니다.
 

@@ -1,0 +1,66 @@
+version: 1
+
+source:
+  branch: main-v3/main
+
+target:
+  repository: Ryokuman/new_human_ochestrator
+  branch: main-v3/main
+
+pathMappings:
+  - source: AGENTS.public.md
+    target: AGENTS.md
+
+include:
+  files:
+    - README.md
+    - .gitignore
+    - LICENSE
+    - NOTICE
+    - setup.sh
+    - AGENTS.public.md
+    - system/README.md
+    - system/.gitignore
+  directories:
+    - ko
+    - en
+    - system/00-system-overview
+    - system/10-agents
+    - system/10-ssot
+    - system/20-skills
+    - system/30-silo-system
+    - system/40-pr-review-loop
+    - system/50-feedback-personality-loop
+    - system/60-operating-hypotheses
+    - system/templates/project-ssot
+  globs:
+    - system/config/*.example.*
+    - system/config/*.env.example
+
+exclude:
+  paths:
+    - local
+    - projects
+    - project-local
+    - project-overrides
+    - workspace-local
+    - .worktrees
+    - .codex-main-v3
+    - .obsidian
+    - system/20-skills/page-lifecycle-runtime-flow
+  globs:
+    - task-*
+    - config/*.env
+    - config/silo-projects.yaml
+    - config/silo-secrets.yaml
+    - system/config/*.env
+    - system/config/silo-projects.yaml
+    - system/config/silo-secrets.yaml
+    - "**/*secret*"
+    - "**/*token*"
+    - "**/*credential*"
+    - "**/*password*"
+
+sync:
+  commitMessagePrefix: "sync: 공개 오케스트레이터 갱신"
+  sourceShaFooter: true

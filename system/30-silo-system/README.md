@@ -26,12 +26,14 @@
 ## 기본 원칙
 
 - 사일로는 SSoT와 메인 오케스트레이터 규칙을 따릅니다.
+- 2계층은 project가 시작된 뒤 생기는 `Project Work SSoT`입니다. 이 root 저장소의 `main-v3/main`에는 실제 project work 데이터 원문을 두지 않고, task, issue, QA, runbook, coverage, work dashboard, Run Set 같은 project별 작업 정본은 해당 project SSoT에서 관리합니다.
+- 2계층 작업은 별도 독립 merge target이 아닙니다. 해당 project의 project 계층 메인 브랜치로 회수되는 작업 범위입니다. 목표 모델에서는 `project-{projectName}/main` 기준 브랜치에서 판 `project-{projectName}/{taskname}` 작업 브랜치와 project 대상 PR로 제출합니다. 현재 호환 상태에서는 `project-{projectName}`와 `project-{projectName}-{taskname}`을 사용합니다.
 - 사일로 루트와 제품 repo/source workspace는 다른 개념입니다.
 - 사일로는 현재 workspace 루트의 보이는 디렉토리에 만듭니다.
 - 사용자가 명시하지 않는 한 `/tmp`, 홈 디렉토리, 숨김 디렉토리, 에이전트 전용 임시 경로를 기본 위치로 쓰지 않습니다.
 - 사일로는 보호 브랜치에서 직접 작업하지 않고 새 작업 브랜치를 만듭니다.
-- task 또는 issue 사일로를 실제로 시작하기 전에 project SSoT의 원본 task/issue 상태를 `in_progress`로 갱신합니다. 상태 갱신도 `project/<project-id>-<branch-name>` 작업 브랜치와 `project/<project-id>` 대상 PR로 처리하며, 해당 PR이 머지된 뒤에만 사일로 root, `goal.md`, repo clone, 작업 브랜치 생성을 시작합니다.
+- task 또는 issue 사일로를 실제로 시작하기 전에 project SSoT의 원본 task/issue 상태를 `in_progress`로 갱신합니다. 상태 갱신도 project 작업 브랜치와 project 계층 메인 브랜치 대상 PR로 처리합니다. 목표 모델에서는 `project-{projectName}/{taskname}`와 `project-{projectName}/main`, 현재 호환 상태에서는 `project-{projectName}-{taskname}`와 `project-{projectName}`을 사용합니다. 해당 PR이 머지된 뒤에만 사일로 root, `goal.md`, repo clone, 작업 브랜치 생성을 시작합니다.
 - 상태 갱신 PR을 만들거나 머지 상태를 확인할 수 없으면 사일로를 계속 진행하지 않고, 갱신 불가 이유를 보고합니다.
 - 격리 clone 내부에서는 문제 해결에 필요한 source code, generated output, test, tooling 수정을 허용합니다.
-- 결과는 PR, report, evidence, handoff, SSoT 승격 후보로 메인 오케스트레이터에게 돌아와야 합니다.
+- 결과는 PR, report, evidence, handoff, evidence/follow-up 후보로 메인 오케스트레이터에게 돌아와야 합니다.
 - secret, credential, production 데이터, destructive action, 보호 브랜치 직접 수정, data SSoT 임의 변경은 사일로에서도 승인 gate입니다.

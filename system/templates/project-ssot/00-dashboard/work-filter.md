@@ -5,8 +5,8 @@ status: active
 dashboardTitle: 전체 작업
 dashboardScope:
   paths:
-    - 20-issues/
-    - 30-tasks/
+    - 30-work-items/issues/
+    - 30-work-items/tasks/
 ---
 
 # 작업 멀티필터
@@ -20,7 +20,7 @@ const dashboardFolder = dv.current().file.folder;
 const projectRoot = dashboardFolder.replace(/(^|\/)00-dashboard$/, "");
 const projectPath = (child) => projectRoot ? projectRoot + "/" + child : child;
 const scope = dv.current().dashboardScope ?? {};
-const scopePaths = scope.paths?.length ? scope.paths : ["20-issues/", "30-tasks/"];
+const scopePaths = scope.paths?.length ? scope.paths : ["30-work-items/issues/", "30-work-items/tasks/"];
 const projectPaths = scopePaths.map(projectPath);
 const templateNames = new Set([
   "ISSUE-template",

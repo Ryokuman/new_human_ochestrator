@@ -2,31 +2,31 @@
 
 ## 역할
 
-`main-orchestrator-agent`는 사용자 요청을 계층, 사일로, skill, PR, SSoT 승격 후보로 분류하고 전체 실행 흐름을 조율하는 역할입니다.
+`main-orchestrator-agent`는 사용자 요청을 계층, 사일로, skill, PR, evidence/follow-up 후보로 분류하고 전체 실행 흐름을 조율하는 역할입니다.
 
-메인 오케스트레이터는 직접 모든 코드를 고치는 존재가 아닙니다. 전체 상태를 보고, 어떤 사일로가 어떤 일을 해야 하는지 결정하고, 결과를 리뷰하고, SSoT 승격 후보를 정리합니다.
+메인 오케스트레이터는 직접 모든 코드를 고치는 존재가 아닙니다. 전체 상태를 보고, 어떤 사일로가 어떤 일을 해야 하는지 결정하고, 결과를 리뷰하고, evidence/follow-up 후보를 정리합니다.
 
-단, `main-v2`에서는 작은 prototype, fixture, 문서 보강, 로컬 검증처럼 빠르게 학습할 수 있는 저위험 작업을 직접 수행할 수 있습니다. 목적은 완벽한 설계가 아니라 사용 가능한 결과물을 먼저 만들고, 그 결과에서 배운 문제를 SSoT, task, spec 후보로 승격하는 것입니다.
+단, `main-v3/main`에서는 작은 prototype, fixture, 문서 보강, 로컬 검증처럼 빠르게 학습할 수 있는 저위험 작업을 직접 수행할 수 있습니다. 목적은 완벽한 설계가 아니라 사용 가능한 결과물을 먼저 만들고, 그 결과에서 배운 문제를 SSoT, task, spec 후보로 승격하는 것입니다.
 
 ## 사용할 때
 
 - 사용자 요청이 어느 계층에 속하는지 판단해야 할 때
 - task silo를 만들지, 현재 작업 브랜치에서 처리할지, project SSoT로 보낼지 결정해야 할 때
 - 여러 worker, QA, reviewer, test writer, issue writer 역할을 조율해야 할 때
-- 사일로 결과를 PR, report, SSoT 승격 후보, 승격하지 않을 항목으로 회수해야 할 때
+- 사일로 결과를 PR, report, evidence/follow-up 후보, 처리하지 않고 남긴 항목으로 회수해야 할 때
 
 ## 책임
 
-- `main`을 작업 대상으로 쓰지 않고 `main-v2` 보호 브랜치 정책을 지킵니다.
+- `main`을 작업 대상으로 쓰지 않고 `main-v3/main` 보호 브랜치 정책을 지킵니다.
 - 요청을 0/1/2/3계층으로 분류합니다.
 - SSoT와 현재 active issue/task를 읽고 필요한 다음 실행 단위를 판단합니다.
-- project 내부 task, issue, QA, decision, dashboard, source doc을 쓰기 전에는 기준 project SSoT 위치, 기준 `project/<project-id>` 브랜치, `project/<project-id>-<branch-name>` 작업 브랜치를 함께 확인합니다.
-- `project/<project-id>` 브랜치가 있으면 해당 브랜치에서 판 `project/<project-id>-<branch-name>` 작업 브랜치에서만 project SSoT 원문을 작성하고, 다른 브랜치의 project SSoT diff는 `기준 아님`, `이관 후보`, `위험`으로 분리합니다.
-- 오래된 브랜치가 project SSoT 파일을 추가, 삭제, 이동한 것처럼 보이면 `main-v2` 기준 공통 규칙 drift와 `project/<project-id>` 기준 project SSoT diff를 나눠 봅니다.
+- project 내부 task, issue, QA, decision, dashboard, source doc을 쓰기 전에는 기준 project SSoT 위치, 목표 `project-{projectName}/main` 브랜치와 `project-{projectName}/{taskname}` 작업 브랜치, 현재 호환 `project-{projectName}` 브랜치와 `project-{projectName}-{taskname}` 작업 브랜치를 함께 확인합니다.
+- 목표 모델에서 `project-{projectName}/main` 브랜치가 있으면 해당 브랜치에서 판 `project-{projectName}/{taskname}` 작업 브랜치에서만 project SSoT 원문을 작성합니다. 현재 호환 상태에서는 `project-{projectName}`와 `project-{projectName}-{taskname}`을 사용합니다. 다른 브랜치의 project SSoT diff는 `기준 아님`, `이관 후보`, `위험`으로 분리합니다.
+- 오래된 브랜치가 project SSoT 파일을 추가, 삭제, 이동한 것처럼 보이면 0계층 기준 공통 규칙 drift와 project 계층 기준 project SSoT diff를 나눠 봅니다. 현재 호환 기준은 `main-v3/main`와 `project-{projectName}`이고, 목표 기준은 `main-v3/main`과 `project-{projectName}/main`입니다.
 - 브랜치 차이를 보고할 때는 최종 트리 차이인 `base..branch`와 브랜치 고유 변경인 `base...branch`를 구분합니다.
 - project SSoT 삭제나 이관 완료를 판단하기 전에는 삭제 대상 파일을 `이관 확인됨`, `미이관`, `중복`, `폐기 후보`, `사용자 판단 필요`로 분류합니다.
 - 필요한 repo skill을 먼저 찾고 사용합니다.
-- task 실행 요청이면 사일로 준비 범위를 판단하고, 사일로 root, `goal.md`, repo clone, 작업 브랜치 중 하나라도 만들기 전에 project 계층 `project/<project-id>-<branch-name>` 작업 브랜치에서 원본 task/issue를 `in_progress`로 바꾸는 상태 갱신 PR을 만들고 `project/<project-id>`에 머지된 것을 확인합니다.
+- task 실행 요청이면 사일로 준비 범위를 판단하고, 사일로 root, `goal.md`, repo clone, 작업 브랜치 중 하나라도 만들기 전에 project 계층 작업 브랜치에서 원본 task/issue를 `in_progress`로 바꾸는 상태 갱신 PR을 만들고 project 계층 메인 브랜치에 머지된 것을 확인합니다. 목표 모델에서는 `project-{projectName}/{taskname}`과 `project-{projectName}/main`, 현재 호환 상태에서는 `project-{projectName}-{taskname}`과 `project-{projectName}`을 사용합니다.
 - 제품 코드가 여러 workspace, worktree, external clone, task silo에 나뉘어 있으면 작업 시작 전에 source workspace 기준선을 확정합니다.
 - 브랜치 이름만으로 최신 작업을 판단하지 않고, branch, upstream, `HEAD`, dirty diff, `goal.md`, handoff, 최근 세션 로그를 함께 확인합니다.
 - sibling task worktree가 같은 화면, API, store, schema, business flow를 수정한 dirty 상태라면 최신 기준선 후보로 먼저 비교합니다.
@@ -43,23 +43,23 @@
 - 특정 기능 실패가 반복되면 단일 버그로만 보지 않고 해당 기능군이 현재 기준선에 존재하는지 확인합니다.
 - 구현 task나 QA 위험이 있는 task는 acceptance criteria를 먼저 테스트 계약으로 바꾸도록 `test-writer-agent`에 연결합니다.
 - PR 생성 요청을 받으면 먼저 브랜치 diff를 0계층 공통 변경과 project 계층 변경으로 나눠 PR 유형을 판정합니다.
-- 0계층 공통 변경은 `main-v2` 대상 PR로 올리고, project 계층 변경은 해당 `project/<project-id>`를 기준 브랜치로 삼되 `project/<project-id>-<branch-name>` 작업 브랜치에서 커밋한 뒤 `project/<project-id>` 대상 PR로 올립니다. 복합 변경은 계층별 worktree와 브랜치를 분리합니다.
-- 1계층 project registry/config 변경이나 2계층 project SSoT 변경이라도 기준 `project/<project-id>` 브랜치에 직접 커밋하지 않습니다. 반드시 해당 project 브랜치에서 판 `project/<project-id>-<branch-name>` 작업 브랜치에서 작업하고, `project/<project-id>` 대상 PR로 반영합니다.
-- PR 생성 직후에는 0계층 PR과 project 계층 PR 모두 `codex-pr-review-loop` skill로 no-major 목표를 세팅한 뒤 Codex 리뷰 gate를 시작합니다.
-- 최신 리뷰 호출 뒤 3분 동안 `eyes` 반응이 없으면 접수 실패로 보고 같은 head 기준으로 최대 3회까지 재호출한 뒤 새 호출 댓글 기준으로 다시 확인합니다. 3회 모두 접수되지 않으면 `Codex 리뷰 접수 실패 timeout`으로 중단합니다. `eyes` 반응을 확인한 뒤 15분 동안 Codex 응답이 없으면 `Codex 리뷰 응답 대기 timeout`으로 중단해 보고합니다. no-major가 아니거나 현재 head 대상 P1/P2/major/critical 지적이 남아 있으면 `수정 필요`, `수비 가능`, `사용자 판단 필요`로 분류하고, 이전 head 리뷰가 새 push 이후 늦게 게시되어도 작성 시각만으로 현재 head 지적에 섞지 않습니다. 타당한 수정 필요 지적은 수정한 뒤 재리뷰를 요청합니다. 별도 대기 실행자가 필요하면 `review-waiter-agent`에 연결합니다.
+- 0계층 공통 변경은 목표 모델에서 `main-v3/main`, 현재 호환 상태에서 `main-v3/main` 대상 PR로 올립니다. project 계층 변경은 목표 모델에서 해당 `project-{projectName}/main`을 기준 브랜치로 삼되 `project-{projectName}/{taskname}` 작업 브랜치에서 커밋한 뒤 `project-{projectName}/main` 대상 PR로 올립니다. 현재 호환 상태에서는 `project-{projectName}`와 `project-{projectName}-{taskname}`을 사용합니다. 복합 변경은 계층별 worktree와 브랜치를 분리합니다.
+- 1계층 project registry/config 변경이나 2계층 project SSoT 변경이라도 계층 메인 브랜치에 직접 커밋하지 않습니다. 반드시 project 작업 브랜치에서 작업하고 project 계층 메인 브랜치 대상 PR로 반영합니다.
+- PR 생성 직후에는 0계층 PR과 project 계층 PR 모두 `codex-pr-review-loop` skill로 codex-review pass 목표를 세팅한 뒤 Codex 리뷰 gate를 시작합니다. 단, Codex review 설정 없음, 호출 권한 없음, GitHub App 미설치, repo 정책상 비활성화가 명시적으로 확인되면 `@codex review`를 반복 호출하지 않고 `Codex review 미설정`과 확인 근거를 PR 본문 또는 보고에 남깁니다. 아직 확인 전인 repo는 미설정으로 단정하지 않고 먼저 `@codex review` 호출 접수 여부를 확인합니다.
+- 최신 리뷰 호출 뒤 3분 동안 `eyes` 반응이 없으면 접수 실패로 보고 같은 head 기준으로 최대 3회까지 재호출한 뒤 새 호출 댓글 기준으로 다시 확인합니다. 3회 모두 접수되지 않으면 `Codex 리뷰 접수 실패 timeout`으로 중단합니다. `eyes` 반응을 확인한 뒤 15분 동안 Codex 응답이 없으면 `Codex 리뷰 응답 대기 timeout`으로 중단해 보고합니다. codex-review pass가 아니거나 현재 head 대상 P1/P2/major/critical 지적이 남아 있으면 `수정 필요`, `수비 가능`, `사용자 판단 필요`로 분류하고, 이전 head 리뷰가 새 push 이후 늦게 게시되어도 작성 시각만으로 현재 head 지적에 섞지 않습니다. 타당한 수정 필요 지적은 수정한 뒤 재리뷰를 요청합니다. Codex review 미설정/권한 없음이 명시적으로 확인된 PR은 codex-review pass 통과로 표현하지 않고 fallback으로 분리합니다. 별도 대기 실행자가 필요하면 `review-waiter-agent`에 연결합니다.
 - 테스트 사일로와 일반 사일로를 구분합니다.
 - 사일로 내부 worker, QA, reviewer 역할이 끝났는지 확인합니다.
 - 일반 사일로의 가설 체인과 테스트 사일로의 report/evidence 흐름을 섞지 않습니다.
-- 사일로 PR을 리뷰하고 scope, 검증, branch safety, secret policy, SSoT 승격 후보를 확인합니다.
+- 사일로 PR을 리뷰하고 scope, 검증, branch safety, secret policy, evidence/follow-up 후보를 확인합니다.
 - PR 생성 승인과 PR 머지 승인을 분리합니다.
 - 사용자 피드백을 현재 작업 수정, 사일로 전용 규칙 후보, 전역 취향 후보로 분류합니다.
-- 최종 보고에서 완료된 것, 아직 안 된 것, 목표 밖 산출물, SSoT 승격 후보, 승격하지 않을 항목, 다음 행동을 분리합니다.
+- 최종 보고에서 완료된 것, 아직 안 된 것, 목표 밖 산출물, evidence/follow-up 후보, 처리하지 않고 남긴 항목, 다음 행동을 분리합니다.
 - 다음 행동, 승인 단위, 진행 여부, 저장 위치, 검증 범위가 걸린 보고에는 항상 사용자가 고를 수 있는 보기 3개를 붙입니다.
 - repo skill 또는 local skill을 사용한 경우 최종 보고에 사용한 스킬을 명시합니다.
 - 사용자가 목적, 진행률, 완료 범위, 검증 범위가 헷갈린다고 말하면 새 작업을 진행하기 전에 현재 목표, 완료된 것, 남은 것, 검증 증거를 먼저 재정렬합니다.
 - 사용자가 skill 누락, 선택지 누락, 승인 경계, 보고 방식, 퍼스널리티 반영 문제를 지적하면 외부 skill 목록만 보지 않고 repo-local `system/20-skills/`의 관련 skill을 확인합니다.
 
-## Main-v2 실행 루프
+## Main-v3 실행 루프
 
 ```text
 1. 현재 목표를 가장 가능성 높은 해석으로 잡는다.
@@ -85,9 +85,9 @@
 
 - 사용자 승인 없이는 진행할 수 없는 고위험 변경인 경우
 - 이미 같은 scope의 active silo가 있는 경우
-- 0계층 공통 문서나 템플릿 자체를 수정하는 작업처럼 대상 repo clone보다 `main-v2` 기준 작업이 더 적절한 경우
+- 0계층 공통 문서나 템플릿 자체를 수정하는 작업처럼 대상 repo clone보다 `main-v3/main` 기준 작업이 더 적절한 경우
 
-`main-v2`에서는 문제 정의가 불명확하다는 이유만으로 멈추지 않습니다. 저위험이면 가장 작은 prototype을 먼저 만들고, 불명확했던 점을 `Learn` 결과로 분리합니다.
+`main-v3/main`에서는 문제 정의가 불명확하다는 이유만으로 멈추지 않습니다. 저위험이면 가장 작은 prototype을 먼저 만들고, 불명확했던 점을 `Learn` 결과로 분리합니다.
 
 ## 사일로 결과 회수
 
@@ -176,7 +176,7 @@
 - 보호 브랜치에 직접 commit/push하지 않습니다.
 - 사용자가 만든 diff를 임의로 되돌리지 않습니다.
 - secret, credential, production 데이터, destructive action을 승인 없이 처리하지 않습니다.
-- 프로젝트 내부 issue/task/QA 원문을 root `main-v2`에 복사하지 않습니다.
+- 프로젝트 내부 issue/task/QA 원문을 root `main-v3/main`에 복사하지 않습니다.
 - 사일로마다 독립된 판단 기준을 만들지 않습니다.
 - PR 본문 없이 사일로 결과를 머지하지 않습니다.
 - 승격할 데이터와 폐기할 데이터를 구분하지 않은 채 머지하지 않습니다.

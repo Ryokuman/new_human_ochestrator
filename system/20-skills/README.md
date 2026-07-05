@@ -8,8 +8,8 @@
 
 - 사용자가 특정 skill을 말하거나, 요청이 skill 설명과 맞으면 해당 `SKILL.md`를 먼저 읽습니다.
 - skill에 절차가 이미 정의되어 있으면 보고나 선택지에서 절차 전체를 반복하지 않고 skill 이름으로 압축합니다.
-- 공통 규칙, 프롬프트, `AGENTS.md`, repo skill 변경은 `main-v2` 기준으로만 처리합니다.
-- 이 프로젝트에서는 기존 `main` 업데이트 절차를 실행하지 않습니다. `main-v2`에서 branch-local 탐색형 운영 변경으로 처리하고, `main`에는 반영하지 않습니다.
+- 공통 규칙, 프롬프트, `AGENTS.md`, repo skill 변경의 목표 계층 메인 브랜치는 `main-v3/main`입니다. 현재 마이그레이션 전 호환 상태에서는 `main-v3/main` 기준으로 처리합니다.
+- 이 프로젝트에서는 기존 `main` 업데이트 절차를 실행하지 않습니다. 현재는 `main-v3/main`에서 branch-local 탐색형 운영 변경으로 처리하고, `main`에는 반영하지 않습니다.
 - repo skill을 추가하거나 사용법을 바꾸면 이 README의 주요 skill 표와 관련 상위 README 또는 인덱스를 함께 갱신합니다.
 - README 또는 인덱스 갱신이 빠졌다면 repo skill 변경은 완료로 보고하지 않습니다.
 - 프로젝트별 실제 issue, task, QA, coverage 결과는 이 디렉토리에 복사하지 않습니다.
@@ -19,28 +19,27 @@
 
 아래 목록은 이 디렉토리의 `*/SKILL.md` 기준 사용 가능한 repo skill 전체입니다.
 
-- [`main-branch-update-flow`](main-branch-update-flow/SKILL.md): 공통 SSoT, 프롬프트, `AGENTS.md`, skill 초안 변경을 `main-v2-<branch-name>` 작업 브랜치와 PR로만 반영할 때 사용합니다.
-- [`codex-pr-review-loop`](codex-pr-review-loop/SKILL.md): PR 유형을 계층별로 판정한 뒤 0계층 `main-v2` PR 또는 project 계층 PR에서 Codex 최신 head 리뷰를 관리할 때 사용합니다. no-major 응답만으로 종료하지 않고, 현재 head 대상 P1/P2/major/critical 지적을 `수정 필요`, `수비 가능`, `사용자 판단 필요`로 분류하며, 이전 head 리뷰가 새 push 이후 늦게 게시되어도 작성 시각만으로 현재 head 지적에 섞지 않습니다. 수비 가능한 항목은 사용자 결정, project contract, `goal.md`, PR scope 같은 근거를 PR 본문 또는 review thread에 남깁니다. submodule repo PR에서는 `patch/evidence`, `runtime`, `service/MSA` 유형과 제품 pin 조건을 함께 확인합니다.
-- [`silo-runtime-handoff`](silo-runtime-handoff/SKILL.md): 사일로 PR이 Codex no-major를 통과한 뒤 사용자 재리뷰를 호출하기 전에 runtime, 서버 주소, E2E 확인 절차, 실행 불가 사유를 PR 댓글로 남길 때 사용합니다.
-- [`main-v2-pr-scope-gate`](main-v2-pr-scope-gate/SKILL.md): `main-v2` 대상 PR 제안, push, PR 생성 전 diff path와 브랜치명을 계층별로 분류해 project SSoT 원문이나 local/silo 자료가 섞였는지 확인할 때 사용합니다.
+- [`main-branch-update-flow`](main-branch-update-flow/SKILL.md): 공통 SSoT, 프롬프트, `AGENTS.md`, skill 초안 변경을 0계층 작업 브랜치와 PR로만 반영할 때 사용합니다. 목표 모델은 `main-v3/{taskname}` 작업 브랜치와 `main-v3/main` 대상 PR이며, 현재 호환 상태에서는 `main-v3/{taskname}` 작업 브랜치와 `main-v3/main` 대상 PR을 사용합니다. PR 생성 후 Codex review 설정이 동작하면 `codex-pr-review-loop`로 최신 head 리뷰를 관리하고, Codex review 설정 없음/권한 없음이 명시적으로 확인되면 `Codex review 미설정` 근거를 기록한 뒤 review loop를 생략합니다.
+- [`codex-pr-review-loop`](codex-pr-review-loop/SKILL.md): PR 유형을 계층별로 판정한 뒤 0계층 PR 또는 project 계층 PR에서 Codex 최신 head 리뷰를 관리할 때 사용합니다. 목표 계층 메인 브랜치는 `main-v3/main`과 `project-{projectName}/main`이고, 현재 호환 기준은 `main-v3/main`와 `project-{projectName}`입니다. codex-review pass 응답만으로 종료하지 않고, 현재 head 대상 P1/P2/major/critical 지적을 `수정 필요`, `수비 가능`, `사용자 판단 필요`로 분류하며, 이전 head 리뷰가 새 push 이후 늦게 게시되어도 작성 시각만으로 현재 head 지적에 섞지 않습니다. 수비 가능한 항목은 사용자 결정, project contract, `goal.md`, PR scope 같은 근거를 PR 본문 또는 review thread에 남깁니다. submodule repo PR에서는 `patch/evidence`, `runtime`, `service/MSA` 유형과 제품 pin 조건을 함께 확인합니다. Codex review 설정은 권장값이며, 명시적으로 호출 경로가 없거나 권한 없음이 확인되면 review loop를 돌리지 않고 `Codex review 미설정`을 기록합니다. 아직 확인 전인 repo는 먼저 `@codex review`를 호출해 접수 여부를 확인합니다. task 실행 결과인 사일로 PR이 실제 제품 코드 파일을 바꾸고 runtime/E2E 확인이 남아 있을 때만 codex-review pass 이후 또는 Codex review 미설정 fallback에서 `shared-runtime-health-check`로 `runtime_set`과 서버형 runtime 상태를 확인하고 `silo-runtime-handoff` 댓글까지 남긴 뒤 사용자 재리뷰로 넘깁니다.
+- [`silo-runtime-handoff`](silo-runtime-handoff/SKILL.md): 사일로 PR이 codex-review pass를 통과했거나 Codex review 설정 없음/권한 없음이 명시적으로 확인되어 review loop를 생략했고, 실제 제품 코드 파일 변경과 runtime/E2E 확인이 함께 있을 때 사용자 재리뷰를 호출하기 전에 runtime, 서버 주소, E2E 확인 절차, 실행 불가 사유를 PR 댓글로 남길 때 사용합니다. handoff는 `shared-runtime-health-check` 결과와 `silo-runtime.env`, `silo-projects.yaml`, `shared-runtime-registry.yaml` 기준으로 shared BE/API, Docker DB, FE/harness, worker, mock service가 준비됐는지 확인하며, 필요한 runtime이 꺼져 있으면 E2E 가능으로 쓰지 않습니다.
+- [`main-v3-pr-scope-gate`](main-v3-pr-scope-gate/SKILL.md): `main-v3/main` 대상 PR 제안, push, PR 생성 전 diff path와 브랜치명을 계층별로 분류해 project SSoT 원문이나 local/silo 자료가 섞였는지 확인할 때 사용합니다.
 - [`project-contract-gate`](project-contract-gate/SKILL.md): task 작성 전에 기존 요구사항 또는 자연어 앱 설명을 바탕으로 project contract를 구체화할 때 사용합니다. 자연어 제품 구체화와 기능별 추론/번호 질의응답의 2단계로 진행하고, 충분히 닫히기 전에는 task를 만들지 않습니다.
-- [`root-layer-manager`](root-layer-manager/SKILL.md): 정보가 0~3계층 중 어디에 속하는지 판단하거나, 프로젝트 task/issue/QA/decision/dashboard/source doc을 쓰기 전에 실제 project SSoT 위치, 기준 `project/<project-id>` 브랜치, `project/<project-id>-<branch-name>` 작업 브랜치, task 번호 registry를 확인해야 할 때 사용합니다.
-- [`projects-setup`](projects-setup/SKILL.md): 새 프로젝트를 `projects/` 구조에 등록하거나 project SSoT, `.gitignore` 추적 예외, 사일로 config를 함께 셋업해야 할 때 사용합니다. 생성되는 project SSoT에는 기능 task 생성 전 확인할 `00-dashboard/project-contract.md`와 `Project Contract 확인 결과`, 파일별 대표 함수 골격형 `Pseudo Code`가 포함된 task/silo 템플릿을 둡니다. DB를 사용하는 프로젝트는 setup 때 DB schema 정본/요약/적용 경로를 project registry/config 또는 project SSoT에 기록합니다.
+- [`root-layer-manager`](root-layer-manager/SKILL.md): 정보가 0~3계층 중 어디에 속하는지 판단하거나, 프로젝트 contract/decision/ADR 또는 task/issue/QA/dashboard/source doc을 쓰기 전에 실제 project SSoT 위치, 목표 기준 `project-{projectName}/main` 브랜치, 목표 작업 `project-{projectName}/{taskname}` 브랜치, 현재 호환 `project-{projectName}`/`project-{projectName}-{taskname}` 브랜치, task 번호 registry를 확인해야 할 때 사용합니다.
+- [`projects-setup`](projects-setup/SKILL.md): 새 프로젝트를 `projects/` 구조에 등록하거나 project SSoT, `.gitignore` 추적 예외, 사일로 config를 함께 셋업해야 할 때 사용합니다. 생성되는 1계층 Project SSoT에는 기능 task 생성 전 확인할 `project-contract.md`를 두고, 2계층 Project Work SSoT에는 `Project Contract 확인 결과`, 파일별 대표 함수 골격형 `Pseudo Code`가 포함된 task/silo 템플릿을 둡니다. DB를 사용하는 프로젝트는 setup 때 DB schema 정본/요약/적용 경로를 project registry/config 또는 project SSoT에 기록합니다.
+- [`github-project-intake`](github-project-intake/SKILL.md): GitHub 계정, organization, repo URL, 로컬 clone 경로를 바탕으로 포트폴리오나 project SSoT에 쓸 프로젝트 후보와 근거를 수집하고, 적용/보류/영구제외 및 FE/BE/support repo 묶음을 정리할 때 사용합니다.
 - [`add-shared-runtime`](add-shared-runtime/SKILL.md): 여러 task silo가 함께 참조하는 프로젝트별 shared runtime set을 등록하거나 준비할 때 사용합니다.
 - [`shared-runtime-health-check`](shared-runtime-health-check/SKILL.md): page-lifecycle, run, E2E 실행 전 `runtime_set` 유무나 서버형 shared runtime 상태를 확인해야 할 때 사용합니다.
 - [`delete-shared-runtime`](delete-shared-runtime/SKILL.md): shared runtime registry/status 정리, archived 표시, 명시 승인된 runtime checkout 제거가 필요할 때 사용합니다.
-- [`command-intent-preflight`](command-intent-preflight/SKILL.md): lifecycle, run, E2E, 다건 테스트 사일로 실행 전에 실행 전제가 완성됐는지 확인해야 할 때 사용합니다.
-- [`page-lifecycle-runtime-flow`](page-lifecycle-runtime-flow/SKILL.md): page-lifecycle L 채점을 위해 단일 page를 생성하고 dynavite와 agent-browser로 확인해야 할 때 사용합니다.
 - [`add-dict`](add-dict/SKILL.md): 용어 추가, dict 정리, PR 본문 용어 점검, dictionary 변경이 필요할 때 사용합니다.
 - [`user-personality-adaptive-response`](user-personality-adaptive-response/SKILL.md): 사용자가 선택지, 보고 방식, 승인 경계, skill 사용 누락, 현재 워크트리 누락, 톤이 맞지 않는다고 지적할 때 사용합니다. 외부 skill 목록에 보이지 않아도 repo-local `system/20-skills/`에 같은 skill이 있는지 확인합니다. 응답 계약에 영향을 주는 사건은 로컬 evidence로 반드시 남기고, 최종 응답 직전에는 `사용한 스킬`, `현재 워크트리`, `다음 행동`, `보기 밖 선택/evidence` 계약을 체크합니다. 사용자가 좁은 스코프의 처방과 판단 근거의 위치를 지적하면 system SSoT에는 판단 근거만 남기고 구체 대처는 project SSoT 또는 task 계약으로 내려보내는 evidence로 분리합니다. 장기 규칙 반영은 사용자가 원하는 주기로 여는 검토 세션에서 판단합니다.
 
-## main-v2 운영
+## main-v3/main 운영
 
 ## Project SSoT 대시보드 기본값
 
 `setup.sh --create-project-ssot`으로 만드는 Project SSoT는 `00-dashboard/project-overview.md`만 두지 않습니다. 기본으로 아래 작업 대시보드를 함께 생성합니다.
 
-- `00-dashboard/project-contract.md`: 기능 task 생성 전 확인하는 제품 정의, 현재 버전 목표/비목표, 핵심 사용자 플로우, 데이터 저장과 동기화 경계, repo 역할, 추정 금지 정보
+- `../01-project-ssot/project-contract.md`: 기능 task 생성 전 확인하는 1계층 제품 정의, 현재 버전 목표/비목표, 핵심 사용자 플로우, 데이터 저장과 동기화 경계, repo 역할, 추정 금지 정보
 - `00-dashboard/work-filter.md`: 종류, 상태, 레벨, 태그, 날짜, 검색어를 조합하는 즉석 멀티필터
 - `00-dashboard/work-items.base`: Obsidian Base table view와 저장된 view
 - `00-dashboard/work-views.md`: Base 사용법과 embed 안내
@@ -55,11 +54,11 @@ target이 `projects/<project-id>/...` 아래면 setup은 `.gitignore`의 `projec
 
 생성되는 task 템플릿은 `Project Contract 확인 결과`, 파일별 대표 함수 골격형 `Pseudo Code`, 병렬 task 독립성 계약을 포함합니다. 기능 task는 project contract 위치와 확인한 제품 정의/목표/비목표/핵심 플로우/데이터 저장과 동기화 경계/repo 역할, 누락 항목을 먼저 남깁니다. `Pseudo Code`는 실제 구현 코드가 아니라 각 파일의 대표 함수와 보조 함수가 어떤 입력/의존성을 받고 조회, 검증, 가공, 조건 분기, 반복, 저장, 반환을 어떻게 수행하는지 코드에 가깝게 작성하게 하며, 코드 식별자와 API 이름은 원문을 유지할 수 있습니다. 병렬 task는 sibling task 완료를 Output, Acceptance Criteria, Test Plan의 전제로 삼지 않고, 개별 output은 해당 task가 독립적으로 증명할 수 있는 산출물로 제한합니다. 인증/데이터/화면/backend 의존성은 agent가 통제할 수 있는 대체 검증 경로와 실제 사용자 경로의 차이를 적고, 여러 sibling task 완료를 전제로 하는 최종 통합 E2E는 별도 QA gate, integration task, 또는 후속 project 검증으로 분리합니다. 단일 task의 화면 동작 자체가 산출물이면 E2E 또는 agent-browser acceptance를 유지합니다.
 
-`work-filter.md`는 frontmatter의 `dashboardScope.paths`를 기준으로 수집 경로를 정합니다. 기본값은 `20-issues/`, `30-tasks/`이고, 같은 프로젝트 안에서 BE, FE, ops 대시보드를 나누려면 템플릿을 복제해 `dashboardTitle`과 `dashboardScope.paths`만 바꿉니다. 대시보드는 ID와 제목을 별도 컬럼으로 보여주며, 기존 `id`/`title` 문서도 호환합니다.
+`work-filter.md`는 frontmatter의 `dashboardScope.paths`를 기준으로 수집 경로를 정합니다. 기본값은 `30-work-items/issues/`, `30-work-items/tasks/`이고, 같은 프로젝트 안에서 BE, FE, ops 대시보드를 나누려면 템플릿을 복제해 `dashboardTitle`과 `dashboardScope.paths`만 바꿉니다. 대시보드는 ID와 제목을 별도 컬럼으로 보여주며, 기존 `id`/`title` 문서도 호환합니다.
 
 DataviewJS 대시보드는 Obsidian community plugin `dataview`와 DataviewJS 허용을 전제로 합니다. scaffold는 `.obsidian/community-plugins.json`에 `dataview`를 선언하고, Obsidian Base 대체 화면인 `work-items.base`도 함께 생성합니다. Markdown 본문 폭을 넓히기 위해 `.obsidian/appearance.json`에서 `readable-markdown-width` CSS snippet도 기본 활성화합니다.
 
-`main-v2`는 기존 `main`과 다른 탐색형 운영 브랜치입니다.
+`main-v3/main`는 기존 `main`과 다른 탐색형 운영 브랜치입니다.
 
 ```text
 Build -> Learn -> Spec
@@ -75,10 +74,15 @@ Build -> Learn -> Spec
 
 리뷰 gate:
 
-- 0계층 공통 변경 `main-v2` PR: 수동 `@codex review` gate
-- project 계층 `project/<project-id>` PR: 수동 `@codex review` gate
+- 0계층 공통 변경 PR: 수동 `@codex review` gate를 권장합니다. 목표 대상은 `main-v3/main`, 현재 호환 대상은 `main-v3/main`입니다.
+- project 계층 PR: 수동 `@codex review` gate를 권장합니다. 목표 대상은 `project-{projectName}/main`, 현재 호환 대상은 `project-{projectName}`입니다.
+- Codex review 설정이 명시적으로 없는 repo 또는 organization에서는 PR review loop를 돌리지 않고, PR 본문 또는 보고에 `Codex review 미설정`을 남깁니다. 아직 확인 전인 repo는 먼저 `@codex review`를 호출해 접수 여부를 확인합니다. task 실행 결과인 사일로 PR이 실제 제품 코드 파일과 runtime/E2E 확인을 함께 포함할 때만 runtime handoff를 수행합니다.
 
-PR을 만들 때는 먼저 변경 내용이 0계층 공통 변경인지 project 계층 변경인지 확인합니다. branch base는 계층 기준 브랜치이며, 0계층은 `main-v2`, project 계층은 해당 `project/<project-id>`가 기준입니다. GitHub PR target/base branch는 이 계층 판단이 반영된 최종 머지 대상입니다. project 계층 변경도 `project/<project-id>`에 직접 커밋하지 않고, `project/<project-id>-<branch-name>` 작업 브랜치에서 커밋한 뒤 `project/<project-id>` 대상 PR로 올립니다. 두 계층이 섞이면 worktree와 브랜치를 분리해 서로 다른 PR로 올립니다. 제품 repo가 독립 git submodule commit을 pin하는 구조라면 상위 제품 repo PR의 submodule gitlink 리뷰만으로 완료 처리하지 않습니다. 변경된 각 submodule repo도 보호 브랜치 직접 커밋 없이 repo별 파생 브랜치와 별도 PR, Codex no-major 또는 동등 리뷰 gate를 먼저 거쳐야 하며, 상위 제품 repo PR은 리뷰 통과 commit의 gitlink pin과 host 연결만 검증합니다. PR 생성 직후에는 [`codex-pr-review-loop`](codex-pr-review-loop/SKILL.md)를 사용해 PR 댓글로 수동 `@codex review`를 호출합니다. 호출 댓글에는 가능하면 `한국어로 리뷰해 주세요.` 또는 이에 준하는 한국어 요청과 최신 head 기준 리뷰 요청만 적습니다. no-major 목표, 통과 판정, 반복 조건은 외부 댓글이 아니라 PR 본문 `Codex PR 리뷰` 항목, task silo의 `goal.md`, 메인 에이전트 내부 상태에서 관리합니다. 외부 리뷰 봇의 고정 템플릿 언어까지 보장하지는 못합니다. PR 본문에는 `Codex PR 리뷰` 항목을 두고, 호출 횟수와 결과를 기록합니다. 현재 head push 이후에 작성된 최신 `@codex review` 호출 댓글에 `eyes` 반응이 있으면 리뷰가 접수 또는 진행 중인 상태로 보고 같은 head commit에 추가 호출하지 않고 `eyes` 확인 시점부터 최대 15분까지 기다립니다. 최신 호출 댓글에 3분 동안 `eyes` 반응이 없고 최신 head 리뷰 결과도 없으면 접수 실패로 보고 같은 head 기준으로 최대 3회까지 재호출한 뒤 새 호출 댓글 기준으로 다시 확인합니다. 3회 모두 접수되지 않으면 `Codex 리뷰 접수 실패 timeout`으로 중단합니다. `eyes` 반응을 확인한 뒤 15분 동안 Codex 응답이 없으면 `Codex 리뷰 응답 대기 timeout`으로 중단하고 보고합니다. PR 생성 이후에는 최신 head에 대한 `Didn't find any major issues` 또는 동등한 no-major 명시 응답과 현재 head 대상 지적의 `수정 필요`/`수비 가능`/`사용자 판단 필요` 분류가 끝날 때까지 수정, 검증, 재리뷰를 반복합니다. task silo의 `goal.md`가 확인되면 no-major 목표를 `goal.md`에 세팅하고, 그렇지 않은 PR은 PR 본문, 리뷰 thread, 현재 사용자 요청을 재리뷰 컨텍스트로 사용합니다. 기본 중단 기준은 호출 횟수가 아니라 리뷰 결과입니다. 사용자가 이번 PR에 명시한 반복 한도가 있을 때만 그 한도를 따릅니다. 사일로 PR이고 runtime, browser, manual QA, E2E 확인이 남아 있으면 no-major 이후 [`silo-runtime-handoff`](silo-runtime-handoff/SKILL.md)를 사용해 서버 주소, E2E 방법, 실행 불가 사유를 PR 댓글로 남긴 뒤 사용자 재리뷰를 호출합니다.
+PR을 만들 때는 먼저 변경 내용이 0계층 공통 변경인지 project 계층 변경인지 확인합니다. branch base는 계층 기준 브랜치이며, 목표 모델의 0계층은 `main-v3/main`, project 계층은 해당 `project-{projectName}/main`이 기준입니다. 현재 마이그레이션 전 호환 기준은 `main-v3/main`와 `project-{projectName}`입니다. GitHub PR target/base branch는 이 계층 판단이 반영된 최종 머지 대상입니다. project 계층 변경도 계층 메인 브랜치에 직접 커밋하지 않고, 목표 모델에서는 `project-{projectName}/{taskname}` 작업 브랜치에서 커밋한 뒤 `project-{projectName}/main` 대상 PR로 올립니다. 현재 호환 상태에서는 `project-{projectName}-{taskname}` 작업 브랜치와 `project-{projectName}` 대상 PR을 사용합니다. 두 계층이 섞이면 worktree와 브랜치를 분리해 서로 다른 PR로 올립니다. 제품 repo가 독립 git submodule commit을 pin하는 구조라면 상위 제품 repo PR의 submodule gitlink 리뷰만으로 완료 처리하지 않습니다. 변경된 각 submodule repo도 보호 브랜치 직접 커밋 없이 repo별 파생 브랜치와 별도 PR, codex-review pass 또는 동등 리뷰 gate를 먼저 거쳐야 하며, 상위 제품 repo PR은 리뷰 통과 commit의 gitlink pin과 host 연결만 검증합니다.
+
+PR 생성 직후에는 [`codex-pr-review-loop`](codex-pr-review-loop/SKILL.md)를 사용할 수 있도록 Codex review 설정을 먼저 확인합니다. 설정이 있으면 PR 댓글로 수동 `@codex review`를 호출합니다. 호출 댓글에는 가능하면 `한국어로 리뷰해 주세요.` 또는 이에 준하는 한국어 요청과 최신 head 기준 리뷰 요청만 적습니다. codex-review pass 목표, 통과 판정, 반복 조건은 외부 댓글이 아니라 PR 본문 `Codex PR 리뷰` 항목, task silo의 `goal.md`, 메인 에이전트 내부 상태에서 관리합니다. 외부 리뷰 봇의 고정 템플릿 언어까지 보장하지는 못합니다. PR 본문에는 `Codex PR 리뷰` 항목을 두고, 호출 횟수와 결과를 기록합니다. 현재 head push 이후에 작성된 최신 `@codex review` 호출 댓글에 `eyes` 반응이 있으면 리뷰가 접수 또는 진행 중인 상태로 보고 같은 head commit에 추가 호출하지 않고 `eyes` 확인 시점부터 최대 15분까지 기다립니다. 최신 호출 댓글에 3분 동안 `eyes` 반응이 없고 최신 head 리뷰 결과도 없으면 접수 실패로 보고 같은 head 기준으로 최대 3회까지 재호출한 뒤 새 호출 댓글 기준으로 다시 확인합니다. 3회 모두 접수되지 않으면 `Codex 리뷰 접수 실패 timeout`으로 중단합니다. `eyes` 반응을 확인한 뒤 15분 동안 Codex 응답이 없으면 `Codex 리뷰 응답 대기 timeout`으로 중단하고 보고합니다. PR 생성 이후에는 최신 head에 대한 `Didn't find any major issues` 또는 동등한 codex-review pass 명시 응답과 현재 head 대상 지적의 `수정 필요`/`수비 가능`/`사용자 판단 필요` 분류가 끝날 때까지 수정, 검증, 재리뷰를 반복합니다. task silo의 `goal.md`가 확인되면 codex-review pass 목표를 `goal.md`에 세팅하고, 그렇지 않은 PR은 PR 본문, 리뷰 thread, 현재 사용자 요청을 재리뷰 컨텍스트로 사용합니다. 기본 중단 기준은 호출 횟수가 아니라 리뷰 결과입니다. 사용자가 이번 PR에 명시한 반복 한도가 있을 때만 그 한도를 따릅니다.
+
+Codex review 설정이 명시적으로 없거나 호출 권한이 없으면 review loop를 돌리지 않습니다. 아직 확인 전인 repo는 미설정으로 단정하지 않고 먼저 `@codex review`를 호출해 `eyes` 반응 또는 Codex 응답을 확인합니다. 미설정이 확인된 경우 PR 본문 또는 보고에 `Codex review 미설정`을 남깁니다. task 실행 결과인 사일로 PR이 실제 제품 코드 파일을 바꾸고 runtime, browser, manual QA, E2E 확인이 남아 있을 때만 codex-review pass 이후 또는 Codex review 미설정 fallback에서 [`shared-runtime-health-check`](shared-runtime-health-check/SKILL.md)로 사일로 설정에 맞는 `runtime_set`과 서버형 runtime 상태를 확인한 뒤 [`silo-runtime-handoff`](silo-runtime-handoff/SKILL.md)를 사용해 서버 주소, E2E 방법, 실행 불가 사유를 PR 댓글로 남기고 사용자 재리뷰를 호출합니다. 문서, skill, project SSoT, config example만 바꾼 PR에는 runtime handoff를 붙이지 않습니다. `runtime_set`이 없으면 임의로 서버를 조합하지 않고 정의 누락 또는 `add-shared-runtime` 필요를 handoff 댓글에 남깁니다. 이 handoff는 `system/config/`의 local config, 특히 `silo-runtime.env`, `silo-projects.yaml`, `shared-runtime-registry.yaml`에 따라 달라집니다. shared BE/API, Docker DB, FE/harness, worker, mock service가 E2E 전제이면 해당 runtime이 켜져 있고 health check가 통과해야 E2E 가능으로 기록합니다.
 
 ## Run Set과 runtime_set
 
@@ -100,7 +104,7 @@ PR을 만들 때는 먼저 변경 내용이 0계층 공통 변경인지 project 
 - auth/session 참조
 - source workspace 정책
 
-`Run Set.required_runtime_set`은 사용할 `runtime_set.id`를 참조합니다.
+`run_set.required_runtime_set`은 사용할 `runtime_set.id`를 참조합니다.
 
 ## SSoT manager 역할
 
@@ -110,7 +114,7 @@ PR을 만들 때는 먼저 변경 내용이 0계층 공통 변경인지 project 
 - project 등록과 SSoT 생성: `projects-setup`
 - 세션 종료, handoff, task/issue/QA 갱신: 프로젝트별 설치 skill 또는 project SSoT의 운영 문서를 따릅니다.
 
-프로젝트 내부 문서를 쓸 때는 제품 repo 안의 `obs/`, `.obsidian`, `docs/`, submodule, external clone을 기준 SSoT로 추정하지 않습니다. 먼저 `projects/<project-id>/README.md`에서 선언된 project SSoT 경로를 확인하고, 선언이 없으면 기본 scaffold인 `projects/<project-id>/02-project-internal/` 아래 dashboard와 task 위치를 확인합니다. `project/<project-id>` 브랜치가 있으면 해당 브랜치에서 판 `project/<project-id>-<branch-name>` 작업 브랜치에서만 project SSoT 원문을 작성합니다. 기준 SSoT나 기준 worktree가 아닌 위치에는 새 task/issue/QA/source doc을 만들지 않습니다.
+프로젝트 내부 문서를 쓸 때는 제품 repo 안의 `obs/`, `.obsidian`, `docs/`, submodule, external clone을 기준 SSoT로 추정하지 않습니다. 먼저 `projects/<project-id>/README.md`에서 선언된 project SSoT 경로를 확인하고, 선언이 없으면 기본 scaffold인 `projects/<project-id>/02-project-internal/` 아래 dashboard와 task 위치를 확인합니다. 목표 모델에서 `project-{projectName}/main` 브랜치가 있으면 해당 브랜치에서 판 `project-{projectName}/{taskname}` 작업 브랜치에서만 project SSoT 원문을 작성합니다. 현재 호환 상태에서는 `project-{projectName}`와 `project-{projectName}-{taskname}`을 사용합니다. 기준 SSoT나 기준 worktree가 아닌 위치에는 새 task/issue/QA/source doc을 만들지 않습니다.
 
 새로운 `ssot-manager` skill이 필요해지면 기존 세 역할과 겹치지 않게, “세션 종료와 SSoT 갱신을 언제 어떻게 수행하는가”를 전담하도록 추가합니다.
 
@@ -121,8 +125,8 @@ PR을 만들 때는 먼저 변경 내용이 0계층 공통 변경인지 project 
 좋은 예:
 
 ```text
-1. main-v2 업데이트: 선택지 작성 방식을 main-v2 SSoT에 반영합니다.
-2. 현재 답변에만 임시 적용: 이번 대화에서는 적용하지만 main-v2 SSoT에는 반영하지 않습니다.
+1. main-v3/main 업데이트: 선택지 작성 방식을 main-v3/main SSoT에 반영합니다.
+2. 현재 답변에만 임시 적용: 이번 대화에서는 적용하지만 main-v3/main SSoT에는 반영하지 않습니다.
 3. 기타: 선택지 이름, 범위, 적용 위치를 사용자가 직접 지정합니다.
 ```
 
@@ -136,4 +140,4 @@ PR을 만들 때는 먼저 변경 내용이 0계층 공통 변경인지 project 
 
 나쁜 예는 사용자가 무엇이 바뀌는지, 어떤 절차가 실행되는지 바로 알기 어렵습니다.
 
-이미 스킬로 고정된 절차는 매번 길게 쓰지 않습니다. 이 프로젝트에서는 `main-v2 업데이트`처럼 압축하고, `main` 기준 worktree, PR, 머지, rebase 절차를 제시하지 않습니다.
+이미 스킬로 고정된 절차는 매번 길게 쓰지 않습니다. 이 프로젝트에서는 `main-v3/main 업데이트`처럼 압축하고, `main` 기준 worktree, PR, 머지, rebase 절차를 제시하지 않습니다.

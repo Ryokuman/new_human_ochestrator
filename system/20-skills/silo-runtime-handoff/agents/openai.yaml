@@ -1,3 +1,3 @@
 display_name: "Silo Runtime Handoff"
 short_description: "사일로 런타임 QA handoff 댓글 작성"
-default_prompt: "$silo-runtime-handoff를 사용해 사일로 PR 리뷰 통과 이후 runtime URL, E2E 절차, PR handoff 댓글을 준비합니다."
+default_prompt: "task 실행 결과인 사일로 PR이 실제 제품 코드 파일을 바꿨는지 먼저 확인합니다. 조건을 만족하면 $shared-runtime-health-check로 사일로 runtime_set과 서버형 runtime 상태를 확인한 뒤 $silo-runtime-handoff를 사용해 runtime URL, E2E 절차, PR handoff 댓글을 준비합니다."

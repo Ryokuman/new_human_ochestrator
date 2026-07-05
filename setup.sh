@@ -375,6 +375,9 @@ normalize_setup_path() {
   while [[ "$path" == *"/./"* ]]; do
     path="${path//\/.\///}"
   done
+  while [ "$path" != "/" ] && [[ "$path" == */ ]]; do
+    path="${path%/}"
+  done
   printf '%s\n' "$path"
 }
 
@@ -393,16 +396,22 @@ write_setup_file() {
 }
 
 ensure_project_ssot_gitignore() {
-  local target="$1"
   local project_root="$REPO_ROOT/projects/$PROJECT_ID"
-
-  case "$target" in
-    "$project_root"|"$project_root"/*) ;;
-    *) return 0 ;;
-  esac
+  local target
 
   local gitignore="$REPO_ROOT/.gitignore"
   [ -f "$gitignore" ] || return 0
+
+  local has_project_target="no"
+  for target in "$@"; do
+    case "$target" in
+      "$project_root"|"$project_root"/*)
+        has_project_target="yes"
+        break
+        ;;
+    esac
+  done
+  [ "$has_project_target" = "yes" ] || return 0
 
   if grep -qx 'projects/' "$gitignore"; then
     local tmp="$gitignore.tmp.$$"
@@ -417,43 +426,53 @@ ensure_project_ssot_gitignore() {
     info "갱신됨: $gitignore"
   fi
 
-  local rel="${target#$REPO_ROOT/}"
   local project_rel="projects/$PROJECT_ID"
   local exception
-  local exceptions
+  local project_wide_unignore="no"
+  if grep -qxF "!$project_rel/**" "$gitignore"; then
+    project_wide_unignore="yes"
+  fi
 
-  if [ "$rel" = "$project_rel" ]; then
-    exceptions="
-# project SSoT scaffold
-!$project_rel/
-!$project_rel/**"
-  else
-    local current="$project_rel"
-    local part
-    local rest="${rel#$project_rel/}"
-    exceptions="
+  local exceptions="
 # project SSoT scaffold
 !$project_rel/"
 
-    IFS='/' read -r -a parts <<< "$rest"
-    for part in "${parts[@]}"; do
-      [ -n "$part" ] || continue
-      if [ "$current" != "$project_rel" ] && grep -qxF "!$current/**" "$gitignore"; then
-        exceptions="$exceptions
+  for target in "$@"; do
+    case "$target" in
+      "$project_root"|"$project_root"/*) ;;
+      *) continue ;;
+    esac
+
+    local rel="${target#$REPO_ROOT/}"
+
+    if [ "$rel" = "$project_rel" ]; then
+      exceptions="$exceptions
+!$project_rel/**"
+      project_wide_unignore="yes"
+    else
+      local current="$project_rel"
+      local part
+      local rest="${rel#$project_rel/}"
+
+      IFS='/' read -r -a parts <<< "$rest"
+      for part in "${parts[@]}"; do
+        [ -n "$part" ] || continue
+        if [ "$project_wide_unignore" = "yes" ]; then
+          exceptions="$exceptions
 !$current/$part/"
-      else
-        exceptions="$exceptions
+        else
+          exceptions="$exceptions
 $current/*
 !$current/$part/"
-      fi
-      current="$current/$part"
-    done
+        fi
+        current="$current/$part"
+      done
+
+      exceptions="$exceptions
+!$rel/**"
+    fi
 
     exceptions="$exceptions
-!$rel/**"
-  fi
-
-  exceptions="$exceptions
 $rel/.env
 $rel/.env.*
 !$rel/.env.example
@@ -492,6 +511,7 @@ $rel/**/*.trace
 $rel/**/*.webm
 $rel/**/*.mp4
 $rel/**/*.mov"
+  done
 
   while IFS= read -r exception; do
     [ -n "$exception" ] || continue
@@ -557,15 +577,24 @@ project_ssot_vault_path() {
   esac
 }
 
+project_ssot_layer1_path() {
+  local target="$1"
+
+  case "$target" in
+    */02-project-internal) printf '%s\n' "${target%/02-project-internal}/01-project-ssot" ;;
+    *) printf '%s\n' "$target/01-project-ssot" ;;
+  esac
+}
+
 write_project_work_items_base() {
   local dest="$1"
   local project_path="$2"
-  local issue_folder="20-issues"
-  local task_folder="30-tasks"
+  local issue_folder="30-work-items/issues"
+  local task_folder="30-work-items/tasks"
 
   if [ -n "$project_path" ]; then
-    issue_folder="$project_path/20-issues"
-    task_folder="$project_path/30-tasks"
+    issue_folder="$project_path/30-work-items/issues"
+    task_folder="$project_path/30-work-items/tasks"
   fi
 
   write_setup_file "$dest" "filters:
@@ -674,6 +703,439 @@ views:
       - updated"
 }
 
+ensure_project_ssot_surface_dirs() {
+  local target="$1"
+
+  mkdir -p \
+    "$target/00-layer-index" \
+    "$target/01-branch-policy" \
+    "$target/30-work-items/tasks" \
+    "$target/30-work-items/issues" \
+    "$target/30-work-items/runbooks" \
+    "$target/30-work-items/handoff" \
+    "$target/30-work-items/coverage" \
+    "$target/30-work-items/silo-template/evidence" \
+    "$target/40-runtime-sets" \
+    "$target/50-pr-review" \
+    "$target/60-evidence-update/evidence/active" \
+    "$target/60-evidence-update/evidence/applied" \
+    "$target/60-evidence-update/evidence/closed"
+}
+
+write_project_ssot_surface_templates() {
+  local target="$1"
+  local layer1="$2"
+  local layer1_from_work_path
+  local work_from_layer1_path
+  local work_self_path="."
+
+  case "$target" in
+    */02-project-internal)
+      layer1_from_work_path="../01-project-ssot"
+      work_from_layer1_path="../02-project-internal"
+      ;;
+    *)
+      layer1_from_work_path="01-project-ssot"
+      work_from_layer1_path=".."
+      ;;
+  esac
+
+  write_setup_file "$target/00-layer-index/README.md" "# Layer Index
+
+이 폴더는 프로젝트 SSoT 안에서 1~3계층 자료의 위치와 소유 경계를 찾기 위한 빈 색인입니다.
+
+## 계층별 위치
+
+| 계층 | 목적 | 위치 |
+|---|---|---|
+| 1계층 | project registry, project contract, decision/ADR, 정본 위치, 반복 운영 기준 | \`$layer1_from_work_path/\` |
+| 2계층 | task, issue, QA, coverage, runbook | \`$work_self_path/\` |
+| 3계층 | silo local 발견, 실험 로그, PR 전 임시 상태 |  |
+
+## 공통 승격 후보
+
+반복 가능한 운영 규칙이 보이면 실제 내용을 여기에 복사하지 말고, 승격 후보와 출처만 기록합니다.
+"
+
+  write_setup_file "$layer1/README.md" "# $PROJECT_NAME Project SSoT
+
+이 폴더는 1계층 Project SSoT 기준 정보 위치입니다.
+
+## 포함 항목
+
+- project registry
+- project contract
+- decision/ADR
+- runtime/DB/API/auth 참조
+- 2계층 Project Work SSoT 위치 index
+"
+
+  write_setup_file "$layer1/project-registry.md" "# Project Registry
+
+프로젝트 정본 위치와 연결 repo를 찾기 위한 1계층 registry입니다. 실제 task 준비 상태나 단일 구현 계약은 task/runbook/silo로 내립니다.
+
+## 정본 위치
+
+| 항목 | 위치 | 확인 상태 |
+|---|---|---|
+| project SSoT root |  |  |
+| Project Work SSoT | \`$work_from_layer1_path/\` |  |
+| project contract | \`project-contract.md\` |  |
+| source repo |  |  |
+| fork/submodule/external clone |  |  |
+| DB schema 정본 |  |  |
+| API/auth/session 계약 |  |  |
+| runtime/harness 계약 |  |  |
+"
+
+  write_setup_file "$layer1/project-contract.md" "# $PROJECT_NAME project contract
+
+이 문서는 기능 task를 만들기 전에 먼저 확인하는 project-level 계약입니다.
+
+task 고유 구현 계약, seed row, test input, PR 상태는 각 task 문서와 사일로 \`goal.md\`에 둡니다.
+
+## 제품 정의
+
+## 현재 버전 목표
+
+## 현재 버전 비목표
+
+## 핵심 사용자 플로우
+
+## 데이터 저장과 동기화 경계
+
+- 로컬 저장:
+- 서버 저장:
+- 외부 서비스 동기화:
+- LLM/API 호출 결과 저장 여부:
+- 오프라인/재시도/충돌 처리 기준:
+
+## repo 역할
+
+| 대상 | 역할 | 금지 |
+|---|---|---|
+| 제품 repo |  |  |
+| BE/API |  |  |
+| FE/page |  |  |
+| harness/runtime |  |  |
+| project SSoT |  | 제품 소스코드 복사 |
+
+## task 생성 전 필수 참조
+
+| 항목 | 정본 위치 |
+|---|---|
+| project SSoT root | \`.\` |
+| Project Work SSoT | \`$work_from_layer1_path/\` |
+| 운영 개요 | \`$work_from_layer1_path/00-dashboard/project-overview.md\` |
+| DB schema 기준 |  |
+| API/auth/session 계약 |  |
+| 디자인 source 또는 style contract |  |
+| runtime/harness 계약 |  |
+
+## task 작성 규칙
+
+1. task를 쓰기 전에 이 project contract를 먼저 확인합니다.
+2. task에는 목표, 비목표, 초기 DB mock data, test input, BE 계약, FE 계약, 검증 계획을 분리해서 씁니다.
+3. 기능 task에는 단계별 구현 계획과 파일별 대표 함수 골격형 pseudo code를 포함합니다.
+4. pseudo code는 TypeScript/JavaScript 같은 실제 구현 코드 블록이나 완성된 함수 구현이 아니라, 각 파일의 대표 함수와 보조 함수가 어떤 입력/의존성을 받고 조회, 검증, 가공, 조건 분기, 반복, 저장, 반환을 어떻게 수행하는지 코드에 가깝게 씁니다.
+5. 파일명, 함수명, API query, DB mutation, op 이름(\`D/L/C/R\`) 같은 식별자는 원문 그대로 쓸 수 있지만 설명 문장은 한국어로 씁니다.
+6. pseudo code에서 목표 밖 화면, 버튼, endpoint, table mutation, submodule, E2E 범위가 보이면 \`범위 drift 후보\`로 표시합니다.
+
+## 추정 금지 정보
+
+- 제품 정의, 현재 버전 목표/비목표, 핵심 사용자 플로우
+- 데이터 저장과 동기화 경계
+- 현재 schema에 없는 테이블, 컬럼, FK
+- 정본 위치가 없는 API/auth/session/runtime/design 계약
+- 제품 repo, submodule, harness 역할
+
+위 정보가 필요하지만 정본이 없으면 task 본문에서 임시로 만들지 않고 \`project contract 누락\` 또는 \`project SSoT 계약 누락\`으로 표시합니다.
+"
+
+  write_setup_file "$layer1/work-ssot-index.md" "# Project Work SSoT Index
+
+## 2계층 위치
+
+- Project Work SSoT: \`$work_from_layer1_path/\`
+- task: \`$work_from_layer1_path/30-work-items/tasks/\`
+- issue: \`$work_from_layer1_path/30-work-items/issues/\`
+- runbook: \`$work_from_layer1_path/30-work-items/runbooks/\`
+- coverage: \`$work_from_layer1_path/30-work-items/coverage/\`
+"
+
+  write_setup_file "$layer1/50-decisions/README.md" "# Decisions and ADR
+
+프로젝트 장기 decision/ADR은 1계층 Project SSoT인 이 폴더에 기록합니다.
+
+task 실행 중 임시 판단이나 단일 PR 판단은 3계층 사일로 또는 PR 본문에 남기고, 장기 유지가 필요한 경우에만 이 위치로 정리합니다.
+"
+
+  write_setup_file "$target/01-branch-policy/README.md" "# Branch Policy
+
+프로젝트 기준 브랜치와 작업 브랜치 규칙을 기록하는 빈 템플릿입니다.
+
+## 기준 브랜치
+
+| 대상 | branch base | PR target/base | 비고 |
+|---|---|---|---|
+| project SSoT |  |  |  |
+| source repo |  |  |  |
+| harness repo |  |  |  |
+
+## 금지선
+
+- 보호 브랜치 직접 commit/push 금지:
+- destructive action 승인 gate:
+- secret/credential 기록 금지:
+"
+
+  write_setup_file "$target/30-work-items/README.md" "# Work Items
+
+실행 가능한 project 내부 work item의 빈 구조입니다.
+
+## 하위 폴더
+
+- \`tasks/\`: 독립 수행 가능한 task
+- \`issues/\`: 문제, 원인 가설, 영향
+- \`runbooks/\`: 반복 실행 절차
+- \`handoff/\`: 세션 인수인계
+- \`coverage/\`: coverage 기준과 결과 색인
+- \`silo-template/\`: task silo 시작 템플릿과 evidence 위치
+"
+
+  write_setup_file "$target/30-work-items/tasks/TASK-template.md" "---
+type: task
+id: TASK-0000
+taskID: TASK-0000
+taskTitle: 태스크 제목
+title: 태스크 제목
+status: todo
+priority: p0
+runtime_set:
+updated:
+---
+
+# 태스크 제목
+
+## Output
+
+## Project Contract 확인 결과
+
+## 초기 DB 목데이터
+
+## 테스트 입력
+
+## 단계별 구현 계획
+
+## Pseudo Code
+
+## 범위 drift 후보
+
+## Acceptance Criteria
+
+## Test Plan
+
+## Coverage Target
+
+## Runtime Set
+
+task.runtime_set:
+
+## 실행 로그
+"
+
+  write_setup_file "$target/30-work-items/issues/ISSUE-template.md" "---
+type: issue
+id: ISSUE-0000
+issueID: ISSUE-0000
+issueTitle: 이슈 제목
+title: 이슈 제목
+status: todo
+severity: p0
+updated:
+---
+
+# 이슈 제목
+
+## 문제
+
+## 영향
+
+## 원인 가설
+
+## 연결 Task
+
+## Evidence
+"
+
+  write_setup_file "$target/30-work-items/runbooks/RUNBOOK-template.md" "---
+type: runbook
+id: RUNBOOK-0000
+title: 런북 제목
+status: draft
+runtime_set:
+updated:
+---
+
+# 런북 제목
+
+## 목적
+
+## 실행 전 조건
+
+## 실행 절차
+
+## 검증
+
+## Runtime Set
+
+qa_or_runbook.runtime_set:
+"
+
+  write_setup_file "$target/30-work-items/handoff/HANDOFF-template.md" "---
+type: handoff
+id: HANDOFF-0000
+title: 인수인계 제목
+status: draft
+updated:
+---
+
+# 인수인계 제목
+
+## 현재 상태
+
+## 완료된 것
+
+## 아직 안 된 것
+
+## 위험
+
+## 다음 행동
+"
+
+  write_setup_file "$target/30-work-items/coverage/COVERAGE-template.md" "---
+type: coverage
+id: COVERAGE-0000
+title: 커버리지 제목
+status: draft
+updated:
+---
+
+# 커버리지 제목
+
+## 기준
+
+## 대상
+
+## 확인 결과
+
+## Evidence 위치
+"
+
+  write_setup_file "$target/30-work-items/silo-template/goal.md" "# Silo Goal Template
+
+## 목표
+
+## 필요한 repo
+
+## 보호 브랜치
+
+## 작업 브랜치
+
+## 금지선
+
+## Project Contract 확인 결과
+
+## 단계별 구현 계획
+
+## Pseudo Code
+
+## 범위 drift 후보
+
+## Runtime Set
+
+run_set.required_runtime_set:
+
+## 검증 기준
+
+## PR 본문 필수 항목
+
+## Evidence 위치
+
+\`evidence/\` 아래에 실행 증거를 둡니다.
+"
+
+  write_setup_file "$target/40-runtime-sets/README.md" "# Runtime Sets
+
+프로젝트 runtime set 정의와 선택 우선순위를 기록하는 빈 템플릿입니다.
+
+## Runtime Set 결정 우선순위
+
+1. run_set.required_runtime_set
+2. task.runtime_set
+3. qa_or_runbook.runtime_set
+4. project.common_runtime_set
+5. missing_definition
+
+## project.common_runtime_set
+
+프로젝트 전체 공통 runtime set이 있으면 여기에 id를 적습니다.
+
+## 정의 목록
+
+| runtime_set | 목적 | 필수 도구 | 환경 변수 | 검증 명령 |
+|---|---|---|---|---|
+"
+
+  write_setup_file "$target/40-runtime-sets/runtime-resolution.md" "# Runtime Set Resolution
+
+## 우선순위
+
+1. run_set.required_runtime_set
+2. task.runtime_set
+3. qa_or_runbook.runtime_set
+4. project.common_runtime_set
+5. missing_definition
+
+## project.common_runtime_set
+
+## 정의 목록
+
+| runtime_set | 목적 | 필수 도구 | 환경 변수 | 검증 명령 |
+|---|---|---|---|---|
+"
+
+  write_setup_file "$target/50-pr-review/README.md" "# PR Review
+
+프로젝트 PR review gate와 evidence를 기록하는 빈 템플릿입니다.
+
+## 기본 gate
+
+- PR target/base:
+- 리뷰 목표:
+- Codex review 호출 가능 여부:
+- codex-review pass 기준:
+
+## PR 본문 필수 항목
+
+- 무엇을 했는가
+- 검증
+- evidence/follow-up 후보
+- 남은 위험
+"
+
+  write_setup_file "$target/60-evidence-update/README.md" "# Evidence Update
+
+운영 중 발견한 evidence의 상태별 빈 구조입니다.
+
+## 상태
+
+- \`evidence/active/\`: 아직 판단 중인 evidence
+- \`evidence/applied/\`: task/spec/rule에 반영된 evidence
+- \`evidence/closed/\`: 폐기 또는 종료된 evidence
+"
+}
+
 init_config() {
   info ""
   info "config 초안 생성"
@@ -722,26 +1184,35 @@ create_project_ssot() {
     *) target="$REPO_ROOT/$target" ;;
   esac
   target="$(normalize_setup_path "$target")"
+  local layer1_target
+  layer1_target="$(project_ssot_layer1_path "$target")"
+  layer1_target="$(normalize_setup_path "$layer1_target")"
 
   info ""
   info "project SSoT 반복 구조 생성"
   info "project id: $PROJECT_ID"
   info "target: $target"
+  info "1계층 target: $layer1_target"
   local project_vault_path
+  local layer1_from_work_path
   project_vault_path="$(project_ssot_vault_path "$target")"
-  ensure_project_ssot_gitignore "$target"
+  case "$target" in
+    */02-project-internal) layer1_from_work_path="../01-project-ssot" ;;
+    *) layer1_from_work_path="01-project-ssot" ;;
+  esac
+  ensure_project_ssot_gitignore "$target" "$layer1_target"
 
   mkdir -p \
+    "$layer1_target/50-decisions" \
+    "$layer1_target/references" \
     "$target/.obsidian" \
     "$target/.obsidian/snippets" \
     "$target/00-dashboard" \
     "$target/10-dictionary" \
-    "$target/20-issues" \
-    "$target/30-tasks" \
-    "$target/50-decisions" \
-    "$target/70-handoff" \
-    "$target/90-coverage" \
     "$target/templates"
+
+  ensure_project_ssot_surface_dirs "$target"
+  mkdir -p "$layer1_target/50-decisions" "$layer1_target/references"
 
   write_setup_file "$target/README.md" "# $PROJECT_NAME Project SSoT
 
@@ -757,14 +1228,20 @@ create_project_ssot() {
 ## 폴더
 
 - \`00-dashboard/\`: 현재 상태, 활성 issue/task, 다음 행동
+- \`00-layer-index/\`: 1~3계층 자료 위치와 소유 경계 색인
+- \`01-branch-policy/\`: project/source/harness 기준 브랜치와 PR target
 - \`10-dictionary/\`: 프로젝트 용어, 고유명사, 내부 약어, 공통 승격 후보
-- \`20-issues/\`: 문제, 원인 가설, 영향, 연결 task
-- \`30-tasks/\`: 실제 수행 가능한 작업 단위
-- \`50-decisions/\`: 프로젝트 결정과 ADR
-- \`70-handoff/\`: 세션 종료와 인수인계
-- \`90-coverage/\`: L 기준, runner 계약, report 위치
+- \`$layer1_from_work_path/project-registry.md\`: 1계층 project 정본 위치와 repo 연결 색인
+- \`$layer1_from_work_path/project-contract.md\`: 기능 task 작성 전 1계층 계약 확인 gate
+- \`30-work-items/\`: task/issue/runbook/handoff/coverage/silo template
+- \`40-runtime-sets/\`: runtime set 정의와 선택 우선순위
+- \`$layer1_from_work_path/50-decisions/\`: 1계층 프로젝트 결정과 ADR
+- \`50-pr-review/\`: PR review gate와 evidence
+- \`60-evidence-update/\`: evidence active/applied/closed 상태 관리
 - \`templates/\`: 반복 문서 양식
 "
+
+  write_project_ssot_surface_templates "$target" "$layer1_target"
 
   write_setup_file "$target/.obsidian/community-plugins.json" "[
   \"dataview\"
@@ -797,7 +1274,7 @@ create_project_ssot() {
 
 ## 작업 대시보드
 
-- 기능 task 생성 전 계약: [[project-contract|project contract]]
+- 기능 task 생성 전 계약: \`$layer1_from_work_path/project-contract.md\`
 - 즉석 멀티필터: [[work-filter|작업 멀티필터]]
 - Obsidian Base 뷰: [[work-views|작업 필터]]
 - 대시보드 복제 템플릿: [[../templates/work-filter-dashboard|작업 대시보드 템플릿]]
@@ -829,69 +1306,6 @@ create_project_ssot() {
 ## 다음 행동
 "
 
-  write_setup_file "$target/00-dashboard/project-contract.md" "# $PROJECT_NAME project contract
-
-이 문서는 기능 task를 만들기 전에 먼저 확인하는 project-level 계약입니다.
-
-task 고유 구현 계약, seed row, test input, PR 상태는 각 task 문서와 사일로 \`goal.md\`에 둡니다.
-
-## 제품 정의
-
-## 현재 버전 목표
-
-## 현재 버전 비목표
-
-## 핵심 사용자 플로우
-
-## 데이터 저장과 동기화 경계
-
-- 로컬 저장:
-- 서버 저장:
-- 외부 서비스 동기화:
-- LLM/API 호출 결과 저장 여부:
-- 오프라인/재시도/충돌 처리 기준:
-
-## repo 역할
-
-| 대상 | 역할 | 금지 |
-|---|---|---|
-| 제품 repo |  |  |
-| BE/API |  |  |
-| FE/page |  |  |
-| harness/runtime |  |  |
-| project SSoT |  | 제품 소스코드 복사 |
-
-## task 생성 전 필수 참조
-
-| 항목 | 정본 위치 |
-|---|---|
-| project SSoT root |  |
-| 운영 개요 | \`00-dashboard/project-overview.md\` |
-| DB schema 기준 |  |
-| API/auth/session 계약 |  |
-| 디자인 source 또는 style contract |  |
-| runtime/harness 계약 |  |
-
-## task 작성 규칙
-
-1. task를 쓰기 전에 이 project contract를 먼저 확인합니다.
-2. task에는 목표, 비목표, 초기 DB mock data, test input, BE 계약, FE 계약, 검증 계획을 분리해서 씁니다.
-3. 기능 task에는 단계별 구현 계획과 파일별 대표 함수 골격형 pseudo code를 포함합니다.
-4. pseudo code는 TypeScript/JavaScript 같은 실제 구현 코드 블록이나 완성된 함수 구현이 아니라, 각 파일의 대표 함수와 보조 함수가 어떤 입력/의존성을 받고 조회, 검증, 가공, 조건 분기, 반복, 저장, 반환을 어떻게 수행하는지 코드에 가깝게 씁니다.
-5. 파일명, 함수명, API query, DB mutation, op 이름(\`D/L/C/R\`) 같은 식별자는 원문 그대로 쓸 수 있지만 설명 문장은 한국어로 씁니다.
-6. pseudo code에서 목표 밖 화면, 버튼, endpoint, table mutation, submodule, E2E 범위가 보이면 \`범위 drift 후보\`로 표시합니다.
-
-## 추정 금지 정보
-
-- 제품 정의, 현재 버전 목표/비목표, 핵심 사용자 플로우
-- 데이터 저장과 동기화 경계
-- 현재 schema에 없는 테이블, 컬럼, FK
-- 정본 위치가 없는 API/auth/session/runtime/design 계약
-- 제품 repo, submodule, harness 역할
-
-위 정보가 필요하지만 정본이 없으면 task 본문에서 임시로 만들지 않고 \`project contract 누락\` 또는 \`project SSoT 계약 누락\`으로 표시합니다.
-"
-
   copy_setup_file "$REPO_ROOT/system/templates/project-ssot/00-dashboard/work-filter.md" "$target/00-dashboard/work-filter.md"
   write_project_work_items_base "$target/00-dashboard/work-items.base" "$project_vault_path"
   copy_setup_file "$REPO_ROOT/system/templates/project-ssot/00-dashboard/work-views.md" "$target/00-dashboard/work-views.md"
@@ -906,110 +1320,6 @@ task 고유 구현 계약, seed row, test input, PR 상태는 각 task 문서와
 
 | 용어/고유명사/내부 약어 | 뜻 | 사용 맥락 | 예시 | 출처 또는 확인 상태 | 프로젝트 전용/공통 승격 후보 |
 |---|---|---|---|---|---|
-"
-
-  write_setup_file "$target/20-issues/ISSUE-template.md" "---
-type: issue
-id: ISSUE-0000
-issueID: ISSUE-0000
-issueTitle: 이슈 제목
-title: 이슈 제목
-status: todo
-severity: p0
-updated:
----
-
-# 이슈 제목
-
-## ID
-
-ISSUE-0000
-
-## 제목
-
-사람이 읽는 문제 이름을 적습니다.
-
-## 문제
-
-## 영향
-
-## 원인 가설
-
-## 연결 Task
-
-## 상태
-"
-
-  write_setup_file "$target/30-tasks/TASK-template.md" "---
-type: task
-id: TASK-0000
-taskID: TASK-0000
-taskTitle: 태스크 제목
-title: 태스크 제목
-status: todo
-priority: p0
-updated:
----
-
-# 태스크 제목
-
-## ID
-
-TASK-0000
-
-## 제목
-
-사람이 읽는 작업 목표나 문제 이름을 적습니다.
-
-## Output
-
-해당 task가 독립적으로 증명할 수 있는 산출물만 적습니다. 병렬 sibling task 완료를 전제로 삼지 않습니다.
-
-## Project Contract 확인 결과
-
-기능 task인 경우 project contract 위치, 확인한 제품 정의/목표/비목표/핵심 플로우/데이터 저장·동기화 경계/repo 역할, 누락 항목을 적습니다.
-
-## 단계별 구현 계획
-
-기능 task인 경우에만 작성합니다. 비기능 task, coverage task, 문서 task에는 기계적으로 요구하지 않습니다.
-
-## Pseudo Code
-
-기능 task인 경우 파일별 대표 함수 골격형으로 작성합니다. 각 파일의 대표 함수와 보조 함수가 어떤 입력/의존성을 받고 조회, 검증, 가공, 조건 분기, 반복, 저장, 반환을 어떻게 수행하는지 코드에 가깝게 보여야 합니다. TypeScript/JavaScript 같은 실제 구현 코드 블록이나 완성된 함수 구현을 쓰지 않습니다. 코드 식별자, API query, 파일명, op 이름(\`D/L/C/R\`)은 원문을 유지할 수 있습니다.
-
-## 범위 drift 후보
-
-Pseudo Code에서 task 목표 밖 화면, 버튼, endpoint, table mutation, submodule, E2E 범위가 보이면 적습니다.
-
-## Acceptance Criteria
-
-병렬로 생성하거나 실행할 task라면 sibling task 완료를 완료 조건으로 두지 않습니다.
-
-## Test Plan
-
-인증, 데이터, 화면, backend 의존성이 있으면 seed data, dev-auth, fixture session, contract mock, harness, Docker fixture DB 같은 독립 검증 경로를 적습니다.
-여러 sibling task 완료를 전제로 하는 최종 통합 E2E는 개별 task acceptance가 아니라 별도 QA gate, integration task, 또는 후속 harness 검증으로 분리합니다. 단일 task의 화면 동작 자체가 산출물이면 E2E 또는 agent-browser acceptance를 유지합니다.
-
-## Coverage Target
-
-## 사용자 처리 명령
-
-## 실행 로그
-"
-
-  write_setup_file "$target/50-decisions/README.md" "# Decisions
-
-프로젝트 결정과 ADR을 기록합니다.
-"
-
-  write_setup_file "$target/70-handoff/README.md" "# Handoff
-
-세션 종료, 진행 상태, 다음 작업자를 위한 인수인계를 기록합니다.
-"
-
-  write_setup_file "$target/90-coverage/README.md" "# Coverage
-
-L 기준, runner 계약, report/evidence 위치를 기록합니다.
 "
 
   write_setup_file "$target/templates/issue.md" "---
@@ -1138,9 +1448,9 @@ Pseudo Code에서 task 목표 밖 화면, 버튼, endpoint, table mutation, subm
 
 ## 리뷰 gate
 
-## SSoT 승격 후보
+## evidence/follow-up 후보
 
-## 승격하지 않을 항목
+## 처리하지 않고 남긴 항목
 
 ## 남은 위험
 "
