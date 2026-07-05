@@ -17,7 +17,8 @@ description: 0계층 Root/Global 에이전트 운영 규칙을 적용해 요청�
 - 공통 YOLO 정책
 - 보호 브랜치 정책
 - secret/config 주입 방식
-- 사용자 퍼스널리티와 전역 취향 규칙
+- User Layer schema, template, runtime 합성 규칙
+- 승인된 반복 사용자 기준의 공통 승격 규칙
 - 공통 skill
 - 프로젝트 등록/연결/분리/승격 규칙
 

@@ -1,8 +1,10 @@
 # 피드백 기반 규칙 갱신
 
-`50-feedback-personality-loop/`는 사용자 feedback이 현재 작업 수정, 사일로 전용 규칙, 프로젝트 규칙, 전역 사용자 규칙으로 어떻게 갈라지는지 관리합니다.
+`50-feedback-personality-loop/`는 사용자 feedback이 현재 작업 수정, 사일로 전용 규칙, 프로젝트 규칙, User Layer evidence, 승인된 공통 규칙 후보로 어떻게 갈라지는지 관리합니다.
 
-feedback은 단순 수정 요청이 아닙니다. 현재 PR 또는 사일로의 작업 방향을 바꿀 수 있고, feedback update를 통해 퍼스널리티, 0계층 공통 기준, 1계층 project 기준을 개인화할 수 있습니다.
+feedback은 단순 수정 요청이 아닙니다. 현재 PR 또는 사일로의 작업 방향을 바꿀 수 있고, feedback update를 통해 User Layer의 퍼스널리티/evidence와 승인된 0계층 공통 기준, 1계층 project 기준을 개인화할 수 있습니다.
+
+`personality`, `feedback evidence`, `hypothesis`의 실제 사용자별 상태는 User Layer가 소유합니다. 이 디렉토리는 실제 사용자 데이터를 저장하는 위치가 아니라, User Layer로 수집하고 승격하는 공통 절차와 template을 정의합니다.
 
 3계층은 Silo Local / Test Evidence / Feedback 계층입니다. test evidence, 현재 local feedback 기록, 사일로 실행 중 발견한 임시 판단, 아직 공통 규칙으로 확정하지 않은 follow-up 자료를 보관합니다. 이 계층의 자료는 기본적으로 `local/` 또는 사일로 로컬 공간에 두며, 장기 규칙이나 project 기준으로 반영하려면 별도 검토와 승인 절차를 거칩니다.
 

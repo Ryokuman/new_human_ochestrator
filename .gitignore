@@ -5,6 +5,7 @@ sources/
 /task-*/
 .worktrees/
 local/
+logfile/
 
 # 일반 로컬/시크릿 파일
 .DS_Store

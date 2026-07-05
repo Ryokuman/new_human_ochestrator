@@ -290,6 +290,35 @@ Task 내부 `hypothesis_chain`이 실행 중 실패와 재시도 가설을 다�
 
 operating hypothesis는 사후 합리화가 아니라 실행 전 가설과 예상 병목을 먼저 쓰고, 실행 후 결과물과 실제 병목을 이어 붙이는 로그입니다. 프로젝트 기능 요구나 개별 task 원문은 여기에 복사하지 않고 Project Work SSoT에 둡니다.
 
+### User Layer
+
+User Layer는 사용자별 personality, feedback evidence, hypothesis의 정본입니다. public `main-v3/main`에는 실제 사용자 데이터가 아니라 schema와 template만 둡니다.
+
+필드:
+
+- user_layer_id
+- personality_rules
+- feedback_evidence_index
+- hypotheses
+- active_hypothesis_ids
+- runtime_composition_preferences
+
+### Runtime AGENTS Artifact
+
+runtime `AGENTS.md`는 정본 파일이 아니라 실행 직전 합성 산출물입니다.
+
+필드:
+
+- artifact_id
+- generated_at
+- system_sources
+- user_layer_sources
+- project_context_sources
+- active_hypothesis_ids
+- conflict_notes
+- output_path
+- commit_policy: `do-not-commit`
+
 ### Silo
 
 특정 이슈나 태스크를 맡은 동적 작업 단위입니다.

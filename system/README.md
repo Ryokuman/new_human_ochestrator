@@ -15,7 +15,7 @@
 
 ## 상위 기능 트리
 
-현재 0계층이 관리하는 상위 기능은 아래 9개입니다.
+현재 0계층이 관리하는 상위 기능은 아래 10개입니다.
 
 1. 계층 운영
 2. 메인 브랜치/작업 브랜치 운영
@@ -26,8 +26,11 @@
 7. PR Review Loop
 8. Feedback/퍼스널리티 Loop
 9. 셋업/지원 표면 관리
+10. User Layer / Hypothesis System
 
-위험 실행 전제 확인은 독립 상위 기능이 아니라 Task/Issue/Silo 운영과 Runtime Set 관리의 하위 gate입니다. `hypothesis chain`은 이번 안정화 범위 밖입니다.
+위험 실행 전제 확인은 독립 상위 기능이 아니라 Task/Issue/Silo 운영과 Runtime Set 관리의 하위 gate입니다. Task 내부의 `hypothesis_chain`은 Task/Issue/Silo 운영 하위 record이고, 사용자별 `personality`, `feedback evidence`, `hypothesis` 활성 상태와 그로 생성된 runtime 규칙 추적은 User Layer / Hypothesis System의 범위입니다.
+
+`personality`, `feedback evidence`, `hypothesis`의 실제 사용자별 상태는 User Layer가 소유합니다. `main-v3/main`은 이를 public repo에 저장하지 않고, schema, template, 합성 script, guard rule만 제공합니다. Codex가 실제로 읽는 `AGENTS.md`는 정본이 아니라 0계층 System Rules, User Layer, 선택적 Project Layer Context를 합성한 runtime artifact입니다.
 
 ## 계층과 브랜치 정본
 
@@ -96,7 +99,7 @@ Build -> Learn -> Spec
 | `40-pr-review-loop/` | PR 리뷰, 머지, SSoT 승격 판단 |
 | `50-feedback-personality-loop/` | 사용자 피드백 기반 규칙 갱신 |
 | `60-operating-hypotheses/` | task 처리 방식, 정보 취합, 구현 플랜, 사일로/PR/review loop 운영 가설 |
-| `templates/` | `setup.sh`가 Project SSoT scaffold를 생성할 때 복사하는 공통 템플릿 조각 |
+| `templates/` | `setup.sh`가 Project SSoT scaffold와 User Layer 예시를 생성할 때 복사하는 공통 템플릿 조각 |
 
 `system/templates/project-ssot/`는 완성된 Project SSoT 전체가 아니라 `setup.sh --create-project-ssot`이 복사하는 파일 템플릿만 둡니다. `project-overview.md`, `project-contract.md`, `work-items.base`, issue/task 템플릿처럼 프로젝트별 값이 들어가는 파일은 `setup.sh`가 생성합니다.
 

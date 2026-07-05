@@ -15,6 +15,12 @@
 - 프로젝트별 실제 issue, task, QA, coverage 결과는 이 디렉토리에 복사하지 않습니다.
 - 모든 사용자 대상 작성물, PR 제목, PR 본문, 커밋 메시지는 한국어로 작성합니다.
 
+## Runtime AGENTS 합성
+
+`scripts/runtime-agents.sh demo`는 0계층 규칙과 User Layer 입력을 합성해 gitignore된 `logfile/AGENTS-demo.md`를 생성합니다. `scripts/runtime-agents.sh exec -- "<prompt>"`는 합성본을 `codex exec --ephemeral` stdin으로 전달합니다. 두 명령 모두 정본 `AGENTS.md`를 덮어쓰지 않고 tracked file diff가 생기면 실패합니다.
+
+`./setup.sh --init-user-layer`는 공개 User Layer 템플릿을 gitignore된 `local/user-layer/USER-LAYER.md`로 복사합니다. `./setup.sh --runtime-agents-help`는 runtime 합성 명령을 안내합니다.
+
 ## 사용 가능한 모든 skill
 
 아래 목록은 이 디렉토리의 `*/SKILL.md` 기준 사용 가능한 repo skill 전체입니다.
@@ -24,7 +30,7 @@
 - [`silo-runtime-handoff`](silo-runtime-handoff/SKILL.md): 사일로 PR이 codex-review pass를 통과했거나 Codex review 설정 없음/권한 없음이 명시적으로 확인되어 review loop를 생략했고, 실제 제품 코드 파일 변경과 runtime/E2E 확인이 함께 있을 때 사용자 재리뷰를 호출하기 전에 runtime, 서버 주소, E2E 확인 절차, 실행 불가 사유를 PR 댓글로 남길 때 사용합니다. handoff는 `shared-runtime-health-check` 결과와 `silo-runtime.env`, `silo-projects.yaml`, `shared-runtime-registry.yaml` 기준으로 shared BE/API, Docker DB, FE/harness, worker, mock service가 준비됐는지 확인하며, 필요한 runtime이 꺼져 있으면 E2E 가능으로 쓰지 않습니다.
 - [`main-v3-pr-scope-gate`](main-v3-pr-scope-gate/SKILL.md): `main-v3/main` 대상 PR 제안, push, PR 생성 전 diff path와 브랜치명을 계층별로 분류해 project SSoT 원문이나 local/silo 자료가 섞였는지 확인할 때 사용합니다.
 - [`project-contract-gate`](project-contract-gate/SKILL.md): task 작성 전에 기존 요구사항 또는 자연어 앱 설명을 바탕으로 project contract를 구체화할 때 사용합니다. 자연어 제품 구체화와 기능별 추론/번호 질의응답의 2단계로 진행하고, 충분히 닫히기 전에는 task를 만들지 않습니다.
-- [`root-layer-manager`](root-layer-manager/SKILL.md): 정보가 0~3계층 중 어디에 속하는지 판단하거나, 프로젝트 contract/decision/ADR 또는 task/issue/QA/dashboard/source doc을 쓰기 전에 실제 project SSoT 위치, 목표 기준 `project-{projectName}/main` 브랜치, 목표 작업 `project-{projectName}/{taskname}` 브랜치, 현재 호환 `project-{projectName}`/`project-{projectName}-{taskname}` 브랜치, task 번호 registry를 확인해야 할 때 사용합니다.
+- [`root-layer-manager`](root-layer-manager/SKILL.md): 정보가 0~3계층 중 어디에 속하는지 판단하거나, User Layer 실제 상태와 0계층 schema/template/합성 규칙을 분리하거나, 프로젝트 contract/decision/ADR 또는 task/issue/QA/dashboard/source doc을 쓰기 전에 실제 project SSoT 위치, 목표 기준 `project-{projectName}/main` 브랜치, 목표 작업 `project-{projectName}/{taskname}` 브랜치, 현재 호환 `project-{projectName}`/`project-{projectName}-{taskname}` 브랜치, task 번호 registry를 확인해야 할 때 사용합니다.
 - [`projects-setup`](projects-setup/SKILL.md): 새 프로젝트를 `projects/` 구조에 등록하거나 project SSoT, `.gitignore` 추적 예외, 사일로 config를 함께 셋업해야 할 때 사용합니다. 생성되는 1계층 Project SSoT에는 기능 task 생성 전 확인할 `project-contract.md`를 두고, 2계층 Project Work SSoT에는 `Project Contract 확인 결과`, 파일별 대표 함수 골격형 `Pseudo Code`가 포함된 task/silo 템플릿을 둡니다. DB를 사용하는 프로젝트는 setup 때 DB schema 정본/요약/적용 경로를 project registry/config 또는 project SSoT에 기록합니다.
 - [`github-project-intake`](github-project-intake/SKILL.md): GitHub 계정, organization, repo URL, 로컬 clone 경로를 바탕으로 포트폴리오나 project SSoT에 쓸 프로젝트 후보와 근거를 수집하고, 적용/보류/영구제외 및 FE/BE/support repo 묶음을 정리할 때 사용합니다.
 - [`add-shared-runtime`](add-shared-runtime/SKILL.md): 여러 task silo가 함께 참조하는 프로젝트별 shared runtime set을 등록하거나 준비할 때 사용합니다.

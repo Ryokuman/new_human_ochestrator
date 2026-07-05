@@ -31,8 +31,9 @@ The canonical reusable system definitions live under `system/`.
 7. PR Review Loop
 8. Feedback/퍼스널리티 Loop
 9. 셋업/지원 표면 관리
+10. User Layer / Hypothesis System
 
-위험 실행 전제 확인은 독립 기능으로 두지 않고 Task/Issue/Silo 운영과 Runtime Set 관리의 하위 gate로 흡수합니다. `hypothesis chain`은 이번 안정화 범위 밖입니다.
+위험 실행 전제 확인은 독립 기능으로 두지 않고 Task/Issue/Silo 운영과 Runtime Set 관리의 하위 gate로 흡수합니다. Task 내부 `hypothesis_chain`은 Task/Issue/Silo 운영의 하위 실행 기록이고, User Layer / Hypothesis System은 사용자별 `personality`, `feedback evidence`, `hypothesis` 실제 상태를 public repo 밖 User Layer에 두기 위한 상위 기능입니다.
 
 운영 가설 관리는 0계층 System SSoT의 별도 메타 기록입니다. 운영 가설은 제품 기능 가설이 아니라 task 처리 방식, 정보 취합 방식, 구현 플랜, 사일로/PR/review loop 운영 방식이 왜 선택됐고 어떤 병목을 만들었는지 추적합니다.
 

@@ -2,7 +2,7 @@
 
 set -eo pipefail
 
-REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 CODEX_HOME="${CODEX_HOME:-$HOME/.codex}"
 SKILLS_DIR="${CODEX_SKILLS_DIR:-$CODEX_HOME/skills}"
 TMP_ROOT=""
@@ -38,41 +38,47 @@ FORCE_WRITE="no"
 PROJECT_ID=""
 PROJECT_NAME=""
 PROJECT_SSOT_TARGET=""
+USER_LAYER_TARGET=""
 
 usage() {
   cat <<'USAGE'
-Usage:
+사용법:
   ./setup.sh
   ./setup.sh --all
   ./setup.sh --repo-skills --using-superpowers --superpowers-workflow --agent-browser --compound-engineering
   ./setup.sh --init-config
+  ./setup.sh --init-user-layer
   ./setup.sh --create-project-ssot --project-id <id> --target <dir>
 
-Options:
-  --all                    Run every setup group.
-  --none                   Exit without setup.
-  --repo-skills            Install this repository's repo skills.
-  --using-superpowers      Install using-superpowers from obra/superpowers.
-  --superpowers-workflow   Install the required Superpowers workflow skills.
-  --agent-browser          Install agent-browser CLI/browser runtime and skill.
-  --compound-engineering   Install Compound Engineering skills.
-  --init-config            Create local config files from examples.
-  --create-project-ssot    Create a project SSoT scaffold.
-  --project-id <id>        Project id for --create-project-ssot.
-  --project-name <name>    Project display name. Defaults to project id.
-  --target <dir>           Target directory for --create-project-ssot.
-  --force                  Overwrite setup-generated local files when allowed.
-  --yes, -y                Skip the final confirmation.
-  --help, -h               Show this help.
+옵션:
+  --all                    모든 setup 그룹을 실행합니다.
+  --none                   setup 없이 종료합니다.
+  --repo-skills            이 저장소의 repo skill을 설치합니다.
+  --using-superpowers      obra/superpowers의 using-superpowers를 설치합니다.
+  --superpowers-workflow   필요한 Superpowers workflow skill을 설치합니다.
+  --agent-browser          agent-browser CLI/browser runtime과 skill을 설치합니다.
+  --compound-engineering   Compound Engineering skill을 설치합니다.
+  --init-config            예시 파일에서 local config 파일을 생성합니다.
+  --init-user-layer        공개 template에서 gitignore된 local User Layer 파일을 생성합니다.
+  --user-layer-target <file>
+                           --init-user-layer 대상 파일입니다. 기본값은 local/user-layer/USER-LAYER.md입니다.
+  --runtime-agents-help    runtime AGENTS 합성 명령을 표시합니다.
+  --create-project-ssot    project SSoT scaffold를 생성합니다.
+  --project-id <id>        --create-project-ssot에 사용할 project id입니다.
+  --project-name <name>    project 표시 이름입니다. 기본값은 project id입니다.
+  --target <dir>           --create-project-ssot 대상 디렉터리입니다.
+  --force                  허용된 setup 생성 local 파일을 덮어씁니다.
+  --yes, -y                마지막 확인 질문을 생략합니다.
+  --help, -h               이 도움말을 표시합니다.
 
-Environment:
-  CODEX_HOME               Defaults to ~/.codex.
-  CODEX_SKILLS_DIR         Defaults to $CODEX_HOME/skills.
-  SUPERPOWERS_REF          Defaults to main.
-  AGENT_BROWSER_REF        Defaults to main.
+환경 변수:
+  CODEX_HOME               기본값은 ~/.codex입니다.
+  CODEX_SKILLS_DIR         기본값은 $CODEX_HOME/skills입니다.
+  SUPERPOWERS_REF          기본값은 main입니다.
+  AGENT_BROWSER_REF        기본값은 main입니다.
   AGENT_BROWSER_SKIP_RUNTIME
-                           Set to 1 to install only the skill file, not the CLI/browser runtime.
-  COMPOUND_ENGINEERING_REF Defaults to main.
+                           1이면 CLI/browser runtime 없이 skill 파일만 설치합니다.
+  COMPOUND_ENGINEERING_REF 기본값은 main입니다.
 USAGE
 }
 
@@ -83,6 +89,23 @@ info() {
 fail() {
   printf 'error: %s\n' "$*" >&2
   exit 1
+}
+
+show_runtime_agents_help() {
+  cat <<'HELP'
+Runtime AGENTS 합성 명령:
+
+  scripts/runtime-agents.sh demo
+    0계층 규칙과 User Layer 입력을 합성해 gitignore된 logfile/AGENTS-demo.md를 생성합니다.
+
+  scripts/runtime-agents.sh exec -- "<prompt>"
+    합성본을 codex exec --ephemeral stdin으로 전달합니다.
+
+  ./setup.sh --init-user-layer
+    공개 템플릿을 gitignore된 local/user-layer/USER-LAYER.md로 복사합니다.
+
+정본 AGENTS.md는 덮어쓰지 않습니다.
+HELP
 }
 
 cleanup() {
@@ -118,6 +141,7 @@ select_all() {
     "agent-browser"
     "compound-engineering"
     "init-config"
+    "init-user-layer"
   )
 }
 
@@ -132,6 +156,9 @@ parse_args() {
       --agent-browser) add_selection "agent-browser" ;;
       --compound-engineering) add_selection "compound-engineering" ;;
       --init-config) add_selection "init-config" ;;
+      --init-user-layer) add_selection "init-user-layer" ;;
+      --user-layer-target) USER_LAYER_TARGET="${2:-}"; [ -n "$USER_LAYER_TARGET" ] || fail "--user-layer-target requires a value"; shift ;;
+      --runtime-agents-help) show_runtime_agents_help; exit 0 ;;
       --create-project-ssot) add_selection "create-project-ssot" ;;
       --project-id) PROJECT_ID="${2:-}"; [ -n "$PROJECT_ID" ] || fail "--project-id requires a value"; shift ;;
       --project-name) PROJECT_NAME="${2:-}"; [ -n "$PROJECT_NAME" ] || fail "--project-name requires a value"; shift ;;
@@ -159,6 +186,7 @@ prompt_selection() {
 5. compound-engineering
 6. config 초안 생성
 7. project SSoT 반복 구조 생성
+8. User Layer 로컬 초안 생성
 PROMPT
 
   printf '> '
@@ -188,6 +216,7 @@ PROMPT
       5) add_selection "compound-engineering" ;;
       6) add_selection "init-config" ;;
       7) add_selection "create-project-ssot" ;;
+      8) add_selection "init-user-layer" ;;
       *) fail "unknown selection: $token" ;;
     esac
   done
@@ -379,6 +408,69 @@ normalize_setup_path() {
     path="${path%/}"
   done
   printf '%s\n' "$path"
+}
+
+repo_relative_setup_path() {
+  local path="$1"
+  case "$path" in
+    "$REPO_ROOT") printf '%s\n' "." ;;
+    "$REPO_ROOT"/*) printf '%s\n' "${path#$REPO_ROOT/}" ;;
+    *) return 1 ;;
+  esac
+}
+
+ensure_no_repo_setup_symlink_components() {
+  local path="$1"
+  local rel
+  if ! rel="$(repo_relative_setup_path "$path")"; then
+    return 0
+  fi
+
+  local current="$REPO_ROOT"
+  local old_ifs="$IFS"
+  IFS='/'
+  read -r -a parts <<< "$rel"
+  IFS="$old_ifs"
+
+  local part
+  for part in "${parts[@]}"; do
+    [ -n "$part" ] || continue
+    [ "$part" = "." ] && continue
+    current="$current/$part"
+    if [ -L "$current" ]; then
+      fail "refusing to write User Layer through repo symlink path: $current"
+    fi
+  done
+}
+
+ensure_ignored_repo_setup_path() {
+  local path="$1"
+  ensure_no_repo_setup_symlink_components "$path"
+
+  local path_dir
+  path_dir="$(dirname "$path")"
+
+  if [ -d "$path_dir" ]; then
+    path="$(cd "$path_dir" && pwd -P)/$(basename "$path")"
+  fi
+
+  if [ -L "$path" ]; then
+    fail "refusing to write User Layer through symlink path: $path"
+  fi
+
+  local rel
+
+  if ! rel="$(repo_relative_setup_path "$path")"; then
+    return 0
+  fi
+
+  if git -C "$REPO_ROOT" ls-files --error-unmatch "$rel" >/dev/null 2>&1; then
+    fail "refusing to write User Layer to tracked path: $rel"
+  fi
+
+  if ! git -C "$REPO_ROOT" check-ignore -q "$rel"; then
+    fail "refusing to write User Layer to non-ignored repo path: $rel"
+  fi
 }
 
 write_setup_file() {
@@ -1144,6 +1236,31 @@ init_config() {
   copy_setup_file "$REPO_ROOT/system/config/shared-runtime-registry.example.yaml" "$REPO_ROOT/system/config/shared-runtime-registry.yaml"
 }
 
+init_user_layer() {
+  local target="${USER_LAYER_TARGET:-$REPO_ROOT/local/user-layer/USER-LAYER.md}"
+  local template="$REPO_ROOT/system/templates/user-layer/USER-LAYER.example.md"
+
+  case "$target" in
+    /*) ;;
+    *) target="$REPO_ROOT/$target" ;;
+  esac
+  target="$(normalize_setup_path "$target")"
+  ensure_ignored_repo_setup_path "$target"
+
+  [ -f "$template" ] || fail "User Layer template not found: $template"
+  mkdir -p "$(dirname "$target")"
+
+  if [ -f "$target" ] && [ "$FORCE_WRITE" != "yes" ]; then
+    info "User Layer already exists: $target"
+    info "Use --force to overwrite."
+    return 0
+  fi
+
+  cp "$template" "$target"
+  info "User Layer local draft written: $target"
+  info "This path is under local/ and must not be committed."
+}
+
 prompt_project_ssot_args() {
   contains_selection "create-project-ssot" || return 0
 
@@ -1523,6 +1640,7 @@ main() {
   contains_selection "agent-browser" && install_agent_browser
   contains_selection "compound-engineering" && install_compound_engineering
   contains_selection "init-config" && init_config
+  contains_selection "init-user-layer" && init_user_layer
   contains_selection "create-project-ssot" && create_project_ssot
 
   print_summary
