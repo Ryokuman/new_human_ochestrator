@@ -59,6 +59,9 @@ project-ssot/
 ├── repo-links.md
 ├── protected-branches.md
 ├── project-contract.md
+├── 10-requirements/
+│   ├── README.md
+│   └── 기능 또는 사용자 흐름별 요구사항
 ├── decisions/
 │   └── ADR 또는 decision 기록
 ├── references/
@@ -70,7 +73,7 @@ project-ssot/
 └── service-policy.md
 ```
 
-2계층 Project Work SSoT는 task/issue/QA/runbook/coverage처럼 실제 작업 운영 자료를 담습니다.
+2계층 Project Work SSoT는 1계층 기능 요구사항을 구현하기 위한 task/issue/QA/runbook/coverage처럼 실제 작업 운영 자료를 담습니다.
 
 ```text
 project-work-ssot/
@@ -94,9 +97,9 @@ project-work-ssot/
     └── work-filter-dashboard.md
 ```
 
-이 구조는 최소 필수 구성입니다. 프로젝트 특성에 따라 QA, coverage, runbook, report, handoff 영역을 더 둘 수 있습니다. decision/ADR은 1계층 Project SSoT 기준 정보에 두고, task 실행 중 임시 판단이나 단일 PR 판단은 3계층 사일로 또는 PR 본문에 둡니다.
+이 구조는 최소 필수 구성입니다. 프로젝트 특성에 따라 QA, coverage, runbook, report, handoff 영역을 더 둘 수 있습니다. 기능/사용자 흐름별 요구사항과 decision/ADR은 1계층 Project SSoT 기준 정보에 두고, 그 요구사항을 구현하기 위한 issue/task와 task 실행 중 임시 판단이나 단일 PR 판단은 2계층 Project Work SSoT, 3계층 사일로, 또는 PR 본문에 둡니다.
 
-0계층 `system/`은 위 구조가 필요하다는 규칙, `setup.sh` 생성 흐름, 공통 템플릿 조각만 관리합니다. `system/templates/project-ssot/`에는 `setup.sh`가 복사하는 파일 템플릿만 두고, 프로젝트별 값이 들어가거나 생성 시점에 조립되는 파일은 `setup.sh --create-project-ssot`이 target Project SSoT 또는 Project Work SSoT에 만듭니다. 특정 프로젝트의 실제 태스크, 이슈, QA 원문, L runner 결과, page 목록, coverage report, runbook, 대시보드/보고서 내용은 Project Work SSoT에 두고 0계층이나 1계층 기준 정보로 복사하지 않습니다.
+0계층 `system/`은 위 구조가 필요하다는 규칙, `setup.sh` 생성 흐름, 공통 템플릿 조각만 관리합니다. `system/templates/project-ssot/`에는 `setup.sh`가 복사하는 파일 템플릿만 두고, 프로젝트별 값이 들어가거나 생성 시점에 조립되는 파일은 `setup.sh --create-project-ssot`이 target Project SSoT 또는 Project Work SSoT에 만듭니다. 특정 프로젝트의 기능/사용자 흐름별 요구사항 원문은 1계층 Project SSoT에 두고, 그 요구사항을 구현하기 위한 실제 태스크, 이슈, QA 원문, L runner 결과, page 목록, coverage report, runbook, 대시보드/보고서 내용은 Project Work SSoT에 둡니다. 0계층에는 어느 원문도 복사하지 않습니다.
 
 `projects/`는 제품 소스코드 저장소가 아닙니다. `projects/`에는 Project SSoT, registry, repo 연결 정보, 보호 브랜치, service policy, 2계층 위치 index처럼 프로젝트 운영 상태를 찾기 위한 기준 자료만 둡니다.
 
@@ -120,6 +123,7 @@ Project SSoT를 만들거나 점검할 때는 프로젝트별 실제 내용과 �
 |---|---|---|
 | project registry | 프로젝트 id, 이름, repo/source 위치, 보호 브랜치, config 참조를 관리한다. | 1계층 Project SSoT |
 | project contract | 제품 정의, 현재 버전 목표/비목표, 핵심 사용자 플로우, 데이터 경계, repo 역할, 추정 금지 정보를 관리한다. | 1계층 Project SSoT |
+| 기능/사용자 흐름별 요구사항 | 기능 요구사항, 사용자 흐름 요구사항, acceptance 기준처럼 여러 task가 구현 근거로 삼는 요구사항 정본을 관리한다. | 1계층 Project SSoT |
 | decision/ADR | 장기 유지할 프로젝트 의사결정과 채택/폐기 근거를 관리한다. | 1계층 Project SSoT |
 | runtime / DB / API / auth 참조 | 실제 값이 아니라 정본 위치, 적용 경로, 접근 정책 참조를 관리한다. | 1계층 Project SSoT |
 | 2계층 위치 index | task/issue/QA/runbook/coverage가 어디에 있는지 연결한다. | 1계층 Project SSoT |
@@ -128,12 +132,12 @@ Project Work SSoT를 만들거나 점검할 때는 아래 네 가지 구조가 �
 
 | 필수 구성 | 역할 | 저장 계층 |
 |---|---|---|
-| 태스크 생성/관리 | 실제 수행 가능한 작업 단위를 만들고 상태, 완료 조건, 검증 결과를 추적한다. | 2계층 Project Work SSoT |
+| 이슈 생성/관리 | 1계층 요구사항을 구현하거나 검증하는 과정에서 발견한 문제, 원인 가설, 영향, 연결 Task를 추적한다. | 2계층 Project Work SSoT |
+| 태스크 생성/관리 | 1계층 요구사항을 실제 수행 가능한 작업 단위로 내리고 상태, 완료 조건, 검증 결과를 추적한다. | 2계층 Project Work SSoT |
 | L 기준 생성/관리 | 프로젝트의 단계별 채점 기준, runner 계약, report 위치를 명시한다. | 2계층 Project Work SSoT |
-| 이슈 관리 | 문제, 원인 가설, 영향, 연결 Task를 추적한다. | 2계층 Project Work SSoT |
 | 대시보드 | 사람이 현재 상태, 활성 Task, 활성 Issue, 다음 행동을 한 화면에서 필터링해 확인한다. | 2계층 Project Work SSoT |
 
-0계층 `system/`은 위 구조가 필요하다는 규칙, 템플릿, `setup.sh` 셋업 흐름만 관리합니다. 특정 프로젝트의 실제 Task, Issue, QA 원문, L runner 결과, page 목록, report 내용은 0계층 또는 1계층 기준 정보로 복사하지 않습니다.
+0계층 `system/`은 위 구조가 필요하다는 규칙, 템플릿, `setup.sh` 셋업 흐름만 관리합니다. 특정 프로젝트의 기능 요구사항 원문은 1계층에 두고, 실제 Task, Issue, QA 원문, L runner 결과, page 목록, report 내용은 2계층 Project Work SSoT에 둡니다.
 
 Project Work SSoT의 `00-dashboard/`는 단순 설명 문서만 두지 않습니다. 기본 scaffold는 아래 네 파일을 생성해야 합니다.
 
@@ -288,7 +292,7 @@ Task 내부 `hypothesis_chain`이 실행 중 실패와 재시도 가설을 다�
 
 새 operating hypothesis는 task 처리 순서, task 작성 방식, 사일로 생성 방식, PR review loop 방식, submodule/monorepo/external clone 운영 방식, human check 병목을 줄이기 위한 test evidence 수집 방식, 전체 프로젝트 구현 플랜 수립 방식이 바뀔 때 작성합니다.
 
-operating hypothesis는 사후 합리화가 아니라 실행 전 가설과 예상 병목을 먼저 쓰고, 실행 후 결과물과 실제 병목을 이어 붙이는 로그입니다. 프로젝트 기능 요구나 개별 task 원문은 여기에 복사하지 않고 Project Work SSoT에 둡니다.
+operating hypothesis는 사후 합리화가 아니라 실행 전 가설과 예상 병목을 먼저 쓰고, 실행 후 결과물과 실제 병목을 이어 붙이는 로그입니다. 프로젝트 기능 요구사항은 여기에 복사하지 않고 1계층 Project SSoT에 두며, 그 기능을 구현하기 위한 개별 issue/task 원문은 2계층 Project Work SSoT에 둡니다.
 
 ### User Layer
 

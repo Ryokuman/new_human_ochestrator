@@ -92,24 +92,25 @@ task를 만들기 전에 제품 계약을 구체화하는 skill입니다. 목적
 
 ## 산출물
 
-gate가 충분히 닫히면 project SSoT에 기능 또는 사용자 흐름별 요구사항 문서로 나눕니다.
+gate가 충분히 닫히면 1계층 Project SSoT에 기능 또는 사용자 흐름별 요구사항 문서로 나눕니다. 이 요구사항은 issue/task의 구현 근거이며, 구현을 위한 issue/task/QA/runbook/coverage 원문은 2계층 Project Work SSoT에 둡니다.
 
 쓰기 전에는 실제 SSoT 위치, 목표 기준 브랜치 `project-{projectName}/main`, 목표 작업 브랜치 `project-{projectName}/{taskname}`을 확인합니다. 현재 호환 상태에서는 `project-{projectName}` 기준 브랜치와 `project-{projectName}-{taskname}` 작업 브랜치를 확인합니다. 요구사항 원문은 0계층이나 임의 브랜치에 섞지 않습니다.
 
 예:
 
 ```text
-10-requirements/
-  README.md
-  entry-login.md
-  goal.md
-  dashboard-calendar.md
-  diet.md
-  workout.md
-  sync-storage.md
+01-project-ssot/
+  10-requirements/
+    README.md
+    entry-login.md
+    goal.md
+    dashboard-calendar.md
+    diet.md
+    workout.md
+    sync-storage.md
 ```
 
-project overview에는 원문을 복사하지 말고 요구사항 정본 위치만 연결합니다.
+project overview에는 원문을 복사하지 말고 1계층 요구사항 정본 위치만 연결합니다.
 
 ## 통과 기준
 

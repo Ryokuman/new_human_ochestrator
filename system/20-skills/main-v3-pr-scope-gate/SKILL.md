@@ -24,7 +24,7 @@ description: 목표 main-v3/main 또는 현재 호환 main-v3/main 대상 0계�
 
 - `main-v3/main` 대상 PR을 만들거나 제안할 때
 - `docs/*`, `chore/*`, `repair/*`, `project/*`, `project-{projectName}`, `project-{projectName}-*`, 또는 귀속 prefix가 없는 브랜치에서 PR 가능성을 판단할 때
-- project SSoT, project contract, decision/ADR, issue/task/QA/coverage 자료가 diff에 보일 때
+- project SSoT, project contract, 기능/사용자 흐름별 요구사항, decision/ADR, issue/task/QA/coverage 자료가 diff에 보일 때
 - project 브랜치에서 발견한 내용을 공통 규칙으로 승격하려 할 때
 - 하나의 작업 브랜치에 0계층 변경과 1계층 이상 project 변경이 섞여 worktree 또는 PR 분리가 필요한지 판단할 때
 
@@ -42,7 +42,7 @@ git diff --stat "origin/$base_branch"...HEAD
 
 ```text
 0계층 공통 변경: system/, AGENTS.md, root README, setup.sh, 공통 config/template/example
-1계층 project SSoT 원문: projects/<project-id>/01-project-ssot/, project-registry.md, project-contract.md, 50-decisions/
+1계층 project SSoT 원문: projects/<project-id>/01-project-ssot/, project-registry.md, project-contract.md, 10-requirements/, 50-decisions/
 2계층 Project Work SSoT 원문: projects/<project-id>/README.md에 선언된 Project Work SSoT 경로, projects/<project-id>/ssot/, projects/<project-id>/02-project-internal/
 3계층 local/silo 임시 자료: task-*/, local/, sources/, evidence, projects/<project-id>/03-silo-local/, 실행 로그
 ```
@@ -74,7 +74,7 @@ project 작업 중 공통 규칙 변경이 발생한 경우에는 해당 0계층
 
 ## 압력 사례
 
-- `project-{projectName}/main` 또는 현재 호환 `project-{projectName}` 브랜치에 `projects/<project-id>/01-project-ssot/` 아래 project registry, project contract, decision/ADR이 있고 사용자가 PR 준비를 요청하면 0계층 PR을 쓰지 않습니다.
+- `project-{projectName}/main` 또는 현재 호환 `project-{projectName}` 브랜치에 `projects/<project-id>/01-project-ssot/` 아래 project registry, project contract, `10-requirements/`, decision/ADR이 있고 사용자가 PR 준비를 요청하면 0계층 PR을 쓰지 않습니다.
 - `project-{projectName}/main` 또는 현재 호환 `project-{projectName}` 브랜치에 `projects/<project-id>/ssot/` 또는 `projects/<project-id>/02-project-internal/` 아래 dashboard, dictionary, task, handoff, coverage, template, README가 있고 사용자가 PR 준비를 요청하면 0계층 PR을 쓰지 않습니다.
 - `project-{projectName}/main` 또는 현재 호환 `project-{projectName}` 브랜치에 `projects/<project-id>/03-silo-local/` 아래 사일로 로컬 README, PR 본문 템플릿, 실행 로그가 있고 사용자가 PR 준비를 요청하면 0계층 PR을 쓰지 않습니다.
 - `docs/*` 브랜치인데 diff가 project SSoT 원문뿐이면 브랜치명 불일치로 보고하고, 0계층으로 올릴 공통 규칙이 없다고 말합니다. 새 0계층 PR은 `main-v3/{taskname}`로 다시 만듭니다.

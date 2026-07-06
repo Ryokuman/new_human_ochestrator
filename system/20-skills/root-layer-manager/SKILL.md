@@ -28,8 +28,8 @@ description: 0계층 Root/Global 에이전트 운영 규칙을 적용해 요청�
 
 ```text
 0계층: 공통 규칙, skill, config template, 역할별 agent prompt, 계층 운영 방식
-1계층: Project SSoT. project 등록, repo/source 위치, project contract, decision/ADR, runtime/DB/API/auth 참조, project-level 운영 기준, 2계층 위치 index
-2계층: Project Work SSoT. project 내부 issue/task/QA/runbook/coverage/handoff
+1계층: Project SSoT. project 등록, repo/source 위치, project contract, 기능/사용자 흐름별 요구사항, decision/ADR, runtime/DB/API/auth 참조, project-level 운영 기준, 2계층 위치 index
+2계층: Project Work SSoT. 1계층 요구사항을 구현하기 위한 project 내부 issue/task/QA/runbook/coverage/handoff
 3계층: silo local finding, local task, 실험 로그, PR 전 임시 상태
 ```
 
@@ -61,13 +61,13 @@ branch base는 먼저 계층으로 판단합니다. GitHub PR target/base branch
 
 ## Project SSoT 쓰기 전 확인
 
-프로젝트 내부 task, issue, QA, runbook, coverage, dashboard, source doc을 새로 만들거나 크게 수정하기 전에는 실제 저장 위치를 추정하지 않습니다. project contract와 decision/ADR은 1계층 Project SSoT 기준 정보로 보고, task/issue/QA/runbook/coverage는 2계층 Project Work SSoT로 분리합니다.
+프로젝트 내부 task, issue, QA, runbook, coverage, dashboard, source doc을 새로 만들거나 크게 수정하기 전에는 실제 저장 위치를 추정하지 않습니다. project contract, 기능/사용자 흐름별 요구사항, decision/ADR은 1계층 Project SSoT 기준 정보로 보고, 그 요구사항을 구현하기 위한 task/issue/QA/runbook/coverage는 2계층 Project Work SSoT로 분리합니다.
 
 아래 순서로 기준 SSoT와 기준 worktree를 먼저 확인합니다.
 
 1. `projects/<project-id>/README.md`
 2. README에 선언된 Project SSoT 경로
-3. Project SSoT의 project contract, decision/ADR, 2계층 위치 index
+3. Project SSoT의 project contract, 기능/사용자 흐름별 요구사항, decision/ADR, 2계층 위치 index
 4. 선언이 없으면 호환 scaffold인 `projects/<project-id>/02-project-internal/README.md`
 5. project dashboard는 2계층 Project Work SSoT의 작업 대시보드 위치를 확인합니다.
 6. task 작성이면 실제 Project Work SSoT 아래 `30-work-items/tasks/`와 task registry 또는 기존 task 목록
@@ -114,7 +114,7 @@ branch base는 먼저 계층으로 판단합니다. GitHub PR target/base branch
 
 root 저장소 0계층 계층 메인 브랜치에는 공통 운영 규칙만 둡니다. 현재 호환 기준은 `main-v3/main`, 목표 기준은 `main-v3/main`입니다.
 
-`project-{projectName}/main` 브랜치는 별도 fork를 만들지 않을 때 쓰는 프로젝트별 Project SSoT 장기 계층 메인 브랜치입니다. 이 브랜치는 root 0계층으로 머지할 기능 브랜치가 아니며, 프로젝트별 코드 분석, repo/source 연결 상태, SSoT 색인, project contract, decision/ADR, 운영 기준을 보관합니다. `project-{projectName}` 자체는 namespace이며 브랜치로 만들지 않습니다. 마이그레이션 전 호환 `project-{projectName}`와 기존 slash 기반 `project/<project-id>` 브랜치는 전환/호환 필요 항목으로 분류합니다.
+`project-{projectName}/main` 브랜치는 별도 fork를 만들지 않을 때 쓰는 프로젝트별 Project SSoT 장기 계층 메인 브랜치입니다. 이 브랜치는 root 0계층으로 머지할 기능 브랜치가 아니며, 프로젝트별 코드 분석, repo/source 연결 상태, SSoT 색인, project contract, 기능/사용자 흐름별 요구사항, decision/ADR, 운영 기준을 보관합니다. `project-{projectName}` 자체는 namespace이며 브랜치로 만들지 않습니다. 마이그레이션 전 호환 `project-{projectName}`와 기존 slash 기반 `project/<project-id>` 브랜치는 전환/호환 필요 항목으로 분류합니다.
 
 프로젝트 내부 task, issue, QA, runbook, coverage, dashboard, source doc처럼 2계층 Project Work SSoT를 생성하거나 수정하는 작업은 목표 모델에서 해당 project의 `project-{projectName}/main`에서 판 `project-{projectName}/<branch-name>` 작업 브랜치에서만 수행합니다. 현재 호환 상태에서는 `project-{projectName}`와 `project-{projectName}-<branch-name>`을 사용합니다. 계층 메인 브랜치에는 직접 커밋하지 않습니다. 공통 템플릿, scaffold 로직, repo skill, agent prompt처럼 0계층 규칙 자체를 수정하는 작업은 목표 모델에서 `main-v3/{taskname}`, 현재 호환 상태에서 `main-v3/{taskname}` 작업 브랜치에서 수행합니다.
 

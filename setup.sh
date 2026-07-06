@@ -840,7 +840,7 @@ write_project_ssot_surface_templates() {
 
 | 계층 | 목적 | 위치 |
 |---|---|---|
-| 1계층 | project registry, project contract, decision/ADR, 정본 위치, 반복 운영 기준 | \`$layer1_from_work_path/\` |
+| 1계층 | project registry, project contract, 기능/사용자 흐름별 요구사항, decision/ADR, 정본 위치, 반복 운영 기준 | \`$layer1_from_work_path/\` |
 | 2계층 | task, issue, QA, coverage, runbook | \`$work_self_path/\` |
 | 3계층 | silo local 발견, 실험 로그, PR 전 임시 상태 |  |
 
@@ -857,6 +857,7 @@ write_project_ssot_surface_templates() {
 
 - project registry
 - project contract
+- 기능/사용자 흐름별 요구사항
 - decision/ADR
 - runtime/DB/API/auth 참조
 - 2계층 Project Work SSoT 위치 index
@@ -873,6 +874,7 @@ write_project_ssot_surface_templates() {
 | project SSoT root |  |  |
 | Project Work SSoT | \`$work_from_layer1_path/\` |  |
 | project contract | \`project-contract.md\` |  |
+| 기능/사용자 흐름별 요구사항 | \`10-requirements/\` |  |
 | source repo |  |  |
 | fork/submodule/external clone |  |  |
 | DB schema 정본 |  |  |
@@ -919,6 +921,7 @@ task 고유 구현 계약, seed row, test input, PR 상태는 각 task 문서와
 | project SSoT root | \`.\` |
 | Project Work SSoT | \`$work_from_layer1_path/\` |
 | 운영 개요 | \`$work_from_layer1_path/00-dashboard/project-overview.md\` |
+| 기능/사용자 흐름별 요구사항 | \`10-requirements/\` |
 | DB schema 기준 |  |
 | API/auth/session 계약 |  |
 | 디자인 source 또는 style contract |  |
@@ -960,6 +963,17 @@ task 고유 구현 계약, seed row, test input, PR 상태는 각 task 문서와
 프로젝트 장기 decision/ADR은 1계층 Project SSoT인 이 폴더에 기록합니다.
 
 task 실행 중 임시 판단이나 단일 PR 판단은 3계층 사일로 또는 PR 본문에 남기고, 장기 유지가 필요한 경우에만 이 위치로 정리합니다.
+"
+
+  write_setup_file "$layer1/10-requirements/README.md" "# Requirements
+
+이 폴더는 1계층 Project SSoT의 기능/사용자 흐름별 요구사항 정본 위치입니다.
+
+## 작성 기준
+
+- 기능 요구사항과 사용자 흐름 요구사항은 여러 issue/task가 구현 근거로 참조할 수 있게 이 위치에 둡니다.
+- 요구사항을 구현하기 위한 issue, task, QA, runbook, coverage 원문은 \`$work_from_layer1_path/\` 아래 2계층 Project Work SSoT에 둡니다.
+- 단일 task mock data, test input, PR 임시 판단, silo local 로그는 이 위치에 쓰지 않습니다.
 "
 
   write_setup_file "$target/01-branch-policy/README.md" "# Branch Policy
@@ -1329,7 +1343,7 @@ create_project_ssot() {
     "$target/templates"
 
   ensure_project_ssot_surface_dirs "$target"
-  mkdir -p "$layer1_target/50-decisions" "$layer1_target/references"
+  mkdir -p "$layer1_target/10-requirements" "$layer1_target/50-decisions" "$layer1_target/references"
 
   write_setup_file "$target/README.md" "# $PROJECT_NAME Project SSoT
 
@@ -1350,6 +1364,7 @@ create_project_ssot() {
 - \`10-dictionary/\`: 프로젝트 용어, 고유명사, 내부 약어, 공통 승격 후보
 - \`$layer1_from_work_path/project-registry.md\`: 1계층 project 정본 위치와 repo 연결 색인
 - \`$layer1_from_work_path/project-contract.md\`: 기능 task 작성 전 1계층 계약 확인 gate
+- \`$layer1_from_work_path/10-requirements/\`: 기능/사용자 흐름별 요구사항 정본
 - \`30-work-items/\`: task/issue/runbook/handoff/coverage/silo template
 - \`40-runtime-sets/\`: runtime set 정의와 선택 우선순위
 - \`$layer1_from_work_path/50-decisions/\`: 1계층 프로젝트 결정과 ADR

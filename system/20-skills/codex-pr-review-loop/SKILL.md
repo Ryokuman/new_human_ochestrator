@@ -9,7 +9,7 @@ description: PR 유형을 계층별로 판정한 뒤 목표 0계층 main-v3/main
 
 `Didn't find any major issues` 문구만으로 루프를 종료하지 않습니다. 현재 head를 대상으로 한 Codex 댓글, review body, inline review comment를 함께 보고 남은 P2/P1/major/critical 지적을 `수정 필요`, `수비 가능`, `사용자 판단 필요`로 분류한 뒤 종료 여부를 결정합니다.
 
-branch base는 먼저 계층으로 판단합니다. 목표 모델에서 0계층 공통 변경은 `main-v3/main`, project 등록/색인, project contract, decision/ADR, task, issue, QA, coverage 같은 project 계층 변경은 해당 `project-{projectName}/main`이 기준입니다. 현재 마이그레이션 전 호환 기준은 0계층 `main-v3/main`, project 계층 `project-{projectName}`입니다. GitHub PR target/base branch는 이 계층 판단 결과를 반영한 최종 머지 대상입니다. project 변경을 이 skill 때문에 0계층 PR로 retarget하지 않습니다. project 계층 PR은 계층 메인 브랜치에 직접 커밋한 PR이 아니라, 목표 모델에서는 `project-{projectName}/{taskname}`, 현재 호환 상태에서는 `project-{projectName}-{taskname}` 작업 브랜치에서 커밋한 PR이어야 합니다.
+branch base는 먼저 계층으로 판단합니다. 목표 모델에서 0계층 공통 변경은 `main-v3/main`, project 등록/색인, project contract, 기능/사용자 흐름별 요구사항, decision/ADR, task, issue, QA, coverage 같은 project 계층 변경은 해당 `project-{projectName}/main`이 기준입니다. 현재 마이그레이션 전 호환 기준은 0계층 `main-v3/main`, project 계층 `project-{projectName}`입니다. GitHub PR target/base branch는 이 계층 판단 결과를 반영한 최종 머지 대상입니다. project 변경을 이 skill 때문에 0계층 PR로 retarget하지 않습니다. project 계층 PR은 계층 메인 브랜치에 직접 커밋한 PR이 아니라, 목표 모델에서는 `project-{projectName}/{taskname}`, 현재 호환 상태에서는 `project-{projectName}-{taskname}` 작업 브랜치에서 커밋한 PR이어야 합니다.
 
 사용자가 “PR을 올려 주세요”라고 말하면 아래 순서가 기본입니다.
 

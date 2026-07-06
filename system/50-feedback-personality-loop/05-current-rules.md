@@ -29,7 +29,7 @@
 23. system SSoT는 상황별 행동 처방을 누적하는 곳이 아니라, agent가 판단할 근거와 계층 분류 기준을 모아두는 프롬프트/스킬 하네스입니다. 외부 서비스, 인증, 실제 네트워크, 사용자 계정, 런타임 설정처럼 agent가 직접 통제하지 못하는 요소가 completion에 끼어들면 system에는 통제 가능성, 증명 가능성, 사용자 승인 필요 여부를 분리하는 판단 근거만 둡니다. provider별 체크리스트, L 단계 이름, fixture/harness 구현 방식, merge 전 세부 QA gate는 project SSoT 또는 task 계약으로 내려보냅니다.
 24. agent 감사나 PR 리뷰에서 특정 provider, 화면, DB fixture, L runner, runtime harness처럼 좁은 스코프 항목이 발견되면 system에는 그 항목의 실제 절차를 추가하지 않습니다. 대신 `system에 남길 판단 근거`, `project SSoT로 내려보낼 실행 처방`, `feedback/follow-up으로 남길 항목`, `누락된 project SSoT 정의`를 분리해 보고합니다. project SSoT 위치가 불명확하면 system에 임시 처방을 쓰지 않고 `project SSoT 위치 누락` 또는 `task 계약 누락`으로 남깁니다.
 25. 기능 task는 사일로 실행 전에 단계별 구현 계획과 pseudo code를 먼저 작성하고 리뷰합니다. pseudo code는 TypeScript/JavaScript 같은 실제 구현 코드 블록이나 완성된 함수 구현이 아니라 파일별 대표 함수 골격형으로 작성합니다. 각 파일마다 대표 함수와 보조 함수가 어떤 입력/의존성을 받고 조회, 검증, 가공, 조건 분기, 반복, 저장, 반환을 어떻게 수행하는지 코드에 가깝게 보여야 합니다. 파일명, 함수명, API query, DB mutation, op 이름(`D/L/C/R`) 같은 식별자는 원문 그대로 쓸 수 있지만 설명 문장은 한국어로 씁니다. task 목표 밖 화면, 버튼, endpoint, table mutation, submodule, E2E 범위가 보이면 `범위 drift 후보`로 표시합니다. pseudo code 없이 바로 구현에 들어간 기능 task는 계획 리뷰 gate 누락으로 보고합니다.
-26. task 처리 방식, 전체 구현 플랜 수립 방식, 정보 취합 방식, 사일로/PR/review loop 운영 방식이 바뀌면 먼저 3계층 Silo Local / Test Evidence / Feedback에 feedback으로 저장합니다. 운영 hypothesis의 상세 관리 방식은 이번 안정화 범위 밖이며, 별도 요청이나 승인된 정리 작업에서 다룹니다. 프로젝트 기능 요구나 개별 task 원문은 여기에 복사하지 않고 project SSoT에 둡니다.
+26. task 처리 방식, 전체 구현 플랜 수립 방식, 정보 취합 방식, 사일로/PR/review loop 운영 방식이 바뀌면 먼저 3계층 Silo Local / Test Evidence / Feedback에 feedback으로 저장합니다. 운영 hypothesis의 상세 관리 방식은 이번 안정화 범위 밖이며, 별도 요청이나 승인된 정리 작업에서 다룹니다. 프로젝트 기능 요구사항은 여기에 복사하지 않고 1계층 Project SSoT에 두며, 그 기능을 구현하기 위한 개별 task 원문은 2계층 Project Work SSoT에 둡니다.
 
 ## 현재 강한 후보 규칙
 

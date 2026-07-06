@@ -12,8 +12,8 @@ description: 새 프로젝트를 root orchestrator의 projects 구조에 등록�
 ## 원칙
 
 - `projects/<project-id>/`는 프로젝트 연결 정보와 Project SSoT 기준 자료의 입구입니다.
-- 1계층 Project SSoT에는 project registry, repo/source 위치, project contract, decision/ADR, runtime/DB/API/auth 참조, project-level 운영 기준, 2계층 위치 index를 둡니다.
-- 2계층 Project Work SSoT에는 issue, task, QA, runbook, coverage, handoff 같은 실제 작업 운영 산출물을 둡니다.
+- 1계층 Project SSoT에는 project registry, repo/source 위치, project contract, 기능/사용자 흐름별 요구사항, decision/ADR, runtime/DB/API/auth 참조, project-level 운영 기준, 2계층 위치 index를 둡니다.
+- 2계층 Project Work SSoT에는 1계층 요구사항을 구현하기 위한 issue, task, QA, runbook, coverage, handoff 같은 실제 작업 운영 산출물을 둡니다.
 - task/issue/QA 원문, silo local 로그, 단일 task mock data/test input, 단일 PR 임시 판단은 1계층에 두지 않습니다.
 - `02-project-internal/`은 호환 경로 이름으로 남아 있을 수 있으나 의미상 2계층 Project Work SSoT입니다. 이 안의 issue, task, QA, coverage 산출물은 0계층 `system/`이나 1계층 기준 정보로 복사하지 않습니다.
 - `setup.sh --create-project-ssot`은 최소 Project SSoT/Project Work SSoT scaffold를 생성합니다. 작업 대시보드는 DataviewJS와 Obsidian Base를 기본 viewer 계약으로 포함하고, 기능 task 생성 전 확인할 1계층 `project-contract.md`를 함께 만듭니다.
@@ -32,6 +32,8 @@ projects/<project-id>/
 │   ├── project-registry.md
 │   ├── project-contract.md
 │   ├── work-ssot-index.md
+│   ├── 10-requirements/
+│   │   └── README.md
 │   ├── references/
 │   │   ├── runtime.md
 │   │   ├── db.md
@@ -75,7 +77,7 @@ projects/<project-id>/
   --yes
 ```
 
-6. 1계층 `project-contract.md`를 채웁니다. 최소한 제품 정의, 현재 버전 목표/비목표, 핵심 사용자 플로우, 데이터 저장과 동기화 경계, repo 역할, task 생성 전 필수 참조, 추정 금지 정보를 확인된 값으로 적습니다. 확인되지 않은 항목은 빈 heading으로 방치하지 않고 `project contract 누락` 또는 `사용자 확인 필요`로 표시합니다.
+6. 1계층 `project-contract.md`와 `10-requirements/`를 채웁니다. `project-contract.md`에는 최소한 제품 정의, 현재 버전 목표/비목표, 핵심 사용자 플로우, 데이터 저장과 동기화 경계, repo 역할, task 생성 전 필수 참조, 추정 금지 정보를 확인된 값으로 적습니다. 기능/사용자 흐름별 요구사항 정본은 `10-requirements/` 아래 문서로 나누고, 확인되지 않은 항목은 빈 heading으로 방치하지 않고 `project contract 누락` 또는 `사용자 확인 필요`로 표시합니다.
 7. decision/ADR 위치와 2계층 Project Work SSoT 위치 index를 생성하거나 참조합니다.
 8. `projects/<project-id>/README.md`, `00-secrets/README.md`, `03-silo-local/README.md`, `03-silo-local/pr-description-template.md`를 생성합니다.
 9. `system/config/silo-projects.yaml`이 없으면 `./setup.sh --init-config --yes`로 local config 초안을 만듭니다. 있으면 기존 구조를 보존하고 `projects:` 항목에 새 프로젝트만 추가합니다.
@@ -83,9 +85,9 @@ projects/<project-id>/
 
 ## 필수 프로젝트 설명 산출물
 
-모든 Project SSoT에는 프로젝트 전반 설명, project contract, decision/ADR 위치, 2계층 Project Work SSoT 위치 index가 있어야 합니다. Project Work SSoT에는 dictionary와 작업 대시보드가 있어야 합니다.
+모든 Project SSoT에는 프로젝트 전반 설명, project contract, 기능/사용자 흐름별 요구사항 위치, decision/ADR 위치, 2계층 Project Work SSoT 위치 index가 있어야 합니다. Project Work SSoT에는 dictionary와 작업 대시보드가 있어야 합니다.
 
-`project-contract.md`는 기능 task 생성 전 확인하는 1계층 Project SSoT 기준 정보이며, 제품 정의, 현재 버전 목표/비목표, 핵심 사용자 플로우, 데이터 저장과 동기화 경계, repo 역할, 추정 금지 정보를 담습니다. `project-overview.md`는 프로젝트 상태와 운영 경계 요약이고, 실제 운영 첫 화면은 `work-filter.md` 또는 `work-views.md`처럼 issue/task를 필터링할 수 있는 2계층 Project Work SSoT 작업 목록입니다.
+`project-contract.md`는 기능 task 생성 전 확인하는 1계층 Project SSoT 기준 정보이며, 제품 정의, 현재 버전 목표/비목표, 핵심 사용자 플로우, 데이터 저장과 동기화 경계, repo 역할, 추정 금지 정보를 담습니다. `10-requirements/`는 기능/사용자 흐름별 요구사항 정본을 담는 1계층 Project SSoT 위치입니다. `project-overview.md`는 프로젝트 상태와 운영 경계 요약이고, 실제 운영 첫 화면은 `work-filter.md` 또는 `work-views.md`처럼 issue/task를 필터링할 수 있는 2계층 Project Work SSoT 작업 목록입니다.
 
 `project-contract.md`에는 최소 아래 항목을 둡니다.
 
