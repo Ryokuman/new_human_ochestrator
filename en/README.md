@@ -17,8 +17,9 @@ Top-level functions:
 7. PR Review Loop
 8. feedback/personality loop
 9. setup/support surface management
+10. User Layer / Hypothesis System
 
-Risky execution precondition checks are not a standalone feature. They are absorbed as lower gates under Task/Issue/Silo operation and Runtime Set management. `hypothesis chain` is outside this stabilization scope.
+Risky execution precondition checks are not a standalone feature. They are absorbed as lower gates under Task/Issue/Silo operations and Runtime Set management. A task-local `hypothesis_chain` is an execution record under Task/Issue/Silo operations, while User Layer / Hypothesis System is the top-level function for keeping each user's `personality`, `feedback evidence`, and active `hypothesis` state outside the public repository.
 
 ## Setup
 

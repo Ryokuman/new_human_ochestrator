@@ -6,7 +6,7 @@
 
 현재 이 저장소의 추적 정본은 0계층 System SSoT입니다. 1계층 Project SSoT, 2계층 Project Work SSoT, 3계층 Silo Local / Test Evidence / Feedback 실데이터는 아직 이 repo 정본에 있다고 보지 않습니다.
 
-상위 기능은 9개입니다.
+상위 기능은 10개입니다.
 
 1. 계층 운영
 2. 메인 브랜치/작업 브랜치 운영
@@ -17,8 +17,9 @@
 7. PR Review Loop
 8. Feedback/퍼스널리티 Loop
 9. 셋업/지원 표면 관리
+10. User Layer / Hypothesis System
 
-위험 실행 전제 확인은 독립 기능으로 두지 않고 Task/Issue/Silo 운영과 Runtime Set 관리의 하위 gate로 흡수합니다. `hypothesis chain`은 이번 안정화 범위 밖입니다.
+위험 실행 전제 확인은 독립 기능으로 두지 않고 Task/Issue/Silo 운영과 Runtime Set 관리의 하위 gate로 흡수합니다. Task 내부 `hypothesis_chain`은 Task/Issue/Silo 운영의 하위 실행 기록이고, User Layer / Hypothesis System은 사용자별 `personality`, `feedback evidence`, `hypothesis` 실제 상태를 public repo 밖 User Layer에 두기 위한 상위 기능입니다.
 
 ## 셋업
 
