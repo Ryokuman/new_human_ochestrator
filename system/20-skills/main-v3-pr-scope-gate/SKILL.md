@@ -42,9 +42,10 @@ git diff --stat "origin/$base_branch"...HEAD
 
 ```text
 0계층 공통 변경: system/, AGENTS.md, root README, setup.sh, 공통 config/template/example
-1계층 project SSoT 원문: projects/<project-id>/01-project-ssot/, project-registry.md, project-contract.md, 10-requirements/, 50-decisions/
-2계층 Project Work SSoT 원문: projects/<project-id>/README.md에 선언된 Project Work SSoT 경로, projects/<project-id>/ssot/, projects/<project-id>/02-project-internal/
-3계층 local/silo 임시 자료: task-*/, local/, sources/, evidence, projects/<project-id>/03-silo-local/, 실행 로그
+1계층 User SSoT 원문: root 실제 user-layer/, 사용자별 AGENTS.md, Feedback, 갱신 세션
+1계층 project SSoT 원문: <projectName>/01-project-ssot/, project-registry.md, AGENTS.md, 10-requirements/, 50-decisions/. 이전 호환 경로는 projects/<project-id>/01-project-ssot/
+2계층 Project Work SSoT 원문: <projectName>/02-project-work-ssot/, 이전 호환 경로인 projects/<project-id>/README.md에 선언된 Project Work SSoT 경로, projects/<project-id>/ssot/, projects/<project-id>/02-project-internal/
+3계층 local/silo 임시 자료: silos/, task-*/, local/, sources/, shared-runtime/, evidence, projects/<project-id>/03-silo-local/, 실행 로그
 ```
 
 ## 차단 조건
@@ -52,6 +53,7 @@ git diff --stat "origin/$base_branch"...HEAD
 아래 중 하나라도 있으면 `main-v3/main` PR 제안, push, PR 생성을 중단합니다.
 
 - 1계층 project SSoT 원문이 diff에 포함됨
+- 1계층 User SSoT 실제 데이터가 diff에 포함됨. 단, `system/templates/user-layer/`의 공개 schema/template은 0계층 공통 변경으로 허용함
 - 2계층 Project Work SSoT 원문이 diff에 포함됨
 - 3계층 local/silo 임시 자료가 diff에 포함됨
 - `project/*` 호환 브랜치, `project-{projectName}` 기준 브랜치, 또는 `project-{projectName}/main` 기준 브랜치 전체를 0계층으로 합치려는 형태임
@@ -74,8 +76,8 @@ project 작업 중 공통 규칙 변경이 발생한 경우에는 해당 0계층
 
 ## 압력 사례
 
-- `project-{projectName}/main` 또는 현재 호환 `project-{projectName}` 브랜치에 `projects/<project-id>/01-project-ssot/` 아래 project registry, project contract, `10-requirements/`, decision/ADR이 있고 사용자가 PR 준비를 요청하면 0계층 PR을 쓰지 않습니다.
-- `project-{projectName}/main` 또는 현재 호환 `project-{projectName}` 브랜치에 `projects/<project-id>/ssot/` 또는 `projects/<project-id>/02-project-internal/` 아래 dashboard, dictionary, task, handoff, coverage, template, README가 있고 사용자가 PR 준비를 요청하면 0계층 PR을 쓰지 않습니다.
+- `project-{projectName}/main` 또는 현재 호환 `project-{projectName}` 브랜치에 `<projectName>/01-project-ssot/` 또는 호환 `projects/<project-id>/01-project-ssot/` 아래 project registry, project contract, `10-requirements/`, decision/ADR이 있고 사용자가 PR 준비를 요청하면 0계층 PR을 쓰지 않습니다.
+- `project-{projectName}/main` 또는 현재 호환 `project-{projectName}` 브랜치에 `<projectName>/02-project-work-ssot/`, `projects/<project-id>/ssot/`, 또는 `projects/<project-id>/02-project-internal/` 아래 dashboard, dictionary, task, handoff, coverage, template, README가 있고 사용자가 PR 준비를 요청하면 0계층 PR을 쓰지 않습니다.
 - `project-{projectName}/main` 또는 현재 호환 `project-{projectName}` 브랜치에 `projects/<project-id>/03-silo-local/` 아래 사일로 로컬 README, PR 본문 템플릿, 실행 로그가 있고 사용자가 PR 준비를 요청하면 0계층 PR을 쓰지 않습니다.
 - `docs/*` 브랜치인데 diff가 project SSoT 원문뿐이면 브랜치명 불일치로 보고하고, 0계층으로 올릴 공통 규칙이 없다고 말합니다. 새 0계층 PR은 `main-v3/{taskname}`로 다시 만듭니다.
 - `setup.sh` 또는 project SSoT scaffold 템플릿처럼 여러 프로젝트에서 반복 가능한 생성 규칙만 남았을 때만 0계층 PR을 제안합니다.

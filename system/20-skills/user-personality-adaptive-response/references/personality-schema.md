@@ -60,27 +60,17 @@
 - `tentative`: 현재 thread에만 유용한 일회성 피드백
 - `rejected`: 고려했지만 사용자가 교정한 규칙
 
-## 승격 후보 규칙
+## 후보 퍼스널리티 규칙
 
-사용자 주도 검토 세션에서 패턴을 장기 prompt나 skill 규칙 후보로 검토하는 조건:
+사용자가 명시적으로 연 별도 퍼스널리티 갱신 세션에서 Feedback을 후보 퍼스널리티로 검토합니다. 반복 횟수는 후보의 강한 신호일 수 있지만 자동 승격 조건이 아닙니다.
 
-1. 사용자가 영구 반영을 명시적으로 요청한 경우
-2. 같은 도메인에서 관련 miss가 3회 이상 있고 사용자가 승격을 승인한 경우
+1. Project Contract, Project Work 실행 기준, 현재 Task/일회성 교정, Operating Hypothesis 후보를 먼저 제외합니다.
+2. 프로젝트가 달라도 유지되는 판단 방향만 후보로 만듭니다.
+3. 가까운·경계·전이 시나리오로 후보가 사용자의 판단을 예측하는지 검증합니다.
+4. 후보 diff에 사용자가 명시적으로 승인한 경우에만 `user-layer/AGENTS.md`에 반영합니다.
 
-모든 증거가 같은 즉시 사건에서만 나온 경우에는 전역 규칙으로 승격하지 않습니다.
+모든 근거가 같은 즉시 사건에서만 나온 경우에는 과적합 가능성을 검증 시나리오에서 확인합니다.
 
-## 작업 메모 형식
+## Feedback 형식
 
-응답 계약에 영향을 주는 사건을 저장할 때는 아래 형식을 사용합니다.
-
-```markdown
-## <YYYY-MM-DD> - <domain>
-
-- Feedback grade: explicit | repeated | tentative | rejected
-- Missed signal:
-- Previous response:
-- User correction:
-- Updated rule:
-- Scope:
-- Promotion status: current-thread | memory | durable-rule
-```
+응답 계약이나 판단 방향에 영향을 주는 사건은 User Layer가 있을 때 `system/templates/user-layer/feedback.template.md` 형식으로 `user-layer/feedback/active/`에 기록합니다. User Layer가 없으면 현재 교정만 적용하고 임의 경로를 만들지 않으며 최종 보고에 미기록 사유를 남깁니다. 모든 대화 원문이나 검증 전 장기 규칙을 저장하지 않습니다.

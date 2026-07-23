@@ -14,7 +14,7 @@ description: 프로젝트별 shared runtime registry/status 정리, archived 표
 - shared runtime 삭제
 - 공용 runtime 정리
 - 오래된 runtime set archived 처리
-- workspace root 아래 `shared-runtime/<project-id>/<runtime-name>/` 제거
+- workspace root 아래 `shared-runtime/<runtime-name>/` 제거
 - runtime registry/status에서 더 이상 쓰지 않는 항목 정리
 
 ## 원칙
@@ -23,11 +23,11 @@ description: 프로젝트별 shared runtime registry/status 정리, archived 표
 - destructive 삭제는 사용자 명시 요청 또는 승인된 작업 범위가 있을 때만 수행합니다.
 - 참조 중인 task, agent, server, process, port, PR, handoff가 있으면 삭제하지 않고 보존 또는 archived 후보로 보고합니다.
 - secret, token, password, credential 값은 읽거나 기록하지 않습니다.
-- project SSoT나 local config에 있는 실제 runtime 구성값을 root `main-v3/main`에 복사하지 않습니다.
+- project registry/config, 2계층 Project Work SSoT runbook/status, local config에 있는 실제 runtime 구성값을 root `main-v3/main`에 복사하지 않습니다.
 
 ## 절차
 
-1. 계층을 판정합니다. 공통 삭제 정책 변경이면 `main-branch-update-flow`, 특정 프로젝트 runtime 정리면 project registry/config 또는 project SSoT에서 처리합니다.
+1. 계층을 판정합니다. 공통 삭제 정책 변경이면 `main-branch-update-flow`, 특정 프로젝트 runtime 정리면 project registry/config 또는 2계층 Project Work SSoT의 runbook/status에서 처리합니다.
 2. 삭제 대상 `project_id`, `runtime_name`, workspace path, registry/status 위치를 확인합니다.
 3. 참조 상태를 확인합니다.
    - registry/status의 `linked_tasks`
@@ -45,12 +45,12 @@ description: 프로젝트별 shared runtime registry/status 정리, archived 표
 
 ## 삭제 전 확인 명령 후보
 
-프로젝트별 도구가 있으면 project SSoT의 runbook을 우선합니다. 일반 후보는 아래와 같습니다.
+프로젝트별 도구가 있으면 2계층 Project Work SSoT의 runbook을 우선합니다. 일반 후보는 아래와 같습니다.
 
 ```bash
-git -C shared-runtime/<project-id>/<runtime-name> status --short --branch
-git -C shared-runtime/<project-id>/<runtime-name> log --oneline --max-count=5
-rg -n "<runtime-name>|shared-runtime/<project-id>/<runtime-name>" task-* projects system/config
+git -C shared-runtime/<runtime-name> status --short --branch
+git -C shared-runtime/<runtime-name> log --oneline --max-count=5
+rg -n "<runtime-name>|shared-runtime/<runtime-name>|shared-runtime/<project-id>/<runtime-name>" silos system/config
 lsof -i :<port>
 ```
 
@@ -67,7 +67,7 @@ archive_reason: <why>
 delete_after: <optional date or condition>
 ```
 
-완전 삭제 후에도 프로젝트 운영상 추적이 필요하면 project SSoT handoff에 삭제 사실과 근거를 남깁니다.
+완전 삭제 후에도 프로젝트 운영상 추적이 필요하면 2계층 Project Work SSoT의 handoff나 runbook에 삭제 사실과 근거를 남깁니다.
 
 ## 금지
 

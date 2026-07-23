@@ -1,17 +1,14 @@
 ---
 name: shared-runtime-health-check
-description: page-lifecycle, run, E2E, runtime 검증 전 runtime_set 유무나 shared runtime 서버 상태가 불명확할 때 사용합니다.
 ---
 
 # Shared Runtime Health Check
 
-이 스킬은 task silo나 page-lifecycle 실행 전에 project별 Runtime Set이 준비되어 있는지, 서버형 shared runtime이 실행 가능한 상태인지 확인합니다.
 
 ## 적용 시점
 
 아래 요청이나 상황이 나오면 이 스킬을 사용합니다.
 
-- page-lifecycle, run, E2E, runtime 검증을 시작하기 전에 Runtime Set 확인이 필요함
 - shared runtime registry/status에 등록된 서버형 runtime health를 확인해야 함
 - 사용자가 lifecycle 실행을 요청했지만 `runtime_set` 유무나 상태가 불명확함
 - task silo `goal.md`, handoff, PR 본문에 runtime health gate 결과를 남겨야 함
@@ -39,7 +36,7 @@ description: page-lifecycle, run, E2E, runtime 검증 전 runtime_set 유무나 
 
 - `runtime_kind: server` 또는 `requires_health_check: true`
 - `ports`가 있고 lifecycle, E2E, browser, API 검증에서 접근해야 함
-- `health_check_command` 또는 `health_check_url`이 등록되어 있음
+- `health_check.command` 또는 `health_check.url`이 등록되어 있음
 - 공용 backend, frontend dev server, worker API, service mock, DB emulator처럼 프로세스 실행 상태가 검증 전제임
 
 단순 source checkout, generator repo, 정적 reference repo처럼 실행 중인 port나 server process가 없으면 서버형 runtime이 아닐 수 있습니다.
@@ -89,7 +86,6 @@ Shared runtime health failed:
 ## 금지
 
 - `runtime_set`이 없는데 lifecycle, run, E2E를 먼저 시작하지 않습니다.
-- health 실패를 무시하고 page-lifecycle을 진행하지 않습니다.
 - secret 파일 내용을 확인하거나 출력하지 않습니다.
 - 프로젝트별 실제 issue/task/QA 원문을 root `main-v3/main` `system/`에 복사하지 않습니다.
 - shared runtime 자체 수정이 필요할 때 현재 task PR에 섞지 않습니다. 별도 task, branch, PR 후보로 분리합니다.

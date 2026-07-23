@@ -13,6 +13,13 @@ active
 - 시작: 2026-06-26
 - 종료 또는 폐기:
 
+## 상태 재검증
+
+- 최근 재검증: 2026-07-10
+- 최근 근거: 단순 화면 config 누락 수정 task에 파일별 함수 골격이 없는 pseudo code가 기계적으로 들어가 구현 계획을 반복한다는 사용자 피드백을 확인했습니다. 일반 기능 task의 pseudo code gate는 유지하되 별도 실행 로직이 없는 단순 config 변경은 명시적 변경 계약으로 대체하도록 범위를 조정했습니다.
+- 다음 재검증 조건: project contract gate 질문 순서, task template, 사일로 goal scaffold, task-writer/main-orchestrator prompt 중 하나가 바뀌면 이 가설의 반영 위치와 적용 범위를 다시 확인합니다.
+- 외부 PR 근거: 과거 PR 번호만으로 상태를 유지하지 않고, 현재 `main-v3/main` 파일 경로와 내용 기준으로 재검증합니다.
+
 ## 운영 가설
 
 기능 task를 바로 사일로 구현으로 넘기지 않고, 먼저 project contract gate에서 제품 정의와 핵심 사용자 흐름을 대화형으로 확정한 뒤 task 계약, 단계별 구현 계획, pseudo code를 작성하게 하고 이를 리뷰하면 목표 밖 화면, API, DB mutation, submodule, E2E 범위 drift를 구현 전에 발견할 수 있다.
@@ -30,6 +37,7 @@ project contract, 계획, pseudo code를 먼저 리뷰하면 실제 코드를 �
 - 사용자 피드백: 현재 가설과 gate를 먼저 보고하고, project contract 부분부터 같이 실행해야 한다. task는 요구사항이 구체화된 뒤 그때 작성해야 한다.
 - 사용자 피드백: agent는 단순 질문보다 `현재 추론은 이러하며 맞는가`, `누락된 것이 있을 수 있는가`처럼 사용자의 검토 부담을 낮추는 질문을 던져야 한다.
 - 사용자 피드백: pseudo code의 목적은 사용자 흐름 설명이나 구현 계획 문장이 아니라 실제 코드 로직 구조를 파악하는 것이다. 파일별 대표 함수와 함수 내부의 조회, 검증, 가공, 분기, 저장, 반환 구조가 코드에 가깝게 보여야 한다.
+- 사용자 피드백: 단순 config 수정 task에 구현 계획을 반복하는 pseudo code가 들어간 이유를 문제로 제기했고, 해당 task 정리와 공통 규칙 개선을 함께 선택했다.
 - 반복 관찰: 구현 결과물 확인 시점에 목표 밖 화면, 불필요한 기능, 디자인 톤 이탈, human check 병목이 뒤늦게 드러났다.
 - 반복 관찰: project SSoT에는 repo 역할, DB, submodule, design 관련 정보가 있었지만 task 생성자가 먼저 읽을 project-level 계약으로 충분히 압축되어 있지 않았다.
 - PR 리뷰 관찰: 규칙을 agent prompt에만 넣으면 README, goal template, scaffold 같은 다른 진입점에서 누락된다.
@@ -54,6 +62,7 @@ project contract, 계획, pseudo code를 먼저 리뷰하면 실제 코드를 �
 - pseudo code 상세도가 너무 낮거나 사용자 흐름 설명에 머물면 파일별 실제 로직 구조와 drift를 잡지 못한다.
 - pseudo code 상세도가 너무 높거나 실제 구현 코드 블록 중심이 되면 사실상 구현 전 코드 리뷰가 되어 속도가 느려진다.
 - 비기능 task에까지 pseudo code를 강제하면 불필요한 절차가 된다.
+- 별도 실행 로직이 없는 단순 config 변경에 pseudo code를 강제하면 설정 key 변경을 함수 골격처럼 포장해 문서만 길어지고 검토 정보는 늘지 않는다.
 - README, prompt, scaffold, goal template 중 하나라도 빠지면 새 규칙이 우회된다.
 
 ## 적용한 작업 방식
@@ -64,12 +73,14 @@ project contract, 계획, pseudo code를 먼저 리뷰하면 실제 코드를 �
 - agent 질문은 가능하면 `제가 추론하기에는 ...인데 맞나요?`, `누락될 수 있는 후보는 ...입니다`처럼 검토 가능한 가설을 먼저 제시한다.
 - 사용자가 `추론이 맞다`, `전부 맞다`처럼 답하면 이전 agent 추론을 확정 요구사항 후보로 기록한다.
 - 사용자가 아직 task 작성을 요청하지 않았고 project contract를 같이 검증하자고 한 경우, task 문서를 먼저 만들지 않는다.
-- project contract gate 산출물은 project SSoT에 기능 또는 사용자 흐름별 문서로 나누고, 1계층 project overview에는 정본 위치와 인덱스만 남긴다.
+- project contract gate의 요구사항 산출물 중 project-level 반복 기준은 1계층 Project SSoT에 기능 또는 사용자 흐름별 요구사항 정본이나 위치 인덱스로 나누고, 구현 준비 상세와 flow별 task 계약은 2계층 Project Work SSoT 또는 해당 task 계약으로 내린다.
 - task 계약은 project contract에서 확인된 정보만 사용하고, 누락된 정보는 임시 추정으로 채우지 않고 `project contract 누락`으로 표시한다.
 - 기능 task에만 단계별 구현 계획과 pseudo code를 요구한다.
 - pseudo code는 실제 컴파일 가능한 구현 코드가 아니라 파일별 대표 함수 골격형으로 작성한다. 각 함수의 필요한 입력/의존성, 조회, 검증, 가공, 조건 분기, 반복, 저장, 반환이 코드에 가깝게 보여야 한다.
+- 선언적 config, prop, default, value 한두 곳만 수정하고 별도 분기·가공·조회·저장 흐름이 없는 기능 task는 pseudo code를 생략할 수 있다. 대신 대상 파일, 설정 key, 기존값 또는 누락 상태, 목표값, 회귀 검증을 `단순 config 변경 계약`에 적는다.
+- 로직 변경이나 여러 파일 실행 흐름은 단순 config 변경으로 분류하지 않는다.
 - 목표 밖 화면, 버튼, endpoint, table mutation, submodule, E2E 범위가 나오면 `범위 drift 후보`로 표시한다.
-- 역할 README, main-prompt, AGENTS, 사일로 goal spec, project SSoT scaffold를 함께 갱신한다.
+- 역할 README, main-prompt, AGENTS, 사일로 goal spec, project SSoT scaffold를 함께 갱신 대상으로 본다. 단, setup scaffold와 silo goal 필수 항목 밀도가 완전히 같아졌다고 완료 처리하지 않고 후속 정합화 여부를 별도로 확인한다.
 
 ## 적용 범위
 
@@ -86,8 +97,10 @@ project contract, 계획, pseudo code를 먼저 리뷰하면 실제 코드를 �
 - Codex PR 리뷰에서 누락된 README와 goal template 연결이 지적됐고, 이를 반영했다.
 - 최신 head 기준 no-major 리뷰를 통과한 뒤 main-v3/main에 반영됐다.
 - 후속 검토에서 task 생성 이전의 project contract 압축 부족이 추가 병목으로 확인됐다.
-- ONJUMP 요구사항 정리 실험에서 project contract gate는 한 번에 task를 만드는 방식보다 대화형 인터뷰에 더 적합했다.
+- 초기 요구사항 정리 실험에서 project contract gate는 한 번에 task를 만드는 방식보다 대화형 인터뷰에 더 적합했다.
 - 제품 정의, 로그인/대시보드/목표/LLM/식단/운동/동기화/공유/구독 같은 흐름을 agent 추론과 사용자 확인으로 나누자 요구사항 누락과 MVP/후속 버전 경계가 더 빨리 드러났다.
+- setup scaffold와 silo goal의 필수 항목 밀도는 아직 완전 정합화됐다고 볼 수 없어, scaffold 갱신 완료가 아니라 후속 정합화 필요 상태로 기록한다.
+- 단순 config 변경 task를 별도 검토한 결과, pseudo code가 구현 계획을 반복할 뿐 범위 drift를 추가로 드러내지 못하는 사례를 확인했다.
 
 ## 실제 병목
 
@@ -97,6 +110,8 @@ project contract, 계획, pseudo code를 먼저 리뷰하면 실제 코드를 �
 - 처음 반영 시 pseudo code 요구가 비기능 task까지 확장될 위험이 있었다.
 - 역할 main-prompt만 바꾸고 README를 놓치는 진입점 불일치가 있었다.
 - goal template과 scaffold를 함께 갱신하지 않으면 새 사일로에서 규칙이 우회될 수 있었다.
+- setup scaffold가 만드는 task/project-work 템플릿과 silo `goal.md`가 요구하는 필수 항목의 밀도가 다르면, 같은 gate를 말해도 진입점별 산출물 품질이 달라진다.
+- 기능 여부만으로 pseudo code 필요성을 판정하면 로직이 없는 config 변경에도 형식적 함수 골격을 만들게 된다. 변경의 실행 흐름 유무를 함께 판정해야 한다.
 
 ## 사람 확인 지점
 
@@ -111,16 +126,18 @@ project contract, 계획, pseudo code를 먼저 리뷰하면 실제 코드를 �
 - task 생성 전 project contract 확인 단계
 - project contract gate에서 현재 가설과 gate를 먼저 보고하는 방식
 - 제품 설명과 유저 플로우를 기준으로 agent 추론 질문을 던지고 사용자 확인을 받는 방식
-- 확정된 요구사항을 기능/흐름별 project SSoT 문서로 나누는 방식
+- 확정된 요구사항 중 project-level 반복 기준은 1계층 Project SSoT 문서로 나누고, 구현 준비 상세와 flow별 task 계약은 2계층 Project Work SSoT 또는 task 계약으로 내리는 방식
 - 실패 원인을 project contract 누락, task 계약 누락, 계획/pseudo code 누락으로 분리하는 방식
 - 기능 task에 한정한 단계별 구현 계획과 pseudo code gate
 - 파일별 대표 함수 골격형 pseudo code
+- 별도 실행 로직이 없는 단순 config 변경을 대상 파일, 설정 key, 기존값 또는 누락 상태, 목표값, 회귀 검증으로 검토하는 방식
 - 목표 밖 산출물을 `범위 drift 후보`로 먼저 표시하는 방식
-- prompt, README, template, scaffold를 함께 갱신하는 방식
+- prompt, README, template, scaffold의 반영 여부를 같은 변경에서 대조하는 방식
 
 ## 버릴 것
 
 - 비기능 task에 pseudo code를 기계적으로 요구하는 방식
+- 별도 실행 로직이 없는 단순 config 변경에 pseudo code를 기계적으로 요구하는 방식
 - 구현 결과를 본 뒤에야 목표 drift를 판단하는 방식
 - pseudo code를 사용자 흐름 설명이나 구현 계획 문장으로 대체하는 방식
 - project SSoT에 정보가 있다는 이유만으로 task 생성자가 충분히 이해했다고 가정하는 방식
@@ -130,9 +147,17 @@ project contract, 계획, pseudo code를 먼저 리뷰하면 실제 코드를 �
 
 ## 0계층 반영 위치
 
-- 문서: `AGENTS.md`, `system/README.md`, `system/30-silo-system/02-silo-goal.md`
-- skill:
-- agent prompt: `system/10-agents/main-orchestrator/`, `system/10-agents/task-writer/`
+- 반영 완료:
+  - 문서: `AGENTS.md`, `system/README.md`, `system/30-silo-system/02-silo-goal.md`
+  - README/index: `system/20-skills/README.md`
+  - skill: `system/20-skills/project-contract-gate/SKILL.md`, `system/20-skills/projects-setup/SKILL.md`
+  - agent prompt: `system/10-agents/main-orchestrator/README.md`, `system/10-agents/main-orchestrator/main-prompt.md`, `system/10-agents/task-writer/README.md`, `system/10-agents/task-writer/main-prompt.md`
+  - scaffold: `setup.sh`의 Project `AGENTS.md`, `TASK-template.md`, `goal.md` 생성 구간
+- 반영 후보:
+  - project contract gate 실제 적용 세션의 좋은 질문/나쁜 질문 사례
+  - project별 task template override가 생기는 경우의 추적 규칙
+- 미구현 후보:
+  - 없음
 
 ## 후속 운영 가설 후보
 

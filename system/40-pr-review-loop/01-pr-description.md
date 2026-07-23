@@ -2,7 +2,9 @@
 
 ## 필수 섹션
 
-사일로가 PR을 만들 때 본문에는 아래 섹션이 있어야 합니다.
+사일로가 PR을 만들 때 본문에는 아래 섹션이 있어야 합니다. 필수 섹션은 조건부로 생략하지 않습니다. 해당 변경이나 기록 대상이 없으면 섹션을 유지하고 `해당 없음`으로 적습니다.
+
+이 목록은 실제 PR 제출 전 기준입니다. `setup.sh --create-project-ssot`이 만드는 `templates/pr-description.md`는 프로젝트별 PR 본문을 빠르게 시작하기 위한 최소 템플릿이므로 이 목록 전체를 생성 시점에 모두 포함하지 않아도 됩니다. 사일로 결과를 실제 PR로 올릴 때는 [`06-pr-template.md`](06-pr-template.md)의 확장 템플릿 또는 아래 목록으로 본문을 보강하고, 해당 없는 섹션도 `해당 없음` 또는 생략 사유를 남깁니다.
 
 ```markdown
 ## 무엇을 했는가
@@ -25,11 +27,21 @@
 
 ## Pre-QA Gate
 
+## Submodule 변경 검토
+
+## Mock/Stub/API 계약과 Version-up 후보
+
 ## 실행 불가 또는 대체 증거
 
 ## 검증
 
 ## Codex PR 리뷰
+
+## Runtime Handoff 결과
+
+## PR Completion Gate 결과
+
+## 사용자 재리뷰 대기 상태
 
 ## 사일로에서 새로 발견한 항목
 
@@ -67,7 +79,7 @@ PR 본문은 결과만 나열하지 않고, 처음 보는 리뷰어가 변경 �
 
 ## 새로 추가된 단어
 
-dictionary SSoT에 실제 추가/수정/삭제된 용어가 있을 때 작성합니다. 변경이 없으면 `해당 없음`으로 적습니다.
+필수 섹션은 항상 존재합니다. dictionary SSoT에 실제 추가/수정/삭제된 용어가 있으면 표로 작성하고, 변경이 없으면 `해당 없음`으로 적습니다.
 
 최소 컬럼은 아래와 같습니다.
 
@@ -85,12 +97,55 @@ dictionary SSoT에 실제 추가/수정/삭제된 용어가 있을 때 작성합
 
 ## 검증
 
-- 실행한 테스트, generation, runner, agent-browser 여부를 적습니다.
-- 각 acceptance criteria를 어떤 검증 방법으로 덮었는지 적습니다.
-- 자동 검증이 보장하는 것과 보장하지 못하는 것을 분리합니다.
+- 실행 명령과 통과 수치만 나열하지 않습니다. 사용자가 테스트 코드를 읽지 않아도 테스트의 의도, 방법, 성공 기준과 한계를 판단할 수 있는 테스트 계약을 먼저 적습니다.
+- 각 테스트 계약에는 `테스트 목적`, `준비 조건과 입력`, `실행 방법`, `기대 결과`, `실제 결과`, `검증 한계`, `재실행 명령`을 포함합니다.
+- 실행 전 초안의 `실제 결과`는 `미실행`으로 두고, 실행 뒤 관찰한 결과와 증거로만 갱신합니다.
+- 정상 조건만 확인하지 않고 해당 변경에서 중요한 실패 조건, 경계값 또는 거부 시나리오를 어떤 입력으로 만들었는지 설명합니다.
+- 각 acceptance criteria를 어떤 테스트 계약이 덮는지 연결합니다.
+- 이번 변경을 직접 검증하는 테스트, 함께 동기화된 공통 규칙의 회귀 테스트, lint·공백 같은 형식 검사를 구분합니다.
+- 자동 검증이 보장하는 것과 보장하지 못하는 것을 테스트별 `검증 한계`에 적습니다.
+- 명령은 기본 판단 자료가 아니라 결과를 재현하려는 독자를 위한 세부 정보로 둡니다.
 - 사용자 화면, 설치, 서버 실행, 앱 다운로드 가능 상태가 acceptance에 포함되면 `Pre-QA Gate`와 사용자 QA 리스트를 적습니다.
 - 실행하지 않은 검증이 있으면 이유를 적습니다.
 - runner, E2E, agent-browser, 외부 도구를 실행할 수 없으면 실행 불가 사유, 대체 증거, 남은 수동 확인 범위를 적습니다.
+
+## Submodule 변경 검토
+
+- submodule 변경이 없으면 `해당 없음`으로 적습니다.
+- 기존 submodule gitlink가 바뀌면 submodule repo별 PR URL, head SHA, pin한 commit, submodule 유형(`patch/evidence`, `runtime`, `service/MSA`), 상위 repo에서 검증한 host 설정/실행 경로 연결을 적습니다.
+- 신규 submodule이면 repo 존재 목적, 제품 적용 기준, 평가 기준, 검증 한계, pin 조건, service/MSA 승격 근거 또는 비승격 근거를 적습니다.
+
+## Mock/Stub/API 계약과 Version-up 후보
+
+- mock/stub/API 임시 계약이 없으면 `해당 없음`으로 적습니다.
+- 임시 계약이 있으면 slice, mock/stub/API 위치, 목적, mock 데이터 출처, 응답 shape, 실제 service 연결 예정 위치, 제거 조건, 제거 상태를 적습니다.
+- mock 제거 대조표는 `제거 완료`, `실제 service 연결 완료`, `다음 버전까지 유지`, `폐기 후보`, `사용자 판단 필요`로 분류합니다.
+- version-up 후보는 대상 버전, 포함 slice PR, mock 제거 상태, service 연결 상태, 남은 QA, Project SSoT 갱신 필요 위치를 적습니다.
+
+## Codex PR 리뷰
+
+- exact pass phrase 존재 여부와 동등 pass 판정 근거를 분리합니다.
+- `Codex review 미설정` fallback이면 확인 근거 URL/사유, 최신 head, 남은 수동 리뷰 필요를 적습니다.
+- 호출 댓글 URL, `eyes` 반응 확인 시각, no-`eyes` 3회 접수 실패 여부, `eyes` 이후 15분 응답 대기 timeout 여부를 적습니다.
+- 호출 댓글마다 URL, 댓글 작성 시각, 호출 댓글에 적은 head SHA, 대상 head SHA 일치 여부를 이력으로 남깁니다.
+- `수비 가능` 항목은 지적, 수비 근거, 근거 출처, 남은 위험, 사용자 판단 필요 여부를 함께 적습니다. 근거 출처는 project contract에 한정하지 않고 사용자 결정, `goal.md`, PR scope, 코드/문서 근거, runtime/evidence 근거를 함께 허용합니다.
+- codex-review pass가 없는 실패 라운드에서도 현재 head 대상 P1/P2/major/critical 수집 상태와 분류 상태를 남깁니다.
+
+## Runtime Handoff 결과
+
+- runtime handoff 대상이 아니면 이유와 함께 `해당 없음`으로 적습니다.
+- 대상이면 `runtime_set`, shared runtime health 결과, handoff 댓글 URL, 실행 불가 사유, 남은 사용자 QA 항목을 적습니다.
+
+## PR Completion Gate 결과
+
+- gate별 최소 필드는 `status`, `headSha`, `evidence`, `failureReason`, `nextProcess`입니다.
+- `pr-codex-review-gate`, `pr-agent-browser-e2e-gate`, `pr-runtime-handoff-gate` 중 적용한 gate와 생략한 gate를 분리합니다.
+- 새 head가 push되면 이전 head의 gate 결과를 stale로 표시하고 최신 head 근거로 재사용하지 않습니다.
+
+## feedback/follow-up 후보
+
+- 후보마다 저장 위치, 대상 계층, 대상 종류, evidence grade, 적용 범위, promotion status를 적습니다.
+- 1계층 후보는 Project SSoT의 project contract/decision/ADR/요구사항 위치로, 2계층 후보는 Project Work SSoT의 task/issue/QA/runbook/coverage/Run Set 위치로 분리합니다.
 
 ## 좋지 않은 본문
 

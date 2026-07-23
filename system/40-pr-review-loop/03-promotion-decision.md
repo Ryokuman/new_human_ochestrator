@@ -2,7 +2,25 @@
 
 ## 승격 후보 기준
 
-사일로 내부 이슈/태스크를 SSoT로 승격하는 기준은 아래와 같습니다.
+사일로 내부 이슈/태스크의 승격 판단은 발견 항목을 0/1/2계층 정본으로 올릴지, 3계층 사일로/PR 기록으로 남길지 먼저 나눕니다.
+
+| 승격 대상 | 판단 기준 | 저장/브랜치 기준 |
+|---|---|---|
+| 0계층 System SSoT | 여러 프로젝트에 반복 적용되는 공통 규칙, repo skill, agent prompt, setup scaffold/template 기준 | `system/` 변경, `main-v3/{taskname}` 작업 브랜치, `main-v3/main` 대상 PR |
+| 1계층 Project SSoT | 프로젝트 등록, project contract, 기능/사용자 흐름 요구사항, decision/ADR, 하위 SSoT 위치 색인 | 해당 project 계층 작업 브랜치, 목표 모델은 `project-{projectName}/{taskname}` -> `project-{projectName}/main` |
+| 2계층 Project Work SSoT | 특정 요구사항을 구현하기 위한 issue, task, QA, runbook, coverage, handoff | 해당 project의 Project Work SSoT 위치, project 계층 작업 브랜치 |
+| 3계층 Silo Local / PR 기록 | 단일 PR 판단, 임시 evidence, 아직 반복성이나 정본 위치가 확인되지 않은 발견 | silo local, evidence, PR 본문에 남기며 SSoT 승격으로 부르지 않음 |
+
+승격 대상 계층을 정한 뒤, 아래 기준으로 실제 승격 후보인지 판단합니다.
+
+승격 판단은 먼저 대상 계층과 대상 종류를 분리합니다.
+
+| 대상 계층 | 대상 종류 | 저장 위치 | 브랜치 기준 |
+|---|---|---|---|
+| 0계층 System SSoT | 공통 규칙, repo skill, agent prompt, PR/review/runtime 공통 정책 | `system/` | `main-v3/main` 기준 `main-v3/{taskname}` |
+| 1계층 Project SSoT | project 등록/색인, project contract, 기능/사용자 흐름별 요구사항, decision/ADR, project-level 운영 기준 | 해당 project SSoT | 목표 `project-{projectName}/main`, 호환 `project-{projectName}` |
+| 2계층 Project Work SSoT | task, issue, QA, coverage, runbook, work dashboard, Run Set/Runtime Set | 해당 project의 Project Work SSoT | 목표 `project-{projectName}/main`, 호환 `project-{projectName}` |
+| 3계층 local/evidence/feedback | silo local 발견, test evidence, 실험 로그, feedback 원자료, PR 전 임시 상태 | silo local, evidence, feedback log, PR 본문 | 보존/승격 판단 전에는 상위 SSoT에 직접 커밋하지 않음 |
 
 | 기준 | 설명 |
 |---|---|
@@ -32,7 +50,12 @@ PR 본문과 완료 보고에는 아래를 분리합니다.
 feedback/follow-up 후보
 - 후보:
 - 근거:
-- 제안 타입: issue/task/rule
+- 대상 계층: 0계층/1계층/2계층/3계층
+- 대상 종류: rule/skill/prompt/project-contract/decision/ADR/task/issue/QA/runbook/coverage/feedback
+- 저장 위치:
+- evidence grade:
+- 적용 범위:
+- promotion status: proposed/needs-user-approval/accepted/rejected/deferred
 
 처리하지 않고 남긴 항목
 - 항목:

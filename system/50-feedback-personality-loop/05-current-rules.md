@@ -1,41 +1,17 @@
-# 현재 규칙 후보
+# 현재 공통 운영 규칙
 
-## 현재 확정된 전역 규칙
+이 문서는 특정 사용자의 유저 퍼스널리티나 후보 퍼스널리티를 저장하지 않습니다. 실제 사용자별 정본은 1계층 User SSoT의 `AGENTS.md`, `feedback/`, `update-sessions/`가 소유합니다.
 
-사용자 답변으로 확정된 규칙:
+0계층이 소유하는 공통 규칙은 다음과 같습니다.
 
-1. 사람이 읽는 프롬프트와 보고서는 한국어를 우선합니다.
-2. 사일로는 필요한 레포지토리만 새로 clone해서 격리 작업 공간을 만듭니다.
-3. 사일로는 새 작업 브랜치에서 문제 해결에 필요한 코드를 자유롭게 수정할 수 있습니다.
-4. 사일로는 `main`, `main-v3/main`, `dev`, `develop`, `master` 같은 보호 브랜치에 절대 직접 손대지 않습니다.
-5. 사일로 발견 사항은 PR 본문에서 `feedback/follow-up`, `현재 PR에서 처리한 항목`, `처리하지 않고 남긴 항목`으로 나눕니다.
-6. 퍼스널리티/취향/응답 규칙 갱신은 항상 0계층 계층 메인 브랜치에서 파생한 새 브랜치에서 수행하고 PR로 제출합니다. 목표 모델은 `main-v3/main`과 `main-v3/{taskname}`이고, 현재 호환 기준은 `main-v3/main`와 `main-v3/{taskname}`입니다.
-7. 프로젝트 artifact를 설명할 때는 느슨한 별칭보다 SSoT 경로와 역할이 드러나는 이름을 우선합니다.
-8. 다음 행동, 승인 단위, 진행 여부가 걸린 응답에서는 보기 3개를 제시합니다.
-9. 퍼스널리티 업데이트는 feedback 작성, 보고서 후보 작성, 실제 반영을 분리하고, 실제 반영 전 사용자 승인을 받습니다.
-10. `user-personality-adaptive-response`는 모든 사용자 답변을 장기 로그로 저장하는 장치가 아니라, 응답 계약에 영향을 준 명시 피드백, 보기 밖 선택, 반복 오류, 특이 실행 전제를 feedback으로 남기는 장치입니다.
-11. 응답 계약에 영향을 주는 사건은 장기 반영 여부와 무관하게 feedback으로 남깁니다. 실제 반영 여부는 사용자가 원하는 주기로 여는 퍼스널리티 검토 세션에서 판단합니다.
-12. 프로젝트/기기별 QA 런타임 제약은 전역 사용자 취향으로 일반화하지 않고 project SSoT, project registry, 또는 로컬 feedback의 project override로 분리합니다.
-13. 모바일 QA 준비에서 사용자가 특정 기기, 설치 방식, 네트워크 전제를 명시하면, 일반적인 도구 추천보다 그 명시 전제를 우선합니다.
-14. 프로젝트별 personality/override의 실제 값은 전역 규칙 문서에 고정하지 않고, `project/*` 브랜치, project SSoT, project registry, 또는 로컬 feedback에 둡니다. 전역 `system/`에는 분류 기준, 승인 경계, 저장 위치, 보고 방식만 둡니다.
-15. 사용자가 퍼스널리티, 선택지, 보고 방식, 승인 경계 누락을 지적했을 때 해당 skill이 세션의 외부 skill 목록에 없더라도, repo-local `system/20-skills/`에 같은 skill이 있는지 확인합니다.
-16. 사용자가 목적, 완료 범위, 달성률, 테스트 여부가 헷갈린다고 말하면 새 작업을 진행하기 전에 목표, 완료된 것, 남은 것, test evidence를 먼저 재정렬합니다.
-17. 사용자가 서버 실행, 앱 설치 가능 상태, QA 리스트를 요구하면 코드 변경 보고만으로 완료하지 않습니다. 실행 가능한 runtime, 접근 방법, 검증 목록을 함께 준비합니다.
-18. 최종 보고에는 `사용한 스킬` 바로 다음에 `현재 워크트리`를 적고, 새 worktree를 생성하거나 기준 worktree를 전환한 직후에는 중간 보고에서도 새 경로와 브랜치를 즉시 알립니다.
-19. 기능 task는 프론트/백엔드 분리 소유권이 아니라 사용자 목적과 완료 경로 기준의 풀스택 단위로 검토하고 실행합니다.
-20. 소비 API, schema, store method, route 부재는 단독 task 위험으로 단정하지 않고, 같은 task 안에서 백엔드 계약을 먼저 만들고 프론트가 소비하는 순서를 기본 실행안으로 둡니다.
-21. PR 생성 시에는 먼저 현재 브랜치의 0계층/project 계층과 target/base를 판정합니다. 목표 모델에서 0계층은 `main-v3/main` 대상 PR, project 계층은 `project-{projectName}/{taskname}` 작업 브랜치에서 커밋한 뒤 해당 `project-{projectName}/main` 대상 PR로 올립니다. 현재 호환 상태에서는 0계층은 `main-v3/main` 대상 PR, project 계층은 `project-{projectName}-{taskname}` 작업 브랜치에서 커밋한 뒤 해당 `project-{projectName}` 대상 PR로 올립니다. 둘이 섞이면 worktree와 브랜치를 분리합니다. PR 생성 후에는 `codex-pr-review-loop` skill로 codex-review pass 목표를 세팅하고, 최신 head에 대한 `Didn't find any major issues` 또는 동등한 codex-review pass 명시 응답이 나올 때까지 수정, 검증, 재리뷰를 반복합니다. 최신 호출 댓글에 3분 동안 `eyes` 반응이 없고 최신 head 리뷰 결과도 없으면 접수 실패로 보고 같은 head 기준으로 최대 3회까지 재호출한 뒤 새 호출 댓글 기준으로 다시 확인하며, 3회 모두 접수되지 않으면 `Codex 리뷰 접수 실패 timeout`으로 중단합니다. `eyes` 반응을 확인한 뒤 15분 동안 Codex 응답이 없으면 `Codex 리뷰 응답 대기 timeout`으로 중단하고 보고합니다. task silo의 `goal.md`가 확인되면 codex-review pass 목표를 `goal.md`에 세팅하고, 그렇지 않은 PR은 PR 본문, 리뷰 thread, 현재 사용자 요청을 재리뷰 컨텍스트로 사용합니다. codex-review pass 반복은 기본 상한을 두지 않지만, no-`eyes` 접수 실패 재호출은 같은 head 기준 기본 3회로 제한합니다.
-22. 병렬로 생성하거나 실행할 task는 sibling task 완료를 `Output`, `Acceptance Criteria`, `Test Plan`의 전제로 삼지 않습니다. 개별 task output은 그 task가 독립적으로 증명할 수 있는 산출물로 제한하고, 인증/데이터/화면/backend 의존성이 있으면 agent가 통제할 수 있는 대체 검증 경로와 실제 사용자 경로의 차이를 task 계약에 명시합니다. 여러 sibling task 완료를 전제로 하는 최종 통합 E2E는 개별 task acceptance가 아니라 별도 QA gate, integration task, 또는 후속 project 검증으로 분리합니다. 단일 task의 화면 동작 자체가 산출물이면 E2E 또는 agent-browser acceptance를 유지합니다.
-23. system SSoT는 상황별 행동 처방을 누적하는 곳이 아니라, agent가 판단할 근거와 계층 분류 기준을 모아두는 프롬프트/스킬 하네스입니다. 외부 서비스, 인증, 실제 네트워크, 사용자 계정, 런타임 설정처럼 agent가 직접 통제하지 못하는 요소가 completion에 끼어들면 system에는 통제 가능성, 증명 가능성, 사용자 승인 필요 여부를 분리하는 판단 근거만 둡니다. provider별 체크리스트, L 단계 이름, fixture/harness 구현 방식, merge 전 세부 QA gate는 project SSoT 또는 task 계약으로 내려보냅니다.
-24. agent 감사나 PR 리뷰에서 특정 provider, 화면, DB fixture, L runner, runtime harness처럼 좁은 스코프 항목이 발견되면 system에는 그 항목의 실제 절차를 추가하지 않습니다. 대신 `system에 남길 판단 근거`, `project SSoT로 내려보낼 실행 처방`, `feedback/follow-up으로 남길 항목`, `누락된 project SSoT 정의`를 분리해 보고합니다. project SSoT 위치가 불명확하면 system에 임시 처방을 쓰지 않고 `project SSoT 위치 누락` 또는 `task 계약 누락`으로 남깁니다.
-25. 기능 task는 사일로 실행 전에 단계별 구현 계획과 pseudo code를 먼저 작성하고 리뷰합니다. pseudo code는 TypeScript/JavaScript 같은 실제 구현 코드 블록이나 완성된 함수 구현이 아니라 파일별 대표 함수 골격형으로 작성합니다. 각 파일마다 대표 함수와 보조 함수가 어떤 입력/의존성을 받고 조회, 검증, 가공, 조건 분기, 반복, 저장, 반환을 어떻게 수행하는지 코드에 가깝게 보여야 합니다. 파일명, 함수명, API query, DB mutation, op 이름(`D/L/C/R`) 같은 식별자는 원문 그대로 쓸 수 있지만 설명 문장은 한국어로 씁니다. task 목표 밖 화면, 버튼, endpoint, table mutation, submodule, E2E 범위가 보이면 `범위 drift 후보`로 표시합니다. pseudo code 없이 바로 구현에 들어간 기능 task는 계획 리뷰 gate 누락으로 보고합니다.
-26. task 처리 방식, 전체 구현 플랜 수립 방식, 정보 취합 방식, 사일로/PR/review loop 운영 방식이 바뀌면 먼저 3계층 Silo Local / Test Evidence / Feedback에 feedback으로 저장합니다. 운영 hypothesis의 상세 관리 방식은 이번 안정화 범위 밖이며, 별도 요청이나 승인된 정리 작업에서 다룹니다. 프로젝트 기능 요구사항은 여기에 복사하지 않고 1계층 Project SSoT에 두며, 그 기능을 구현하기 위한 개별 task 원문은 2계층 Project Work SSoT에 둡니다.
+1. 사용자 교정은 먼저 현재 작업에 반영합니다.
+2. 응답 계약이나 판단 방향에 영향을 준 사건은 User SSoT의 Feedback으로 기록합니다.
+3. 일반 작업 세션은 퍼스널리티 갱신과 관련해서는 현재 작업 교정과 Feedback 기록까지만 수행합니다.
+4. 후보 퍼스널리티 생성과 검증은 사용자가 명시적으로 시작한 별도 갱신 세션에서만 수행합니다.
+5. Feedback은 후보 퍼스널리티, Project Contract, Project Work 실행 기준, 현재 Task/일회성 교정, Operating Hypothesis 또는 공통 시스템 규칙 후보로 범위를 라우팅합니다.
+6. 후보 퍼스널리티는 가까운·경계·전이 시나리오로 검증하고, 사용자 승인 뒤에만 User SSoT `AGENTS.md`에 반영합니다.
+7. 여러 사용자나 프로젝트에 반복 적용되는 공통 시스템 규칙만 별도 승인 뒤 0계층 변경 후보로 분리합니다.
+8. 프로젝트 제품 불변 조건은 Project Contract가, Task 실행 조건은 Project Work SSoT와 `goal.md`가 소유합니다.
+9. User Layer가 없어도 일반 작업을 계속하며, 공개 template fallback이나 누락 질문 gate를 만들지 않습니다.
 
-## 현재 강한 후보 규칙
-
-아직 전역 확정은 아니지만, 현재 대화 기준으로 강한 후보인 규칙:
-
-1. 레포 파악 요청은 제품 수정, 사용자 분석, 에이전트 셋업 목적을 먼저 분리합니다.
-2. 완료, 미완료, 목표 밖 산출물, 다음 행동을 분리해서 보고합니다.
-3. 실제 기능 검증이 필요한 작업은 agent-browser 시연과 test evidence를 우선합니다.
-4. 반복 입력 UI 또는 로그성 기능에서는 날짜/시간 picker, 명시적 선택 UI, 검색 가능한 모달 리스트, `마스터 데이터 + 변수` 구조, 다중 항목 리스트, 계산 가능한 값 자동 계산을 우선 검토합니다. 단, 프로젝트 고유 요구, 기존 디자인 시스템, 도메인 제약, 더 강한 local feedback이 있으면 그 기준을 우선합니다.
+사용자별 실제 규칙이나 미승인 후보를 이 파일에 추가하지 않습니다.

@@ -43,7 +43,7 @@ repo-local skill이 있으면 해당 지침을 읽고 적용합니다. 외부 �
 
 ## 보기 밖 선택 Feedback
 
-사용자가 보기 1~3 대신 직접 답변하면, 답변 직후 로컬 feedback을 반드시 남깁니다.
+사용자가 보기 1~3 대신 직접 답변하면, User Layer가 있을 때 답변 직후 1계층 User SSoT Feedback을 남깁니다. User Layer가 없으면 현재 교정만 적용하고 임의 경로를 만들지 않으며 최종 보고에 미기록 사유를 남깁니다.
 
 보고 전 사용자에게 알릴 문구:
 
@@ -51,92 +51,54 @@ repo-local skill이 있으면 해당 지침을 읽고 적용합니다. 외부 �
 `user-personality-adaptive-response` 스킬 기준으로 보기 밖 선택 feedback을 남겼습니다.
 ```
 
-feedback 저장 위치:
+Feedback 저장 위치:
 
 ```text
-local/personality-feedback-log/feedback/active/YYYY-MM-DD-<short-topic>.md
+user-layer/feedback/active/YYYY-MM-DD-<short-topic>.md
 ```
 
-feedback은 gitignore된 로컬 자료입니다. 승격이 될지 아닐지는 feedback 작성 시점에 확정하지 않습니다.
+Feedback은 1계층 User SSoT 자료입니다. 승격이 될지 아닐지는 feedback 작성 시점에 확정하지 않습니다.
 
-보고서 후보는 사용자가 원하는 주기로 퍼스널리티 검토 세션을 열 때 여러 feedback을 묶어 작성합니다.
+갱신 세션 기록은 사용자가 원하는 주기로 퍼스널리티 검토 세션을 열 때 여러 Feedback을 묶어 작성합니다.
 
-보고서 후보 저장 위치:
+갱신 세션 저장 위치:
 
 ```text
-local/personality-feedback-log/reports/YYYY-MM-DD-personality-update-report.md
+user-layer/update-sessions/YYYY-MM-DD-personality-update-report.md
 ```
 
-보고서 형식은 `system/50-feedback-personality-loop/personality-update-report.template.md`를 따릅니다. 템플릿만 git에 포함합니다.
+갱신 세션 형식은 `system/50-feedback-personality-loop/personality-update-report.template.md`를 따릅니다. 템플릿만 git에 포함합니다.
 
 실제 업데이트 승인 보기:
 
 ```text
-1. 승인: 보고서의 업데이트 후보를 실제 공통 규칙/역할별 agent 프롬프트/스킬 초안에 반영합니다.
-2. 거절: 보고서만 보관하고 실제 업데이트는 하지 않습니다.
+1. 승인: 후보 퍼스널리티는 1계층 User SSoT의 `AGENTS.md`에 반영하고, Project Contract·Project Work·공통 시스템 규칙 후보는 각 소유 계층의 별도 반영 절차로 분리합니다.
+2. 거절: 갱신 세션 기록만 보관하고 실제 업데이트는 하지 않습니다.
 3. 수정 후 재검토: 후보 규칙이나 범위를 바꿔 다시 검토합니다.
 ```
 
-## 저장 계층
+## 저장과 갱신 계층
 
-### Tier 1: 현재 thread
+- 현재 작업: 사용자 교정을 즉시 반영합니다.
+- 1계층 User SSoT: 응답 계약이나 판단 방향에 영향을 준 사건을 `user-layer/feedback/active/`에 Feedback으로 기록합니다.
+- 1계층 Project SSoT: 특정 프로젝트의 제품 불변 조건은 Project AGENTS, 요구사항 또는 decision/ADR로 라우팅합니다.
+- 2계층 Project Work SSoT: Task, Issue, QA, Runbook 같은 프로젝트 실행 기준으로 라우팅합니다.
+- 3계층 Silo Local: 현재 사일로의 임시 관찰과 test evidence만 둡니다. User Layer를 3계층으로 분류하지 않습니다.
+- 0계층 System SSoT: 여러 사용자나 프로젝트에 반복되는 공통 운영 규칙만 별도 승인 후 후보로 분리합니다.
 
-현재 답변부터 즉시 적용합니다. 단, 응답 계약에 영향을 주는 사건이면 로컬 feedback도 남깁니다.
+## 퍼스널리티 갱신 절차
 
-```text
-Current-thread rule: 이 작업에서는 파일 수정 전에 승인 단위를 먼저 제시합니다.
-```
+일반 작업 세션에서는 퍼스널리티 갱신과 관련해서는 현재 작업 교정과 Feedback 기록까지만 수행합니다. 사용자가 별도 퍼스널리티 갱신 세션을 명시적으로 요청하면 다음 순서로 진행합니다.
 
-### Tier 2: 메모리 또는 프롬프트 노트
+1. `user-layer/feedback/active/`의 대상 Feedback을 검토합니다.
+2. Project Contract, Project Work 실행 기준, 현재 Task/일회성 교정, Operating Hypothesis 후보를 제외하는 범위 라우팅을 수행합니다.
+3. 프로젝트가 달라도 유지되는 사용자 판단 방향을 후보 퍼스널리티로 작성합니다.
+4. 가까운 사례, 경계 사례, 전이 사례를 만들고 후보가 사용자의 판단을 예측하는지 대화로 검증합니다.
+5. 최소 검증 뒤 사용자에게 종료할지 더 검증할지 묻습니다.
+6. `user-layer/AGENTS.md` 후보 diff를 제시하고 사용자의 명시 승인을 받습니다.
+7. 승인된 경우에만 User Layer에 반영하고 Feedback을 `applied/`로 이동합니다. 기각, 중복, 일회성 또는 다른 계층 라우팅은 `closed/`, 보류는 `active/`에 둡니다.
 
-사용자 주도 검토 세션에서 반복될 수 있는 규칙으로 판단하면 사용합니다.
-
-```markdown
-Title: 응답 miss - 승인 민감 편집 전에 선택지 누락
-Scope: response-adaptation
-Feedback grade: tentative
-Missed signal: 사용자가 prompt/review 동작 비교를 요청함
-Previous response: 선택지 없이 결론부터 제시
-User correction: 선택지와 적응형 성향 루프를 원함
-Updated rule: prompt/review 설계 질문에서는 추천안과 1~2개 대안을 제시
-Promotion status: memory
-```
-
-### Tier 3: 장기 규칙
-
-사용자 주도 검토 세션에서 다음 경우에만 사용합니다.
-
-- 사용자가 영구 반영을 명시적으로 요청
-- 관련 miss가 3회 이상 있고 사용자가 승격 승인
-
-장기 규칙 형식:
-
-```text
-<scope>에서는 항상 <behavior>를 한다. 이유는 <user priority> 때문이다. <anti-pattern>은 하지 않는다.
-```
-
-## 재분석 절차
-
-전역 사용자 규칙을 갱신할 때:
-
-1. 교정 내용을 기존 규칙과 비교합니다.
-2. 충돌하면 같은 scope에서는 최신 명시 교정을 우선합니다.
-3. 과적합을 피하기 위해 scope를 좁힙니다.
-4. confidence를 표시합니다.
-5. 사용자 주도 검토 세션에서 evidence를 묶어 보고서 후보를 만든 뒤 사용자 승인 여부를 확인합니다.
-6. 승인된 내용만 실제 공통 규칙, 역할별 agent 프롬프트, 또는 스킬 초안에 반영합니다.
-7. 바로 다음 답변부터 승인된 규칙을 적용합니다.
-
-## 장기 규칙 갱신 절차
-
-장기 규칙으로 승격할 때는 현재 작업 브랜치에서 직접 수정하지 않습니다.
-
-1. `main-v3/main`에서 파생한 작업 브랜치를 준비한다.
-2. 새 브랜치를 만든다.
-3. 0계층 `system/` 문서 또는 관련 스킬 초안만 수정한다.
-4. 프로젝트별 실제 Task, Issue, report, page 목록은 복사하지 않는다.
-5. 커밋 후 PR을 만든다.
-6. PR 본문에 사용자 피드백 원문, 승격한 규칙, 승격하지 않은 항목을 분리해 적는다.
+User SSoT의 반영은 workspace의 `user-layer/` 디렉터리에서 수행합니다. Project Contract와 Project Work 변경은 해당 project 계층 작업 브랜치와 PR로, 공통 시스템 규칙은 별도 0계층 작업 브랜치와 PR로 분리합니다.
 
 ## 예시
 

@@ -23,7 +23,7 @@
 5. UI 검증이 필요하면 `agent-browser` 증거를 우선합니다.
 6. integration 검증이 지정된 criteria는 여러 모듈, 저장소, API, DB, runtime adapter가 함께 맞는지 확인합니다.
 7. 외부 서비스, 인증, 실제 네트워크, 사용자 계정, 런타임 설정처럼 agent가 직접 통제하지 못하는 검증 경계가 있으면 통제 가능성, 증명 가능성, 사용자 승인 필요 여부를 분리합니다.
-8. project별 세부 검증 층, provider별 checklist, fixture/harness 방식은 project SSoT 또는 task 계약을 참조하고, system SSoT에 있는 일반 규칙처럼 보고하지 않습니다.
+8. project별 세부 검증 층, provider별 checklist, fixture/harness 방식 같은 반복 QA 계약은 project-level contract/registry와 분리해 2계층 Project Work SSoT 또는 task 계약을 참조하고, system SSoT에 있는 일반 규칙처럼 보고하지 않습니다.
 9. 실패하면 재현 조건, 기대 결과, 실제 결과를 분리합니다.
 10. 검증하지 않은 항목은 통과로 쓰지 않습니다.
 
@@ -62,6 +62,8 @@
 
 ## 보고 형식
 
+최종 보고에는 역할별 검증 결과와 별도로 전역 최종 보고 계약을 포함합니다. repo/local skill을 사용했다면 `사용한 스킬`을 적고, 사용자가 skill 사용 여부를 걱정한 맥락에서는 쓰지 않았더라도 `사용한 스킬: 없음`을 명시합니다. `현재 워크트리`에는 절대 경로, 브랜치, dirty 여부, upstream 대비 ahead/behind를 적습니다. 사용자가 보기 밖 답변을 했거나 선택지, 보고 방식, 승인 경계, skill 사용 누락을 지적한 경우에는 `user-layer/feedback/`에 feedback을 남기고, 최종 보고에 저장 여부와 경로를 적습니다.
+
 ```text
 검증한 것
 - ...
@@ -96,6 +98,19 @@ Pre-QA Gate
 
 승격 후보
 - ...
+
+사용한 스킬
+- ...
+
+현재 워크트리
+- 경로: ...
+- 브랜치: ...
+- 상태: ...
+- upstream: ...
+
+다음 행동
+- 남은 승인/수동 확인/검증 범위가 있으면 보기 3개를 제시합니다.
+- 남은 다음 행동이 없으면 `다음 행동 없음`을 명시합니다.
 ```
 
 ## 금지선

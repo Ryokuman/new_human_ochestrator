@@ -13,9 +13,16 @@ draft
 - 시작: 2026-07-03
 - 종료 또는 폐기:
 
+## 상태 재검증
+
+- 최근 재검증: 2026-07-07
+- 최근 근거: `codex-pr-review-loop`, `review-waiter/main-prompt.md`, `main-orchestrator/main-prompt.md`, PR review policy에 현재 head 대상 지적 분류와 stale review 배제 기준이 반영돼 있음을 확인했습니다.
+- 다음 재검증 조건: PR #196 또는 대체 실제 PR 사례의 state, base/head, merge commit, review/comment 수집 근거를 재조회하거나 review API 수집 방식이 바뀌면 갱신합니다.
+- 외부 PR 근거: PR #196 `Codex PR 리뷰 P1 P2 분류 규칙 보강`은 2026-07-03에 `main-v2`로 머지됐습니다. URL은 `https://github.com/Ryokuman/my_ochestrator/pull/196`, merge commit은 `df620319622027e65a65f3879bbd5e3a105fb9ba`입니다. 현재 `main-v3/main`에서는 관련 규칙 파일이 존재하지만, 반복 PR 적용 결과가 더 필요하므로 `draft`를 유지합니다.
+
 ## 운영 가설
 
-Codex PR 리뷰 루프의 종료 기준을 no-major 문구 단독이 아니라 현재 head 대상 P1/P2/major/critical 지적 분류까지 포함하도록 바꾸면, no-major 응답과 inline P1/P2 지적이 함께 있는 PR에서 loop가 잘못 종료되는 문제를 줄일 수 있다.
+Codex PR 리뷰 루프의 종료 기준은 no-major 문구 단독이 아니라 현재 head 대상 P1/P2/major/critical 지적 분류까지 포함한다. 이 방식은 no-major 응답과 inline P1/P2 지적이 함께 있는 PR에서 loop가 잘못 종료되는 문제를 줄이기 위한 현재 기본 운영 규칙이다.
 
 ## 채택 이유
 
@@ -60,8 +67,9 @@ PR 리뷰 봇은 review body에 no-major 또는 그와 유사한 요약을 남�
 
 ## 실행 결과
 
-- PR #196에서 초기 반영 중이다.
-- 같은 PR에서 no-major처럼 보이는 review body와 inline P2가 함께 오는 사례를 확인했고, P2를 수정한 뒤 재리뷰를 반복했다.
+- PR #196에서 초기 반영됐고, 해당 PR은 2026-07-03에 `main-v2`로 머지됐습니다.
+- 같은 PR에서 no-major처럼 보이는 review body와 inline P2가 함께 오는 사례를 확인했고, P2를 수정한 뒤 재리뷰를 반복했습니다.
+- 현재 `main-v3/main`에도 관련 review loop 규칙 파일이 존재하지만, 반복 PR 적용 결과가 더 필요하므로 `draft`를 유지합니다.
 
 ## 실제 병목
 

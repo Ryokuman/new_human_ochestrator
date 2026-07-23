@@ -7,25 +7,25 @@ description: PR 유형을 계층별로 판정한 뒤 목표 0계층 main-v3/main
 
 이 skill은 PR 유형이 판정된 뒤 `codex-review pass` 목표를 실제 실행 계약으로 세팅하고, 최신 head의 Codex 리뷰 결과가 종료 가능한 상태인지 판정할 때까지 응답 대기, 수정, 검증, 재리뷰를 반복하게 합니다.
 
-`Didn't find any major issues` 문구만으로 루프를 종료하지 않습니다. 현재 head를 대상으로 한 Codex 댓글, review body, inline review comment를 함께 보고 남은 P2/P1/major/critical 지적을 `수정 필요`, `수비 가능`, `사용자 판단 필요`로 분류한 뒤 종료 여부를 결정합니다.
+`Didn't find any major issues` 문구만으로 루프를 종료하지 않습니다. 최신 head에 대한 formal `pull_request_review` 또는 저장소에서 확인 가능한 명시적 no-finding 완료 신호가 먼저 도착해야 합니다. 그 뒤 review body, inline review comment, `reviewThreads`를 안정화 재조회하고 남은 P2/P1/major/critical 지적을 분류한 뒤 종료 여부를 결정합니다.
 
-branch base는 먼저 계층으로 판단합니다. 목표 모델에서 0계층 공통 변경은 `main-v3/main`, project 등록/색인, project contract, 기능/사용자 흐름별 요구사항, decision/ADR, task, issue, QA, coverage 같은 project 계층 변경은 해당 `project-{projectName}/main`이 기준입니다. 현재 마이그레이션 전 호환 기준은 0계층 `main-v3/main`, project 계층 `project-{projectName}`입니다. GitHub PR target/base branch는 이 계층 판단 결과를 반영한 최종 머지 대상입니다. project 변경을 이 skill 때문에 0계층 PR로 retarget하지 않습니다. project 계층 PR은 계층 메인 브랜치에 직접 커밋한 PR이 아니라, 목표 모델에서는 `project-{projectName}/{taskname}`, 현재 호환 상태에서는 `project-{projectName}-{taskname}` 작업 브랜치에서 커밋한 PR이어야 합니다.
+branch base는 먼저 계층으로 판단합니다. 목표 모델에서 0계층 공통 변경은 `main-v3/main`이 기준입니다. project 등록/색인, project contract, 기능/사용자 흐름별 요구사항, decision/ADR은 1계층 Project SSoT 변경이고, task, issue, QA, coverage는 2계층 Project Work SSoT 변경입니다. 1계층과 2계층 변경의 목표 계층 메인 브랜치는 해당 `project-{projectName}/main`입니다. 현재 마이그레이션 전 호환 기준은 0계층 `main-v3/main`, project 계층 `project-{projectName}`입니다. GitHub PR target/base branch는 이 계층 판단 결과를 반영한 최종 머지 대상입니다. project 변경을 이 skill 때문에 0계층 PR로 retarget하지 않습니다. project 계층 PR은 계층 메인 브랜치에 직접 커밋한 PR이 아니라, 목표 모델에서는 `project-{projectName}/{taskname}`, 현재 호환 상태에서는 `project-{projectName}-{taskname}` 작업 브랜치에서 커밋한 PR이어야 합니다.
 
 사용자가 “PR을 올려 주세요”라고 말하면 아래 순서가 기본입니다.
 
-1. 현재 브랜치의 0계층 공통 변경과 project 계층 변경을 판정합니다.
-2. 올려야 할 PR 유형을 `0계층 PR`, `project 계층 PR`, `복합 PR 분리 필요`로 나눕니다. 목표 0계층 대상은 `main-v3/main`, 현재 호환 대상은 `main-v3/main`입니다.
+1. 현재 브랜치의 0계층 공통 변경, 1계층 Project SSoT 변경, 2계층 Project Work SSoT 변경을 판정합니다.
+2. 올려야 할 PR 유형을 `0계층 PR`, `1계층 Project SSoT PR`, `2계층 Project Work SSoT PR`, `복합 PR 분리 필요`로 나눕니다. 목표 0계층 대상은 `main-v3/main`, 현재 호환 대상은 `main-v3/main`입니다.
 3. 0계층과 project 계층이 섞여 있으면 worktree와 브랜치를 나눠 서로 다른 PR로 올립니다.
 4. project 계층 PR이면 PR head branch가 project 계층 메인 브랜치와 같은지, 또는 현재 로컬 작업 위치가 해당 기준 브랜치 직접 checkout인지 확인합니다. 둘 중 하나라도 해당하면 `@codex review`를 호출하지 않고 project 작업 브랜치로 PR을 재생성해야 한다고 보고합니다. 목표 모델에서는 `project-{projectName}/{taskname}`, 현재 호환 상태에서는 `project-{projectName}-{taskname}`을 사용합니다.
 5. 제품 repo PR이 독립 git submodule의 gitlink를 pin한다면 변경된 submodule repo마다 별도 PR과 `codex-review pass` 또는 동등 리뷰 gate가 있는지 확인합니다. submodule repo 자체 리뷰가 없으면 상위 제품 repo PR의 pass만으로 완료 처리하지 않습니다.
 6. 새 submodule repo PR이면 repo 생성 의의, submodule 유형, 제품 적용 기준, 평가 기준, 검증 한계, pin 조건이 PR 본문에 있는지 확인합니다. 기본 브랜치에는 빈 기준 또는 최소 후보만 두고 실제 코드는 PR에서 평가하는 흐름을 우선합니다.
 7. PR을 만든 뒤 해당 PR의 target/base branch가 계층 판단과 맞는지 확인하고 Codex review 설정 여부를 확인합니다.
 8. Codex review 설정이 동작하는 저장소라면 `@codex review`를 호출하고 사용자 응답을 기다리지 않고 이 skill의 대기/수정/재요청 루프를 수행합니다. 최신 head 리뷰 결과가 아직 없으면 메인 에이전트가 같은 턴에서 직접 polling을 끝낼 수 있는 경우를 제외하고 기본적으로 `review-waiter-agent`에 연결해 대기, timeout, 수정, 재리뷰 상태를 맡깁니다.
-9. Codex review 설정 없음, 호출 권한 없음, GitHub App 미설치, repo 정책상 비활성화가 명시적으로 확인되면 PR review loop를 돌리지 않습니다. 아직 확인 전인 repo는 먼저 `@codex review`를 호출해 `eyes` 반응 또는 Codex 응답을 확인합니다. review loop를 생략하는 경우 PR head, 검증 결과, 남은 위험을 기록한 뒤 사일로 PR이면 `silo-runtime-handoff`만 수행합니다.
+9. Codex review 설정 없음, 호출 권한 없음, GitHub App 미설치, repo 정책상 비활성화가 명시적으로 확인되면 PR review loop를 돌리지 않습니다. 아직 확인 전인 repo는 먼저 `@codex review`를 호출해 `eyes` 반응 또는 Codex 응답을 확인합니다. review loop를 생략하는 경우 PR head, 검증 결과, 남은 위험을 기록합니다. task 실행 결과인 사일로 PR이 실제 제품 코드 변경과 runtime/E2E 확인을 함께 포함할 때만 `shared-runtime-health-check`로 runtime 상태를 확인하고 `silo-runtime-handoff` 댓글을 작성합니다. 문서, skill, config, project SSoT, PR 본문 템플릿만 바꾼 PR은 runtime handoff 대상이 아니며 `codex-pr-review-loop` fallback 보고로 닫습니다.
 
 ## 실패 압력
 
-정책 문서만 고치고 신규 skill을 만들지 않으면 실패입니다. 이 skill을 사용했다면 아래 중 하나 이상의 실행 흔적이 남아야 합니다.
+이 skill은 신규 skill 생성을 강제하지 않습니다. 일반 PR review loop 또는 명시적 fallback 경로를 수행했다면 아래 중 하나 이상의 실행 흔적이 남아야 합니다.
 
 - Codex review 동작 가능 또는 미확인 PR에서는 task silo의 `goal.md`에 `codex-review pass` 목표가 추가됨
 - Codex review 미설정 또는 권한 없음이 명시된 PR에서는 pass 목표 대신 fallback 상태와 확인 근거가 기록됨
@@ -41,7 +41,27 @@ branch base는 먼저 계층으로 판단합니다. 목표 모델에서 0계층 
 codex review가 최신 head 기준으로 Didn't find any major issues 또는 동등하게 P2 이상 actionable 지적이 없다는 응답을 남기고, 현재 head를 대상으로 남은 Codex P2/P1/major/critical 지적이 없거나 모두 근거 있는 수비 가능으로 기록되며, 수정 필요 항목은 실제로 반영되고 사용자 판단 필요 항목은 남지 않을 때까지 수정을 반복해 주세요. 횟수제한은 두지 않겠습니다.
 ```
 
-Codex 실제 응답은 현재 head와 같은 commit에 대한 `Didn't find any major issues` 또는 그와 동등하게 최신 head에 P2 이상 actionable 지적이 없다는 명시 응답이어야 합니다. exact phrase 존재 여부와 동등 pass 판정은 보고에서 분리합니다. 단순 `추가 수정 없음`, `다음 행동 없음`, 사람이 추정한 pass 상태는 통과로 보지 않습니다.
+Codex 실제 응답은 현재 head와 같은 commit에 대한 `Didn't find any major issues` 또는 그와 동등하게 최신 head에 P2 이상 actionable 지적이 없다는 명시 응답이어야 합니다. 아래 세 증거 유형을 섞지 않습니다.
+
+- `exact pass`: 최신 head의 formal `pull_request_review` body 또는 reviewed commit이 최신 head와 일치하는 명시적 Codex no-finding 완료 comment에 `Didn't find any major issues` exact phrase가 있습니다.
+- `동등 pass`: 최신 head의 formal `pull_request_review`가 P2 이상 actionable 지적 없음을 명시하거나, 리뷰 트리거 댓글의 `thumbs-up`처럼 저장소에서 no-finding 완료 신호로 확인된 반응입니다.
+- `일반 task summary`: 작업 실행 요약, `추가 수정 요청 없음`, `actionable 변경 지시 없음`, `다음 행동 없음` 같은 문구입니다. 작성자가 Codex이거나 최신 head 링크를 포함해도 pass 증거가 아닙니다. 단, `Codex Review` 완료 표지, exact phrase, 최신 head reviewed commit을 함께 가진 명시적 no-finding comment는 일반 summary와 구분합니다.
+
+일반 task summary가 먼저 도착해도 `eyes` 이후 최대 15분 대기를 끝내지 않습니다. 다만 대기 중 issue comments를 계속 조회하고 최신 head의 actionable finding이 있으면 즉시 `리뷰 미통과 findings`로 분류해 수정·수비·사용자 판단 단계로 이동합니다. formal review나 no-finding 완료 신호 전에 `P2 0건`, `동등 pass`, `리뷰 완료`를 기록하지 않습니다.
+
+## Completion-evidence gate
+
+최신 head의 리뷰 완료 판정은 아래 조건을 모두 충족해야 합니다.
+
+1. 최신 head에 대한 formal `pull_request_review` 또는 명시적 no-finding 완료 신호가 존재합니다. findings-only formal review는 수집 시작 신호이지 pass 완료 신호가 아닙니다.
+2. reviews, issue comments, inline review comments, GraphQL `reviewThreads`를 모두 조회합니다. issue comment는 일반적으로 pass 입력이 아니지만 `Codex Review` 완료 표지, exact phrase, 최신 head reviewed commit을 함께 가진 명시적 no-finding comment는 exact pass 후보입니다. actionable finding의 head 귀속은 아래 기준으로 별도 분류합니다.
+3. 첫 완료 신호와 첫 전체 조회 뒤 최소 30초를 안정화 구간으로 두고 네 표면을 다시 조회합니다. 새 review, issue comment, inline comment, thread가 생겼으면 새 evidence 시각부터 안정화 구간을 다시 시작합니다.
+4. snapshot 동일성은 객체 ID, 대상 commit, 생성·수정 시각, body digest, reaction, review state, thread의 `isResolved`·`isOutdated`를 포함합니다. edit, delete, reaction, thread 상태 변화도 새 evidence로 보고 안정화 구간을 다시 시작합니다.
+5. 연속된 두 snapshot이 같고 exact pass 또는 동등 pass가 확인되며 모든 P2 이상 항목의 분류가 끝난 뒤에만 PR 상태 댓글과 최종 pass 보고를 작성합니다. findings-only review는 지적 처리와 재리뷰로 돌아갑니다.
+
+formal review 객체와 inline comments가 늦게 도착하는 race를 고려해 첫 빈 조회, 일반 댓글, review body 단독 조회는 완료 증거가 아닙니다. API 하나를 조회할 수 없으면 gate 통과가 아니라 `completion evidence 조회 불완전`으로 보고합니다.
+
+inline comment에 P2/P1/major/critical 표기가 없으면 correctness, data-loss, security, 보호 절차, 핵심 흐름 영향에 따라 기존 `판단 기준`으로 심각도를 분류합니다. P2 이상 여부가 모호하면 0건으로 버리지 않고 `사용자 판단 필요`에 둡니다.
 
 ## P2 이상 지적 분류
 
@@ -118,40 +138,41 @@ Codex review 설정이 명시적으로 없거나 권한 없음이 확인되면 �
 3. task 실행 결과인 사일로 PR이 실제 제품 코드 파일을 바꾸고 runtime/browser/manual QA/E2E 확인이 남아 있으면 `shared-runtime-health-check`와 `silo-runtime-handoff`를 실행합니다.
 4. handoff는 리뷰 통과가 아니라 사용자가 PR을 확인할 수 있도록 runtime, URL, E2E 방법, 실행 불가 사유를 정리하는 절차로 분리합니다.
 
-즉, Codex review 설정이 있는 PR은 `review loop -> 필요 시 handoff`로 진행하고, 설정이 없는 PR은 `review loop 생략 -> PR handoff`로 진행합니다. 단, 보호 브랜치 직접 수정, secret, production data, destructive action 같은 승인 gate는 Codex review 설정 여부와 무관하게 유지합니다.
+즉, Codex review 설정이 있는 PR은 `review loop -> 필요 시 runtime handoff`로 진행하고, 설정이 없는 PR은 `review loop 생략 -> fallback 보고 또는 runtime handoff 조건 평가`로 진행합니다. 단, 보호 브랜치 직접 수정, secret, production data, destructive action 같은 승인 gate는 Codex review 설정 여부와 무관하게 유지합니다.
 
 ## 실행 절차
 
 1. repo, PR 번호, 현재 branch, dirty state, head SHA를 확인합니다.
-2. 변경 내용을 0계층 공통 변경, project 계층 변경, 복합 변경으로 분류합니다.
+2. 변경 내용을 0계층 공통 변경, 1계층 Project SSoT 변경, 2계층 Project Work SSoT 변경, 복합 변경으로 분류합니다.
 3. GitHub PR target/base branch를 확인합니다. 목표 모델에서 0계층 PR은 `main-v3/main`, project 계층 PR은 해당 `project-{projectName}/main`이 target/base여야 합니다. 현재 호환 상태에서는 0계층 `main-v3/main`, project 계층 `project-{projectName}`를 사용합니다. target/base가 계층 판단과 맞지 않으면 `@codex review`를 호출하지 않고 계층 기준 브랜치 불일치로 보고합니다.
 4. project 계층 PR이면 GitHub PR head branch와 로컬 현재 branch를 확인합니다. head branch나 로컬 현재 branch가 project 계층 메인 브랜치와 같으면 기준 브랜치 직접 커밋 위험이므로 `@codex review`를 호출하지 않고 project 작업 브랜치 PR로 재생성해야 한다고 보고합니다. 목표 모델에서는 `project-{projectName}/{taskname}`, 현재 호환 상태에서는 `project-{projectName}-{taskname}`을 사용합니다.
 5. PR diff에 submodule gitlink 변경이 있으면 해당 submodule repo의 head commit이 별도 PR과 `codex-review pass` 또는 동등 리뷰를 통과했는지 확인합니다. 확인되지 않으면 상위 제품 repo PR은 pin/host 변경 검토만 남기고, submodule repo PR gate 미완료를 blocker로 보고합니다.
 6. 새 submodule repo PR이면 기본 브랜치가 우회 머지 경로가 아닌지, PR 본문에 `patch/evidence`, `runtime`, `service/MSA` 중 유형이 있는지 확인합니다. service/MSA 유형이면 별도 배포, DB, auth, observability 필요 증거가 있어야 합니다.
 7. 로컬에서 PR head를 수정하며 루프를 수행할 때는 `git rev-parse --git-dir`와 `git rev-parse --git-common-dir`가 다른 linked worktree인지 확인합니다. submodule이면 `git rev-parse --show-superproject-working-tree`로 구분합니다. project 계층 PR인데 linked worktree가 아니면 commit/push를 진행하지 않고 별도 worktree 전환 필요로 보고합니다.
-8. Codex review 설정이 현재 PR에서 동작 가능한지 먼저 확인합니다. 호출 권한 없음, GitHub App 미설치, repo 정책상 비활성화처럼 미설정 또는 권한 없음이 명시적으로 확인되면 `codex-review pass` 내부 목표를 남기지 않고 `Codex review 미설정`과 확인 근거를 기록한 뒤 리뷰 호출, 대기, 수정, 재호출 루프를 시작하지 않습니다. 이 fallback 경로는 9번과 11번 이후를 건너뛰고 10번 handoff 평가만 수행합니다. 아직 확인 전이면 미설정으로 단정하지 않고 최신 head 기준 `@codex review` 호출과 접수 확인을 수행하는 경로로 진행합니다.
+8. Codex review 설정이 현재 PR에서 동작 가능한지 먼저 확인합니다. 호출 권한 없음, GitHub App 미설치, repo 정책상 비활성화처럼 미설정 또는 권한 없음이 명시적으로 확인되면 `codex-review pass` 내부 목표를 남기지 않고 `Codex review 미설정`과 확인 근거를 기록한 뒤 리뷰 호출, 대기, 수정, 재호출 루프를 시작하지 않습니다. 이 fallback 경로는 9번과 11번 이후를 건너뛰고 10번의 fallback 보고 또는 runtime handoff 조건 평가만 수행합니다. 아직 확인 전이면 미설정으로 단정하지 않고 최신 head 기준 `@codex review` 호출과 접수 확인을 수행하는 경로로 진행합니다.
 9. Codex review 설정이 동작 가능하거나 아직 확인 전이면 task silo의 `goal.md`에 `codex-review pass` 내부 목표 문구와 PR URL, head SHA, 검증 기준을 추가합니다. `goal.md`가 없으면 PR 본문 `Codex PR 리뷰` 항목에 내부 목표와 현재 상태를 남깁니다. 명시적 미설정 또는 권한 없음 fallback에서는 이 pass 목표를 쓰지 않고, PR 본문 또는 보고에 fallback 상태, 확인 근거, head SHA, 검증 결과, 남은 수동 리뷰 필요를 기록합니다.
-10. 명시적 미설정 또는 권한 없음 fallback에서 task 실행 결과인 사일로 PR이 실제 제품 코드 파일을 바꾸고 runtime, browser, manual QA, E2E 확인이 남아 있으면 [`shared-runtime-health-check`](../shared-runtime-health-check/SKILL.md)와 [`silo-runtime-handoff`](../silo-runtime-handoff/SKILL.md)를 실행합니다. 문서, skill, project SSoT, config example, PR 본문 템플릿만 바꾼 PR이면 PR URL, head SHA, 검증 결과, 남은 수동 리뷰 필요를 handoff로 보고합니다.
-11. 최신 head push 이후의 `@codex review` 호출 댓글, `eyes` 반응, Codex 리뷰 결과를 확인합니다.
-12. 최신 head 이후 호출 댓글에 `eyes` 반응이 있고 아직 리뷰 결과가 없으면 중복 호출하지 않고 `eyes` 확인 시점부터 최대 15분까지 대기합니다. 이 상태는 최종 보고로 종료할 수 없으며, 메인 에이전트가 같은 턴에서 대기할 수 없으면 `review-waiter-agent`에 연결해 이후 결과, timeout, 수정, 재호출을 맡깁니다.
+10. 명시적 미설정 또는 권한 없음 fallback에서 task 실행 결과인 사일로 PR이 실제 제품 코드 파일을 바꾸고 runtime, browser, manual QA, E2E 확인이 남아 있으면 먼저 [`shared-runtime-health-check`](../shared-runtime-health-check/SKILL.md)로 runtime 상태를 확인한 뒤 [`silo-runtime-handoff`](../silo-runtime-handoff/SKILL.md)를 실행합니다. 문서, skill, config, project SSoT, PR 본문 템플릿만 바꾼 PR은 `silo-runtime-handoff` 실행 대상이 아니므로 PR URL, head SHA, 검증 결과, 남은 수동 리뷰 필요를 `codex-pr-review-loop`의 fallback 보고로 PR 본문 또는 최종 보고에 기록합니다.
+11. 최신 head push 이후의 `@codex review` 호출 댓글, `eyes` 반응, issue comments, formal `pull_request_review`, no-finding 완료 신호를 확인합니다. 일반 summary는 pass 결과로 세지 않지만 issue comment의 actionable finding은 별도로 수집합니다.
+12. 최신 head 이후 호출 댓글에 `eyes` 반응이 있고 formal review 또는 no-finding 완료 신호가 없으면 같은 head에 중복 호출하지 않고 최대 15분 대기합니다. 매 poll에서 issue comments를 확인해 최신 head actionable finding이 있으면 즉시 `수정 필요`, `수비 가능`, `사용자 판단 필요`로 분류합니다. `수정 필요`면 대기를 끝내고 수정·push·새 head 재리뷰로 이동하고, 일반 summary만 있으면 대기를 계속합니다. 메인 에이전트가 같은 턴에서 관리할 수 없으면 `review-waiter-agent`에 연결합니다.
 13. 최신 head 이후 호출 댓글이 있지만 3분 동안 `eyes` 반응이 없고 아직 리뷰 결과도 없으면 리뷰 요청이 접수되지 않은 것으로 보고, 같은 head 기준으로 `@codex review`를 재호출한 뒤 11번으로 돌아갑니다. 같은 head의 no-`eyes` 재호출은 기본 최대 3회로 제한하고, 3회 모두 `eyes` 반응과 리뷰 결과가 없으면 `Codex 리뷰 접수 실패 timeout`으로 중단해 사용자 판단 필요로 보고합니다.
 14. 최신 head에 대한 리뷰 요청이 없으면 PR 댓글로 `@codex review`를 호출하고, 외부 리뷰 댓글 문구만 적은 뒤 11번으로 돌아갑니다. 호출 직후 아직 접수 여부나 최신 head 리뷰 결과가 확인되지 않았으면 종료하지 않고, 같은 턴 polling 또는 `review-waiter-agent` 연결 중 하나를 수행합니다.
 15. `eyes` 반응을 확인한 뒤 15분 동안 Codex 응답이 없으면 루프를 중단하고 PR URL, head SHA, 호출 댓글, 대기 시간을 보고합니다.
-16. Codex 결과가 도착하면 최신 head에 대한 `codex-review pass` 응답인지 확인하고, exact phrase와 동등 pass를 분리해 기록합니다.
-17. 현재 head commit SHA와 일치하는 Codex review body, 부모 review의 대상 commit 또는 `original_commit_id`가 현재 head와 일치하는 inline review comment, 또는 호출 댓글에 적힌 head SHA가 현재 head와 일치하는 Codex 댓글만 다시 훑어 P2/P1/major/critical 또는 보호 절차 위반 지적을 모두 수집합니다. inline comment의 현재 `commit_id`는 GitHub가 최신 diff 위치로 재매핑할 수 있으므로 단독 근거로 쓰지 않습니다. 이전 head를 대상으로 한 리뷰가 새 push 이후 늦게 게시된 경우 작성 시각이 최신 head 이후라도 현재 head 지적으로 섞지 않습니다.
-18. 수집한 지적을 `수정 필요`, `수비 가능`, `사용자 판단 필요`로 분류합니다. 수비 가능한 지적은 PR 본문 또는 review thread에 근거를 남깁니다. `isOutdated=false`이지만 최신 head에서 이미 해결된 thread는 해당 thread에 해결 근거 댓글을 남긴 뒤 resolve합니다.
-19. `수정 필요`가 있으면 해당 지적을 실제로 수정하고, 변경 범위에 맞는 검증을 실행한 뒤, 한국어 커밋 메시지로 커밋하고 push합니다. project 계층 PR에서는 이 커밋이 project 작업 브랜치에서 발생해야 하며, project 계층 메인 브랜치에는 직접 커밋하지 않습니다. 목표 모델에서는 `project-{projectName}/{taskname}`, 현재 호환 상태에서는 `project-{projectName}-{taskname}`을 사용합니다.
-20. `사용자 판단 필요`가 있으면 loop를 통과로 종료하지 않고 PR URL, head SHA, 지적, 필요한 사용자 결정을 보고합니다.
-21. `codex-review pass` 응답이고 모든 남은 P2 이상 지적이 없거나 `수비 가능`으로 근거 기록됐으며, 사일로 PR이 task 실행 결과이고 `.ts`, `.tsx`, `.js`, `.jsx`, `.java`, `.kt`, `.swift`, `.go`, `.py`, `.rb`, `.rs`, `.cs`, `.php` 같은 실제 제품 코드 파일을 바꿨고, runtime, browser, manual QA, E2E, vite-harness, shared BE/API, Docker DB 확인이 남아 있으면 사용자 재리뷰로 넘기기 전에 runtime handoff gate를 실행합니다. 문서, skill, project SSoT, config example, PR 본문 템플릿만 바꾼 PR에는 이 gate를 붙이지 않습니다. gate가 필요한 경우 먼저 [`shared-runtime-health-check`](../shared-runtime-health-check/SKILL.md)로 `run_set.required_runtime_set`, `task.runtime_set`, `qa_or_runbook.runtime_set`, `project.common_runtime_set` 순서의 Runtime Set과 서버형 runtime 상태를 확인합니다. `runtime_set`이 없거나 어떤 set을 써야 하는지 불명확하면 임의 서버 조합을 만들지 않고 `runtime 정의 누락`, `runtime_set 정의 누락` 또는 `add-shared-runtime 필요`로 분류합니다. health 확인 뒤 [`silo-runtime-handoff`](../silo-runtime-handoff/SKILL.md)를 실행해 실제 실행 중인 서버 주소, E2E 방법, 실행 불가 사유를 PR 댓글로 남긴 뒤 사용자 재리뷰로 넘깁니다.
-22. PR 댓글 또는 본문에 수정 내용, 검증 결과, 수비 항목, 남은 위험, 새 head SHA를 기록하고 필요하면 11번으로 돌아갑니다.
+16. formal review 또는 명시적 no-finding 완료 신호가 도착하면 최신 head에 대한 응답인지 확인하고 exact pass, 동등 pass, 일반 task summary를 분리해 기록합니다.
+17. 즉시 네 evidence 표면을 조회합니다. 일반 issue comment는 pass 증거가 아니지만 명시적 no-finding 완료 comment는 exact pass 후보입니다. actionable finding은 comment 유형과 무관하게 수집합니다. SHA/formal 연결이 없는 finding은 현재 head 코드·diff 적용 여부를 대조해 `현재 head finding`, `stale`, `head 귀속 불명확`으로 분류합니다.
+18. 첫 전체 조회 뒤 최소 30초를 기다려 네 표면을 다시 조회합니다. 새 객체나 상태 변화가 있으면 새 evidence 시각부터 30초 안정화 구간을 다시 시작합니다. 연속 두 snapshot이 같아질 때까지 첫 빈 조회를 `0건`으로 확정하지 않습니다.
+19. 안정화된 snapshot의 지적을 `수정 필요`, `수비 가능`, `사용자 판단 필요`로 분류합니다. 수비 가능한 지적은 PR 본문 또는 review thread에 근거를 남깁니다. `isOutdated=false`이지만 최신 head에서 이미 해결된 thread는 해당 thread에 해결 근거 댓글을 남긴 뒤 resolve합니다.
+20. `수정 필요`가 있으면 해당 지적을 실제로 수정하고, 변경 범위에 맞는 검증을 실행한 뒤, 한국어 커밋 메시지로 커밋하고 push합니다. project 계층 PR에서는 이 커밋이 project 작업 브랜치에서 발생해야 하며, project 계층 메인 브랜치에는 직접 커밋하지 않습니다. 목표 모델에서는 `project-{projectName}/{taskname}`, 현재 호환 상태에서는 `project-{projectName}-{taskname}`을 사용합니다.
+21. `사용자 판단 필요`가 있으면 loop를 통과로 종료하지 않고 PR URL, head SHA, 지적, 필요한 사용자 결정을 보고합니다.
+22. completion-evidence gate를 통과한 `codex-review pass` 응답이고 모든 남은 P2 이상 지적이 없거나 `수비 가능`으로 근거 기록됐으며, 사일로 PR이 task 실행 결과이고 실제 제품 코드 파일을 바꿨고 runtime 확인이 남아 있으면 사용자 재리뷰 전에 runtime handoff gate를 실행합니다. 문서, skill, config, project SSoT, PR 본문 템플릿만 바꾼 PR에는 이 gate를 붙이지 않습니다. 필요한 경우 `shared-runtime-health-check`와 `silo-runtime-handoff`를 사용합니다.
+23. findings-only review의 안정화된 P2 건수와 분류는 `리뷰 미통과 findings`로 gate 전에도 보고하고 수정·수비·사용자 판단으로 이동할 수 있습니다. exact pass, 동등 pass, 최종 P2 0건, 리뷰 통과 상태만 completion-evidence gate 뒤 확정합니다. 수정 내용, 검증 결과, 수비 항목, 남은 위험, 새 head SHA를 기록하고 필요하면 11번으로 돌아갑니다.
 
 ## 종료 기준
 
-- Codex review 동작 가능 경로에서는 최신 head에 대한 Codex 결과가 `Didn't find any major issues` 또는 동등하게 P2 이상 actionable 지적이 없다는 pass 응답을 명시했습니다.
-- Codex review 동작 가능 경로에서는 현재 head commit SHA와 일치하는 Codex review body, 부모 review의 대상 commit 또는 `original_commit_id`가 현재 head와 일치하는 inline review comment, 또는 호출 댓글에 적힌 head SHA가 현재 head와 일치하는 Codex 댓글에 남은 P2/P1/major/critical 지적이 없거나, 모두 `수비 가능`으로 근거가 PR 본문 또는 review thread에 기록됐습니다.
-- Codex review 명시적 미설정 또는 권한 없음 fallback 경로에서는 pass 응답을 요구하지 않습니다. 대신 `Codex review 미설정`, 확인 근거, head SHA, 검증 결과, 남은 수동 리뷰 필요가 PR 본문, PR 댓글, 또는 보고에 기록됐고, task 실행 결과인 사일로 PR이면 필요한 runtime handoff 조건 평가까지 끝났을 때만 종료합니다.
+- 최신 head에 대한 exact pass 또는 동등 pass가 formal review/no-finding 완료 신호로 확인되고 일반 task summary와 분리됐습니다. findings-only formal review는 pass로 세지 않습니다.
+- reviews, issue comments, inline review comments, `reviewThreads`를 최소 30초 간격으로 재조회한 연속 두 snapshot이 같고, 최신 head 대상 P2/P1/major/critical 지적이 없거나 모두 `수비 가능`으로 근거가 기록됐습니다.
+- Codex review 명시적 미설정 또는 권한 없음 fallback 경로에서는 pass 응답을 요구하지 않습니다. 대신 `Codex review 미설정`, 확인 근거, head SHA, 검증 결과, 남은 수동 리뷰 필요가 PR 본문, PR 댓글, 또는 보고에 기록됐고, task 실행 결과인 사일로 PR이면 `shared-runtime-health-check` 필요 여부와 `silo-runtime-handoff` 조건 평가까지 끝났을 때만 종료합니다. 문서, skill, config, project SSoT, PR 본문 템플릿만 바꾼 PR은 이 항목을 `codex-pr-review-loop`의 fallback 보고로 닫고 `silo-runtime-handoff`를 실행하지 않습니다.
 - `수정 필요` 또는 `사용자 판단 필요`로 분류된 항목이 남아 있으면 종료하지 않습니다.
-- 사일로 PR이 task 실행 결과이고 실제 제품 코드 파일을 바꿨으며 runtime, browser, manual QA, E2E 확인이 남아 있으면 `shared-runtime-health-check`로 Runtime Set 우선순위와 서버형 runtime 상태를 확인하고, 그 결과를 바탕으로 `silo-runtime-handoff` 댓글까지 남긴 뒤 종료합니다. 문서, skill, project SSoT, config example만 바꾼 PR은 runtime handoff 대상이 아닙니다. `runtime_set`이 없거나 서버를 켤 수 없으면 성공으로 종료하지 않고 실행 불가 사유, 대체 증거, 남은 수동 확인을 PR 댓글에 남겨야 합니다.
+- 사일로 PR이 task 실행 결과이고 실제 제품 코드 파일을 바꿨으며 runtime, browser, manual QA, E2E 확인이 남아 있으면 `shared-runtime-health-check`로 Runtime Set 우선순위와 서버형 runtime 상태를 확인하고, 그 결과를 바탕으로 `silo-runtime-handoff` 댓글까지 남긴 뒤 종료합니다. 문서, skill, config, project SSoT, PR 본문 템플릿만 바꾼 PR은 runtime handoff 대상이 아닙니다. `runtime_set`이 없거나 서버를 켤 수 없으면 성공으로 종료하지 않고 실행 불가 사유, 대체 증거, 남은 수동 확인을 PR 댓글에 남겨야 합니다.
 - 같은 head에 대해 진행 중인 `eyes` 반응이 있으면 종료가 아니라 `eyes` 확인 시점부터 15분 한도의 대기입니다.
 - `@codex review` 호출 후 접수 여부를 확인하기 전이거나, 수정 후 push한 최신 head에 대한 재리뷰 결과가 없거나, `eyes` 반응만 있고 최신 head 리뷰 결과가 없으면 종료하지 않습니다. 메인 에이전트가 같은 턴에서 polling/timeout 확인을 끝낼 수 없으면 기본적으로 `review-waiter-agent`가 계속 관리합니다.
 - 같은 head에 대해 호출했지만 3분 동안 `eyes` 반응이 없고 리뷰 결과도 없으면 접수 실패로 보고 재호출합니다. 같은 head의 no-`eyes` 재호출은 기본 최대 3회이며, 모두 실패하면 `Codex 리뷰 접수 실패 timeout`으로 중단해 사용자 판단 필요로 보고합니다.
@@ -163,6 +184,8 @@ Codex review 설정이 명시적으로 없거나 권한 없음이 확인되면 �
 - formal GitHub approve 리뷰 객체가 없다는 이유만으로 `Didn't find any major issues` 명시 응답을 무시하지 않습니다.
 - 이전 head의 pass 결과를 현재 head의 승인으로 재사용하지 않습니다.
 - pass 문구가 있다는 이유만으로 현재 head 대상 P2/P1/major/critical inline comment를 무시하지 않습니다.
+- 일반 issue comment, task summary, `추가 수정 요청 없음`, `다음 행동 없음`을 formal review나 동등 pass로 승격하지 않습니다.
+- 첫 빈 조회나 첫 formal review 객체만으로 `P2 0건`, `동등 pass`, PR 상태 댓글, 최종 보고를 작성하지 않습니다.
 - 이전 head를 대상으로 한 stale review/comment를 작성 시각만으로 현재 head 지적에 섞지 않습니다.
 - `isOutdated=false`인 thread를 파일 대조 없이 미해결로 단정하지 않고, 해결된 thread를 댓글 없이 조용히 resolve하지 않습니다.
 - agent 추론만으로 P2 이상 지적을 수비 가능 처리하지 않습니다. 사용자 결정, project contract, goal.md, PR scope, 코드/문서 근거 중 하나가 필요합니다.

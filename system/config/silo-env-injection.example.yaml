@@ -1,0 +1,23 @@
+# 실제 값 파일은 `silo-secrets.yaml`로 만들고 git에 올리지 않습니다.
+# secret, token, password, credential 실제 값은 기록하지 않습니다.
+# 이 파일에는 공개 가능한 주입 계약만 둡니다.
+
+version: 1
+
+defaults:
+  provider:
+  env_file_policy:
+    path:
+    rule:
+  required_env_keys: []
+  missing_secret_behavior: require_user_confirmation
+
+projects:
+  - project_id:
+    provider:
+    env_file_policy:
+      path:
+      rule:
+    required_env_keys: []
+    injection_notes: []
+    missing_secret_behavior:

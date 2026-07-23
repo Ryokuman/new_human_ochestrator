@@ -27,6 +27,11 @@ PR이 머지될 때 메인 오케스트레이터는 즉시 아래를 재조회�
 - `state`
 - `mergedAt`
 - `mergeCommit`
+- PR head SHA
+- GitHub PR target/base branch
+- PR head branch
+- 로컬 worktree clean 여부
+- upstream 대비 ahead 없음 여부
 
 ## 보고 형식
 
@@ -36,6 +41,11 @@ PR이 머지될 때 메인 오케스트레이터는 즉시 아래를 재조회�
 - state:
 - mergedAt:
 - mergeCommit:
+- PR head SHA:
+- GitHub PR target/base branch:
+- PR head branch:
+- 로컬 worktree clean:
+- upstream 대비 ahead 없음:
 - 해결된 SSoT issue/task:
 - 새로 승격된 issue/task:
 - 승격하지 않은 로컬 발견:

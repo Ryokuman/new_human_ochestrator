@@ -11,7 +11,7 @@ dashboardScope:
 
 # 작업 멀티필터
 
-프로젝트의 issue/task를 종류, 상태, 레벨, 태그, 날짜, 검색어로 조합해서 본다. 각 multiselect 필터 안에서는 OR/AND를 고를 수 있고, 필터 그룹끼리도 OR/AND를 고를 수 있다.
+프로젝트의 issue/task를 종류, 상태, 레벨, 태그, 담당 사일로, 브랜치, PR, 가설/실패 이력, 날짜, 검색어로 조합해서 본다. 각 multiselect 필터 안에서는 OR/AND를 고를 수 있고, 필터 그룹끼리도 OR/AND를 고를 수 있다.
 
 이 파일을 복제한 뒤 `dashboardTitle`과 `dashboardScope.paths`만 바꾸면 BE, FE, ops처럼 프로젝트 안에 여러 작업 대시보드를 둘 수 있다.
 
@@ -66,6 +66,14 @@ const optionSets = {
   status: unique(pages.map((page) => page.status)).filter(Boolean),
   level: unique(pages.flatMap((page) => normalize(page.level_target))).filter(Boolean),
   tags: unique(pages.flatMap(pageTags)).filter(Boolean),
+  ownerSilo: unique(pages.flatMap((page) => normalize(page.owner_silo))).filter(Boolean),
+  branch: unique(pages.flatMap((page) => normalize(page.branch))).filter(Boolean),
+  pr: unique(pages.flatMap((page) => normalize(page.pr))).filter(Boolean),
+  promotionStatus: unique(pages.flatMap((page) => normalize(page.promotion_status))).filter(Boolean),
+  hypothesisLimitStatus: unique(pages.flatMap((page) => normalize(page.hypothesis_limit_status))).filter(Boolean),
+  hadFailedRun: unique(pages.map((page) => page.had_failed_run)).filter(Boolean),
+  resolvedByHypothesis: unique(pages.map((page) => page.resolved_by_hypothesis)).filter(Boolean),
+  dashboardFlags: unique(pages.flatMap((page) => normalize(page.dashboard_flags))).filter(Boolean),
 };
 
 const state = {
@@ -77,6 +85,22 @@ const state = {
   levelMode: "or",
   tags: new Set(),
   tagsMode: "or",
+  ownerSilo: new Set(),
+  ownerSiloMode: "or",
+  branch: new Set(),
+  branchMode: "or",
+  pr: new Set(),
+  prMode: "or",
+  promotionStatus: new Set(),
+  promotionStatusMode: "or",
+  hypothesisLimitStatus: new Set(),
+  hypothesisLimitStatusMode: "or",
+  hadFailedRun: new Set(),
+  hadFailedRunMode: "or",
+  resolvedByHypothesis: new Set(),
+  resolvedByHypothesisMode: "or",
+  dashboardFlags: new Set(),
+  dashboardFlagsMode: "or",
   groupMode: "and",
   dateField: "updated",
   dateFrom: "",
@@ -274,6 +298,14 @@ addDropdownFilter({ key: "type", title: "종류", values: optionSets.type });
 addDropdownFilter({ key: "status", title: "상태", values: optionSets.status });
 addDropdownFilter({ key: "level", title: "레벨", values: optionSets.level });
 addDropdownFilter({ key: "tags", title: "태그", values: optionSets.tags });
+addDropdownFilter({ key: "ownerSilo", title: "담당 사일로", values: optionSets.ownerSilo });
+addDropdownFilter({ key: "branch", title: "브랜치", values: optionSets.branch });
+addDropdownFilter({ key: "pr", title: "PR", values: optionSets.pr });
+addDropdownFilter({ key: "promotionStatus", title: "승격 상태", values: optionSets.promotionStatus });
+addDropdownFilter({ key: "hypothesisLimitStatus", title: "가설 상태", values: optionSets.hypothesisLimitStatus });
+addDropdownFilter({ key: "hadFailedRun", title: "실패 이력", values: optionSets.hadFailedRun });
+addDropdownFilter({ key: "resolvedByHypothesis", title: "가설 해결", values: optionSets.resolvedByHypothesis });
+addDropdownFilter({ key: "dashboardFlags", title: "대시보드 플래그", values: optionSets.dashboardFlags });
 
 document.addEventListener("click", () => {
   root.querySelectorAll(".wf-popover").forEach((node) => node.hidden = true);
@@ -324,8 +356,23 @@ query.addEventListener("input", () => {
 const reset = searchRow.createEl("button", { cls: "wf-button", text: "초기화" });
 const summary = searchRow.createSpan({ cls: "wf-summary" });
 reset.addEventListener("click", () => {
-  for (const key of ["type", "status", "level", "tags"]) state[key].clear();
+  for (const key of [
+    "type",
+    "status",
+    "level",
+    "tags",
+    "ownerSilo",
+    "branch",
+    "pr",
+    "promotionStatus",
+    "hypothesisLimitStatus",
+    "hadFailedRun",
+    "resolvedByHypothesis",
+    "dashboardFlags",
+  ]) state[key].clear();
   state.typeMode = state.statusMode = state.levelMode = state.tagsMode = "or";
+  state.ownerSiloMode = state.branchMode = state.prMode = state.promotionStatusMode = "or";
+  state.hypothesisLimitStatusMode = state.hadFailedRunMode = state.resolvedByHypothesisMode = state.dashboardFlagsMode = "or";
   state.groupMode = "and";
   state.dateField = "updated";
   state.dateFrom = state.dateTo = state.query = "";
@@ -366,6 +413,14 @@ function activeGroupMatches(page) {
     [state.status, matchMulti(page.status, state.status, state.statusMode)],
     [state.level, matchMulti(page.level_target, state.level, state.levelMode)],
     [state.tags, matchMulti(pageTags(page), state.tags, state.tagsMode)],
+    [state.ownerSilo, matchMulti(page.owner_silo, state.ownerSilo, state.ownerSiloMode)],
+    [state.branch, matchMulti(page.branch, state.branch, state.branchMode)],
+    [state.pr, matchMulti(page.pr, state.pr, state.prMode)],
+    [state.promotionStatus, matchMulti(page.promotion_status, state.promotionStatus, state.promotionStatusMode)],
+    [state.hypothesisLimitStatus, matchMulti(page.hypothesis_limit_status, state.hypothesisLimitStatus, state.hypothesisLimitStatusMode)],
+    [state.hadFailedRun, matchMulti(page.had_failed_run, state.hadFailedRun, state.hadFailedRunMode)],
+    [state.resolvedByHypothesis, matchMulti(page.resolved_by_hypothesis, state.resolvedByHypothesis, state.resolvedByHypothesisMode)],
+    [state.dashboardFlags, matchMulti(page.dashboard_flags, state.dashboardFlags, state.dashboardFlagsMode)],
   ].filter(([selected]) => selected.size > 0).map(([, matched]) => matched);
 
   if (checks.length === 0) return true;
@@ -396,6 +451,21 @@ function matches(page) {
       page.priority,
       page.severity,
       page.level_target,
+      page.owner_silo,
+      page.branch,
+      page.pr,
+      page.promotion_status,
+      page.hypothesis_attempt_count,
+      page.hypothesis_limit_status,
+      page.had_failed_run,
+      page.resolved_by_hypothesis,
+      page.failed_run_count,
+      page.resolved_attempt_no,
+      page.latest_failed_report,
+      page.latest_retry_report,
+      page.blocked_reason,
+      page.latest_resolution_summary,
+      page.dashboard_flags,
       page.type,
       ...pageTags(page),
     ].filter(Boolean).join(" ").toLowerCase();
@@ -416,6 +486,27 @@ function pageLink(page) {
   return link;
 }
 
+function compactPair(label, value) {
+  const text = first(value);
+  return text ? label + " " + text : "";
+}
+
+function hypothesisSummary(page) {
+  return [
+    compactPair("시도", page.hypothesis_attempt_count),
+    first(page.hypothesis_limit_status),
+  ].filter(Boolean).join(" / ");
+}
+
+function failureSummary(page) {
+  return [
+    compactPair("이력", page.had_failed_run),
+    compactPair("해결", page.resolved_by_hypothesis),
+    compactPair("실패", page.failed_run_count),
+    compactPair("시도", page.resolved_attempt_no),
+  ].filter(Boolean).join(" / ");
+}
+
 function render() {
   const rows = pages
     .filter(matches)
@@ -427,7 +518,7 @@ function render() {
   const table = result.createEl("table", { cls: "wf-table" });
   const thead = table.createEl("thead");
   const headRow = thead.createEl("tr");
-  ["ID", "제목", "종류", "상태", "우선순위", "레벨", "태그", "수정일"].forEach((heading) => {
+  ["ID", "제목", "종류", "상태", "우선순위", "레벨", "담당 사일로", "브랜치", "PR", "승격", "가설", "실패 이력", "가설 해결", "실패 수", "해결 시도", "최근 실패", "재시도", "차단 사유", "해결 요약", "태그", "수정일"].forEach((heading) => {
     headRow.createEl("th", { text: heading });
   });
 
@@ -440,6 +531,19 @@ function render() {
     row.createEl("td", { text: page.status ?? "" });
     row.createEl("td", { text: page.priority ?? page.severity ?? "" });
     row.createEl("td", { text: normalize(page.level_target).join(", ") });
+    row.createEl("td", { text: normalize(page.owner_silo).join(", ") });
+    row.createEl("td", { text: normalize(page.branch).join(", ") });
+    row.createEl("td", { text: normalize(page.pr).join(", ") });
+    row.createEl("td", { text: page.promotion_status ?? "" });
+    row.createEl("td", { text: hypothesisSummary(page) });
+    row.createEl("td", { text: failureSummary(page) });
+    row.createEl("td", { text: page.resolved_by_hypothesis ?? "" });
+    row.createEl("td", { text: page.failed_run_count ?? "" });
+    row.createEl("td", { text: page.resolved_attempt_no ?? "" });
+    row.createEl("td", { text: page.latest_failed_report ?? "" });
+    row.createEl("td", { text: page.latest_retry_report ?? "" });
+    row.createEl("td", { text: page.blocked_reason ?? "" });
+    row.createEl("td", { text: page.latest_resolution_summary ?? "" });
     row.createEl("td", { text: pageTags(page).map((tag) => "#" + tag).join(", ") });
     row.createEl("td", { text: toDateKey(page.updated ?? page.file.mtime) });
   });

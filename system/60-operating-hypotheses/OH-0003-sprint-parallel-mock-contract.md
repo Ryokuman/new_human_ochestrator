@@ -115,11 +115,15 @@ project contract gate 대화에서 반복적으로 드러난 병목은 기능을
 - mock 제거, 실제 service 연결, 버전 업 확인 없이 개별 PR 통과만으로 최종 머지를 판단하는 방식
 - 프로젝트 내부 요구사항 원문을 0계층 운영 가설에 복사하는 방식
 
-## 0계층 반영 위치
+## 0계층 반영 위치와 추적 상태
 
-- 문서: `system/60-operating-hypotheses/OH-0003-sprint-parallel-mock-contract.md`
-- skill:
-- agent prompt:
+- 문서 반영: 이 운영 가설 원문은 `system/60-operating-hypotheses/OH-0003-sprint-parallel-mock-contract.md`에만 확정 반영되어 있다.
+- 관련 부분 반영: `setup.sh`가 생성하는 Project `AGENTS.md`와 task template에는 초기 DB mock data, test input, contract mock, harness 같은 관련 문구가 있으나, OH-0003의 `mock/stub/API 계약` 형식 전체를 task template이나 setup scaffold의 고정 필드로 반영한 것은 아니다.
+- 관련 부분 반영: `system/20-skills/projects-setup/SKILL.md`, `system/10-agents/task-writer/README.md`, `system/10-agents/task-writer/main-prompt.md`에는 단일 task mock data/test input의 저장 계층과 mock data 정의 전 project registry/config 또는 Project SSoT 정본 위치 확인 기준이 있다. 다만 스프린트 병렬 mock 계약의 목적, 응답 shape, 실제 service 연결 예정 위치, 제거 조건, mock/stub 제거 대조표까지 요구하는 OH-0003 전용 계약 형식은 아직 고정하지 않았다.
+- 미반영: OH-0003 전용 `mock/stub/API 계약` 형식을 task template 또는 setup scaffold에 넣는 변경은 아직 수행하지 않았다.
+- 미반영: 스프린트 종료 gate의 mock/stub 제거 대조표를 task dashboard나 setup scaffold에 자동 연결하는 변경은 아직 수행하지 않았다.
+- skill: 미반영. 현재는 `projects-setup`과 `task-writer` 계열 문서의 인접 guard만 확인됐고, OH-0003 전용 skill 절차는 없다.
+- agent prompt: 부분 반영. `task-writer` prompt에는 mock data 정의 전 정본 위치 확인 기준이 있으나, OH-0003 전용 병렬 스프린트 mock/stub 계약 형식은 후속 반영 후보로 남긴다.
 
 ## 후속 운영 가설 후보
 

@@ -31,6 +31,7 @@ private/
 *Token*
 *api-key*
 *api_key*
+!config/silo-secrets.example.yaml
 
 # 로컬 실행/검증 산출물
 .cache/
@@ -70,3 +71,5 @@ config/silo-projects.yaml
 config/silo-projects.yml
 config/silo-secrets.yaml
 config/silo-secrets.yml
+config/public-export-manifest.yaml
+config/public-export-manifest.yml

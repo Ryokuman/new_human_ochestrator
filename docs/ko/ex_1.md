@@ -17,11 +17,11 @@
 
 1. 기존 프로젝트를 조사합니다.
 2. project SSoT scaffold를 만들거나 기존 위치를 확인합니다.
-3. 실제 코드베이스와 사용자 답변을 바탕으로 `project-contract.md`를 작성합니다.
+3. 실제 코드베이스와 사용자 답변을 바탕으로 `AGENTS.md`를 작성합니다.
 4. 질의응답, 가능하면 `project-contract-gate`로 목표와 경계의 미확정 항목을 닫습니다.
 5. contract를 기준으로 첫 task를 만듭니다.
 6. task를 silo에서 실행합니다.
-7. 검증하고 PR을 만들며, 반복 가능한 발견은 SSoT로 승격합니다.
+7. 검증하고 PR을 만들며, 반복 가능한 발견은 범위에 따라 2계층 Project Work SSoT의 issue/task/QA/runbook, 1계층 Project SSoT의 contract/요구사항/decision/참조, 또는 여러 프로젝트에 반복 적용되는 0계층 system 규칙/템플릿 후보로 승격합니다. 3계층 silo local 발견은 PR 전 임시 기록으로 두고, 검증 뒤 위 계층 중 하나로만 승격합니다.
 
 ## 설정 준비도 확인
 

@@ -3,9 +3,9 @@ name: github-project-intake
 description: GitHub 계정, 조직, repo URL, 로컬 프로젝트 repo 위치를 바탕으로 포트폴리오나 project SSoT에 쓸 프로젝트 정보와 근거를 수집해야 할 때 사용합니다. gh 인증 계정 전환, 개인/조직 repo 조사, 적용/보류/영구제외 분류, FE/BE/도구 repo 묶음, 프로젝트별 설명/아키텍처/이슈/역할 근거 정리에 적용합니다.
 ---
 
-# GitHub Project Intake
+# GitHub 프로젝트 수집
 
-## Overview
+## 개요
 
 GitHub 원격 정보와 로컬 repo 위치를 함께 사용해 프로젝트 후보를 빠짐없이 수집하고, 포트폴리오나 project SSoT에 넣을 수 있는 검증된 근거 묶음으로 정리합니다.
 
@@ -18,7 +18,7 @@ GitHub 원격 정보와 로컬 repo 위치를 함께 사용해 프로젝트 후�
 - GitHub 계정: 예를 들어 `Ryokuman`, `kimyonmin`
 - 사용할 `gh` 인증 계정 또는 전환 대상 계정
 - 조사할 owner, organization, repo URL, local clone 경로
-- project SSoT 또는 portfolio SSoT 기준 경로
+- project SSoT 또는 project-level portfolio/evidence 요약 기준 경로
 - 이미 결정된 `적용`, `보류`, `영구제외`, `묶음` 규칙
 - 공개하면 안 되는 repo, secret, 회사 내부 정보 경계
 
@@ -30,13 +30,14 @@ GitHub 원격 정보와 로컬 repo 위치를 함께 사용해 프로젝트 후�
 - GitHub description, README, repo 이름만 보고 프로젝트 성격을 확정하지 않습니다. 로컬 코드, PR, commit, issue, 실행 문서 중 하나 이상으로 보강합니다.
 - 닫힌 PR과 merged PR을 같은 완료 근거로 취급하지 않습니다.
 - 사용자의 `영구제외` 결정은 다시 포트폴리오 후보로 올리지 않습니다. 단, 타이틀 프로젝트에 포함되는 하위 FE/BE/support repo인지 확인하라는 별도 지시가 있으면 묶음 근거로만 검토합니다.
-- project SSoT나 portfolio SSoT에 쓰기 전에는 계층과 기준 브랜치를 먼저 판정합니다.
+- project SSoT나 project-level portfolio/evidence 요약에 쓰기 전에는 계층과 기준 브랜치를 먼저 판정합니다.
 
 ## 절차
 
 1. 계층과 저장 위치를 판정합니다.
    - 공통 skill, template, agent 규칙이면 0계층입니다. 목표 기준은 `main-v3/main`, 현재 호환 기준은 `main-v3/main`입니다.
-   - 특정 portfolio/project SSoT 내용이면 해당 project 계층 메인 브랜치입니다. 목표 기준은 `project-{projectName}/main`, 현재 호환 기준은 `project-{projectName}`입니다.
+   - 특정 project나 portfolio 설명을 쓰더라도 별도 portfolio 계층을 새로 만들지 않습니다. 특정 프로젝트에 연결되는 portfolio/evidence 요약은 해당 project 계층 자료로 보고, 목표 기준은 `project-{projectName}/main`, 현재 호환 기준은 `project-{projectName}`입니다.
+   - 1계층 Project SSoT에는 project-level 요약, 공개 가능성, repo 묶음, 근거 위치 색인, 사용자 역할 요약만 둡니다. PR/commit/code path 원문, 캡처 파일, 실행 로그, task별 검증 증거, 문제 해결 상세는 2계층 Project Work SSoT, 3계층 사일로/로컬 evidence, PR 본문, 또는 project가 정한 외부 evidence 위치로 내립니다.
    - 로컬 조사 산출물은 사용자가 승인하기 전까지 commit 대상과 분리합니다.
 
 2. `gh` 인증 상태와 계정을 확인합니다.
@@ -71,13 +72,19 @@ gh pr list --repo <owner>/<repo> --author <account> --state all --limit 100 --js
    - standalone library나 testing tool은 제품 repo와 목적이 다르면 별도 프로젝트로 남깁니다.
    - 이름이 비슷하다는 이유만으로 묶지 말고 README, package name, PR/commit, import 관계, 배포/실행 문서 중 하나로 연결 근거를 확인합니다.
 
-7. 적용 프로젝트별 evidence pack을 작성합니다.
-   - `README.md`: 한 줄 정체성, 제품 목적, repo 묶음, 현재 공개 가능성, 확인 상태만 둡니다.
-   - `architecture/`: FE/BE/DB/runtime/harness 구성, 주요 모듈, 선택 이유, 대안과 trade-off를 둡니다.
-   - `issues/`: 진행 중 생긴 문제, 해결 방식, 남은 리스크, 재현 또는 근거 링크를 둡니다.
-   - `ownership/`: 사용자가 맡은 영역, PR/commit/code path 근거, 협업 범위를 둡니다.
-   - `images/`: 실제 캡처 파일을 만들지 않아도 캡처 대상 화면, 실행 방법, 필요한 계정/데이터, 공개 가능성 전략을 둡니다.
-   - `metrics/` 또는 `evidence/`: stars 같은 vanity 지표보다 merged PR, commit 범위, 테스트, 배포, 사용 흐름, 코드 경로를 둡니다.
+7. 적용 프로젝트별 project-level portfolio/evidence 요약과 선택적 evidence pack 경계를 먼저 분기합니다.
+   - portfolio를 별도 계층으로 만들지 않습니다. 사용자가 별도 portfolio SSoT 기준 경로와 템플릿을 준 경우에만 그 기준을 따르며, Project SSoT 기본 구조를 새로 만들도록 유도하지 않습니다.
+   - 1계층 Project SSoT의 overview/registry 또는 project가 별도 지정한 root index: 한 줄 정체성, 제품 목적, repo 묶음, 현재 공개 가능성, 확인 상태, 사용자 역할, Project SSoT와 Project Work SSoT 위치만 둡니다.
+   - `01-project-ssot/project-registry.md`: repo/source 위치, GitHub 원격, 기본 브랜치, 보호 브랜치, 공개 가능성, 접근 확인 상태를 둡니다.
+   - `01-project-ssot/AGENTS.md`: 제품 정의, 현재 버전 목표와 비목표, 핵심 사용자 플로우, 데이터 저장과 동기화 경계, repo 역할, 추정 금지 정보를 둡니다.
+   - `01-project-ssot/10-requirements/`: 기능/사용자 흐름별 요구사항과 그 흐름이 사용하는 runtime, DB, API, auth 계약 및 정본 위치를 둡니다.
+   - `01-project-ssot/50-decisions/`: 아키텍처 선택, 대안, trade-off와 채택·폐기 근거를 둡니다.
+   - `01-project-ssot/work-ssot-index.md`: issue, task, runbook, coverage, handoff, evidence 원문이 있는 2계층 위치를 색인합니다.
+   - `02-project-work-ssot/` 또는 이전 호환 `02-project-internal/`: 프로젝트 상태, 운영 경계, 진행 중 생긴 문제, 해결 방식, 남은 리스크, 재현 근거, task, runbook, handoff, coverage, 테스트와 검증 근거를 둡니다.
+   - PR/commit/code path 원문, 캡처, 테스트 evidence, 실행 로그는 2계층 Project Work SSoT, 3계층 사일로/로컬 evidence, PR 본문, 또는 project가 정한 외부 evidence 위치로 내립니다.
+   - 범용 `01-project-ssot/references/`를 만들지 않습니다. 외부 링크는 링크를 사용하는 registry, requirement, decision, task 또는 evidence 문서 안에 둡니다.
+   - `architecture/`, `issues/`, `ownership/`, `images/`, `metrics/`, `evidence/` 같은 evidence pack 폴더는 `projects-setup` 기본 scaffold가 아닙니다. 필요하면 project 정책이 정한 2계층 Project Work SSoT 하위 확장, 3계층 사일로/로컬 evidence, PR 본문, 또는 외부 evidence 위치로 명시합니다.
+   - 여러 프로젝트에서 같은 evidence pack 구조가 반복 필요하다고 확인되기 전에는 0계층 scaffold에 새 폴더를 추가하지 않습니다. 반복 필요가 확인되면 별도 scaffold 후보로 분리합니다.
 
 8. 프로젝트 정보의 신뢰도를 표시합니다.
    - `확인됨`: GitHub와 로컬 코드/문서 근거가 함께 있습니다.

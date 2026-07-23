@@ -2,12 +2,22 @@
 # 프로젝트 조사 결과와 원본 프롬프트는 재사용 코어가 아니라서 git에 올리지 않습니다.
 projects/
 sources/
+shared-runtime/
 /task-*/
 .worktrees/
 local/
 logfile/
+docs/superpowers/
+
+# docs/는 공개 사용자 문서만 추적합니다.
+/docs/superpowers/
+
+# 레거시 저장소 전용 Codex home은 추적하지 않습니다.
+/.codex-main-v3/
 
 # 일반 로컬/시크릿 파일
+# setup 완료 전 실제 User Layer는 추적하지 않습니다.
+/user-layer/
 .DS_Store
 /.obsidian/
 .env
@@ -33,3 +43,17 @@ private/
 *.webm
 *.mp4
 *.mov
+
+# 사일로/runtime 로컬 설정
+/config/*.env
+!/config/*.env.example
+/config/*.local.yaml
+/config/*.local.yml
+/config/shared-runtime-registry.yaml
+/config/shared-runtime-registry.yml
+/config/silo-projects.yaml
+/config/silo-projects.yml
+/config/silo-secrets.yaml
+/config/silo-secrets.yml
+/config/public-export-manifest.yaml
+/config/public-export-manifest.yml

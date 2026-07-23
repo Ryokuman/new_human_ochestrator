@@ -31,7 +31,7 @@ Runtime Set 결정 우선순위에서는 `run_set.required_runtime_set`이 가�
 
 Run Set이 있는 실행에서 `run_set.required_runtime_set`이 있으면 task, QA/runbook, project common 값으로 덮어쓰지 않습니다. runtime set이 없거나 어떤 set을 써야 하는지 불명확하면 lifecycle, run, E2E, 다건 테스트 사일로 실행을 시작하지 않습니다.
 
-Run Set은 2계층 `Project Work SSoT`의 일부입니다. root `main-v3/main`에는 실제 Run Set 실데이터를 두지 않고, project SSoT에서 실행 대상, report/test evidence 위치, required runtime set을 관리합니다.
+Run Set은 2계층 `Project Work SSoT`의 일부입니다. root `main-v3/main`에는 실제 Run Set 실데이터를 두지 않습니다. 실행 대상, report/test evidence 위치, required runtime set 같은 실행 계약은 해당 project의 2계층 `Project Work SSoT`에서 관리하고, 1계층 `Project SSoT`는 그 위치, 색인, project contract 참조만 둡니다.
 
 ## 정식 실행이 아닌 것
 

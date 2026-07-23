@@ -13,6 +13,13 @@ draft
 - 시작: 2026-07-06
 - 종료 또는 폐기:
 
+## 상태 재검증
+
+- 최근 재검증: 2026-07-07
+- 최근 근거: `codex-pr-review-loop`, `review-waiter/README.md`, `review-waiter/main-prompt.md`, `main-orchestrator` 문서에는 pending 상태를 종료 불가로 보고 `review-waiter-agent`를 기본 연결하는 규칙이 있습니다.
+- 다음 재검증 조건: 실제 PR에서 `eyes` 진행 중, 호출 직후 접수 확인 전, 수정 후 최신 head 재리뷰 결과 없음 상태를 `review-waiter-agent`가 끝까지 관리한 기록이 생기면 실행 결과와 실제 병목을 갱신합니다.
+- 외부 PR 근거: PR #211 `PR 리뷰 대기 실행자 기본 연결 반영`은 2026-07-05에 `main-v3/main`으로 머지됐습니다. URL은 `https://github.com/Ryokuman/my_ochestrator/pull/211`, merge commit은 `149cac43b27d8b312a3ffd72d96371045a56c2c7`입니다. PR #211의 반영 파일에는 `review-waiter/README.md`는 있었지만 `review-waiter/main-prompt.md`는 없었으므로, 현재 실행 prompt 추적성은 별도 현재 파일 확인 근거로 둡니다.
+
 ## 운영 가설
 
 Codex PR 리뷰 루프에서 최신 head 리뷰 결과가 없는 pending 상태를 종료 불가 상태로 두고, 메인 에이전트가 같은 턴에서 polling과 timeout 확인을 끝낼 수 없으면 기본적으로 `review-waiter-agent`에 연결하면, `@codex review` 호출이나 `eyes` 반응 확인만으로 loop가 끊기는 문제를 줄일 수 있다.
@@ -48,6 +55,7 @@ PR loop는 외부 Codex 리뷰 응답을 기다리는 비동기 절차입니다.
 - 메인 에이전트가 같은 턴에서 polling과 timeout 확인을 끝낼 수 없으면 `review-waiter-agent`에 기본 연결합니다.
 - Codex review 미설정, 호출 권한 없음, GitHub App 미설치, repo 정책상 비활성화가 명시적으로 확인된 PR은 review loop가 아니라 fallback 기록과 조건부 runtime handoff로 분리합니다.
 - 사용자가 이번 PR에 명시한 반복 한도가 있을 때만 그 한도를 적용합니다.
+- 현재 문서가 보장하는 것은 종료 불가 상태 분류와 기본 연결 판단입니다. 실제 백그라운드 프로세스가 항상 유지되는지, queue 상태를 어디에 영속 기록하는지는 아직 검증 전입니다.
 
 ## 적용 범위
 
@@ -58,20 +66,26 @@ PR loop는 외부 Codex 리뷰 응답을 기다리는 비동기 절차입니다.
 
 ## 실행 결과
 
-- PR #211에서 초기 반영 중입니다.
+- PR #211에서 초기 반영 후보로 다뤘고, 해당 PR은 `main-v3/main`에 머지됐습니다.
 - `codex-pr-review-loop`, `review-waiter-agent`, 메인 오케스트레이터 문서, PR review loop 문서, skill README, 루트 AGENTS/README에 기본 연결 조건을 반영했습니다.
 - PR #211 Codex 리뷰에서 운영 가설 로그 누락이 P2로 지적되어 이 문서를 추가했습니다.
+- 현재 실행 prompt 추적성을 맞추기 위해 `system/10-agents/review-waiter/main-prompt.md`도 0계층 반영 위치에 포함합니다. PR #211 반영 파일 목록에는 이 prompt가 없었으므로, 이 항목은 현재 파일 존재 기준의 추적 보강입니다.
+- 다만 실제 PR 대기 세션에서 백그라운드 감시가 끝까지 유지됐는지, queue 또는 PR comment state가 어디에 남았는지는 아직 이 원문에 기록돼 있지 않습니다.
 
 ## 실제 병목
 
 - 초기 변경은 정책과 agent prompt를 갱신했지만, 운영 가설 로그를 함께 남기지 않아 review loop 운영 방식 변경 근거가 빠졌습니다.
 - 상위 README, skill README, 역할별 agent 문서, 루트 AGENTS.md에 같은 의미의 문구를 반복 반영해야 하므로 drift 가능성이 있습니다.
+- 기본 연결 문구가 실제 실행 보장을 뜻하는 것처럼 읽히면, 백그라운드 실행자가 없는 환경에서 pending 상태가 다시 유실될 수 있습니다.
+- 같은 턴 polling과 별도 waiter 연결의 상태 기록 위치가 PR 본문, task silo `goal.md`, 리뷰 댓글, 로컬 queue 후보 중 어디인지 고정되지 않았습니다.
+- 문서 반영 완료와 반복 PR 검증 완료가 섞이면 README에서 `draft`가 미반영 상태처럼 읽힐 수 있습니다.
 
 ## 사람 확인 지점
 
 - `review-waiter-agent` 기본 연결이 실제 실행 환경에서 백그라운드 감시를 보장하는지 확인해야 합니다.
 - “같은 턴에서 polling/timeout 확인을 끝낼 수 없으면”이라는 조건이 너무 넓거나 좁지 않은지 확인해야 합니다.
 - Codex review 미설정 fallback PR에 waiter가 붙지 않는 예외가 실제 실행에서 유지되는지 확인해야 합니다.
+- pending 상태의 최소 기록 위치를 PR 본문, PR 댓글, task silo `goal.md`, 또는 로컬 queue 중 어디로 둘지 확인해야 합니다.
 
 ## 유지할 것
 
@@ -87,9 +101,16 @@ PR loop는 외부 Codex 리뷰 응답을 기다리는 비동기 절차입니다.
 
 ## 0계층 반영 위치
 
-- 문서: `AGENTS.md`, `system/README.md`, `system/40-pr-review-loop/README.md`, `system/40-pr-review-loop/02-review-policy.md`, `system/60-operating-hypotheses/OH-0007-review-waiter-default.md`
-- skill: `system/20-skills/codex-pr-review-loop/SKILL.md`, `system/20-skills/README.md`
-- agent prompt: `system/10-agents/main.md`, `system/10-agents/main-orchestrator/README.md`, `system/10-agents/main-orchestrator/main-prompt.md`, `system/10-agents/review-waiter/README.md`
+- 반영 완료:
+  - 문서: `AGENTS.md`, `system/README.md`, `system/40-pr-review-loop/README.md`, `system/40-pr-review-loop/02-review-policy.md`, `system/60-operating-hypotheses/OH-0007-review-waiter-default.md`
+  - skill: `system/20-skills/codex-pr-review-loop/SKILL.md`, `system/20-skills/README.md`
+  - agent prompt: `system/10-agents/main.md`, `system/10-agents/main-orchestrator/README.md`, `system/10-agents/main-orchestrator/main-prompt.md`, `system/10-agents/review-waiter/README.md`, `system/10-agents/review-waiter/main-prompt.md`
+- 반영 후보:
+  - pending 상태를 PR 본문, PR 댓글, task silo `goal.md`, 또는 local queue 중 어디에 기록할지 결정하는 규칙
+  - 실제 백그라운드 실행 보장 또는 대체 queue 운영 방식
+- 미구현 후보:
+  - review-waiter queue 상태 저장소
+  - Codex review 호출, `eyes`, review body, inline comment 수집 표준 스크립트
 
 ## 후속 운영 가설 후보
 

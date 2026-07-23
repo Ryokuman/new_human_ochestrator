@@ -23,6 +23,7 @@ description: 사일로 PR이 codex-review pass를 통과했거나 Codex review �
 조건을 만족하지 않으면 실행하지 말고 생략 사유를 보고한다.
 
 문서, skill, project SSoT, config example, PR 본문 템플릿만 바꾼 PR은 실행 조건을 만족하지 않는다.
+이 경우 PR URL, head SHA, 검증 결과, 남은 수동 리뷰 필요는 `codex-pr-review-loop`의 fallback 보고 또는 PR 본문이 담당하고, 이 skill은 runtime handoff 댓글을 작성하지 않는다.
 
 ## 입력 확인
 
@@ -37,17 +38,18 @@ description: 사일로 PR이 codex-review pass를 통과했거나 Codex review �
 7. 실행할 runtime의 command, working directory, port, URL, health check
 8. 테스트 계정, dev session, seed/test input 구분
 9. 금지선: secret, credential, production data, destructive action
-10. `system/config/silo-runtime.env` 또는 이에 대응하는 local env의 `SILO_PROJECTS_CONFIG`, `SILO_WORK_ROOT`, `SILO_BRANCH_PREFIX`, `SILO_EXECUTION_MODE`
+10. `system/config/silo-runtime.env` 또는 이에 대응하는 local env의 `SILO_PROJECTS_CONFIG`, `SILO_WORK_ROOT`, `SILO_BRANCH_PREFIX`, `SILO_EXECUTION_MODE`, `SILO_SECRETS_FILE`
 11. `silo-projects.yaml`의 project repo, protected branch, service policy, DB schema 정본 위치
-12. `shared-runtime-registry.yaml`의 `runtime_set`, shared BE/API, Docker DB, FE/harness, health check, port, env file policy
+12. `silo-secrets.yaml`이 있으면 secret 원문이 아니라 secret provider, env file policy, 필수 env key 이름, secret 누락 시 처리 정책만 확인한다.
+13. `shared-runtime-registry.yaml`의 `runtime_set`, shared BE/API, Docker DB, FE/harness, health check, port, env file policy
 
 `goal.md`와 task contract가 충돌하면 task contract를 우선하고, 충돌을 PR 댓글의 남은 위험에 적는다.
 
-사일로에 Runtime Set이 필요한데 `shared-runtime-health-check` 결과가 없으면 먼저 해당 skill을 실행한다. Runtime Set은 `run_set.required_runtime_set`, `task.runtime_set`, `qa_or_runbook.runtime_set`, `project.common_runtime_set` 순서로 찾는다. `runtime_set`이 없거나 어떤 set을 써야 하는지 불명확하면 임의로 서버 구성을 추정하지 않고 `runtime 정의 누락`, `runtime_set 정의 누락`, 또는 `add-shared-runtime 필요`를 실행 불가 항목에 남긴다.
+사일로에 Runtime Set이 필요한데 `shared-runtime-health-check` 결과가 없으면 먼저 해당 skill을 실행한다. Runtime Set은 `run_set.required_runtime_set`, `task.runtime_set`, `qa_or_runbook.runtime_set`, project registry/config의 `common_runtime_set` 참조, local config 순서로 찾는다. `runtime_set`이 없거나 어떤 set을 써야 하는지 불명확하면 임의로 서버 구성을 추정하지 않고 `runtime 정의 누락`, `runtime_set 정의 누락`, 또는 `add-shared-runtime 필요`를 실행 불가 항목에 남긴다.
 
 ## Runtime 준비
 
-사일로 `goal.md`, task contract, QA/runbook, project SSoT 또는 local config에서 우선순위로 결정된 `runtime_set`에 명시된 것만 켠다. 무엇이 필요한지는 task contract만으로 추정하지 않고 Run Set, config와 registry를 함께 본다.
+사일로 `goal.md`, task contract, 2계층 Project Work SSoT의 QA/runbook/handoff, Run Set/Runtime Set, 또는 local config에서 우선순위로 결정된 `runtime_set`에 명시된 것만 켠다. 무엇이 필요한지는 task contract만으로 추정하지 않고 Run Set, config와 registry를 함께 본다.
 
 - Docker DB
 - shared BE/API
@@ -62,8 +64,10 @@ config 기준 분기:
 
 - `runtime_set`이 있고 서버형 runtime health check가 모두 통과함: PR 댓글에 실행 URL과 E2E 절차를 적는다.
 - `runtime_set`은 있지만 shared BE/API, DB, FE/harness 중 일부가 꺼져 있거나 health check가 실패함: E2E를 실행 가능으로 쓰지 않고 실패 runtime, 실패 명령 또는 URL, 대체 증거, 남은 확인을 적는다.
-- `runtime_set`이 없거나 어떤 set을 써야 하는지 불명확함: E2E handoff가 아니라 config 누락 handoff로 보고하고 `add-shared-runtime` 또는 project runtime_set 정의가 필요하다고 적는다.
+- `runtime_set`이 없거나 어떤 set을 써야 하는지 불명확함: E2E handoff가 아니라 config 누락 handoff로 보고하고 `add-shared-runtime` 또는 2계층 Project Work SSoT의 Runtime Set/Run Set 정의가 필요하다고 적는다.
 - `silo-projects.yaml`에서 `allowed_for_silo`가 아니거나 protected branch 정책이 불명확함: runtime을 켜기 전에 사일로 설정 누락으로 중단하고 PR 댓글 또는 보고에 남긴다.
+- `SILO_SECRETS_FILE`이 선언됐지만 파일이 없거나 필요한 env key/provider 계약이 비어 있음: secret 값을 추정하지 않고 실행 불가 또는 사용자 확인 필요 항목에 남긴다.
+- `silo-secrets.yaml`에 secret 값처럼 보이는 원문이 필요함: 파일 내용을 출력하거나 PR 댓글에 쓰지 않고, secret manager 또는 사용자 로컬 주입이 필요하다고만 기록한다.
 
 이미 실행 중인 서버가 있으면 재사용하기 전에 포트, command, working directory, dirty 상태, 실행 프로세스의 최신 head 반영 여부를 확인한다. 최신 head 반영 여부가 불명확하면 재시작한다.
 
@@ -108,6 +112,7 @@ Codex review: <codex-review-pass-url 또는 Codex review 미설정 fallback>
 
 - silo env: `<silo-runtime.env path 또는 확인 불가>`
 - project config: `<silo-projects.yaml path 또는 확인 불가>`
+- secret injection config: `<silo-secrets.yaml path 또는 없음/확인 불가>`, provider/env key 계약만 확인
 - runtime registry: `<shared-runtime-registry.yaml path 또는 확인 불가>`
 - runtime_set: `<runtime-set-id 또는 없음>`
 
@@ -122,8 +127,16 @@ Codex review: <codex-review-pass-url 또는 Codex review 미설정 fallback>
 ### Runtime Set
 
 - runtime_set:
-- source: `run_set.required_runtime_set` / `task.runtime_set` / `qa_or_runbook.runtime_set` / `project.common_runtime_set` / local config
+- source: `run_set.required_runtime_set` / `task.runtime_set` / `qa_or_runbook.runtime_set` / project registry/config `common_runtime_set` / local config
 - health_check:
+
+### Secret 주입 계약
+
+- source: `SILO_SECRETS_FILE` / project SSoT / task contract / 없음
+- provider: `<provider 이름 또는 확인 불가>`
+- env_file_policy: `<path/rule 또는 없음>`
+- required_env_keys: `<key 이름 목록 또는 없음>`
+- missing_secret_behavior: `<실행 불가 / 사용자 확인 필요 / local 주입 필요>`
 
 ### E2E 확인 방법
 
@@ -158,9 +171,9 @@ Codex review: <codex-review-pass-url 또는 Codex review 미설정 fallback>
 
 - runtime이 켜져 있고 PR 댓글에 서버 주소와 E2E 방법이 있다.
 - runtime을 켤 수 없고 PR 댓글에 실행 불가 사유, 대체 증거, 남은 수동 확인이 있다.
-- `runtime_set` 또는 config가 누락됐고 PR 댓글에 정의 누락, 필요한 registry 항목, `add-shared-runtime` 또는 project SSoT 보강 필요, 남은 수동 확인이 있다.
+- `runtime_set` 또는 config가 누락됐고 PR 댓글에 정의 누락, 필요한 registry 항목, `add-shared-runtime` 또는 2계층 Project Work SSoT의 Runtime Set/Run Set 보강 필요, 남은 수동 확인이 있다.
 
-댓글 없이 최종 보고만 하고 끝내지 않는다.
+이 skill을 실행한 PR은 댓글 없이 최종 보고만 하고 끝내지 않는다. 실행 조건을 만족하지 않아 이 skill을 생략한 PR에는 이 댓글 필수 조건을 적용하지 않는다.
 
 ## 금지
 

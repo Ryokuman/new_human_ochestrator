@@ -4,7 +4,12 @@ Copyright 2026 Ryokuman
 This product includes software, documentation, and operational templates
 developed as part of New Human Orchestrator.
 
-Source: https://github.com/Ryokuman/new_human_ochestrator
+Source: 공개 배포 저장소:
+https://github.com/Ryokuman/new_human_ochestrator
+
+원본 관계: 이 공개 배포본은 Ryokuman/my_ochestrator main-v3/main에서
+allowlist export로 동기화한 산출물이며 전체 mirror가 아닙니다. Project SSoT,
+task silo, local feedback, secret 가능 로컬 설정은 공개 배포 대상이 아닙니다.
 Licensed under the Apache License, Version 2.0.
 
 Redistributions of this work or derivative works should retain this NOTICE

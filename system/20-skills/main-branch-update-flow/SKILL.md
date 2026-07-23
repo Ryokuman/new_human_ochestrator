@@ -20,7 +20,7 @@ description: 0계층 업데이트 절차 문서입니다. 이 프로젝트에서
 - system 문서 수정
 - 프롬프트 수정
 - skill 초안 추가/수정
-- 사용자 피드백을 장기 규칙으로 승격
+- 사용자 Feedback에서 여러 사용자·프로젝트에 반복되는 공통 시스템 규칙을 0계층으로 승격
 - 0계층 대상 PR 제안, PR 본문 초안, PR 생성
 
 현재 프로젝트에서는 사용자가 별도 마이그레이션 브랜치를 명시하지 않으면 `main-v3/main` 호환 기준을 기본값으로 봅니다. `main` 직접 업데이트 절차는 적용하지 않습니다.
@@ -29,11 +29,12 @@ description: 0계층 업데이트 절차 문서입니다. 이 프로젝트에서
 
 - 공통 SSoT 수정은 계층 메인 브랜치에서 파생한 작업 브랜치에서만 처리합니다.
 - 목표 모델에서는 `main-v3/main`에서 파생한 `main-v3/{taskname}` 작업 브랜치를 사용합니다. `main-v3` 자체는 브랜치가 아니라 Git ref namespace입니다.
-- 현재 호환 상태에서는 `main-v3/main`에서 파생한 `main-v3/{taskname}` 작업 브랜치를 사용합니다. Git ref namespace에서는 `main-v3/main` 브랜치가 존재하면 `main-v3/main/<branch-name>` 브랜치를 만들 수 없으므로 이 dash 형식은 마이그레이션 전 호환 형식입니다.
+- 현재 호환 상태에서도 `main-v3/main`에서 파생한 `main-v3/{taskname}` 작업 브랜치를 사용합니다. Git ref namespace에서는 `main-v3/main` 브랜치가 존재하면 `main-v3/main/<branch-name>` 브랜치를 만들 수 없으므로, 이 slash namespace 기반 작업 브랜치 형식은 마이그레이션 전 호환 형식입니다.
 - `main` 기준 별도 worktree 또는 clean checkout을 만들지 않습니다.
 - 모든 작성 산출물은 한국어로 작성합니다.
 - PR 제목, PR 본문, 커밋 메시지도 한국어로 작성합니다.
 - PR 생성 승인과 PR 머지 승인은 별개로 봅니다.
+- 사용자 검수가 필요한 Markdown 초안에서 시작한 0계층 변경은 [`workspace-local-review`](../workspace-local-review/SKILL.md)로 승인된 revision과 hash를 확인한 후에만 worktree를 생성합니다. 승인 전 local 파일은 0계층 diff나 PR에 포함하지 않습니다.
 - PR은 사용자가 `approve`, `LGTM`, `머지하세요`, `머지해도 됩니다`, `1. 머지`처럼 머지를 명시한 경우에만 머지합니다.
 - `진행해`, `작업 이어가`, `PR 만들어`, `main-v3/main 업데이트`, `1. 승인`처럼 작업 또는 PR 생성 승인은 머지 승인으로 해석하지 않습니다.
 - PR이 머지된 뒤에도 원래 작업 브랜치를 `main` 위로 rebase하지 않습니다.
@@ -45,6 +46,8 @@ description: 0계층 업데이트 절차 문서입니다. 이 프로젝트에서
 
 ## 절차
 
+사용자 검수가 필요한 Markdown 초안에서 시작한 작업이면 먼저 `workspace-local-review`로 계층 메인 최신화, local 검수, 승인 revision과 hash를 확인합니다. 승인 전에는 아래 worktree 생성 단계로 진행하지 않습니다.
+
 1. 현재 브랜치와 dirty state를 확인합니다.
 2. remote 접근 가능 여부를 확인합니다.
 3. remote 계정이 맞지 않으면 `gh auth status`와 `gh auth switch -u <account>`로 복구합니다.
@@ -52,7 +55,7 @@ description: 0계층 업데이트 절차 문서입니다. 이 프로젝트에서
 5. 필요한 경우 현재 호환 기준에서는 `main-v3/main`에서 `main-v3/{taskname}` 단기 브랜치를 만들고 이동합니다. 목표 모델 마이그레이션 후에는 `main-v3/main`에서 `main-v3/{taskname}` 단기 브랜치를 만듭니다.
 6. `main-v3-pr-scope-gate`로 브랜치명, diff path, 계층 분류, PR 가능 여부를 확인합니다.
 7. 공통 SSoT 파일만 수정합니다.
-8. 문서 변경이면 논리 비약 자가검수를 수행합니다.
+8. 문서 변경이면 `decision-doc-logic-audit` skill로 논리 비약 자가검수를 수행합니다. 해당 skill을 사용할 수 없으면 fallback self-audit로 Symptom-as-Cause, Scope Overreach, Premature Conclusion, Missing Causal Step, Effect Drift를 점검하고 fallback 사용 사실을 보고합니다.
 9. 필요한 검증을 실행합니다.
 10. 한국어 커밋을 만듭니다.
 11. push 직전 `main-v3-pr-scope-gate`를 다시 실행합니다.
@@ -61,10 +64,10 @@ description: 0계층 업데이트 절차 문서입니다. 이 프로젝트에서
 14. 한국어 제목/본문으로 PR을 만듭니다.
 15. GitHub PR target/base branch가 0계층 계층 메인 브랜치인지 확인합니다. 현재 호환 기준은 `main-v3/main`, 목표 모델 기준은 `main-v3/main`입니다.
 16. Codex review 설정 여부를 codex-review pass 목표 세팅보다 먼저 확인합니다. Codex review 설정 없음, 호출 권한 없음, GitHub App 미설치, repo 정책상 비활성화가 명시적으로 확인되면 codex-review pass 목표를 세팅하지 않고 PR 댓글로 수동 `@codex review`를 호출하지 않으며, `Codex review 미설정`과 확인 근거를 PR 본문 또는 보고에 남긴 뒤 20번의 PR 상태 보고로 이동합니다. 아직 확인 전이거나 동작 가능하면 [`codex-pr-review-loop`](../codex-pr-review-loop/SKILL.md)를 사용해 codex-review pass 목표를 세팅하고, PR 댓글로 수동 `@codex review`를 호출해 접수 여부를 확인합니다. 호출 댓글에는 가능하면 `한국어로 리뷰해 주세요.` 또는 이에 준하는 한국어 요청과 최신 head 기준 리뷰 요청만 적습니다. 외부 리뷰 봇의 고정 템플릿 언어까지 보장하지는 못합니다.
-17. 현재 head push 이후에 작성된 최신 `@codex review` 호출 댓글에 `eyes` 반응이 있으면 Codex 리뷰가 접수 또는 진행 중인 상태로 보고, 같은 head commit에 추가 리뷰 요청을 호출하지 않고 `eyes` 확인 시점부터 최대 15분까지 기다립니다. 최신 호출 댓글에 3분 동안 `eyes` 반응이 없고 최신 head 리뷰 결과도 없으면 접수 실패로 보고 같은 head 기준으로 최대 3회까지 재호출한 뒤 새 호출 댓글 기준으로 다시 확인합니다. 3회 모두 접수되지 않으면 `Codex 리뷰 접수 실패 timeout`으로 중단해 사용자 판단 필요로 보고합니다. `eyes` 반응을 확인한 뒤 15분 동안 응답이 없으면 `Codex 리뷰 응답 대기 timeout`으로 중단하고 보고합니다.
-18. Codex 리뷰 결과와 호출 횟수를 PR 본문에 기록합니다.
-19. 최신 head에 대한 `Didn't find any major issues` 또는 동등한 codex-review pass 명시 응답이 아니거나 현재 head 대상 major/critical/P1/P2 지적이 남아 있으면, `codex-pr-review-loop` 기준으로 `수정 필요`, `수비 가능`, `사용자 판단 필요`를 분류합니다. 이전 head 리뷰가 새 push 이후 늦게 게시되어도 작성 시각만으로 현재 head 지적에 섞지 않습니다. `수정 필요`는 수정, 검증, 수동 재호출을 반복하고, `수비 가능`은 사용자 결정, project contract, `goal.md`, PR scope 같은 근거를 PR 본문 또는 review thread에 남깁니다. 기본 중단 기준은 호출 횟수가 아니라 리뷰 결과와 지적 분류 상태입니다. 재호출 전 현재 head push 이후에 작성된 최신 호출 댓글에 `eyes` 반응이 있으면 중복 호출하지 않고 `eyes` 확인 시점부터 15분 한도 안에서 기존 요청의 결과를 기다립니다. 최신 호출 댓글에 3분 동안 `eyes` 반응이 없고 최신 head 리뷰 결과도 없으면 접수 실패 재호출로 분류하되, 같은 head의 no-`eyes` 재호출 기본 상한 3회를 넘기지 않습니다. 반복 이후에도 남은 major/critical 또는 보호 절차 P1/P2 항목은 횟수 기준으로 중단하지 않고, 실제 blocker 여부와 사용자 승인 gate 필요 여부를 분리합니다.
-20. PR URL, 상태, mergeable 여부, Codex 리뷰 gate 상태를 확인해 보고합니다.
+17. 현재 head push 이후 작성된 최신 호출 댓글에 `eyes` 반응이 있으면 같은 head에 추가 요청하지 않고 최대 15분 기다립니다. 이전 head 호출의 `eyes`는 현재 head 대기·중복 호출 억제 근거로 재사용하지 않습니다. 일반 summary로 대기를 끝내지 않지만 매 poll에서 issue comments를 조회해 최신 head actionable finding이면 즉시 분류·처리합니다.
+18. completion-evidence gate 전에는 PR 본문에 호출 횟수와 `리뷰 대기 중`만 기록합니다. exact pass, 동등 pass, P2 건수 같은 리뷰 결과는 기록하지 않습니다.
+19. formal review 또는 no-finding 완료 신호가 도착하면 네 evidence 표면을 안정화 재조회합니다. SHA/formal 연결 없는 post-request issue comment finding은 현재 head 코드·diff에 실제 적용되는지 대조하고, 귀속 불명확이면 `사용자 판단 필요`로 pass를 막습니다.
+20. PR URL, mergeable 여부, 리뷰 대기·timeout·미통과 상태는 completion-evidence gate 전에도 보고할 수 있습니다. exact pass, 동등 pass, 최종 P2 0건과 리뷰 통과 상태만 gate 통과 뒤 PR 댓글과 최종 보고에 확정합니다.
 21. 사용자의 명시 머지 승인이 있으면 PR을 머지합니다.
 22. 머지했다면 `state`, `mergedAt`, `mergeCommit`을 재조회해 보고합니다.
 23. PR이 머지된 뒤에도 `main`을 fetch/rebase 기준으로 쓰지 않습니다.
@@ -97,13 +100,15 @@ main 또는 0계층 업데이트가 다음 행동 후보로 떠오른 경우, �
 
 ## 완료 보고
 
-보고는 아래를 분리합니다.
+최종 보고는 먼저 전역 최종 응답 계약을 확인하고, 아래 skill 고유 항목을 함께 분리합니다. repo/local skill을 사용한 턴이므로 `사용한 스킬`, `현재 워크트리`, `다음 행동` 또는 남은 승인 경계가 없을 때의 `다음 행동 없음`을 생략하지 않습니다.
 
 ```text
+사용한 스킬
+현재 워크트리
 완료된 것
 아직 안 된 것
 목표 밖 산출물
 feedback/follow-up 후보
 처리하지 않고 남긴 항목
-다음 행동
+다음 행동 또는 다음 행동 없음
 ```

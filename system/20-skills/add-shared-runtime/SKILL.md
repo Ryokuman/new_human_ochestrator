@@ -22,7 +22,7 @@ description: 프로젝트별 shared runtime set, 공용 backend/frontend/worker/
 ## 계층 판단
 
 - shared runtime 운영 규칙과 registry 템플릿은 0계층 `system/`에 둡니다.
-- 특정 프로젝트의 실제 runtime 등록값은 1계층 project registry/config 또는 2계층 project SSoT에 둡니다.
+- 특정 프로젝트의 실제 runtime 등록값은 1계층 project registry/config 또는 2계층 `Project Work SSoT`에 둡니다.
 - task 실행 중 사용한 runtime branch, commit, port, health check 결과는 3계층 silo local `goal.md`, handoff, PR 본문에 기록합니다.
 - 실제 제품 소스코드 clone은 `projects/` 아래에 두지 않습니다.
 
@@ -31,10 +31,10 @@ description: 프로젝트별 shared runtime set, 공용 backend/frontend/worker/
 기본 경로 후보:
 
 ```text
-shared-runtime/<project-id>/<runtime-name>/
+<workspace>/shared-runtime/<runtime-name>/
 ```
 
-다른 로컬 정책이 있으면 project SSoT 또는 gitignore된 local config에 명시합니다. root `main-v3/main`에는 특정 프로젝트의 실제 경로, 내부 repo URL, secret 값을 복사하지 않습니다.
+이전 다중 프로젝트 workspace나 호환 설정에서는 `shared-runtime/<project-id>/<runtime-name>/`을 사용할 수 있습니다. 다른 로컬 정책이 있으면 project registry/config, 2계층 `Project Work SSoT`, 또는 gitignore된 local config에 명시합니다. root `main-v3/main`에는 특정 프로젝트의 실제 경로, 내부 repo URL, secret 값을 복사하지 않습니다.
 
 ## registry 필드
 
@@ -48,7 +48,7 @@ shared runtime registry/status에는 최소 아래 후보 필드를 둡니다.
 | `runtime_kind` | `server`, `source-checkout`, `service-mock`, `db-emulator`, `other` 같은 runtime 성격 |
 | `role` | `backend`, `frontend`, `worker`, `db-emulator`, `service-mock`, `generator`, `other` 같은 역할 |
 | `workspace_path` | workspace root 기준 runtime checkout 위치 |
-| `repo_remote` | token 없는 remote URL 또는 project SSoT의 repo reference |
+| `repo_remote` | token 없는 remote URL, project registry/config의 repo reference, 또는 1계층 Project SSoT의 repo/source reference |
 | `branch` | 현재 checkout branch |
 | `commit` | task가 참조한 기준 commit |
 | `purpose` | 어떤 task silo가 왜 참조하는지 |
@@ -63,11 +63,11 @@ shared runtime registry/status에는 최소 아래 후보 필드를 둡니다.
 
 ## 절차
 
-1. 계층을 판정합니다. 공통 규칙 변경이면 `main-branch-update-flow`, 특정 프로젝트 runtime 등록이면 project registry/config 또는 project SSoT에서 처리합니다.
+1. 계층을 판정합니다. 공통 규칙 변경이면 `main-branch-update-flow`, 특정 프로젝트 runtime 등록이면 project registry/config 또는 2계층 `Project Work SSoT`에서 처리합니다.
 2. `project_id`, runtime set 이름, 필요한 repo 역할, clone/worktree 방식, 기준 branch, 보호 브랜치, owner를 확인합니다.
-3. 프로젝트별 실제 repo URL과 runtime 조합은 project SSoT 또는 gitignore된 local config에서 읽습니다. root `main-v3/main`에 실제 프로젝트 자료를 복사하지 않습니다.
+3. 프로젝트별 실제 repo URL과 runtime 조합은 project registry/config, 1계층 Project SSoT의 repo/source reference, 2계층 `Project Work SSoT`의 Runtime Set/Run Set, 또는 gitignore된 local config에서 읽습니다. root `main-v3/main`에 실제 프로젝트 자료를 복사하지 않습니다.
 4. registry/status 항목을 작성합니다. secret, token, password, credential 값은 기록하지 않고 env 파일 path 또는 secret provider 정책만 기록합니다.
-5. workspace root 아래 `shared-runtime/<project-id>/<runtime-name>/` 또는 프로젝트가 정한 local path를 준비합니다.
+5. workspace root 아래 `shared-runtime/<runtime-name>/` 또는 프로젝트가 정한 local path를 준비합니다. 이전 다중 프로젝트 workspace는 `shared-runtime/<project-id>/<runtime-name>/`을 호환 경로로 쓸 수 있습니다.
 6. clone 또는 worktree 준비 전 기존 checkout, dirty state, 실행 중인 server/process, port 충돌을 확인합니다.
 7. 보호 브랜치에서 직접 runtime 변경을 시작하지 않습니다. shared runtime 자체 변경이 필요하면 별도 task, branch, PR로 분리합니다.
 8. health check command와 예상 port를 기록하고 실행 가능하면 확인합니다.
@@ -85,7 +85,7 @@ Shared runtime:
 - project_id: <project-id>
 - runtime_set: <runtime-set-name>
 - runtime_name: <runtime-name>
-- workspace_path: shared-runtime/<project-id>/<runtime-name>/
+- workspace_path: shared-runtime/<runtime-name>/
 - branch: <branch>
 - commit: <commit>
 - ports: <port-purpose>
@@ -110,8 +110,8 @@ shared runtime 자체 수정이 필요하면 현재 task PR에 섞지 않고 별
 가능한 범위에서 아래를 확인합니다.
 
 ```bash
-git -C shared-runtime/<project-id>/<runtime-name> status --short --branch
-git -C shared-runtime/<project-id>/<runtime-name> rev-parse --short HEAD
+git -C shared-runtime/<runtime-name> status --short --branch
+git -C shared-runtime/<runtime-name> rev-parse --short HEAD
 <health-check-command>
 ```
 

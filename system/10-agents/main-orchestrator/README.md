@@ -11,30 +11,33 @@
 ## 사용할 때
 
 - 사용자 요청이 어느 계층에 속하는지 판단해야 할 때
-- task silo를 만들지, 현재 작업 브랜치에서 처리할지, project SSoT로 보낼지 결정해야 할 때
+- task silo를 만들지, 현재 작업 브랜치에서 처리할지, 1계층 Project SSoT나 2계층 Project Work SSoT로 보낼지 결정해야 할 때
 - 여러 worker, QA, reviewer, test writer, issue writer 역할을 조율해야 할 때
 - 사일로 결과를 PR, report, feedback/follow-up 후보, 처리하지 않고 남긴 항목으로 회수해야 할 때
 
 ## 책임
 
 - `main`을 작업 대상으로 쓰지 않고 `main-v3/main` 보호 브랜치 정책을 지킵니다.
-- 요청을 0/1/2/3계층으로 분류합니다.
+- 요청을 0계층, 1계층 User SSoT, 1계층 Project SSoT, 2계층, 3계층으로 분류합니다.
+- 모든 실질적 판단에서 `user-layer/AGENTS.md`를 확인하고, 응답 계약이나 판단 방향에 영향을 준 교정은 `user-layer/feedback/active/`에 Feedback으로 남깁니다. User Layer가 없으면 임의 경로를 만들지 않고 최종 보고에 미기록 사유를 남긴 뒤 작업을 계속합니다.
+- 프로젝트 판단 전에는 cwd, branch, Task/`goal.md`, project registry로 project id를 판별하고 해당 Project AGENTS를 Project Contract 정본으로 읽습니다.
 - SSoT와 현재 active issue/task를 읽고 필요한 다음 실행 단위를 판단합니다.
-- project 내부 task, issue, QA, decision, dashboard, source doc을 쓰기 전에는 기준 project SSoT 위치, 목표 `project-{projectName}/main` 브랜치와 `project-{projectName}/{taskname}` 작업 브랜치, 현재 호환 `project-{projectName}` 브랜치와 `project-{projectName}-{taskname}` 작업 브랜치를 함께 확인합니다.
-- 목표 모델에서 `project-{projectName}/main` 브랜치가 있으면 해당 브랜치에서 판 `project-{projectName}/{taskname}` 작업 브랜치에서만 project SSoT 원문을 작성합니다. 현재 호환 상태에서는 `project-{projectName}`와 `project-{projectName}-{taskname}`을 사용합니다. 다른 브랜치의 project SSoT diff는 `기준 아님`, `이관 후보`, `위험`으로 분리합니다.
-- 오래된 브랜치가 project SSoT 파일을 추가, 삭제, 이동한 것처럼 보이면 0계층 기준 공통 규칙 drift와 project 계층 기준 project SSoT diff를 나눠 봅니다. 현재 호환 기준은 `main-v3/main`와 `project-{projectName}`이고, 목표 기준은 `main-v3/main`과 `project-{projectName}/main`입니다.
+- 1계층 Project SSoT에는 project 등록, registry/config, project overview, 기능/사용자 흐름별 요구사항 정본, decision/ADR, source reference, 하위 SSoT 인덱스만 둡니다. 이를 쓰기 전에는 기준 Project SSoT 위치, 목표 `project-{projectName}/main` 브랜치와 `project-{projectName}/{taskname}` 작업 브랜치, 현재 호환 `project-{projectName}` 브랜치와 `project-{projectName}-{taskname}` 작업 브랜치를 함께 확인합니다.
+- 2계층 Project Work SSoT에는 task/issue/QA/coverage/runbook/dashboard/source doc과 반복 실행 QA gate를 둡니다. 이를 쓰기 전에는 기준 Project Work SSoT 위치, 목표 `project-{projectName}/main` 브랜치와 `project-{projectName}/{taskname}` 작업 브랜치, 현재 호환 `project-{projectName}` 브랜치와 `project-{projectName}-{taskname}` 작업 브랜치를 함께 확인합니다.
+- 목표 모델에서 `project-{projectName}/main` 브랜치가 있으면 해당 브랜치에서 판 `project-{projectName}/{taskname}` 작업 브랜치에서만 Project SSoT 또는 Project Work SSoT 원문을 작성합니다. 현재 호환 상태에서는 `project-{projectName}`와 `project-{projectName}-{taskname}`을 사용합니다. 다른 브랜치의 project 계층 SSoT diff는 `기준 아님`, `이관 후보`, `위험`으로 분리합니다.
+- 오래된 브랜치가 Project SSoT 또는 Project Work SSoT 파일을 추가, 삭제, 이동한 것처럼 보이면 0계층 기준 공통 규칙 drift와 project 계층 기준 SSoT diff를 나눠 봅니다. 현재 호환 기준은 `main-v3/main`와 `project-{projectName}`이고, 목표 기준은 `main-v3/main`과 `project-{projectName}/main`입니다.
 - 브랜치 차이를 보고할 때는 최종 트리 차이인 `base..branch`와 브랜치 고유 변경인 `base...branch`를 구분합니다.
-- project SSoT 삭제나 이관 완료를 판단하기 전에는 삭제 대상 파일을 `이관 확인됨`, `미이관`, `중복`, `폐기 후보`, `사용자 판단 필요`로 분류합니다.
+- Project SSoT 또는 Project Work SSoT 삭제나 이관 완료를 판단하기 전에는 삭제 대상 파일을 `이관 확인됨`, `미이관`, `중복`, `폐기 후보`, `사용자 판단 필요`로 분류합니다.
 - 필요한 repo skill을 먼저 찾고 사용합니다.
-- task 실행 요청이면 사일로 준비 범위를 판단하고, 사일로 root, `goal.md`, repo clone, 작업 브랜치 중 하나라도 만들기 전에 project 계층 작업 브랜치에서 원본 task/issue를 `in_progress`로 바꾸는 상태 갱신 PR을 만들고 project 계층 메인 브랜치에 머지된 것을 확인합니다. 목표 모델에서는 `project-{projectName}/{taskname}`과 `project-{projectName}/main`, 현재 호환 상태에서는 `project-{projectName}-{taskname}`과 `project-{projectName}`을 사용합니다.
+- task 실행 요청이면 사일로 준비 범위를 판단하고, 사일로 root, `goal.md`, repo clone, 작업 브랜치 중 하나라도 만들기 전에 project 계층 작업 브랜치에서 원본 task/issue를 `in_progress`로 바꾸는 상태 갱신 PR을 만들고 project 계층 메인 브랜치에 머지된 것을 확인합니다. 이 gate는 사일로 실행 상태, 공유 task/issue 상태, Project Work SSoT 원문, Project SSoT 소유권을 바꾸는 준비에 적용합니다. 사일로 root, `goal.md`, repo clone, 작업 브랜치 생성, 공유 상태 변경, Project Work SSoT 원문 변경, Project SSoT 원문 상태 변경 없이 대화 안의 계획 초안, 읽기 전용 조사, 0계층 문서 보강, 로컬 fixture/prototype만 수행하는 저위험 탐색에는 선행 머지를 요구하지 않습니다. 목표 모델에서는 `project-{projectName}/{taskname}`과 `project-{projectName}/main`, 현재 호환 상태에서는 `project-{projectName}-{taskname}`과 `project-{projectName}`을 사용합니다.
 - 제품 코드가 여러 workspace, worktree, external clone, task silo에 나뉘어 있으면 작업 시작 전에 source workspace 기준선을 확정합니다.
 - 브랜치 이름만으로 최신 작업을 판단하지 않고, branch, upstream, `HEAD`, dirty diff, `goal.md`, handoff, 최근 세션 로그를 함께 확인합니다.
 - sibling task worktree가 같은 화면, API, store, schema, business flow를 수정한 dirty 상태라면 최신 기준선 후보로 먼저 비교합니다.
 - task 계약이 BE/FE 독립 git submodule을 요구하면 상위 제품 repo를 BE와 FE의 두 gitlink를 둔 submodule host로만 보고, host 연결 외의 BE/FE 구현 변경은 각 독립 submodule repo로 라우팅합니다. BE/FE/page/harness-scenario를 단일 기능 repo로 묶는 것은 task 계약이 그렇게 명시한 경우에만 허용합니다.
-- `vite-harness` 계열 repo는 재사용 하네스 라이브러리로 보고, task별 제품 시나리오, seed, demo, adapter는 task 계약이 지정한 기능 submodule repo 또는 project SSoT로 라우팅합니다.
+- `vite-harness` 계열 repo는 재사용 하네스 라이브러리로 보고, 반복 가능한 project-level harness/contract만 1계층 Project SSoT 인덱스/참조에 둡니다. task별 제품 시나리오, seed, input, API/page 계약, demo, adapter처럼 task 고유 실행 계약은 project SSoT에 두지 않고 2계층 Project Work SSoT의 task 문서 또는 3계층 silo `goal.md`로 내립니다. 실제 제품/adapter 구현 파일은 task 계약이 지정한 기능 submodule repo로 라우팅합니다.
 - task를 검토하거나 실행할 때는 FE/BE를 별도 소유권으로 나누지 않고 사용자 목적과 완료 경로 기준의 풀스택 단위로 판단합니다.
-- 구현 전 계획 리뷰가 필요한 기능 task는 바로 build하지 않고, task-writer 또는 worker에게 project contract 확인 결과, 단계별 구현 계획, 파일별 대표 함수 골격형 pseudo code를 작성하게 한 뒤 제품 정의, 목표/비목표, 파일/함수/API/DB mutation/화면 상태 변화가 task 목표와 맞는지 확인합니다. pseudo code는 사용자 흐름 설명이나 구현 계획 문장이 아니라 실제 로직 구조를 검토하는 코드 골격이며, 실제 구현 코드나 완성된 함수 구현은 아닙니다. 코드 식별자와 API 이름은 원문을 유지할 수 있지만 설명 문장은 한국어로 씁니다.
-- 사용자가 요구사항, 애플리케이션 세부사항, project contract, 유저 플로우를 구체화하려는 단계라면 task를 먼저 만들지 않습니다. 현재 운영 가설과 gate를 보고하고, 제품 정의와 사용자 흐름을 기반으로 agent 추론 질문을 던진 뒤 확정된 내용을 기능/흐름별 project SSoT 요구사항 문서로 나눕니다.
+- 구현 전 계획 리뷰가 필요한 기능 task는 바로 build하지 않고, task-writer 또는 worker에게 project contract 확인 결과, 단계별 구현 계획, 파일별 대표 함수 골격형 pseudo code를 작성하게 한 뒤 제품 정의, 목표/비목표, 파일/함수/API/DB mutation/화면 상태 변화가 task 목표와 맞는지 확인합니다. pseudo code는 사용자 흐름 설명이나 구현 계획 문장이 아니라 실제 로직 구조를 검토하는 코드 골격이며, 실제 구현 코드나 완성된 함수 구현은 아닙니다. 코드 식별자와 API 이름은 원문을 유지할 수 있지만 설명 문장은 한국어로 씁니다. 선언적 config, prop, default, value 한두 곳만 수정하고 별도 분기·가공·조회·저장 흐름이 없으면 pseudo code를 생략하고 대상 파일, 설정 key, 기존값 또는 누락 상태, 목표값, 회귀 검증을 변경 계약으로 확인합니다. 로직 변경이나 여러 파일 실행 흐름은 이 예외로 우회하지 않습니다.
+- 사용자가 요구사항, 애플리케이션 세부사항, project contract, 유저 플로우를 구체화하려는 단계라면 task를 먼저 만들지 않습니다. 현재 운영 가설과 gate를 보고하고, 제품 정의와 사용자 흐름을 기반으로 agent 추론 질문을 던진 뒤 확정된 내용을 기능/흐름별 Project SSoT 요구사항 문서로 나눕니다.
 - project contract gate에서는 `현재 가설`, `현재 gate`, `다음 gate`, `그 근거`, `task 작성 가능 여부`를 먼저 보고합니다. project contract가 성숙해지고 사용자가 첫 구현 slice를 고른 뒤에 task-writer로 넘깁니다.
 - task 처리 방식, 전체 구현 플랜 수립 방식, 정보 취합 방식, 사일로/PR/review loop 운영 방식이 바뀌면 `system/60-operating-hypotheses/`의 operating hypothesis를 작성하거나 갱신합니다.
 - operating hypothesis에는 채택 이유, 취합한 정보, 기존 방식의 문제, 예상 병목, 적용한 작업 방식, 실행 결과, 실제 병목, 사람 확인 지점, 다음 가설에서 유지하거나 버릴 것을 남깁니다.
@@ -44,7 +47,7 @@
 - 구현 task나 QA 위험이 있는 task는 acceptance criteria를 먼저 테스트 계약으로 바꾸도록 `test-writer-agent`에 연결합니다.
 - PR 생성 요청을 받으면 먼저 브랜치 diff를 0계층 공통 변경과 project 계층 변경으로 나눠 PR 유형을 판정합니다.
 - 0계층 공통 변경은 목표 모델에서 `main-v3/main`, 현재 호환 상태에서 `main-v3/main` 대상 PR로 올립니다. project 계층 변경은 목표 모델에서 해당 `project-{projectName}/main`을 기준 브랜치로 삼되 `project-{projectName}/{taskname}` 작업 브랜치에서 커밋한 뒤 `project-{projectName}/main` 대상 PR로 올립니다. 현재 호환 상태에서는 `project-{projectName}`와 `project-{projectName}-{taskname}`을 사용합니다. 복합 변경은 계층별 worktree와 브랜치를 분리합니다.
-- 1계층 project registry/config 변경이나 2계층 project SSoT 변경이라도 계층 메인 브랜치에 직접 커밋하지 않습니다. 반드시 project 작업 브랜치에서 작업하고 project 계층 메인 브랜치 대상 PR로 반영합니다.
+- 1계층 Project SSoT 변경이나 2계층 Project Work SSoT 변경이라도 계층 메인 브랜치에 직접 커밋하지 않습니다. 반드시 project 작업 브랜치에서 작업하고 project 계층 메인 브랜치 대상 PR로 반영합니다.
 - PR 생성 직후에는 0계층 PR과 project 계층 PR 모두 `codex-pr-review-loop` skill로 codex-review pass 목표를 세팅한 뒤 Codex 리뷰 gate를 시작합니다. 단, Codex review 설정 없음, 호출 권한 없음, GitHub App 미설치, repo 정책상 비활성화가 명시적으로 확인되면 `@codex review`를 반복 호출하지 않고 `Codex review 미설정`과 확인 근거를 PR 본문 또는 보고에 남깁니다. 아직 확인 전인 repo는 미설정으로 단정하지 않고 먼저 `@codex review` 호출 접수 여부를 확인합니다.
 - 최신 리뷰 호출 뒤 3분 동안 `eyes` 반응이 없으면 접수 실패로 보고 같은 head 기준으로 최대 3회까지 재호출한 뒤 새 호출 댓글 기준으로 다시 확인합니다. 3회 모두 접수되지 않으면 `Codex 리뷰 접수 실패 timeout`으로 중단합니다. `eyes` 반응을 확인한 뒤 15분 동안 Codex 응답이 없으면 `Codex 리뷰 응답 대기 timeout`으로 중단해 보고합니다. codex-review pass가 아니거나 현재 head 대상 P1/P2/major/critical 지적이 남아 있으면 `수정 필요`, `수비 가능`, `사용자 판단 필요`로 분류하고, 이전 head 리뷰가 새 push 이후 늦게 게시되어도 작성 시각만으로 현재 head 지적에 섞지 않습니다. 타당한 수정 필요 지적은 수정한 뒤 재리뷰를 요청합니다. Codex review 미설정/권한 없음이 명시적으로 확인된 PR은 codex-review pass 통과로 표현하지 않고 fallback으로 분리합니다. 최신 head 리뷰 결과가 없는 `eyes` 진행 중 상태, 리뷰 호출 직후 접수 확인 전 상태, 수정 후 push했지만 재리뷰 결과가 없는 상태는 종료하지 않고, 메인 에이전트가 같은 턴에서 polling/timeout 확인을 끝낼 수 없으면 기본적으로 `review-waiter-agent`에 연결합니다.
 - 테스트 사일로와 일반 사일로를 구분합니다.
@@ -53,9 +56,9 @@
 - 사일로 PR을 리뷰하고 scope, 검증, branch safety, secret policy, feedback/follow-up 후보를 확인합니다.
 - PR 생성 승인과 PR 머지 승인을 분리합니다.
 - 사용자 피드백을 현재 작업 수정, 사일로 전용 규칙 후보, 전역 취향 후보로 분류합니다.
-- 최종 보고에서 완료된 것, 아직 안 된 것, 목표 밖 산출물, feedback/follow-up 후보, 처리하지 않고 남긴 항목, 다음 행동을 분리합니다.
+- 최종 보고에서 완료된 것, 아직 안 된 것, 목표 밖 산출물, feedback/follow-up 후보, 처리하지 않고 남긴 항목, 사용한 스킬, 현재 워크트리, 다음 행동을 분리합니다.
 - 다음 행동, 승인 단위, 진행 여부, 저장 위치, 검증 범위가 걸린 보고에는 항상 사용자가 고를 수 있는 보기 3개를 붙입니다.
-- repo skill 또는 local skill을 사용한 경우 최종 보고에 사용한 스킬을 명시합니다.
+- 최종 보고에는 skill 사용 또는 사용 여부 확인 맥락이 있으면 `사용한 스킬`을 포함하고, `현재 워크트리`, `다음 행동` 또는 `다음 행동 없음`을 포함합니다.
 - 사용자가 목적, 진행률, 완료 범위, 검증 범위가 헷갈린다고 말하면 새 작업을 진행하기 전에 현재 목표, 완료된 것, 남은 것, test evidence를 먼저 재정렬합니다.
 - 사용자가 skill 누락, 선택지 누락, 승인 경계, 보고 방식, 퍼스널리티 반영 문제를 지적하면 외부 skill 목록만 보지 않고 repo-local `system/20-skills/`의 관련 skill을 확인합니다.
 
@@ -87,7 +90,7 @@
 - 이미 같은 scope의 active silo가 있는 경우
 - 0계층 공통 문서나 템플릿 자체를 수정하는 작업처럼 대상 repo clone보다 `main-v3/main` 기준 작업이 더 적절한 경우
 
-`main-v3/main`에서는 문제 정의가 불명확하다는 이유만으로 멈추지 않습니다. 저위험이면 가장 작은 prototype을 먼저 만들고, 불명확했던 점을 `Learn` 결과로 분리합니다.
+`main-v3/main`에서는 문제 정의가 불명확하다는 이유만으로 멈추지 않습니다. secret, credential, production 데이터, destructive action, 보호 브랜치 직접 수정, 공유 task/issue 상태 변경, Project Work SSoT 원문 변경, Project SSoT 원문 상태 변경, 사일로 root/`goal.md`/repo clone/작업 브랜치 생성이 없으면 저위험 탐색으로 보고 가장 작은 prototype을 먼저 만들 수 있습니다. prototype 결과를 실제 사일로 실행이나 project task 상태 변경으로 전환할 때는 위 상태 갱신 PR 머지 gate를 먼저 통과합니다.
 
 ## 사일로 결과 회수
 
@@ -136,18 +139,18 @@
 
 ## 스킬 사용 보고
 
-최종 보고에는 사용한 스킬을 분리해 적습니다.
+최종 보고에는 사용한 repo skill 또는 local skill을 분리해 적습니다. 사용자가 skill 사용 여부를 걱정한 맥락에서는 쓰지 않았더라도 `사용한 스킬: 없음`을 명시합니다.
 
 ```text
 사용한 스킬
 - skill-name: 사용 이유
 ```
 
-스킬을 사용하지 않았고 사용자가 스킬 사용 여부를 걱정한 맥락이면 `사용한 스킬: 없음`으로 적습니다.
+도구 실행 명령은 스킬과 구분합니다. `rg`, `git diff`, 테스트 명령은 `검증` 또는 `실행한 명령`에 적고 `사용한 스킬`에 섞지 않습니다.
 
 ## 현재 워크트리 보고
 
-최종 보고에는 `사용한 스킬` 바로 다음에 현재 대화가 붙어 있는 worktree를 분리해 적습니다.
+최종 보고에는 현재 대화가 붙어 있는 worktree를 분리해 적습니다. `사용한 스킬` 섹션을 포함하는 경우 그 바로 다음에 두고, `사용한 스킬`을 생략하는 경우 최종 보고의 독립 섹션으로 둡니다.
 
 ```text
 현재 워크트리
@@ -163,8 +166,8 @@
 
 최종 보고를 쓰기 직전에 아래 계약을 체크합니다.
 
-1. 사용한 repo/local skill이 있으면 `사용한 스킬`을 보고했는가?
-2. `사용한 스킬` 다음에 `현재 워크트리`를 보고했는가?
+1. repo/local skill을 사용했거나 사용자가 skill 사용 여부를 걱정한 맥락이면 `사용한 스킬`을 보고했는가?
+2. `현재 워크트리`를 보고했는가? `사용한 스킬` 섹션이 있으면 그 다음에, 없으면 독립 섹션으로 두었는가?
 3. 다음 행동이나 승인 경계가 남아 있으면 보기 3개를 제시했는가?
 4. 다음 행동이 없으면 `다음 행동 없음`이라고 명시했는가?
 5. 보기 밖 답변이나 응답 방식 피드백이 있었으면 feedback 작성 여부와 경로를 보고했는가?

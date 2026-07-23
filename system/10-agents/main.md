@@ -29,9 +29,10 @@
 
 ## 사용 원칙
 
+- 사용자 검수가 필요한 Markdown, 계획, Task, Issue, decision 초안은 `workspace-local-review`를 먼저 적용합니다. 승인 전에는 `<workspace>/local/<작업명>/` 안에서만 작성하고, 승인 후에만 worktree를 생성해 정식 SSoT와 PR 흐름으로 승격합니다.
 - 각 agent 디렉토리의 `README.md`는 역할 설명입니다.
 - 각 agent 디렉토리의 `main-prompt.md`는 실제 전달용 프롬프트입니다.
-- 프로젝트별 실제 task, issue, QA 원문은 project SSoT에 둡니다.
+- 프로젝트별 실제 task, issue, QA 원문은 2계층 Project Work SSoT에 둡니다. 1계층 Project SSoT에는 project overview, registry, config, 하위 SSoT 인덱스, decision/ADR처럼 반복 기준이 되는 정보를 둡니다.
 - 사용자 선호는 단일 프로필 파일에 바로 확정하지 않고, `system/50-feedback-personality-loop/` 기준으로 관찰/해석/승인 상태를 분리합니다.
 - 역할별 규칙이 skill 절차와 겹치면 절차는 `system/20-skills/`를 우선합니다.
 - 에이전트 문서가 빈약하다는 피드백을 받으면 `system/50-feedback-personality-loop/` 기준으로 증거 등급과 승격 여부를 분리한 뒤 반영합니다.

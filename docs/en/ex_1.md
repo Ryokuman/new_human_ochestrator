@@ -17,11 +17,11 @@ Ask these first:
 
 1. Inspect the existing project.
 2. Create or confirm the project SSoT scaffold.
-3. Draft `project-contract.md` from the real codebase and user answers.
+3. Draft `AGENTS.md` from the real codebase and user answers.
 4. Use Q&A, preferably `project-contract-gate`, to close unknown goals and boundaries.
 5. Create the first task from the contract.
 6. Run the task in a silo.
-7. Verify, open a PR, and promote reusable findings back into the SSoT.
+7. Verify, open a PR, and promote reusable findings into the right layer: issue/task/QA/runbook findings go to the layer 2 Project Work SSoT, project contract/requirement/decision/reference findings go to the layer 1 Project SSoT, and cross-project rules or templates become layer 0 system candidates. Layer 3 silo local findings stay as temporary pre-PR records until verification promotes them into one of those layers.
 
 ## Setup Readiness
 

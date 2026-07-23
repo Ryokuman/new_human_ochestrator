@@ -2,7 +2,7 @@
 
 runtime set은 사일로가 실행될 때 이미 떠 있거나 준비되어야 하는 runtime 묶음입니다.
 
-Runtime Set은 project가 시작된 뒤 생기는 2계층 `Project Work SSoT`의 실행 계약 일부입니다. task, issue, QA, runbook, coverage, work dashboard, Run Set과 함께 project SSoT에 둘 수 있으며, root `main-v3/main`에는 실제 runtime set 실데이터를 두지 않습니다.
+Runtime Set은 project가 시작된 뒤 생기는 2계층 `Project Work SSoT`의 실행 계약 일부입니다. task, issue, QA, runbook, coverage, work dashboard, Run Set과 함께 2계층 `Project Work SSoT`에 둡니다. 1계층 `Project SSoT`에는 Runtime Set 정본 원문을 두지 않고 위치 index, project-level 공통 runtime 계약, registry/status 참조만 둡니다. root `main-v3/main`에는 실제 runtime set 실데이터를 두지 않습니다.
 
 ## Runtime Set 결정 우선순위
 
@@ -14,19 +14,19 @@ Runtime Set은 project가 시작된 뒤 생기는 2계층 `Project Work SSoT`의
 4. `project.common_runtime_set`
 5. 없으면 `runtime 정의 누락`
 
-더 높은 우선순위에 값이 있으면 낮은 우선순위 값으로 덮어쓰지 않습니다. 어떤 값도 없으면 임의로 shared runtime 조합을 만들지 않고 `runtime 정의 누락`, `add-shared-runtime 필요`, 또는 project SSoT 보강 필요로 보고합니다.
+더 높은 우선순위에 값이 있으면 낮은 우선순위 값으로 덮어쓰지 않습니다. 어떤 값도 없으면 임의로 shared runtime 조합을 만들지 않고 `runtime 정의 누락`, `add-shared-runtime 필요`, 또는 Project Work SSoT의 Runtime Set 실행 계약 보강 필요로 보고합니다. 1계층 Project SSoT에는 필요한 경우 Project Work SSoT 위치 index나 공통 runtime 참조만 보강합니다.
 
 ## Shared Runtime
 
-shared runtime은 workspace root 아래 여러 task silo가 함께 참조하는 공용 실행 repo 묶음입니다. task silo의 폐기 가능한 clone과 다르게 장기 checkout일 수 있으며, project SSoT 또는 local config의 registry/status로 관리합니다.
+shared runtime은 workspace root 아래 여러 task silo가 함께 참조하는 공용 실행 repo 묶음입니다. task silo의 폐기 가능한 clone과 다르게 장기 checkout일 수 있으며, 1계층 Project SSoT나 local config에는 registry/status의 위치와 공통 참조를 두고, task/run/QA별 실행 계약은 2계층 Project Work SSoT의 Runtime Set에서 관리합니다.
 
 기본 경로 후보:
 
 ```text
-shared-runtime/<project-id>/<runtime-name>/
+shared-runtime/<runtime-name>/
 ```
 
-registry/status에는 project id, runtime set, runtime name, runtime kind, repo/remote, branch/commit, purpose, port, env file policy, health check command 또는 URL, owner, last checked, linked tasks를 기록합니다.
+registry/status에는 project id, runtime set, runtime name, runtime kind, repo/remote, branch/commit, purpose, port, env file policy, 구조화된 `health_check.command` 또는 `health_check.url`, owner, last checked, linked tasks를 기록합니다.
 
 secret 값은 기록하지 않고 env 파일 path나 secret provider 정책만 기록합니다.
 

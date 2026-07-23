@@ -6,12 +6,21 @@ OH-0005
 
 ## 상태
 
-active
+draft
+
+`draft`는 `github-project-intake` skill과 관련 README에 intake 후보 방식이 반영됐지만, 실제 프로젝트 조사 세션에서 검증 완료되지 않았다는 뜻입니다. 첫 실사용 검증 전까지 실행 결과와 실제 병목을 계속 기록합니다.
 
 ## 기간
 
 - 시작: 2026-07-03
 - 종료 또는 폐기:
+
+## 상태 재검증
+
+- 최근 재검증: 2026-07-07
+- 최근 근거: `system/20-skills/github-project-intake/SKILL.md`와 관련 README 연결은 존재하지만, 실제 프로젝트 조사 세션의 실행 결과는 아직 이 원문에 기록돼 있지 않습니다.
+- 다음 재검증 조건: 첫 실제 GitHub 프로젝트 조사 세션이 끝나면 repo inventory, evidence pack, 사용자 분류 결정, 실제 병목, 유지/폐기 항목을 기록한 뒤 `active` 승격 여부를 판단합니다.
+- 외부 PR 근거: PR #194 `GitHub 프로젝트 수집 skill 추가`는 2026-07-03에 `main-v2`로 머지됐습니다. URL은 `https://github.com/Ryokuman/my_ochestrator/pull/194`, merge commit은 `3a3b9d8b43f01384488194bff9e7281edaf576ba`입니다. 이 PR은 skill과 README 연결 추가 근거로만 보고, `active` 승격 근거로 쓰려면 현재 `main-v3/main` 반영 상태와 실제 조사 세션 결과를 함께 확인해야 합니다.
 
 ## 운영 가설
 
@@ -54,11 +63,13 @@ GitHub 원격 정보와 로컬 repo 근거를 같은 intake 절차에서 수집�
 
 ## 실행 결과
 
-PR #194에서 `github-project-intake` repo skill, skill README 연결, system README 연결을 추가했습니다. 실행 결과는 실제 프로젝트 조사 적용 후 이어서 기록합니다.
+PR #194에서 `github-project-intake` repo skill, skill README 연결, system README 연결을 추가했습니다. 이 기록은 구현 반영 근거이며, 실제 프로젝트 조사 적용 결과는 아직 없습니다. 첫 실사용 검증 후 실행 결과와 병목을 이어서 기록합니다.
 
 ## 실제 병목
 
 아직 실제 프로젝트 조사 세션에서 검증하지 않았습니다. PR 리뷰에서는 `visibility` 필드 누락, 기본 프롬프트의 skill 명시 부족, 운영 가설 원문 누락이 먼저 발견됐습니다.
+
+repo inventory와 evidence pack 분리는 intake 후보 방식으로 유지합니다. 다만 실제 프로젝트 조사 세션 결과가 아직 없으므로 `active` 승격 전 검증 공백으로 추적합니다.
 
 ## 사람 확인 지점
 
@@ -82,9 +93,14 @@ PR #194에서 `github-project-intake` repo skill, skill README 연결, system RE
 
 ## 0계층 반영 위치
 
-- 문서: `system/README.md`, `system/20-skills/README.md`, `system/60-operating-hypotheses/OH-0005-github-project-intake.md`
-- skill: `system/20-skills/github-project-intake/SKILL.md`
-- agent prompt: `system/20-skills/github-project-intake/agents/openai.yaml`
+- 반영 완료:
+  - 문서: `system/README.md`, `system/20-skills/README.md`, `system/60-operating-hypotheses/OH-0005-github-project-intake.md`
+  - skill: `system/20-skills/github-project-intake/SKILL.md`
+  - agent prompt: `system/20-skills/github-project-intake/agents/openai.yaml`
+- 반영 후보:
+  - 실제 조사 세션 결과를 반영한 evidence pack 예시와 병목 기록
+- 미구현 후보:
+  - 없음
 
 ## 후속 운영 가설 후보
 

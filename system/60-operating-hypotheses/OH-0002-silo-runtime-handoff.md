@@ -13,6 +13,13 @@ draft
 - 시작: 2026-07-01
 - 종료 또는 폐기:
 
+## 상태 재검증
+
+- 최근 재검증: 2026-07-07
+- 최근 근거: `codex-pr-review-loop`, `silo-runtime-handoff`, `shared-runtime-health-check`, `review-waiter`, `main-orchestrator`, 사일로 review gate 문서에 fallback과 runtime handoff 경로가 존재합니다. PR #203 메타데이터도 재조회했지만 실제 사일로 PR 적용 결과는 아직 이 원문에 없습니다.
+- 다음 재검증 조건: 현재 `main-v3/main`의 반영 파일과 실제 사일로 PR 적용 결과를 확인한 뒤 실행 결과와 실제 병목을 갱신합니다.
+- 외부 PR 근거: PR #203 `PR 리뷰 설정과 handoff 흐름 정리`는 2026-07-04에 `main-v2`로 머지됐습니다. URL은 `https://github.com/Ryokuman/my_ochestrator/pull/203`, merge commit은 `bc7454c63bb9e6f1b6e351cefcec5d955de11204`입니다. 현재 기준은 `main-v3/main`이므로, PR #203은 legacy 반영 근거로 두고 현재 파일 존재와 실제 사일로 PR handoff 결과를 별도로 확인합니다.
+
 ## 운영 가설
 
 task 실행 결과인 사일로 PR이 실제 제품 코드 파일을 바꾸고 Codex no-major를 통과했거나 Codex review 설정 없음/권한 없음이 명시적으로 확인되어 review loop를 생략한 뒤 `shared-runtime-health-check`로 사일로 설정의 `runtime_set`과 서버형 runtime 상태를 확인하고, 그 결과를 바탕으로 runtime과 E2E 확인 방법을 PR 댓글로 남기면, 사용자가 재리뷰할 때 서버 주소, 실행 상태, 남은 수동 확인을 다시 묻지 않아도 된다.
@@ -47,7 +54,7 @@ task 실행 결과인 사일로 PR이 실제 제품 코드 파일을 바꾸고 C
 - Codex review 미설정 fallback에서는 리뷰 통과가 아니라 리뷰 미실행 상태이므로 PR 본문과 handoff 댓글에서 표현이 섞일 수 있다.
 - fallback 근거 URL이 PR 본문, 보고, 댓글 중 어디에 있는지 일정하지 않으면 review-waiter와 handoff skill이 서로 다른 입력을 기대할 수 있다.
 - task contract에 E2E 시작 URL, seed, 테스트 입력이 부족하면 댓글이 추정으로 채워질 수 있다.
-- project SSoT 또는 local config에 `runtime_set`이 없으면 no-major 이후 handoff가 막힐 수 있다.
+- project registry/config 또는 2계층 Project Work SSoT에 `runtime_set`이 없으면 no-major 이후 handoff가 막힐 수 있다.
 
 ## 적용한 작업 방식
 
@@ -57,7 +64,8 @@ task 실행 결과인 사일로 PR이 실제 제품 코드 파일을 바꾸고 C
 - `silo-runtime-handoff`는 Codex review 미설정 fallback에서 no-major 댓글 URL을 요구하지 않고, fallback 근거 URL과 미설정/권한 없음 확인 근거를 입력으로 받는다.
 - 사일로 review gate는 사용자 재리뷰 직전에 handoff 댓글을 요구한다.
 - 문서, skill, project SSoT, config example만 바꾼 PR은 runtime handoff 대상에서 제외한다.
-- `runtime_set`이 없으면 임의 서버 조합을 만들지 않고 `add-shared-runtime` 또는 project SSoT 보강 필요를 handoff 댓글에 남긴다.
+- `runtime_set`은 `run_set.required_runtime_set`, `task.runtime_set`, `qa_or_runbook.runtime_set`, `project.common_runtime_set` 순서로 project registry/config 또는 2계층 Project Work SSoT에서 찾는다.
+- `runtime_set`이 없으면 임의 서버 조합을 만들지 않고 `add-shared-runtime` 또는 project registry/config, 2계층 Project Work SSoT 보강 필요를 handoff 댓글에 남긴다.
 
 ## 적용 범위
 
@@ -67,12 +75,15 @@ task 실행 결과인 사일로 PR이 실제 제품 코드 파일을 바꾸고 C
 
 ## 실행 결과
 
-- PR review fallback 반영 중이다. Codex review loop에서 `review-waiter` fallback 누락, `silo-runtime-handoff` no-major URL 요구, 중앙 PR 리뷰 정책 누락, 사일로 review gate fallback 누락, main-orchestrator fallback 누락, 루트 `AGENTS.md` fallback 누락이 P2로 발견되어 같은 PR에서 보강했다.
+- PR review fallback 반영 후보가 문서와 skill에 일부 들어가 있습니다. Codex review loop에서 `review-waiter` fallback 누락, `silo-runtime-handoff` no-major URL 요구, 중앙 PR 리뷰 정책 누락, 사일로 review gate fallback 누락, main-orchestrator fallback 누락, 루트 `AGENTS.md` fallback 누락이 P2로 발견되어 보강 대상이 됐습니다.
+- PR #203은 이 가설의 legacy 반영 근거입니다. 다만 `main-v2` 기반 PR이므로 현재 `main-v3/main`의 반영 파일 존재와 실제 사일로 PR handoff 적용 결과를 함께 확인하기 전에는 `active` 승격 근거로 쓰지 않습니다.
 
 ## 실제 병목
 
 - Codex review 설정이 동작하는 repo에서는 fallback 경로를 실제로 타지 않기 때문에 문서 일관성 검증은 Codex P2와 diff 검증에 의존했다.
 - fallback 도입 범위가 `AGENTS.md`, `codex-pr-review-loop`, `main-orchestrator`, `review-waiter`, `silo-runtime-handoff`, 중앙 PR 리뷰 정책, 사일로 review gate, 운영 가설에 걸쳐 있어 한 파일만 바꾸면 drift가 생긴다.
+- runtime_set 실데이터 위치를 0계층 system 문서처럼 쓰면 project별 실행 계약이 공통 규칙에 섞인다. 실제 runtime_set은 project registry/config 또는 2계층 Project Work SSoT에 두고, 0계층은 우선순위와 금지선만 정의해야 한다.
+- 문서 반영 완료와 실제 사일로 handoff 검증 완료가 섞이면 README 단계가 stale 상태로 남는다.
 
 ## 사람 확인 지점
 
@@ -86,7 +97,7 @@ task 실행 결과인 사일로 PR이 실제 제품 코드 파일을 바꾸고 C
 - no-major 이후 사용자 재리뷰 전에 runtime handoff 댓글을 남기는 순서
 - Codex review 미설정 fallback에서는 no-major 통과가 아니라 미설정 근거 기록 이후 runtime handoff 조건을 평가하는 순서
 - 실제 제품 코드 변경이 있는 task PR에만 runtime handoff를 붙이는 범위 제한
-- handoff 전에 `shared-runtime-health-check`로 `runtime_set`과 서버형 runtime 상태를 확인하는 순서
+- handoff 전에 `shared-runtime-health-check`로 project registry/config 또는 2계층 Project Work SSoT의 `runtime_set`과 서버형 runtime 상태를 확인하는 순서
 - 실행 불가 항목을 별도 표로 남기는 방식
 
 ## 버릴 것
@@ -96,12 +107,18 @@ task 실행 결과인 사일로 PR이 실제 제품 코드 파일을 바꾸고 C
 - fallback에서 no-major 댓글 URL을 필수 입력으로 요구하는 방식
 - 문서/skill/project SSoT 변경 PR에 runtime handoff를 기계적으로 붙이는 방식
 - `runtime_set` 없이 agent 추론으로 서버 구성을 만드는 방식
+- 실제 project runtime_set 값을 root `main-v3/main` 0계층 문서에 저장하는 방식
 
 ## 0계층 반영 위치
 
-- 문서: `system/30-silo-system/20-silo-workflow/review-gate.md`, `system/40-pr-review-loop/README.md`, `system/40-pr-review-loop/02-review-policy.md`, `system/60-operating-hypotheses/OH-0002-silo-runtime-handoff.md`
-- skill: `system/20-skills/silo-runtime-handoff/SKILL.md`, `system/20-skills/shared-runtime-health-check/SKILL.md`, `system/20-skills/codex-pr-review-loop/SKILL.md`
-- agent prompt:
+- 반영 완료:
+  - 문서: `system/30-silo-system/20-silo-workflow/review-gate.md`, `system/40-pr-review-loop/README.md`, `system/40-pr-review-loop/02-review-policy.md`, `system/60-operating-hypotheses/OH-0002-silo-runtime-handoff.md`
+  - skill: `system/20-skills/silo-runtime-handoff/SKILL.md`, `system/20-skills/shared-runtime-health-check/SKILL.md`, `system/20-skills/codex-pr-review-loop/SKILL.md`
+  - agent prompt: `system/10-agents/main-orchestrator/README.md`, `system/10-agents/main-orchestrator/main-prompt.md`, `system/10-agents/review-waiter/README.md`, `system/10-agents/review-waiter/main-prompt.md`
+- 반영 후보:
+  - 실제 사일로 PR에서 Codex review 미설정 fallback과 runtime handoff가 함께 동작한 결과
+- 미구현 후보:
+  - 없음
 
 ## 후속 운영 가설 후보
 

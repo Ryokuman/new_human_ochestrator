@@ -25,13 +25,15 @@ PR 작성/수정 흐름에서는 PR 내부 용어를 기준으로 이 스킬을 
 
 ## 저장 계층
 
-프로젝트 내부 용어는 2계층 project SSoT의 dictionary에 둡니다.
+프로젝트 내부 용어는 2계층 Project Work SSoT의 project dictionary에 둡니다.
 
 권장 위치:
 
 ```text
-projects/<project-id>/02-project-internal/10-dictionary/project-dictionary.md
+<workspace>/<projectName>/02-project-work-ssot/10-dictionary/project-dictionary.md
 ```
+
+이전 호환 구조만 있는 프로젝트는 `projects/<project-id>/02-project-internal/10-dictionary/project-dictionary.md`를 확인합니다.
 
 0계층 `system/`에는 특정 프로젝트의 실제 용어 원문을 복사하지 않습니다. 여러 프로젝트에서 반복되거나 에이전트 공통 행동 규칙에 영향을 주는 용어만 공통 규칙 승격 후보로 보고합니다. 별도 승인 없이 프로젝트별 원문을 root `main-v3/main`에 반영하지 않습니다.
 
@@ -44,7 +46,7 @@ projects/<project-id>/02-project-internal/10-dictionary/project-dictionary.md
 2. 기존 dictionary를 확인합니다.
    - project dictionary가 있으면 먼저 검색합니다.
    - 같은 뜻의 기존 용어, 유사 표기, 영문/한글 혼용, 약어 확장어를 함께 찾습니다.
-   - project dictionary가 없으면 project SSoT 생성 또는 dictionary 생성 필요 여부를 별도 후보로 보고합니다.
+   - project dictionary가 없으면 1계층 Project SSoT 생성을 바로 후보로 말하지 않습니다. 먼저 2계층 Project Work SSoT 안의 dictionary, 관련 runbook, 또는 work SSoT 문서 생성 필요를 후보로 분리하고, 해당 project SSoT 운영 문서가 있다면 위치와 규칙을 확인합니다.
 
 3. 기존 단어로 대체 가능한지 검토합니다.
    - 기존 용어가 같은 개념을 충분히 설명하면 새 단어를 추가하지 않고 기존 용어로 PR 본문을 통일합니다.
@@ -81,7 +83,7 @@ projects/<project-id>/02-project-internal/10-dictionary/project-dictionary.md
 새 단어 추가가 필요한 경우:
 
 - 기존 dictionary에 같은 개념이 없음
-- PR 본문이나 project SSoT에서 반복 재사용될 가능성이 높음
+- PR 본문이나 Project Work SSoT에서 반복 재사용될 가능성이 높음
 - 약어, runner 용어, coverage 용어, 도메인 고유 표현이라 처음 보는 리뷰어가 이해하기 어려움
 - 같은 개념을 여러 표현으로 부르고 있어 표준 표현이 필요함
 
@@ -99,7 +101,7 @@ projects/<project-id>/02-project-internal/10-dictionary/project-dictionary.md
 
 | 변경 유형 | 용어 | 뜻 | 사용 맥락 | 프로젝트 전용/공통 후보 | dictionary 위치 |
 |---|---|---|---|---|---|
-| 추가 |  |  |  | 프로젝트 전용 | projects/<project-id>/02-project-internal/10-dictionary/project-dictionary.md |
+| 추가 |  |  |  | 프로젝트 전용 | <workspace>/<projectName>/02-project-work-ssot/10-dictionary/project-dictionary.md |
 ```
 
 Dictionary 변경이 없으면 아래처럼 적습니다.

@@ -5,12 +5,16 @@ version: 1
 defaults:
   work_root:
   branch_prefix: silo
+  # 사일로 시작 gate를 통과한 뒤 격리 clone 안에서 적용할 실행 모드입니다.
+  # `yolo`는 내부 수정 승인 대기를 줄이는 모드이며, project SSoT task/issue 상태 갱신 PR 선행 gate를 생략하지 않습니다.
   execution_mode: yolo
   protected_branches:
     - main
     - master
     - dev
     - develop
+    - release
+    - production
 
 projects:
   - id:

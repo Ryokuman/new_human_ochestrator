@@ -1,6 +1,6 @@
 ---
 name: project-contract-gate
-description: Use when defining or refining a project's product contract before task creation. Guides a two-step interview: first natural-language product clarification, then feature-by-feature clarification using agent inferences and numbered answers. Use when requirements may already exist, when they are incomplete, or when no app description exists yet.
+description: task 생성 전에 프로젝트 제품 계약을 정의하거나 보강할 때 사용합니다. 자연어 제품 구체화와 agent 추론 기반 기능별 번호 질의응답을 거치는 2단계 인터뷰를 안내하며, 요구사항이 이미 있거나 불완전하거나 앱 설명이 아직 없을 때도 사용합니다.
 ---
 
 # Project Contract Gate
@@ -92,11 +92,19 @@ task를 만들기 전에 제품 계약을 구체화하는 skill입니다. 목적
 
 ## 산출물
 
-gate가 충분히 닫히면 1계층 Project SSoT에 기능 또는 사용자 흐름별 요구사항 문서로 나눕니다. 이 요구사항은 issue/task의 구현 근거이며, 구현을 위한 issue/task/QA/runbook/coverage 원문은 2계층 Project Work SSoT에 둡니다.
+gate가 충분히 닫히면 산출물을 계층별로 나눕니다.
 
-쓰기 전에는 실제 SSoT 위치, 목표 기준 브랜치 `project-{projectName}/main`, 목표 작업 브랜치 `project-{projectName}/{taskname}`을 확인합니다. 현재 호환 상태에서는 `project-{projectName}` 기준 브랜치와 `project-{projectName}-{taskname}` 작업 브랜치를 확인합니다. 요구사항 원문은 0계층이나 임의 브랜치에 섞지 않습니다.
+- 1계층 Project SSoT: 제품 정의, project contract, 기능 또는 사용자 흐름별 요구사항 원문, decision/ADR, 반복 적용되는 project-level 운영 기준을 둡니다.
+- 2계층 Project Work SSoT: 1계층 요구사항을 구현하기 위한 issue/task/QA/runbook/coverage 원문, 단일 task 준비 상태, 특정 task의 test input/mock data/API/page 실행 계약, 구현 순서와 검증 계획을 둡니다.
+- 3계층 Silo Local 또는 PR 본문: 사일로 실행 중 발견, 임시 evidence, PR 전 확인 결과를 둡니다.
 
-예:
+1계층 project overview, registry, config에는 특정 task 준비 상태나 단일 task 구현 계약을 쓰지 않습니다. overview에는 1계층 요구사항 정본, decision/ADR, 2계층 Project Work SSoT 위치로 가는 참조만 남깁니다.
+
+쓰기 전에는 실제 SSoT 위치, 목표 기준 브랜치 `project-{projectName}/main`, 목표 작업 브랜치 `project-{projectName}/{taskname}`을 확인합니다. 현재 호환 상태에서는 `project-{projectName}` 기준 브랜치와 `project-{projectName}-{taskname}` 작업 브랜치를 확인합니다. 요구사항 원문과 task 원문은 0계층이나 임의 브랜치에 섞지 않습니다.
+
+`setup.sh --create-project-ssot` 기본 scaffold는 1계층 위치에 `AGENTS.md`와 `10-requirements/README.md`를 만듭니다. 기능/사용자 흐름별 세부 요구사항 문서는 project contract가 닫힌 뒤 실제 확인된 흐름만 추가합니다. 기존 project SSoT가 다른 요구사항 위치를 선언했다면 `project-registry.md`와 `AGENTS.md`의 정본 위치를 따릅니다.
+
+1계층 Project SSoT 기본 생성 위치와 추가 문서 예:
 
 ```text
 01-project-ssot/
@@ -110,7 +118,18 @@ gate가 충분히 닫히면 1계층 Project SSoT에 기능 또는 사용자 흐�
     sync-storage.md
 ```
 
-project overview에는 원문을 복사하지 말고 1계층 요구사항 정본 위치만 연결합니다.
+2계층 Project Work SSoT 작업 원문 예:
+
+```text
+02-project-internal/
+  30-work-items/
+    tasks/
+      TASK-0001-login-flow.md
+  40-runbooks/
+    login-flow-runtime.md
+  50-qa/
+    login-flow-test-inputs.md
+```
 
 ## 통과 기준
 

@@ -1,5 +1,11 @@
 version: 1
 
+manifestRole: workflow-policy-template
+
+runtimeSourceOfTruth:
+  workflow: .github/workflows/sync-public-orchestrator.yml
+  note: "이 manifest는 공개 export 정책을 설명하는 예시/정책 템플릿입니다. 현재 GitHub Actions workflow는 exclude.paths를 읽어 public-stage 제외와 README 링크 제거에 사용하지만, 복사 allowlist와 sensitive path/secret-like guard의 실행 정본은 workflow run block입니다. 내부 프로젝트 참조 차단 regex는 공개 배포 대상이 아닌 public-export-guard-manifest.yaml을 사용합니다."
+
 source:
   branch: main-v3/main
 
@@ -12,42 +18,57 @@ pathMappings:
     target: AGENTS.md
 
 include:
-  files:
-    - README.md
-    - .gitignore
-    - LICENSE
-    - NOTICE
-    - setup.sh
-    - AGENTS.public.md
-    - system/README.md
-    - system/.gitignore
-  directories:
-    - ko
-    - en
-    - system/00-system-overview
-    - system/10-agents
-    - system/10-ssot
-    - system/20-skills
-    - system/30-silo-system
-    - system/40-pr-review-loop
-    - system/50-feedback-personality-loop
-    - system/60-operating-hypotheses
-    - system/templates/project-ssot
-  globs:
-    - system/config/*.example.*
-    - system/config/*.env.example
+  required:
+    files:
+      - README.md
+      - LICENSE
+      - NOTICE
+      - setup.sh
+      - AGENTS.public.md
+      - system/README.md
+      - system/config/README.md
+      - system/config/public-export-manifest.example.yaml
+      - system/config/shared-runtime-registry.example.yaml
+      - system/config/silo-projects.example.yaml
+      - system/config/silo-runtime.env.example
+    directories:
+      - docs/ko
+      - docs/en
+      - system/00-system-overview
+      - system/10-agents
+      - system/10-ssot
+      - system/20-skills
+      - system/30-silo-system
+      - system/40-pr-review-loop
+      - system/50-feedback-personality-loop
+      - system/60-operating-hypotheses
+      - system/templates/codex-home
+      - system/templates/project-ssot
+      - system/templates/workspace
+      - system/templates/user-layer
+  optional:
+    files:
+      - .gitignore
+      - system/.gitignore
+      - system/config/silo-env-injection.example.yaml
+      - system/config/silo-secrets.example.yaml
+    globs:
+      - system/config/*.example.*
+      - system/config/*.env.example
 
 exclude:
+  allowedSensitivePaths:
+    - system/config/silo-secrets.example.yaml
   paths:
     - local
+    - user-layer
     - projects
     - project-local
     - project-overrides
     - workspace-local
     - .worktrees
-    - .codex-main-v3
     - .obsidian
-    - system/20-skills/page-lifecycle-runtime-flow
+    - system/config/public-export-guard-manifest.yaml
   globs:
     - task-*
     - config/*.env
@@ -61,6 +82,17 @@ exclude:
     - "**/*credential*"
     - "**/*password*"
 
+blockedContent:
+  internalReferenceGuard:
+    description: "공개 export guard는 알려진 내부 프로젝트명과 명시적인 내부 성향 축약 표현만 좁게 차단합니다. 원문 금칙 표현은 manifest 자체가 공개 산출물이므로 여기에 반복하지 않고 sync workflow의 guard 배열에서 관리합니다."
+    sourceOfTruth: ".github/workflows/sync-public-orchestrator.yml"
+
 sync:
   commitMessagePrefix: "sync: 공개 오케스트레이터 갱신"
   sourceShaFooter: true
+
+guardInputs:
+  internalReferenceManifest:
+    source: system/config/public-export-guard-manifest.yaml
+    exported: false
+    description: "내부 프로젝트 참조 차단 regex는 비공개 guard manifest에서 읽습니다. 공개 example manifest에는 내부 프로젝트명을 반복하지 않습니다."

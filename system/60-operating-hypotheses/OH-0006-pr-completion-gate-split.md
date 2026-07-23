@@ -13,9 +13,18 @@ draft
 - 시작: 2026-07-03
 - 종료 또는 폐기:
 
+## 상태 재검증
+
+- 최근 재검증: 2026-07-07
+- 최근 근거: 현재 `system/20-skills/`에는 `codex-pr-review-loop`와 `silo-runtime-handoff`는 있지만 `pr-completion-loop`, `pr-authoring-process`, `pr-codex-review-gate`, `pr-agent-browser-e2e-gate`, `pr-runtime-handoff-gate` skill은 없습니다.
+- 다음 재검증 조건: PR completion loop 개편 PR에서 신규 skill 또는 기존 skill 분리 파일이 실제로 추가되면, 반영 완료와 미구현 후보를 다시 분리합니다.
+- 외부 PR 근거: 아직 실제 PR 적용 결과가 없으므로 외부 PR 번호를 active 승격 근거로 쓰지 않습니다.
+
 ## 운영 가설
 
-PR 완료 루프를 하나의 `codex-pr-review-loop`로 계속 확장하지 않고 `pr-completion-loop` 아래의 `pr-authoring-process`, `pr-codex-review-gate`, `pr-agent-browser-e2e-gate`, `pr-runtime-handoff-gate`로 나누면, 각 단계가 자기 책임 밖의 성공을 주장하는 일을 줄이고 PR 종료 전 검증 누락과 handoff 과장을 줄일 수 있다.
+PR 완료 루프를 하나의 구현된 `codex-pr-review-loop`로 계속 확장하지 않고, 향후 후보인 `pr-completion-loop` 아래에 `pr-authoring-process`, `pr-codex-review-gate`, `pr-agent-browser-e2e-gate`, `pr-runtime-handoff-gate`를 분리하면 각 단계가 자기 책임 밖의 성공을 주장하는 일을 줄이고 PR 종료 전 검증 누락과 handoff 과장을 줄일 수 있다.
+
+현재 실제 구현된 repo skill은 `codex-pr-review-loop`, `silo-runtime-handoff`, `shared-runtime-health-check` 등 기존 `system/20-skills/` 항목입니다. `pr-completion-loop`, `pr-authoring-process`, `pr-codex-review-gate`, `pr-agent-browser-e2e-gate`, `pr-runtime-handoff-gate`는 이 문서의 분리 설계 후보이며 아직 `system/20-skills/`에 구현된 skill 또는 gate가 아닙니다.
 
 ## 채택 이유
 
@@ -28,7 +37,7 @@ PR 완료 루프를 하나의 `codex-pr-review-loop`로 계속 확장하지 않�
 - 사용자 피드백: 리뷰 프로세스의 주체는 Codex review이며 no-major가 아니면 작성 프로세스를 재호출해야 한다.
 - 사용자 피드백: E2E 프로세스의 주체는 별도 background agent와 agent-browser이며, 사일로 내부 서버를 대상으로 사용자가 확인할 플로우를 먼저 검증해야 한다.
 - 사용자 피드백: 스킬 이름부터 gate를 적절히 나누면 할루시네이션을 줄일 수 있는지 검토가 필요하다.
-- 사용자 선택: 이후 PR loop 개편안의 기준 명칭을 `pr-completion-loop`, `pr-authoring-process`, `pr-codex-review-gate`, `pr-agent-browser-e2e-gate`, `pr-runtime-handoff-gate`로 확정했다.
+- 사용자 선택: 이후 PR loop 개편안의 후보 명칭을 `pr-completion-loop`, `pr-authoring-process`, `pr-codex-review-gate`, `pr-agent-browser-e2e-gate`, `pr-runtime-handoff-gate`로 두었다. 단, 이는 구현 완료 상태가 아니라 분리 예정 명칭이다.
 - 기존 0계층 문서: `codex-pr-review-loop`는 최신 head no-major와 현재 head 대상 P1/P2/major/critical 분류를 관리한다.
 - 기존 0계층 문서: `silo-runtime-handoff`는 no-major 이후 사용자 재리뷰 전 서버 주소와 E2E 방법을 PR 댓글로 남기지만, agent-browser E2E 통과 자체를 독립 gate로 요구하지는 않는다.
 
@@ -48,17 +57,20 @@ PR 완료 루프를 하나의 `codex-pr-review-loop`로 계속 확장하지 않�
 - 새 commit이 생긴 뒤 어떤 gate 결과를 stale 처리해야 하는지 중앙 상태가 없으면 이전 증거를 잘못 재사용할 수 있다.
 - gate를 너무 잘게 나누면 각 skill의 결과를 모으는 오케스트레이션 비용이 늘어날 수 있다.
 
-## 적용한 작업 방식
+## 제안한 분리 방식
 
-- 최상위 오케스트레이터 skill 이름은 `pr-completion-loop`로 둔다.
-- `pr-completion-loop`는 직접 성공을 주장하지 않고 현재 `head SHA`, 각 gate 결과, 재시도 이력, stale 처리만 관리한다.
-- 작성 주체는 `pr-authoring-process`로 제한한다. 코드 수정, PR 본문 갱신, criteria 검증표 갱신, 실패 반영 커밋은 이 프로세스만 수행한다.
-- Codex 리뷰는 `pr-codex-review-gate`로 분리한다. 이 gate는 최신 head no-major, 현재 head 대상 P1/P2/major/critical 분류, `수정 필요`/`수비 가능`/`사용자 판단 필요`를 판단한다.
-- browser E2E는 `pr-agent-browser-e2e-gate`로 분리한다. 이 gate는 별도 QA/background agent와 agent-browser를 사용해 명시된 사용자 플로우만 검증하고, 직접 코드를 수정하지 않는다.
-- runtime handoff는 `pr-runtime-handoff-gate`로 분리한다. 이 gate는 이미 통과한 review/E2E evidence를 바탕으로 서버 주소, 실행 방법, 테스트 입력, 남은 수동 확인을 PR 댓글로 남긴다.
-- 모든 gate는 종료 결과를 `status`, `headSha`, `evidence`, `failureReason`, `nextProcess` 형식으로 남긴다.
-- `pr-authoring-process`가 새 commit을 push하면 이전 `pr-codex-review-gate`, `pr-agent-browser-e2e-gate`, `pr-runtime-handoff-gate` 결과는 stale 처리한다.
-- `pr-agent-browser-e2e-gate`가 실패하면 `pr-authoring-process`로 돌아가고, 새 head가 만들어진 뒤에는 `pr-codex-review-gate`부터 다시 시작한다.
+- 아래 항목은 아직 구현된 repo skill이 아니라 PR loop 개편 시 검토할 후보 구조입니다.
+- 최상위 오케스트레이터 후보 이름은 `pr-completion-loop`로 둔다.
+- `pr-completion-loop` 후보는 직접 성공을 주장하지 않고 현재 `head SHA`, 각 gate 결과, 재시도 이력, stale 처리만 관리한다.
+- 작성 주체 후보는 `pr-authoring-process`로 제한한다. 코드 수정, PR 본문 갱신, criteria 검증표 갱신, 실패 반영 커밋은 이 프로세스만 수행한다.
+- Codex 리뷰 후보 gate는 `pr-codex-review-gate`로 분리한다. 이 gate는 최신 head no-major, 현재 head 대상 P1/P2/major/critical 분류, `수정 필요`/`수비 가능`/`사용자 판단 필요`를 판단한다.
+- browser E2E 후보 gate는 `pr-agent-browser-e2e-gate`로 분리한다. 이 gate는 별도 QA/background agent와 agent-browser를 사용해 명시된 사용자 플로우만 검증하고, 직접 코드를 수정하지 않는다.
+- runtime handoff 후보 gate는 `pr-runtime-handoff-gate`로 분리한다. 이 gate는 이미 통과한 review/E2E evidence를 바탕으로 서버 주소, 실행 방법, 테스트 입력, 남은 수동 확인을 PR 댓글로 남긴다.
+- 모든 후보 gate는 종료 결과를 `status`, `headSha`, `evidence`, `failureReason`, `nextProcess` 형식으로 남긴다.
+- `pr-authoring-process` 후보가 새 commit을 push하면 이전 `pr-codex-review-gate`, `pr-agent-browser-e2e-gate`, `pr-runtime-handoff-gate` 후보 결과는 stale 처리한다.
+- `pr-agent-browser-e2e-gate` 후보가 실패하면 `pr-authoring-process` 후보로 돌아가고, 새 head가 만들어진 뒤에는 `pr-codex-review-gate` 후보부터 다시 시작한다.
+
+현재 실제 적용은 위 후보를 독립 skill로 구현한 상태가 아닙니다. 현행 기본 루프는 `codex-pr-review-loop`가 Codex review gate, 최신 head/stale 판정, review-waiter 연결, 조건부 runtime handoff 호출을 계속 담당합니다.
 
 ## 적용 범위
 
@@ -69,12 +81,14 @@ PR 완료 루프를 하나의 `codex-pr-review-loop`로 계속 확장하지 않�
 
 ## 실행 결과
 
-- 아직 실제 PR에 적용하지 않았다.
-- 이번 문서는 다음 PR loop 개편을 위한 운영 가설 초안이다.
+- 0계층 `system/README.md`와 PR review loop 문서에는 Codex review 이후 runtime/E2E handoff를 분리해 기록하는 방향이 일부 반영되어 있다.
+- 다만 `pr-completion-loop`, `pr-authoring-process`, `pr-codex-review-gate`, `pr-agent-browser-e2e-gate`, `pr-runtime-handoff-gate`로 나눈 독립 gate 체계는 아직 실제 제품 PR에 적용해 검증하지 않았다.
+- 현재 상태는 `문서 방향 일부 반영, 실제 PR gate 적용 전`이다.
 
 ## 실제 병목
 
 - 아직 실행 결과가 없다.
+- 미구현 skill 이름이 `0계층 반영 위치`에 섞이면 독자가 구현 완료로 오해할 수 있다.
 
 ## 사람 확인 지점
 
@@ -97,11 +111,17 @@ PR 완료 루프를 하나의 `codex-pr-review-loop`로 계속 확장하지 않�
 - QA/background agent가 E2E 실패를 직접 수정하는 방식
 - 이전 head의 review 또는 E2E 결과를 새 head의 통과 근거로 재사용하는 방식
 
-## 0계층 반영 위치
+## 0계층 후보 반영 위치
 
-- 문서: `system/40-pr-review-loop/README.md`, `system/40-pr-review-loop/02-review-policy.md`, `system/40-pr-review-loop/06-pr-template.md`, `system/60-operating-hypotheses/OH-0006-pr-completion-gate-split.md`
-- skill: `system/20-skills/codex-pr-review-loop/SKILL.md`, `system/20-skills/silo-runtime-handoff/SKILL.md`, 신규 또는 개편 후보 `pr-completion-loop`, `pr-agent-browser-e2e-gate`
-- agent prompt: `system/10-agents/main-orchestrator/main-prompt.md`, `system/10-agents/review-waiter/main-prompt.md`, QA/background agent prompt 후보
+- 반영 완료:
+  - 문서: `system/60-operating-hypotheses/OH-0006-pr-completion-gate-split.md`
+  - 기존 skill 참조: `system/20-skills/codex-pr-review-loop/SKILL.md`, `system/20-skills/silo-runtime-handoff/SKILL.md`
+- 반영 후보:
+  - 문서: `system/40-pr-review-loop/README.md`, `system/40-pr-review-loop/02-review-policy.md`, `system/40-pr-review-loop/06-pr-template.md`
+  - agent prompt: `system/10-agents/main-orchestrator/main-prompt.md`, `system/10-agents/review-waiter/main-prompt.md`
+- 미구현 후보:
+  - 신규 또는 개편 skill: `pr-completion-loop`, `pr-authoring-process`, `pr-codex-review-gate`, `pr-agent-browser-e2e-gate`, `pr-runtime-handoff-gate`
+  - QA/background agent prompt
 
 ## 후속 운영 가설 후보
 
